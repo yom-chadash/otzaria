@@ -2,6 +2,7 @@ name: "Build, Release and Announce"
 
 permissions:
   contents: write
+  actions: read
 
 on:
   workflow_dispatch:
