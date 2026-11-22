@@ -16,11 +16,18 @@ Future<Map<String, Object?>> collectInstalledPdfIosImages(
   if (!Platform.isIOS || !{Abi.iosArm64, Abi.iosX64}.contains(Abi.current())) {
     throw UnsupportedError('The iOS PDF probe requires a 64-bit iOS Simulator');
   }
-  final simulatorRoot = Platform.environment['SIMULATOR_ROOT'];
-  final udid = Platform.environment['SIMULATOR_UDID'];
-  final model = Platform.environment['SIMULATOR_MODEL_IDENTIFIER'];
-  if (simulatorRoot == null || udid == null || model == null) {
-    throw StateError('Missing native iOS Simulator environment');
+  final simulator = <String, String>{};
+  for (final entry in const {
+    'runtimeRoot': 'SIMULATOR_ROOT',
+    'udid': 'SIMULATOR_UDID',
+    'model': 'SIMULATOR_MODEL_IDENTIFIER',
+  }.entries) {
+    final observed = Platform.environment[entry.value];
+    if (observed != null) {
+      simulator[entry.key] = entry.key == 'runtimeRoot'
+          ? await Directory(observed).resolveSymbolicLinks()
+          : observed;
+    }
   }
   final executable = await File(
     Platform.resolvedExecutable,
@@ -32,11 +39,13 @@ Future<Map<String, Object?>> collectInstalledPdfIosImages(
       'abi': Abi.current().toString(),
       'bundle': p.dirname(executable),
       'executable': executable,
-      'simulator': {
-        'udid': udid,
-        'model': model,
-        'runtimeRoot': await Directory(simulatorRoot).resolveSymbolicLinks(),
-      },
+      'simulator': simulator,
+      'simulatorEnvironmentSource': installedPdfIosEnvironmentSource,
+      'simulatorEnvironmentAvailability': simulator.isEmpty
+          ? 'unavailable'
+          : simulator.length == 3
+          ? 'collected'
+          : 'partial',
       'configuredPdfrxModule': Pdfrx.pdfiumModulePath,
       'printingBackend': installedPdfDarwinPrinting,
       'systemImageHashes':

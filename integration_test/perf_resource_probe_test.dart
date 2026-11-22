@@ -19,7 +19,8 @@ void main() {
       (passed) => probe.complete(
         passed: passed,
         testFailures: [
-          for (final failure in binding.failureMethodsDetails) failure.details,
+          for (final failure in binding.failureMethodsDetails)
+            failure.details ?? failure.toString(),
         ],
       ),
     ),

@@ -86,6 +86,105 @@ class PosixResourcesTest(unittest.TestCase):
         self.assertGreater(after.cpu_seconds, before.cpu_seconds)
 
 
+
+class DarwinGroupCleanupTest(unittest.TestCase):
+    def child(self, body="raise SystemExit(37)"):
+        process = subprocess.Popen([sys.executable, "-c", body], start_new_session=True)
+
+        def reap():
+            if process.poll() is None:
+                process.kill()
+            process.wait(timeout=5)
+
+        self.addCleanup(reap)
+        return process
+
+    def exited(self):
+        process = self.child()
+        deadline = time.monotonic() + 5
+        while runner.child_exit(process) is None and time.monotonic() < deadline:
+            time.sleep(.01)
+        self.assertEqual(runner.child_exit(process), 37)
+        return process
+
+    def permission(self):
+        return PermissionError(1, "Operation not permitted")
+
+    def test_darwin_permission_on_a_real_waitable_zombie_still_reaps_its_child(self):
+        process = self.exited()
+        with mock.patch.object(runner.sys, "platform", "darwin"), \
+             mock.patch.object(runner.os, "killpg", side_effect=self.permission()) as kill:
+            runner.cleanup_group(process, grace=0)
+        self.assertEqual(kill.call_args_list, [
+            mock.call(process.pid, signal.SIGTERM),
+            mock.call(process.pid, signal.SIGKILL),
+        ])
+        self.assertEqual(process.returncode, 37)
+        with self.assertRaises(ChildProcessError):
+            runner.child_exit(process)
+
+    def test_darwin_permission_is_not_ignored_for_a_living_owned_child(self):
+        process = self.child("import time; time.sleep(30)")
+        with mock.patch.object(runner.sys, "platform", "darwin"), \
+             mock.patch.object(runner.os, "killpg", side_effect=self.permission()), \
+             mock.patch.object(runner.subprocess, "run") as ps:
+            with self.assertRaises(PermissionError):
+                runner.cleanup_group(process, grace=0)
+            ps.assert_not_called()
+
+    def test_darwin_permission_is_not_ignored_for_any_live_or_unknown_group_member(self):
+        process = self.exited()
+        for state in ("R", "S", "D", "T", "I", "?", "X"):
+            table = (f"{process.pid} {os.getpid()} {process.pid} Z\n"
+                     f"999999 1 {process.pid} {state}\n")
+            with self.subTest(state=state), \
+                 mock.patch.object(runner.sys, "platform", "darwin"), \
+                 mock.patch.object(runner.os, "killpg", side_effect=self.permission()), \
+                 mock.patch.object(runner.subprocess, "run",
+                                   return_value=subprocess.CompletedProcess([], 0, table, "")):
+                with self.assertRaises(PermissionError):
+                    runner.cleanup_group(process, grace=0)
+                self.assertEqual(runner.child_exit(process), 37)
+
+    def test_missing_foreign_or_malformed_group_evidence_fails_closed(self):
+        process = self.exited()
+        tables = ("", "invalid", f"{process.pid} 1 {process.pid} Z\n",
+                  f"{process.pid} {os.getpid()} {process.pid + 1} Z\n",
+                  f"{process.pid} {os.getpid()} {process.pid} Z\nmalformed\n")
+        for table in tables:
+            with self.subTest(table=table), \
+                 mock.patch.object(runner.sys, "platform", "darwin"), \
+                 mock.patch.object(runner.os, "killpg", side_effect=self.permission()), \
+                 mock.patch.object(runner.subprocess, "run",
+                                   return_value=subprocess.CompletedProcess([], 0, table, "")):
+                with self.assertRaises(PermissionError):
+                    runner.cleanup_group(process, grace=0)
+
+    def test_failed_ps_and_non_darwin_permissions_are_not_suppressed(self):
+        process = self.exited()
+        for platform, ps_code in (("darwin", 1), ("linux", 0)):
+            table = f"{process.pid} {os.getpid()} {process.pid} Z\n"
+            with self.subTest(platform=platform), \
+                 mock.patch.object(runner.sys, "platform", platform), \
+                 mock.patch.object(runner.os, "killpg", side_effect=self.permission()), \
+                 mock.patch.object(runner.subprocess, "run",
+                                   return_value=subprocess.CompletedProcess([], ps_code, table, "failed")):
+                with self.assertRaises(PermissionError):
+                    runner.cleanup_group(process, grace=0)
+
+    def test_permission_check_keeps_the_owned_child_waitable_and_fixes_ps_locale(self):
+        process = self.exited()
+        table = (f"{process.pid} {os.getpid()} {process.pid} Z+\n"
+                 f"999999 1 {process.pid} Z\n")
+        with mock.patch.object(runner.sys, "platform", "darwin"), \
+             mock.patch.object(runner.subprocess, "run",
+                               return_value=subprocess.CompletedProcess([], 0, table, "")) as ps:
+            self.assertTrue(runner._darwin_group_has_only_zombies(process))
+            self.assertEqual(runner.child_exit(process), 37)
+            self.assertEqual(ps.call_args.kwargs["env"]["LC_ALL"], "C")
+            self.assertEqual(ps.call_args.args[0], ["ps", "-axo", "pid=,ppid=,pgid=,stat="])
+
+
 class PosixFixture(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory(prefix="posix-probe-")

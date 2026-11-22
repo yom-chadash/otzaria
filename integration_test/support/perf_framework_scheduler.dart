@@ -7,16 +7,17 @@ import 'package:integration_test/integration_test.dart';
 import '../../tool/perf_probe/src/probe_binding.dart';
 
 void verifyPerfProbeBinding(WidgetsBinding binding, PerfBindingMode mode) {
+  final dispatcher = binding.platformDispatcher;
   final matches = switch (mode) {
     PerfBindingMode.integration =>
       binding.runtimeType == IntegrationTestWidgetsFlutterBinding &&
           binding is LiveTestWidgetsFlutterBinding &&
           binding.framePolicy ==
               LiveTestWidgetsFlutterBindingFramePolicy.fullyLive &&
-          binding.platformDispatcher is TestPlatformDispatcher,
+          dispatcher is TestPlatformDispatcher,
     PerfBindingMode.framework =>
       binding.runtimeType == WidgetsFlutterBinding &&
-          binding.platformDispatcher is! TestPlatformDispatcher,
+          dispatcher is! TestPlatformDispatcher,
   };
   if (!identical(binding, WidgetsBinding.instance) || !matches) {
     throw StateError('Unexpected binding or dispatcher for ${mode.name}.');
