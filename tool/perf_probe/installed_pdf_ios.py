@@ -17,6 +17,7 @@ SYMBOLS = {
 }
 SOURCE = "dyld image list + dladdr of process symbols"
 PRINTING = "CoreGraphics (CGPDFDocument/CGContext)"
+ENVIRONMENT_SOURCE = "Dart Platform.environment (optional)"
 ARCHITECTURES = {"arm64": (0x0100000C, "ios_arm64"), "x86_64": (0x01000007, "ios_x64")}
 ABI_SOURCE = "Dart FFI Abi.current + Mach-O CPU type and IOSSIMULATOR build platform"
 UUID = re.compile(r"[0-9A-Fa-f]{8}(?:-[0-9A-Fa-f]{4}){3}-[0-9A-Fa-f]{12}")
@@ -107,11 +108,39 @@ def verify_simulator(receipt):
             "The owned Simulator changed runtime or stopped during the scenario")
 
 
+def verify_owned_container(path, receipt, kind):
+    path = Path(path).resolve(strict=True)
+    require(kind in ("Bundle", "Data"), "Unknown Simulator container kind")
+    marker = ("Devices", receipt["udid"], "data", "Containers", kind, "Application")
+    parts = path.parts
+    matches = [index for index in range(len(parts) - len(marker) + 1)
+               if parts[index:index + len(marker)] == marker]
+    require(len(matches) == 1, "Container does not belong to the owned Simulator UDID")
+    tail = parts[matches[0] + len(marker):]
+    require(len(tail) == (2 if kind == "Bundle" else 1) and UUID.fullmatch(tail[0]),
+            "Unexpected owned Simulator container layout")
+    return path
+
+
+def verify_optional_environment(record, receipt):
+    values = record.get("simulator")
+    expected = {"udid": receipt["udid"], "model": receipt["model"], "runtimeRoot": receipt["runtimeRoot"]}
+    require(record.get("simulatorEnvironmentSource") == ENVIRONMENT_SOURCE
+            and isinstance(values, dict) and set(values).issubset(expected),
+            "Missing or malformed optional Simulator environment evidence")
+    availability = "unavailable" if not values else "collected" if len(values) == 3 else "partial"
+    require(record.get("simulatorEnvironmentAvailability") == availability,
+            "Optional Simulator environment availability contradicts its values")
+    require(all(type(value) is str and value == expected[key] for key, value in values.items()),
+            "Optional environment identifies another Simulator/runtime")
+
+
 def verify_images(record, built, installed, receipt, pid):
     require(isinstance(record, dict) and record.get("source") == SOURCE
             and type(record.get("pid")) is int and record["pid"] == pid,
             "Missing dyld evidence from the scenario process")
     built, name, bundle_id = app_identity(built)
+    installed = verify_owned_container(installed, receipt, "Bundle")
     installed, installed_name, installed_id = app_identity(installed)
     require((name, bundle_id) == (installed_name, installed_id), "Built and installed app identities differ")
     architectures = [name for name, (_cpu, abi) in ARCHITECTURES.items() if record.get("abi") == abi]
@@ -119,8 +148,7 @@ def verify_images(record, built, installed, receipt, pid):
     architecture = architectures[0]
     require(record.get("bundle") == str(installed) and record.get("executable") == str(installed / name),
             "Loaded app differs from the installed Simulator app")
-    expected_simulator = {"udid": receipt["udid"], "model": receipt["model"], "runtimeRoot": receipt["runtimeRoot"]}
-    require(record.get("simulator") == expected_simulator, "App ran in another Simulator/runtime")
+    verify_optional_environment(record, receipt)
     require("configuredPdfrxModule" in record and record["configuredPdfrxModule"] is None
             and record.get("printingBackend") == PRINTING, "PDFium loader or printing backend was replaced")
     images, symbols = record.get("images"), record.get("symbols")
@@ -191,6 +219,8 @@ def device_output(report, data_container):
 
 def validate(wrapper, built, installed, data_container, receipt, commit):
     verify_simulator(receipt)
+    verify_owned_container(installed, receipt, "Bundle")
+    verify_owned_container(data_container, receipt, "Data")
     report = wrapper.get("installedPdfIosProbe")
     require(isinstance(report, dict), "Missing standalone iOS PDF report")
     expected = {"schemaVersion": 1, "scenario": "installed-pdf-ios-simulator-v1", "status": "passed",
@@ -224,4 +254,7 @@ def validate(wrapper, built, installed, data_container, receipt, commit):
             "runId": run_id, "simulator": receipt, "bundledFiles": binaries, "pngArtifacts": pngs,
             "abiEvidence": {"source": ABI_SOURCE, "abi": loaded["abi"],
                             "architecture": binaries[0]["macho"]["architecture"]},
+            "simulatorIdentityEvidence": {
+                "source": "owned simctl containers + native image paths, hashes and IOSSIMULATOR Mach-O",
+                "udid": receipt["udid"], "environmentAvailability": loaded["simulatorEnvironmentAvailability"]},
             "physicalDeviceAcceptance": False, "physicalPrinter": "notRun", "webViewScenario": "notRun"}

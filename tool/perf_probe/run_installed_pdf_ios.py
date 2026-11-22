@@ -104,6 +104,7 @@ def cleanup_simulator(receipt):
 def run_driver(root, receipt, commit):
     environment = {**os.environ, "INSTALLED_PROBE_REPORTS": str(root / "host")}
     args = ["flutter", "drive", "--debug", "-d", receipt["udid"], "--no-dds", "--no-pub",
+            "--keep-app-running",
             "--driver=test_driver/installed_plugin_resource_probe.dart",
             "--target=integration_test/installed_pdf_ios_probe_test.dart",
             "--dart-define=INSTALLED_PROBE_FLUTTER_VERSION=3.47.7",

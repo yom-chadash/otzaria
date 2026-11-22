@@ -32,8 +32,9 @@ class IosPdfEvidence(unittest.TestCase):
         self.addCleanup(temporary.cleanup)
         self.root = Path(temporary.name).resolve()
         self.built = self.root / "build/ios/iphonesimulator/אוצריא.app"
-        self.installed = self.root / "Simulator/Bundle/אוצריא.app"
-        self.data = self.root / "Simulator/Data"
+        containers = self.root / "Simulator/Devices" / UDID / "data/Containers"
+        self.installed = containers / "Bundle/Application/11111111-1111-1111-1111-111111111111/אוצריא.app"
+        self.data = containers / "Data/Application/22222222-2222-2222-2222-222222222222"
         self.output = self.data / "tmp/otzaria-pdf-ios-test/output"
         self.output.mkdir(parents=True)
         (self.output.parent / "fixture").mkdir()
@@ -60,6 +61,8 @@ class IosPdfEvidence(unittest.TestCase):
         self.loaded = {"status": "passed", "durationMs": 1.0, "source": subject.SOURCE, "pid": 173,
                        "abi": "ios_arm64", "bundle": str(self.installed), "executable": str(self.executable),
                        "configuredPdfrxModule": None, "printingBackend": subject.PRINTING,
+                       "simulatorEnvironmentSource": subject.ENVIRONMENT_SOURCE,
+                       "simulatorEnvironmentAvailability": "collected",
                        "simulator": {"udid": UDID, "model": self.receipt["model"], "runtimeRoot": str(self.runtime)},
                        "images": [str(self.executable), str(self.pdfium), self.system],
                        "symbols": {name: {"image": str(self.pdfium) if role == "pdfium" else self.system,
@@ -127,6 +130,70 @@ class IosPdfEvidence(unittest.TestCase):
         self.assertFalse(result["physicalDeviceAcceptance"])
         self.assertEqual(result["abiEvidence"], {"source": subject.ABI_SOURCE,
                                                "abi": "ios_arm64", "architecture": "arm64"})
+
+
+    def test_absent_environment_uses_owned_containers_and_native_image_proof(self):
+        self.loaded.update(simulator={}, simulatorEnvironmentAvailability="unavailable")
+        self.save_artifacts()
+        result = self.accept()
+        self.assertEqual(result["status"], "passed")
+        self.assertEqual(result["simulatorIdentityEvidence"]["udid"], UDID)
+        self.assertEqual(result["simulatorIdentityEvidence"]["environmentAvailability"], "unavailable")
+        self.assertTrue(all(entry["macho"]["platform"] == 7 for entry in result["bundledFiles"]))
+
+    def test_partial_environment_is_allowed_but_available_values_cannot_conflict(self):
+        self.loaded.update(simulator={"udid": UDID}, simulatorEnvironmentAvailability="partial")
+        self.save_artifacts()
+        self.assertEqual(self.accept()["status"], "passed")
+        self.loaded["simulator"]["udid"] = "B916179E-C19B-44CD-B606-25F904E6B567"
+        self.save_artifacts()
+        with self.assertRaisesRegex(ValueError, "another Simulator"):
+            self.accept()
+
+    def test_optional_environment_requires_honest_source_availability_and_keys(self):
+        for change in (
+                lambda record: record.pop("simulatorEnvironmentSource"),
+                lambda record: record.update(simulatorEnvironmentSource="host override"),
+                lambda record: record.pop("simulatorEnvironmentAvailability"),
+                lambda record: record.update(simulatorEnvironmentAvailability="unavailable"),
+                lambda record: record["simulator"].update(unknown="value")):
+            report = copy.deepcopy(self.report)
+            change(report["pdfRuntime"]["steps"]["loadedModules"])
+            with self.assertRaisesRegex(ValueError, "Simulator environment"):
+                self.accept(report)
+
+    def test_missing_environment_cannot_move_a_bundle_to_another_simulator(self):
+        self.loaded.update(simulator={}, simulatorEnvironmentAvailability="unavailable")
+        self.save_artifacts()
+        receipt = {**self.receipt, "udid": "B916179E-C19B-44CD-B606-25F904E6B567"}
+        with self.assertRaisesRegex(ValueError, "owned Simulator UDID"):
+            self.accept(receipt=receipt)
+
+    def test_missing_environment_cannot_accept_an_ios_device_binary(self):
+        self.loaded.update(simulator={}, simulatorEnvironmentAvailability="unavailable")
+        for bundle in (self.built, self.installed):
+            (bundle / self.relative_pdfium).write_bytes(macho(platform=2))
+        self.hash_files([self.executable, self.pdfium])
+        self.save_artifacts()
+        with self.assertRaisesRegex(ValueError, "iOS Simulator"):
+            self.accept()
+
+    def test_missing_environment_still_requires_the_selected_coregraphics_runtime(self):
+        self.loaded.update(simulator={}, simulatorEnvironmentAvailability="unavailable")
+        foreign = str(self.root / "other.simruntime/Contents/Resources/RuntimeRoot"
+                      / "System/Library/Frameworks/CoreGraphics.framework/CoreGraphics")
+        self.loaded["images"].append(foreign)
+        for symbol in subject.SYMBOLS["printing"]:
+            self.loaded["symbols"][symbol].update(image=foreign, canonicalImage=foreign)
+        self.save_artifacts()
+        with self.assertRaisesRegex(ValueError, "selected Apple runtime"):
+            self.accept()
+
+    def test_app_and_data_containers_must_belong_to_the_same_owned_simulator(self):
+        with self.assertRaisesRegex(ValueError, "container layout"):
+            subject.verify_owned_container(self.installed.parent, self.receipt, "Bundle")
+        with self.assertRaisesRegex(ValueError, "owned Simulator UDID"):
+            subject.verify_owned_container(self.data, {**self.receipt, "udid": "other"}, "Data")
 
     def test_iOS_debug_dylib_and_static_pdfium_are_valid_owners(self):
         for relative in (Path("Runner.debug.dylib"), Path("Runner")):
@@ -368,6 +435,19 @@ class OwnedSimulatorContracts(unittest.TestCase):
     def device(self, receipt):
         return {"udid": receipt["udid"], "name": receipt["name"], "state": "Booted",
                 "deviceTypeIdentifier": receipt["deviceTypeIdentifier"]}
+
+
+    def test_driver_keeps_the_owned_install_for_post_run_binary_verification(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            result = runner.subprocess.CompletedProcess([], 0)
+            with patch.object(runner.subprocess, "run", return_value=result) as process:
+                self.assertEqual(runner.run_driver(root, self.receipt(), COMMIT), 0)
+            arguments = process.call_args.args[0]
+            self.assertEqual(arguments[arguments.index("-d") + 1], UDID)
+            self.assertIn("--keep-app-running", arguments)
+            self.assertNotIn("--use-existing-app", arguments)
+            self.assertEqual(json.loads((root / "driver-command.json").read_text()), arguments)
 
     def test_boot_does_not_require_unix_executables_in_the_ios_runtime(self):
         receipt = self.receipt()
