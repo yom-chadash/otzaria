@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:test/test.dart';
 
 import '../../../tool/perf_probe/src/pdf_image_budget.dart';
+import '../../../tool/perf_probe/src/probe_binding.dart';
 import '../../../tool/perf_probe/src/report.dart';
 
 Map<String, dynamic> metadata({Map<String, dynamic> changes = const {}}) => {
@@ -404,6 +405,26 @@ void main() {
         metrics['checkpointsMs.final_image_ready.p50']['deltaPercent'],
         -25,
       );
+    });
+
+    test('framework and integration schedulers have distinct comparison identity', () {
+      Map<String, dynamic> workload(PerfBindingMode mode) => report(
+        [opening()],
+        changes: {
+          'settings': {
+            'scenarioSet': 'pdf-reader',
+            ...mode.toComparisonJson(),
+          },
+        },
+      );
+      final framework = workload(PerfBindingMode.framework);
+      expect(compareProbeReports(framework, framework)['comparable'], isTrue);
+      final comparison = compareProbeReports(
+        workload(PerfBindingMode.integration),
+        framework,
+      );
+      expect(comparison['comparable'], isFalse);
+      expect(comparison['reasons'], contains('metadata:settings'));
     });
 
     test('reader smoke and full workload are not comparable', () {
