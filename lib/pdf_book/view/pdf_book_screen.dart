@@ -1478,6 +1478,8 @@ class _PdfBookScreenState extends State<PdfBookScreen>
           ? [textSearcher!.pageTextMatchPaintCallback]
           : null,
       onDocumentChanged: (document) async {
+        if (!mounted) return;
+        _bookViewLayoutMemo.bindDocument(document);
         _personalNoteViewerReady = false;
         _pdfDocumentSession++;
         _pdfNoteNavigationGeneration++;
@@ -3862,6 +3864,7 @@ class _PdfBookScreenState extends State<PdfBookScreen>
     _disposePageTurnSnapshot();
     _disposeAllSpreadCache();
     _thumbnailCache.dispose();
+    _bookViewLayoutMemo.dispose();
     _pendingPageTurns.clear();
     _pageTurnController.dispose();
     _pageTurnUi.dispose();
