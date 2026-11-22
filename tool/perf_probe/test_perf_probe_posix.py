@@ -514,7 +514,7 @@ class SmokeEvidenceTest(PosixFixture):
                     "buildMode": "profile", "cacheState": "cold", "scenarioSet": "pdf-reader",
                     "launchCount": 1, "warmup": 0, "repetitions": 1, "dirty": False,
                     "fixtureId": "synthetic-v4-pdf-cases:" + "f" * 64, "sampling": sampling,
-                    "settings": {"pdfReaderCase": smoke.CASE, "pdfPageCount": 600,
+                    "settings": {"framePolicy": "fullyLive", "pdfReaderCase": smoke.CASE, "pdfPageCount": 600,
                                  "pdfLayout": "regularView", "scenarioSet": "pdf-reader",
                                  "resourceObservationVersion": 1, "pdfPostCloseIdleMs": 3000}}
         manifest = {**metadata, "sourceProvenance": {
@@ -589,6 +589,19 @@ class SmokeEvidenceTest(PosixFixture):
         runner.write_json(self.root / "pdf-case.json", case)
         with self.assertRaisesRegex(ValueError, "Prepared PDF case"):
             self.validate()
+
+    def test_missing_or_different_binding_frame_policy_is_rejected(self):
+        for policy in (None, "benchmark", "benchmarkLive"):
+            with self.subTest(policy=policy):
+                report, _ = self.fixture()
+                settings = report["metadata"]["settings"]
+                if policy is None:
+                    settings.pop("framePolicy")
+                else:
+                    settings["framePolicy"] = policy
+                runner.write_json(self.root / "report.json", report)
+                with self.assertRaisesRegex(ValueError, "frame policy"):
+                    self.validate()
 
     def test_missing_skipped_duplicate_actions_or_incomplete_budget_are_rejected(self):
         mutations = (

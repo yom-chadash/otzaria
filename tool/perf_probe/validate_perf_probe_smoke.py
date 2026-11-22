@@ -56,6 +56,7 @@ def validate(root, *, commit, platform):
     require(sampling.get("displayMode") == ("xvfb" if platform == "linux" else "desktop"),
             "Wrong display conditions for this smoke")
     settings = metadata["settings"]
+    require(settings.get("framePolicy") == "fullyLive", "Missing or unexpected integration binding frame policy")
     require(settings.get("pdfReaderCase") == CASE and settings.get("pdfPageCount") == 600
             and settings.get("pdfLayout") == "regularView"
             and settings.get("scenarioSet") == "pdf-reader", "The default PDF case/actions changed")

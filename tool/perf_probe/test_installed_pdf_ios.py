@@ -52,7 +52,7 @@ class IosPdfEvidence(unittest.TestCase):
         self.receipt = {"schemaVersion": 1, "campaign": "contract-campaign", "udid": UDID,
                         "runtimeIdentifier": "com.apple.CoreSimulator.SimRuntime.iOS-26-1",
                         "runtimeVersion": "26.1", "runtimeBuild": "23B74", "runtimeRoot": str(self.runtime),
-                        "model": "iPhone18,1", "architecture": "arm64", "stateBefore": "Booted", "stateAfter": "Booted",
+                        "model": "iPhone18,1", "stateBefore": "Booted", "stateAfter": "Booted",
                         "name": "otzaria-pdf-contract-campaign",
                         "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro"}
         self.receipt.update(runtimeBefore=self.receipt["runtimeIdentifier"], runtimeAfter=self.receipt["runtimeIdentifier"])
@@ -125,6 +125,8 @@ class IosPdfEvidence(unittest.TestCase):
         self.assertTrue(all(entry["macho"]["platform"] == 7 for entry in result["bundledFiles"]))
         self.assertEqual(result["webViewScenario"], "notRun")
         self.assertFalse(result["physicalDeviceAcceptance"])
+        self.assertEqual(result["abiEvidence"], {"source": subject.ABI_SOURCE,
+                                               "abi": "ios_arm64", "architecture": "arm64"})
 
     def test_iOS_debug_dylib_and_static_pdfium_are_valid_owners(self):
         for relative in (Path("Runner.debug.dylib"), Path("Runner")):
@@ -142,14 +144,22 @@ class IosPdfEvidence(unittest.TestCase):
                 self.assertEqual(self.accept()["status"], "passed")
 
     def test_x64_simulator_abi_is_validated_against_real_binary_headers(self):
-        self.receipt["architecture"] = "x86_64"
         self.loaded["abi"] = "ios_x64"
         for bundle in (self.built, self.installed):
             (bundle / "Runner").write_bytes(macho(architecture="x86_64", executable=True))
             (bundle / self.relative_pdfium).write_bytes(macho(architecture="x86_64"))
         self.hash_files([self.executable, self.pdfium])
         self.save_artifacts()
-        self.assertEqual(self.accept()["status"], "passed")
+        result = self.accept()
+        self.assertEqual(result["status"], "passed")
+        self.assertEqual(result["abiEvidence"]["architecture"], "x86_64")
+
+    def test_running_abi_is_required_and_must_match_the_native_images(self):
+        for abi in (None, "arm64", "macos_arm64", "ios_x64"):
+            self.loaded["abi"] = abi
+            self.save_artifacts()
+            with self.subTest(abi=abi), self.assertRaisesRegex(ValueError, "running iOS ABI|Mach-O ABI"):
+                self.accept()
 
     def test_shared_cache_system_coregraphics_does_not_require_an_unreadable_file(self):
         system = "/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics"
@@ -189,7 +199,7 @@ class IosPdfEvidence(unittest.TestCase):
             report["pdfRuntime"]["steps"]["loadedModules"]["simulator"][field] = value
             with self.subTest(field=field), self.assertRaisesRegex(ValueError, "another Simulator"):
                 self.accept(report)
-        for field, value in (("architecture", "x86_64"), ("stateAfter", "Shutdown"), ("runtimeAfter", "another")):
+        for field, value in (("stateAfter", "Shutdown"), ("runtimeAfter", "another")):
             receipt = copy.deepcopy(self.receipt)
             receipt[field] = value
             with self.subTest(field=field), self.assertRaises(ValueError):
@@ -358,6 +368,34 @@ class OwnedSimulatorContracts(unittest.TestCase):
     def device(self, receipt):
         return {"udid": receipt["udid"], "name": receipt["name"], "state": "Booted",
                 "deviceTypeIdentifier": receipt["deviceTypeIdentifier"]}
+
+    def test_boot_does_not_require_unix_executables_in_the_ios_runtime(self):
+        receipt = self.receipt()
+        with tempfile.TemporaryDirectory() as directory:
+            bundle = Path(directory) / "iOS.simruntime"
+            runtime = bundle / "Contents/Resources/RuntimeRoot"
+            runtime.mkdir(parents=True)
+            receipt["runtimeBundle"] = str(bundle)
+            replies = {
+                ("boot", UDID): "",
+                ("bootstatus", UDID, "-b"): "",
+                ("list", "-j", "devices"): json.dumps({"devices": {
+                    receipt["runtimeIdentifier"]: [self.device(receipt)]}}),
+                ("getenv", UDID, "SIMULATOR_ROOT"): str(runtime),
+                ("getenv", UDID, "SIMULATOR_MODEL_IDENTIFIER"): "iPhone18,1",
+            }
+
+            def native_call(*arguments, **_):
+                if arguments not in replies:
+                    raise RuntimeError(f"Simulator executable is unavailable: {arguments}")
+                return replies[arguments]
+
+            with patch.object(runner, "simctl", side_effect=native_call):
+                runner.boot_simulator(receipt)
+            self.assertEqual(receipt["runtimeRoot"], str(runtime.resolve()))
+            self.assertEqual(receipt["model"], "iPhone18,1")
+            self.assertEqual(receipt["stateBefore"], "Booted")
+            self.assertNotIn("architecture", receipt)
 
     def test_cleanup_rejects_another_device_before_any_mutation(self):
         receipt = self.receipt()

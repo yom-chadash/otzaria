@@ -81,7 +81,7 @@ def boot_simulator(receipt):
     expected_root = (Path(receipt["runtimeBundle"]) / "Contents/Resources/RuntimeRoot").resolve(strict=True)
     require(runtime_root == expected_root, "Native Simulator root differs from the selected runtime")
     receipt.update(runtimeRoot=str(runtime_root), model=simctl("getenv", udid, "SIMULATOR_MODEL_IDENTIFIER"),
-                   architecture=simctl("spawn", udid, "uname", "-m"), runtimeBefore=runtime, stateBefore=device["state"])
+                   runtimeBefore=runtime, stateBefore=device["state"])
 
 
 def cleanup_simulator(receipt):
