@@ -1,6 +1,7 @@
 import 'package:path/path.dart' as p;
 
 import 'installed_pdf_android_contract.dart';
+import 'installed_pdf_desktop_contract.dart';
 import 'installed_pdf_ios_contract.dart';
 import 'installed_pdf_macos_contract.dart';
 
@@ -90,6 +91,18 @@ List<String> installedPdfRuntimeErrors(
     errors.add('Actual-bundle $platform PDF runtime did not pass');
   }
   final steps = value['steps'];
+  if (installedPdfDesktopPlatforms.contains(platform)) {
+    errors.addAll(
+      installedPdfDesktopErrors(
+        steps is Map ? steps['desktopLifecycle'] : null,
+      ),
+    );
+    errors.addAll(
+      installedPdfRepeatedLifecycleErrors(
+        steps is Map ? steps['repeatedLifecycle'] : null,
+      ),
+    );
+  }
   if (platform == 'android') {
     errors.addAll(
       installedAndroidPdfModuleErrors(
