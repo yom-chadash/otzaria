@@ -268,7 +268,6 @@ jobs:
       CARGO_NET_GIT_FETCH_WITH_CLI: 'true'
       CARGO_BUILD_JOBS: '2'
       PYTHONUNBUFFERED: '1'
-      IOS_PDF_EVIDENCE: ${{ runner.temp }}/installed-pdf-ios
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: subosito/flutter-action@v2
@@ -293,11 +292,11 @@ jobs:
         run: |
           set -euo pipefail
           python3 tool/perf_probe/run_installed_pdf_ios.py \
-            --root "$IOS_PDF_EVIDENCE" --commit "$GITHUB_SHA"
+            --root "$RUNNER_TEMP/installed-pdf-ios" --commit "$GITHUB_SHA"
       - name: Cleanup only the PDF Simulator created by this job
         if: always()
         shell: bash
-        run: python3 tool/perf_probe/run_installed_pdf_ios.py --root "$IOS_PDF_EVIDENCE" --cleanup
+        run: python3 tool/perf_probe/run_installed_pdf_ios.py --root "$RUNNER_TEMP/installed-pdf-ios" --cleanup
       - name: Preserve PDF reports, native artifacts and partial failures
         if: always()
         uses: actions/upload-artifact@v7.0.2
@@ -305,4 +304,4 @@ jobs:
           name: installed-pdf-ios-simulator-debug
           if-no-files-found: warn
           retention-days: 14
-          path: ${{ env.IOS_PDF_EVIDENCE }}/
+          path: ${{ runner.temp }}/installed-pdf-ios/
