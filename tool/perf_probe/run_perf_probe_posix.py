@@ -3,6 +3,7 @@
 
 import argparse
 import csv
+import errno
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -84,12 +85,40 @@ def child_exit(process):
     return result.si_status if result.si_code == os.CLD_EXITED else -result.si_status
 
 
+def _darwin_group_has_only_zombies(process):
+    if sys.platform != "darwin" or child_exit(process) is None:
+        return False
+    result = subprocess.run(["ps", "-axo", "pid=,ppid=,pgid=,stat="],
+                            capture_output=True, text=True, encoding="utf-8",
+                            env={**os.environ, "LC_ALL": "C"}, timeout=5)
+    if result.returncode:
+        return False
+    members = []
+    for line in result.stdout.splitlines():
+        fields = line.split()
+        if not fields:
+            continue
+        if len(fields) != 4 or not all(field.isdigit() for field in fields[:3]):
+            return False
+        pid, parent, group = map(int, fields[:3])
+        if group == process.pid:
+            members.append((pid, parent, fields[3]))
+    leader = [item for item in members if item[0] == process.pid]
+    return (len(leader) == 1 and leader[0][1] == os.getpid()
+            and all(state.startswith("Z") for _, _, state in members))
+
+
 def cleanup_group(process, grace=0.2):
     for signum in (signal.SIGTERM, signal.SIGKILL):
         try:
             os.killpg(process.pid, signum)
         except ProcessLookupError:
             pass
+        except PermissionError as error:
+            # XNU filters zombies from killpg, then returns EPERM when none remain.
+            # https://github.com/apple-oss-distributions/xnu/blob/f6217f891ac0bb64f3d375211650a4c1ff8ca1ea/bsd/kern/kern_sig.c#L1709-L1718
+            if error.errno != errno.EPERM or not _darwin_group_has_only_zombies(process):
+                raise
         if signum == signal.SIGTERM:
             time.sleep(grace)
     process.wait(timeout=5)
