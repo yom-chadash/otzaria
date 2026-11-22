@@ -29,6 +29,7 @@ import 'package:otzaria/search/search_repository.dart';
 import 'package:otzaria/search/utils/literal_search_pattern.dart';
 import 'package:otzaria/search/utils/user_regex_query.dart';
 import 'package:otzaria/pdf_book/utils/pdf_engine_result_ordinals.dart';
+import 'package:otzaria/pdf_book/utils/pdf_search_result_list.dart';
 import 'package:otzaria/pdf_book/utils/pdf_user_regex_pattern.dart';
 import 'package:otzaria/pdf_book/utils/proximity_highlight_pattern.dart';
 import 'package:otzaria/pdf_book/utils/result_lines_highlight_pattern.dart';
@@ -210,20 +211,6 @@ class PdfBookSearchView extends StatefulWidget {
     return '${before ? '…' : ''}$line${after ? '…' : ''}';
   }
 
-  /// כמה מ-[previous] נשארות בראש [matches]: ה-searcher מפרסם תמונות מצב
-  /// מצטברות, ולכן ממפים רק את מה שנוסף; חיפוש חדש מחזיר 0.
-  @visibleForTesting
-  static int keptMatchCount(
-    List<PdfTextSearchResult> previous,
-    List<PdfTextSearchResult> matches,
-  ) {
-    if (previous.isEmpty || matches.length < previous.length) return 0;
-    final extendsPrevious =
-        identical(matches.first, previous.first) &&
-        identical(matches[previous.length - 1], previous.last);
-    return extendsPrevious ? previous.length : 0;
-  }
-
   /// העמודים שנדגמים לבדיקת קיום טקסט: העמוד שהמשתמש רואה ועוד שניים
   /// פרושׂים על הספר — עמוד בודד עלול להיות שער או לוח תמונות.
   @visibleForTesting
@@ -352,10 +339,33 @@ class PdfBookSearchViewState extends State<PdfBookSearchView>
 
   /// Whether the engine found more results than the pane shows.
   bool _resultsTruncated = false;
-  List<PdfTextSearchResult> _mappedMatches = const [];
+  String _simpleSearchQuery = '';
+  ({String query, String title, String filePath}) _simpleResultContext = (
+    query: '',
+    title: '',
+    filePath: '',
+  );
+  late final _simpleResults = PdfSearchResultList<SearchResult>(
+    (match, id) => SearchResult(
+      id: BigInt.from(id),
+      title: _simpleResultContext.title,
+      reference: '',
+      text: PdfBookSearchView.matchLineSnippet(
+        match,
+        _simpleResultContext.query,
+      ),
+      segment: BigInt.from(match.pageNumber - 1),
+      isPdf: true,
+      filePath: _simpleResultContext.filePath,
+      mergedCount: 1,
+      merged: const [],
+      textStatus: TextStatus.ok,
+      continuesToNextLine: false,
+    ),
+  );
 
   List<SearchResult>? _groupedSource;
-  final List<dynamic> _groupedItems = [];
+  final List<Object> _groupedItems = [];
   int _groupedCount = 0;
   int? _lastGroupedPage;
 
@@ -404,13 +414,14 @@ class PdfBookSearchViewState extends State<PdfBookSearchView>
   /// התבנית שנבנתה מהמונחים שהמנוע מצא בפועל — לשימוש חוזר בלחיצה על תוצאה.
   Pattern? _lastAdvancedHighlightPattern;
 
-  final _engineOrdinals = Expando<
-    ({
-      Pattern? pattern,
-      int length,
-      PdfEngineResultOrdinals<SearchResult> index,
-    })
-  >();
+  final _engineOrdinals =
+      Expando<
+        ({
+          Pattern? pattern,
+          int length,
+          PdfEngineResultOrdinals<SearchResult> index,
+        })
+      >();
   final _pdfMatchSpans = Expando<String>();
 
   /// השאילתה שעבורה תוזמנה גלילה לעמוד הנוכחי בסיום חיפוש פשוט.
@@ -710,7 +721,15 @@ class PdfBookSearchViewState extends State<PdfBookSearchView>
       _pageTitles.clear();
       _pageReferenceLookup = null;
     }
-    if (!searcherChanged) return;
+    if (!searcherChanged) {
+      if (oldWidget.bookTitle != widget.bookTitle ||
+          oldWidget.pdfFilePath != widget.pdfFilePath) {
+        final showingSimpleResults = identical(_searchResults, _simpleResults);
+        _simpleResults.reset();
+        if (showingSimpleResults) _updateSimpleResults();
+      }
+      return;
+    }
     oldWidget.textSearcher.removeListener(_onTextSearcherMatchesChanged);
     widget.textSearcher.addListener(_onTextSearcherMatchesChanged);
     _searchGeneration++;
@@ -719,7 +738,7 @@ class PdfBookSearchViewState extends State<PdfBookSearchView>
     _cancelPageScanWait();
     _lastPdfHighlightSource = '';
     _lastAdvancedHighlightPattern = null;
-    _mappedMatches = const [];
+    _simpleResults.reset();
     _searchResults = [];
     _resultsTruncated = false;
     _isSearching = false;
@@ -810,35 +829,24 @@ class PdfBookSearchViewState extends State<PdfBookSearchView>
     );
   }
 
+  void _updateSimpleResults() {
+    _simpleResultContext = (
+      query: _simpleSearchQuery,
+      title: widget.bookTitle ?? '',
+      filePath: widget.pdfFilePath ?? '',
+    );
+    _simpleResults.update(
+      widget.textSearcher.matches,
+      generation: _searchGeneration,
+    );
+    _searchResults = _simpleResults;
+  }
+
   void _onTextSearcherMatchesChanged() {
     if (_isSimpleSearch) {
       if (mounted) {
         setState(() {
-          final query = widget.searchController.text;
-          final matches = widget.textSearcher.matches;
-          final keptCount = _searchResults.length == _mappedMatches.length
-              ? PdfBookSearchView.keptMatchCount(_mappedMatches, matches)
-              : 0;
-          if (keptCount == 0) _searchResults = [];
-          for (var i = keptCount; i < matches.length; i++) {
-            _searchResults.add(
-              SearchResult(
-                // בחיפוש הפשוט: אינדקס ההתאמה ב-searcher, לניווט למקומה המדויק.
-                id: BigInt.from(i),
-                title: widget.bookTitle ?? '',
-                reference: '', // הכתובת מוצגת בכותרת של קבוצת העמוד.
-                text: PdfBookSearchView.matchLineSnippet(matches[i], query),
-                segment: BigInt.from(matches[i].pageNumber - 1),
-                isPdf: true,
-                filePath: widget.pdfFilePath ?? '',
-                mergedCount: 1,
-                merged: const [],
-                textStatus: TextStatus.ok,
-                continuesToNextLine: false,
-              ),
-            );
-          }
-          _mappedMatches = matches;
+          _updateSimpleResults();
           _isSearching = widget.textSearcher.isSearching;
         });
         // גלילה לעמוד הנוכחי בסיום החיפוש — רק אם השאילתה הממתינה עדיין
@@ -985,13 +993,16 @@ class PdfBookSearchViewState extends State<PdfBookSearchView>
       final pdfState = context.read<PdfBookBloc>().state;
       if (pdfState is! PdfBookLoaded) return;
 
-      final resultsPageNumbers = _searchResults.map(_getPdfPageNumber).toList();
-      if (resultsPageNumbers.isEmpty) return;
-
-      final visualIdx = PdfBookSearchView.computeTargetVisualIndexForTesting(
-        resultsPageNumbersSorted: resultsPageNumbers,
-        currentPage: _currentPage(pdfState),
-      );
+      if (_searchResults.isEmpty) return;
+      final currentPage = _currentPage(pdfState);
+      final visualIdx = identical(_searchResults, _simpleResults)
+          ? _simpleResults.visualIndexForPage(currentPage)
+          : PdfBookSearchView.computeTargetVisualIndexForTesting(
+              resultsPageNumbersSorted: _searchResults
+                  .map(_getPdfPageNumber)
+                  .toList(),
+              currentPage: currentPage,
+            );
 
       if (!_resultsScrollController.isAttached) return;
       _resultsScrollController.jumpTo(index: visualIdx, alignment: 0.0);
@@ -1070,6 +1081,7 @@ class PdfBookSearchViewState extends State<PdfBookSearchView>
     _simpleSearchReversed = false;
     final searchable = searchableInBookQuery(widget.searchController.text);
     _settings = _settings.forQuery(searchable ?? '');
+    if (searchable == null || !_isSimpleSearch) _simpleResults.reset();
     if (_settings.optionsForEveryWord != null) {
       _syncSearchOptions(context.read<PdfBookBloc>());
     }
@@ -1139,6 +1151,7 @@ class PdfBookSearchViewState extends State<PdfBookSearchView>
     }
 
     if (_isSimpleSearch) {
+      _simpleSearchQuery = widget.searchController.text;
       _pendingSimpleSearchScrollFor = query;
       final userRegex = PdfUserRegexPattern.tryParse(query);
       // תבנית סובלנית-ניקוד מהמנוע, כדי שגם PDF ששכבת הטקסט שלו מנוקדת יודגש.
@@ -1223,25 +1236,28 @@ class PdfBookSearchViewState extends State<PdfBookSearchView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (!identical(_groupedSource, _searchResults)) {
-      _groupedSource = _searchResults;
-      _groupedItems.clear();
-      _groupedCount = 0;
-      _lastGroupedPage = null;
-    }
-
-    // pdfrx סורק לפי עמוד; תוצאות המנוע ממוינות לפני ההשמה.
-    for (var i = _groupedCount; i < _searchResults.length; i++) {
-      final result = _searchResults[i];
-      final page = _getPdfPageNumber(result);
-      if (page != _lastGroupedPage) {
-        _groupedItems.add(page);
-        _lastGroupedPage = page;
+    final List<Object> items;
+    if (identical(_searchResults, _simpleResults)) {
+      items = _simpleResults.groupedItems;
+    } else {
+      if (!identical(_groupedSource, _searchResults)) {
+        _groupedSource = _searchResults;
+        _groupedItems.clear();
+        _groupedCount = 0;
+        _lastGroupedPage = null;
       }
-      _groupedItems.add(result);
+      for (var i = _groupedCount; i < _searchResults.length; i++) {
+        final result = _searchResults[i];
+        final page = _getPdfPageNumber(result);
+        if (page != _lastGroupedPage) {
+          _groupedItems.add(page);
+          _lastGroupedPage = page;
+        }
+        _groupedItems.add(result);
+      }
+      _groupedCount = _searchResults.length;
+      items = _groupedItems;
     }
-    _groupedCount = _searchResults.length;
-    final items = _groupedItems;
 
     return SearchPaneBase(
       searchController: widget.searchController,
@@ -1304,11 +1320,11 @@ class PdfBookSearchViewState extends State<PdfBookSearchView>
                   final generation = _searchGeneration;
                   final searcher = widget.textSearcher;
                   final pageNumber = _getPdfPageNumber(result);
-                  final matchIndex = result.id.toInt();
-                  if (_isSimpleSearch &&
-                      matchIndex < widget.textSearcher.matches.length &&
-                      widget.textSearcher.matches[matchIndex].pageNumber ==
-                          pageNumber) {
+                  final matchIndex = _isSimpleSearch
+                      ? _simpleResults.matchIndexOf(result, searcher.matches)
+                      : null;
+                  if (_isSimpleSearch && matchIndex == null) return;
+                  if (matchIndex != null) {
                     // גלילה למקום ההתאמה בעמוד וסימונה כהתאמה הנוכחית.
                     widget.onNavigationStarted?.call(pageNumber);
                     await widget.textSearcher.goToMatchOfIndex(matchIndex);
@@ -1363,6 +1379,7 @@ class PdfBookSearchViewState extends State<PdfBookSearchView>
         _searchTextUpdated();
       },
       resetSearchCallback: () {
+        _simpleResults.reset();
         _pendingSimpleSearchScrollFor = null;
         _lastAdvancedHighlightPattern = null;
         setState(() {
