@@ -18,6 +18,7 @@ SYMBOLS = {
 SOURCE = "dyld image list + dladdr of process symbols"
 PRINTING = "CoreGraphics (CGPDFDocument/CGContext)"
 ARCHITECTURES = {"arm64": (0x0100000C, "ios_arm64"), "x86_64": (0x01000007, "ios_x64")}
+ABI_SOURCE = "Dart FFI Abi.current + Mach-O CPU type and IOSSIMULATOR build platform"
 UUID = re.compile(r"[0-9A-Fa-f]{8}(?:-[0-9A-Fa-f]{4}){3}-[0-9A-Fa-f]{12}")
 
 
@@ -90,8 +91,7 @@ def app_identity(bundle):
 def verify_simulator(receipt):
     require(isinstance(receipt, dict) and type(receipt.get("schemaVersion")) is int and receipt["schemaVersion"] == 1
             and isinstance(receipt.get("udid"), str) and UUID.fullmatch(receipt["udid"])
-            and isinstance(receipt.get("campaign"), str) and receipt["campaign"]
-            and receipt.get("architecture") in ARCHITECTURES, "Missing owned Simulator identity or ABI")
+            and isinstance(receipt.get("campaign"), str) and receipt["campaign"], "Missing owned Simulator identity")
     require(isinstance(receipt.get("runtimeIdentifier"), str)
             and receipt["runtimeIdentifier"].startswith("com.apple.CoreSimulator.SimRuntime.iOS-")
             and isinstance(receipt.get("runtimeVersion"), str)
@@ -114,8 +114,11 @@ def verify_images(record, built, installed, receipt, pid):
     built, name, bundle_id = app_identity(built)
     installed, installed_name, installed_id = app_identity(installed)
     require((name, bundle_id) == (installed_name, installed_id), "Built and installed app identities differ")
-    require(record.get("bundle") == str(installed) and record.get("executable") == str(installed / name)
-            and record.get("abi") == ARCHITECTURES[receipt["architecture"]][1], "Loaded app or ABI differs from Simulator")
+    architectures = [name for name, (_cpu, abi) in ARCHITECTURES.items() if record.get("abi") == abi]
+    require(len(architectures) == 1, "Missing or unsupported running iOS ABI")
+    architecture = architectures[0]
+    require(record.get("bundle") == str(installed) and record.get("executable") == str(installed / name),
+            "Loaded app differs from the installed Simulator app")
     expected_simulator = {"udid": receipt["udid"], "model": receipt["model"], "runtimeRoot": receipt["runtimeRoot"]}
     require(record.get("simulator") == expected_simulator, "App ran in another Simulator/runtime")
     require("configuredPdfrxModule" in record and record["configuredPdfrxModule"] is None
@@ -164,7 +167,7 @@ def verify_images(record, built, installed, receipt, pid):
                 and entry.get("sha256") == digest(path) == digest(original),
                 "Built, installed and mapped image bytes do not match")
         evidence.append({**entry, "relativePath": str(relative), "builtPath": str(original),
-                         "macho": macho_simulator_image(original, receipt["architecture"], executable=path == executable)})
+                         "macho": macho_simulator_image(original, architecture, executable=path == executable)})
     require(observed == expected, "Executable or PDFium binary proof is missing")
     return evidence
 
@@ -219,4 +222,6 @@ def validate(wrapper, built, installed, data_container, receipt, commit):
     require(device_report == report, "Final device report differs from the integration driver")
     return {"status": "passed", "platform": "ios", "buildMode": "debug", "commit": commit,
             "runId": run_id, "simulator": receipt, "bundledFiles": binaries, "pngArtifacts": pngs,
+            "abiEvidence": {"source": ABI_SOURCE, "abi": loaded["abi"],
+                            "architecture": binaries[0]["macho"]["architecture"]},
             "physicalDeviceAcceptance": False, "physicalPrinter": "notRun", "webViewScenario": "notRun"}
