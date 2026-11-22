@@ -12,6 +12,8 @@ import 'package:otzaria/pdf_book/bloc/pdf_book_state.dart';
 import 'package:otzaria/pdf_book/view/pdf_book_screen.dart';
 import 'package:otzaria/settings/engine/app_settings_store.dart';
 import 'package:otzaria/settings/engine/settings_bloc.dart';
+import 'package:otzaria/settings/engine/settings_repository.dart';
+import 'package:otzaria/settings/engine/settings_state.dart';
 import 'package:otzaria/settings/services/per_book_settings_service.dart';
 import 'package:otzaria/pdf_book/models/pdf_book_render_observation.dart';
 import 'package:otzaria/pdf_book/view/book_view_turn_button.dart';
@@ -37,6 +39,10 @@ void main() {
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
       await Settings.init(cacheProvider: MemorySettingsCache());
+      await Settings.setValue(
+        SettingsRepository.keyPdfBookViewByDefault,
+        true,
+      );
       final directory = Directory.systemTemp.createTempSync(
         'pdf-book-reader-probe-',
       );
@@ -70,7 +76,9 @@ void main() {
       final tabs = TabsBloc(repository: _TabsRepository());
       // ignore: invalid_use_of_visible_for_testing_member
       tabs.emit(TabsState(tabs: [tab], currentTabIndex: 0));
-      final settings = StubSettingsBloc();
+      final settings = StubSettingsBloc(
+        SettingsState.initial().copyWith(pdfBookViewByDefault: true),
+      );
       final tour = TourCubit();
       addTearDown(tabs.close);
       addTearDown(settings.close);
