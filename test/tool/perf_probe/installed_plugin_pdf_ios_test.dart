@@ -23,6 +23,8 @@ Map<String, dynamic> _images() => {
   'executable': _executable,
   'configuredPdfrxModule': null,
   'printingBackend': installedPdfDarwinPrinting,
+  'simulatorEnvironmentSource': installedPdfIosEnvironmentSource,
+  'simulatorEnvironmentAvailability': 'collected',
   'simulator': {
     'udid': 'A916179E-C19B-44CD-B606-25F904E6B567',
     'model': 'iPhone18,1',
@@ -135,7 +137,7 @@ void main() {
     },
   );
 
-  test('physical iOS, missing runtime and foreign ABI cannot pass', () {
+  test('malformed optional environment and foreign ABI cannot pass', () {
     for (final change in <void Function(Map<String, dynamic>)>[
       (record) => record['simulator'] = null,
       (record) => record['simulator']['udid'] = '',
@@ -145,6 +147,38 @@ void main() {
       (record) => record['configuredPdfrxModule'] = '/cache/PDFium',
       (record) => record['printingBackend'] = 'mock',
       (record) => record['pid'] = false,
+    ]) {
+      final record = _images();
+      change(record);
+      expect(installedPdfIosModuleErrors(record), isNotEmpty);
+    }
+  });
+
+  test('unavailable environment keeps native image and hash proof mandatory', () {
+    final record = _images()
+      ..['simulator'] = <String, Object?>{}
+      ..['simulatorEnvironmentAvailability'] = 'unavailable';
+    expect(installedPdfIosModuleErrors(record), isEmpty);
+    (record['bundledFiles'] as List).removeLast();
+    expect(installedPdfIosModuleErrors(record), isNotEmpty);
+  });
+
+  test('partial environment is recorded without inventing missing fields', () {
+    final record = _images()
+      ..['simulator'] = {'udid': 'A916179E-C19B-44CD-B606-25F904E6B567'}
+      ..['simulatorEnvironmentAvailability'] = 'partial';
+    expect(installedPdfIosModuleErrors(record), isEmpty);
+    record['simulatorEnvironmentAvailability'] = 'unavailable';
+    expect(installedPdfIosModuleErrors(record), isNotEmpty);
+  });
+
+  test('environment source and availability cannot contradict the values', () {
+    for (final change in <void Function(Map<String, dynamic>)>[
+      (record) => record.remove('simulatorEnvironmentSource'),
+      (record) => record['simulatorEnvironmentSource'] = 'host override',
+      (record) => record.remove('simulatorEnvironmentAvailability'),
+      (record) => record['simulatorEnvironmentAvailability'] = 'unavailable',
+      (record) => record['simulator']['foreign'] = 'value',
     ]) {
       final record = _images();
       change(record);
