@@ -1,5 +1,9 @@
 import 'package:path/path.dart' as p;
 
+import 'installed_pdf_android_contract.dart';
+
+const installedPdfRuntimePlatforms = {'linux', 'windows', 'android'};
+
 const installedPdfRuntimeSteps = [
   'view',
   'concurrentWork',
@@ -69,12 +73,19 @@ List<String> installedPdfRuntimeErrors(
 }) {
   if (value is! Map) return ['Missing actual-bundle PDF runtime report'];
   final errors = <String>[];
-  if (!installedPdfRuntimeModules.containsKey(platform) ||
+  if (!installedPdfRuntimePlatforms.contains(platform) ||
       value['status'] != 'passed' ||
       value['platform'] != platform) {
     errors.add('Actual-bundle $platform PDF runtime did not pass');
   }
   final steps = value['steps'];
+  if (platform == 'android') {
+    errors.addAll(
+      installedAndroidPdfModuleErrors(
+        steps is Map ? steps['loadedModules'] : null,
+      ),
+    );
+  }
   for (final name in installedPdfRuntimeSteps) {
     if (steps is! Map ||
         steps[name] is! Map ||
