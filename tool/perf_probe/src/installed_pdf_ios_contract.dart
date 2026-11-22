@@ -63,7 +63,7 @@ List<String> installedPdfIosModuleErrors(Object? value) {
   }
   final runtimeRoot = (simulator as Map)['runtimeRoot'] as String?;
   bool systemImage(String image) {
-    if (['', if (runtimeRoot != null) runtimeRoot].any(
+    if (['', ?runtimeRoot].any(
       (root) => ['Frameworks', 'PrivateFrameworks'].any(
         (kind) => p.posix.isWithin('$root/System/Library/$kind', image),
       ),
