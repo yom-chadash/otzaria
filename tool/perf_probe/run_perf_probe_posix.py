@@ -137,12 +137,24 @@ def sha256_file(path):
         return hashlib.file_digest(source, "sha256").hexdigest()
 
 
-def reject_existing_app():
-    for line in capture(["ps", "-axo", "pid=,uid=,comm="]).splitlines():
-        fields = line.strip().split(maxsplit=2)
-        if len(fields) == 3 and int(fields[1]) == os.getuid():
-            if Path(fields[2]).name.casefold() == "otzaria":
-                raise RuntimeError(f"Close the existing Otzaria process {fields[0]} before measuring")
+def reject_existing_app(observations=None):
+    if observations is None:
+        observations = []
+    for line in capture(["env", "LC_ALL=C", "ps", "-ww", "-axo",
+                         "pid=,ppid=,uid=,stat=,lstart=,comm="]).splitlines():
+        fields = line.strip().split(maxsplit=9)
+        if (len(fields) == 10 and int(fields[2]) == os.getuid()
+                and Path(fields[9]).name.casefold() == "otzaria"):
+            zombie = fields[3].startswith("Z")
+            observations.append({
+                "pid": int(fields[0]), "parentPid": int(fields[1]), "state": fields[3],
+                "startedAtLocal": " ".join(fields[4:9]), "command": fields[9],
+                "decision": "ignored-exited-zombie" if zombie else "refused-live-process",
+            })
+            # An unreaped zombie has exited and cannot affect the measurement.
+            if not zombie:
+                raise RuntimeError(f"Close the existing Otzaria process {fields[0]} before measuring "
+                                   f"(state={fields[3]}, parentPid={fields[1]})")
 
 
 def graphics_metadata(system):
@@ -348,7 +360,8 @@ def run(args, *, repository=REPOSITORY):
             raise RuntimeError("Linux or macOS with waitid/WNOWAIT is required (macOS: Python 3.13+)")
         if system == "linux" and not (os.getenv("DISPLAY") or os.getenv("WAYLAND_DISPLAY")):
             raise RuntimeError("A Linux desktop session is required; CI uses Xvfb, DBus and Openbox")
-        reject_existing_app()
+        manifest["existingAppProcesses"] = []
+        reject_existing_app(manifest["existingAppProcesses"])
         reader = process_reader()
         machine, identity, os_name = machine_metadata(system)
         sdk = json.loads(capture(["flutter", "--version", "--machine"], cwd=repository, timeout=60))

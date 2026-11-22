@@ -9,6 +9,7 @@ import io
 import json
 import os
 from pathlib import Path
+import select
 import signal
 import subprocess
 import sys
@@ -362,11 +363,72 @@ except runner.Interrupted as error:
 
     def test_existing_app_check_does_not_kill_or_select_other_users(self):
         uid = os.getuid()
-        with mock.patch.object(runner, "capture", return_value=f"19 {uid+1} /Applications/Otzaria\n"):
+        started = "Sun Nov 22 21:28:04 2026"
+        with mock.patch.object(runner, "capture", return_value=f"19 1 {uid+1} S {started} /Applications/Otzaria\n"):
             runner.reject_existing_app()
-        with mock.patch.object(runner, "capture", return_value=f"20 {uid} /a spaced path/Otzaria\n"):
-            with self.assertRaisesRegex(RuntimeError, "process 20"):
+        for state in ("R", "S+", "D", "T", "I", "?"):
+            with self.subTest(state=state), mock.patch.object(
+                    runner, "capture", return_value=f"20 7 {uid} {state} {started} /a spaced path/Otzaria\n"):
+                observations = []
+                with self.assertRaisesRegex(RuntimeError, "process 20"):
+                    runner.reject_existing_app(observations)
+                self.assertEqual(observations, [{
+                    "pid": 20, "parentPid": 7, "state": state, "startedAtLocal": started,
+                    "command": "/a spaced path/Otzaria", "decision": "refused-live-process",
+                }])
+        for state in ("Z", "Z+"):
+            with self.subTest(state=state), mock.patch.object(
+                    runner, "capture", return_value=f"20 1 {uid} {state} {started} otzaria\n"):
+                observations = []
+                runner.reject_existing_app(observations)
+                self.assertEqual(observations[0]["decision"], "ignored-exited-zombie")
+
+    def test_live_app_refusal_preserves_process_observation_in_failure_manifest(self):
+        output = self.root / "blocked"
+        line = f"20 7 {os.getuid()} S+ Sun Nov 22 21:28:04 2026 /Applications/Otzaria\n"
+        with (mock.patch.object(runner, "capture", return_value=line),
+              mock.patch.dict(os.environ, {"DISPLAY": ":test"}),
+              contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO())):
+            self.assertEqual(runner.run(options(output)), 1)
+        manifest = runner.read_json(output / "manifest.json")
+        self.assertEqual(manifest["status"], "failed")
+        self.assertEqual(manifest["existingAppProcesses"][0]["state"], "S+")
+        self.assertEqual(manifest["existingAppProcesses"][0]["parentPid"], 7)
+        self.assertIn("state=S+", manifest["error"])
+
+    @unittest.skipUnless(sys.platform == "linux", "prctl names the owned Linux child")
+    def test_existing_app_guard_rejects_live_child_but_accepts_its_unreaped_zombie(self):
+        child = subprocess.Popen([
+            sys.executable, "-c",
+            "import ctypes, os; "
+            "assert ctypes.CDLL(None).prctl(15, b'otzaria', 0, 0, 0) == 0; "
+            "os.write(1, b'ready'); os.read(0, 1); os._exit(0)",
+        ], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        try:
+            self.assertTrue(select.select([child.stdout], [], [], 5)[0])
+            self.assertEqual(child.stdout.read(5), b"ready")
+            with self.assertRaisesRegex(RuntimeError, f"process {child.pid}"):
                 runner.reject_existing_app()
+            self.assertIsNone(runner.child_exit(child))
+            child.stdin.write(b"x")
+            child.stdin.flush()
+            deadline = time.monotonic() + 5
+            while runner.child_exit(child) is None:
+                self.assertLess(time.monotonic(), deadline)
+                time.sleep(.01)
+            self.assertEqual(runner.child_exit(child), 0)
+            observations = []
+            runner.reject_existing_app(observations)
+            observed = next(item for item in observations if item["pid"] == child.pid)
+            self.assertTrue(observed["state"].startswith("Z"))
+            self.assertEqual(observed["parentPid"], os.getpid())
+            self.assertEqual(observed["decision"], "ignored-exited-zombie")
+            self.assertEqual(runner.child_exit(child), 0)
+        finally:
+            child.kill()
+            child.wait(timeout=5)
+            child.stdin.close()
+            child.stdout.close()
 
     def test_graphics_observations_exclude_display_serial_numbers_and_do_not_invent_missing_data(self):
         data = {"SPDisplaysDataType": [{"sppci_model": "Apple test GPU", "spdisplays_vendor": "Apple",
