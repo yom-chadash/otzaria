@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -88,92 +87,46 @@ double pdfSpreadPageRenderScale({
   return min(1.5, pow(2, (log(needed) / ln2).ceil()).toDouble());
 }
 
-/// שומר את פריסת הספר; במסמך קשור, אירועי העמודים מייתרים סריקת מידות
-/// בכל pan/zoom. בלי קישור למסמך נבדקות גם מידות שהשתנו באותו אובייקט.
+/// מחזיר את אותו [PdfPageLayout] כל עוד מידות העמודים והפרמטרים לא השתנו —
+/// pdfrx קורא ל-layoutPages בכל בנייה, ומופע זהה מקצר אצלו את ההשוואה.
 class BookViewLayoutMemo {
   PdfPageLayout? _layout;
-  List<Size> _sizes = const [];
+  List<double> _sizes = const [];
   bool? _hasCover;
   double? _verticalMargin;
-  PdfDocument? _document;
-  StreamSubscription<PdfDocumentEvent>? _documentSubscription;
-  List<PdfPage>? _checkedPages;
-  int _geometryRevision = 0;
-  int _checkedGeometryRevision = -1;
-  bool _disposed = false;
-
-  /// קושר את המטמון לאירועי המסמך; null מחזיר לבדיקת מידות בכל קריאה.
-  void bindDocument(PdfDocument? document) {
-    if (_disposed || identical(document, _document)) return;
-    unawaited(_documentSubscription?.cancel());
-    _document = document;
-    _reset();
-    _documentSubscription = document?.events.listen((event) {
-      if (identical(_document, document) &&
-          event is PdfDocumentPageStatusChangedEvent &&
-          identical(event.document, document)) {
-        _geometryRevision++;
-      }
-    });
-  }
 
   PdfPageLayout layout(
     List<PdfPage> pages, {
     required bool hasCover,
     required double verticalMargin,
   }) {
-    // זהות הרשימה מגינה גם כשהעמודים הוחלפו לפני מסירת האירוע האסינכרוני.
-    final sameSizes =
-        (_document != null &&
-            identical(pages, _document!.pages) &&
-            identical(pages, _checkedPages) &&
-            _geometryRevision == _checkedGeometryRevision &&
-            _sizes.length == pages.length) ||
-        _sameSizes(pages);
-    _checkedPages = pages;
-    _checkedGeometryRevision = _geometryRevision;
     final cached = _layout;
     if (cached != null &&
         hasCover == _hasCover &&
         verticalMargin == _verticalMargin &&
-        sameSizes) {
+        _sameSizes(pages)) {
       return cached;
     }
     _hasCover = hasCover;
     _verticalMargin = verticalMargin;
-    if (!sameSizes) {
-      _sizes = [for (final page in pages) Size(page.width, page.height)];
-    }
+    _sizes = [
+      for (final page in pages) ...[page.width, page.height],
+    ];
     return _layout = buildBookViewPageLayout(
-      pageSizes: _sizes,
+      pageSizes: [for (final page in pages) Size(page.width, page.height)],
       hasCover: hasCover,
       verticalMargin: verticalMargin,
     );
   }
 
   bool _sameSizes(List<PdfPage> pages) {
-    if (_sizes.length != pages.length) return false;
+    if (_sizes.length != pages.length * 2) return false;
     for (var i = 0; i < pages.length; i++) {
-      if (_sizes[i].width != pages[i].width ||
-          _sizes[i].height != pages[i].height) {
+      if (_sizes[i * 2] != pages[i].width ||
+          _sizes[i * 2 + 1] != pages[i].height) {
         return false;
       }
     }
     return true;
-  }
-
-  void _reset() {
-    _layout = null;
-    _sizes = const [];
-    _checkedPages = null;
-    _geometryRevision++;
-  }
-
-  void dispose() {
-    unawaited(_documentSubscription?.cancel());
-    _documentSubscription = null;
-    _document = null;
-    _disposed = true;
-    _reset();
   }
 }
