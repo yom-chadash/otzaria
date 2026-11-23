@@ -8,6 +8,9 @@ import re
 
 DESKTOP_ACTIONS = ("hide", "minimize", "resize", "switchSecondary", "switchPrimary", "memoryPressure")
 FLAGS = ("visible", "minimized", "maximized", "fullScreen")
+REPEATED_CYCLES = 50
+REPEATED_DEADLINE_SECONDS = 600
+REPEATED_STAGES = ("openAndReady", "nativeProof", "close")
 
 
 def require(condition, detail):
@@ -115,12 +118,16 @@ def validate_desktop_lifecycle(value):
 
 
 def validate_repeated_lifecycle(value):
-    require(isinstance(value, dict) and value.get("status") == "passed" and integer(value.get("requiredCycles"), 50)
-            and integer(value.get("completedCycles"), 50) and integer(value.get("deadlineSeconds"), 300)
-            and number(value.get("cyclesElapsedMs")) and 0 <= value["cyclesElapsedMs"] < 300000,
+    require(isinstance(value, dict) and value.get("status") == "passed"
+            and integer(value.get("requiredCycles"), REPEATED_CYCLES)
+            and integer(value.get("completedCycles"), REPEATED_CYCLES)
+            and integer(value.get("deadlineSeconds"), REPEATED_DEADLINE_SECONDS)
+            and number(value.get("cyclesElapsedMs"))
+            and 0 <= value["cyclesElapsedMs"] < REPEATED_DEADLINE_SECONDS * 1000,
             "Missing fifty completed native PDF open/render/close cycles within the deadline")
     cycles = value.get("cycles")
-    require(isinstance(cycles, list) and len(cycles) == 50, "Missing native PDF cycle receipts")
+    require(isinstance(cycles, list) and len(cycles) == REPEATED_CYCLES, "Missing native PDF cycle receipts")
+    cycles_duration_ms = 0
     for index, cycle in enumerate(cycles):
         page = index % 4 + 1
         require(isinstance(cycle, dict) and integer(cycle.get("cycle"), index + 1) and integer(cycle.get("targetPage"), page)
@@ -129,7 +136,15 @@ def validate_repeated_lifecycle(value):
                 and cycle.get("nativeCloseCompleted") is True and type(cycle.get("ownedTabsRemaining")) is int
                 and cycle["ownedTabsRemaining"] == 0 and number(cycle.get("durationMs")) and cycle["durationMs"] >= 0,
                 f"Native PDF cycle {index + 1} lacks content or completed teardown")
-    return {"status": "passed", "completedCycles": 50}
+        stages = cycle.get("stageDurationMs")
+        require(isinstance(stages, dict)
+                and all(number(stages.get(stage)) and stages[stage] >= 0 for stage in REPEATED_STAGES)
+                and sum(stages[stage] for stage in REPEATED_STAGES) <= cycle["durationMs"] + 0.001,
+                f"Native PDF cycle {index + 1} lacks bounded stage timings")
+        cycles_duration_ms += cycle["durationMs"]
+    require(cycles_duration_ms <= value["cyclesElapsedMs"] + 0.001,
+            "Native PDF cycles exceed their reported wall duration")
+    return {"status": "passed", "completedCycles": REPEATED_CYCLES}
 
 
 def validate_desktop_steps(steps):
