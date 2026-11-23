@@ -610,6 +610,9 @@ class _MultiWindowProbe {
         raster.height,
         raster.pixels,
         'rgba8888',
+        // The pinned printing plugin uses premultipliedLast on macOS;
+        // Windows/Linux return PDFium's straight-alpha bitmap bytes.
+        premultipliedAlpha: Platform.isMacOS,
       );
       final png = await raster.toPng();
       await File(p.join(output.path, 'two-up.png')).writeAsBytes(
@@ -637,26 +640,23 @@ class _MultiWindowProbe {
     int width,
     int height,
     Uint8List pixels,
-    String pixelFormat,
-  ) {
+    String pixelFormat, {
+    bool premultipliedAlpha = false,
+  }) {
     _require(
       width > 0 && height > 0 && pixels.length == width * height * 4,
       'Invalid native raster dimensions or byte count.',
     );
-    var ink = 0;
-    for (var offset = 0; offset < pixels.length; offset += 4) {
-      if (pixels[offset] < 128 &&
-          pixels[offset + 1] < 128 &&
-          pixels[offset + 2] < 128 &&
-          pixels[offset + 3] == 255) {
-        ink++;
-      }
-    }
-    _require(ink > 10, 'Native raster has no opaque text or vector content.');
+    final ink = perfPdfInkPixelsOnWhite(
+      pixels,
+      premultipliedAlpha: premultipliedAlpha,
+    );
+    _require(ink > 10, 'Native raster has no visible text or vector content.');
     return {
       'width': width,
       'height': height,
       'pixelFormat': pixelFormat,
+      'alphaPremultiplied': premultipliedAlpha,
       'pixelBytes': pixels.length,
       'inkPixels': ink,
       'sha256': sha256.convert(pixels).toString(),

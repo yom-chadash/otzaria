@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import plistlib
+import re
 import struct
 import tempfile
 import unittest
@@ -96,7 +97,7 @@ class IosPdfEvidence(unittest.TestCase):
                        "frameworkPassed": True, "physicalDeviceAcceptance": False, "physicalPrinter": "notRun",
                        "errors": [], "contractErrors": [], "testFailures": [], "appUnmounted": True,
                        "webViewScenario": {"status": "notRun"}, "bundleIdentifier": "org.sefaria.otzaria",
-                       "bootstrap": {"status": "passed", "fixtureSha256": "synthetic-v2:" + "b" * 64,
+                       "bootstrap": {"status": "passed", "fixtureSha256": "synthetic-v4-pdf-cases:" + "b" * 64,
                                      "startupTimeline": {"revealMs": 100.0}},
                        "isolatedPaths": {"root": str(self.output.parent), "fixture": str(self.output.parent / "fixture"),
                                          "output": str(self.output)},
@@ -130,6 +131,36 @@ class IosPdfEvidence(unittest.TestCase):
         self.assertFalse(result["physicalDeviceAcceptance"])
         self.assertEqual(result["abiEvidence"], {"source": subject.ABI_SOURCE,
                                                "abi": "ios_arm64", "architecture": "arm64"})
+
+    def test_current_app_fixture_identity_is_accepted(self):
+        source = (Path(__file__).resolve().parents[2]
+                  / "integration_test/support/perf_fixture.dart").read_text(encoding="utf-8")
+        versions = re.findall(r"^const perfFixtureVersion = '([^']+)';$", source, re.MULTILINE)
+        self.assertEqual(len(versions), 1)
+        self.report["bootstrap"]["fixtureSha256"] = versions[0] + ":" + "b" * 64
+        self.save_artifacts()
+        self.assertEqual(self.accept()["status"], "passed")
+
+    def test_stale_unknown_and_malformed_fixture_identities_are_rejected(self):
+        for identity in (None, "synthetic-v2:" + "b" * 64,
+                         "synthetic-v999:" + "b" * 64,
+                         "synthetic-v4-pdf-cases:" + "g" * 64,
+                         "synthetic-v4-pdf-cases:" + "b" * 63,
+                         "synthetic-v4-pdf-cases:" + "b" * 64 + "\n"):
+            report = copy.deepcopy(self.report)
+            report["bootstrap"]["fixtureSha256"] = identity
+            with self.subTest(identity=identity), self.assertRaisesRegex(ValueError, "fixture identity"):
+                self.accept(report)
+
+    def test_valid_fixture_still_requires_successful_bootstrap_and_reveal(self):
+        for change in (lambda record: record.update(status="failed"),
+                       lambda record: record.pop("startupTimeline"),
+                       lambda record: record["startupTimeline"].update(revealMs=None),
+                       lambda record: record["startupTimeline"].update(revealMs=True)):
+            report = copy.deepcopy(self.report)
+            change(report["bootstrap"])
+            with self.assertRaisesRegex(ValueError, "bootstrap did not reveal"):
+                self.accept(report)
 
 
     def test_absent_environment_uses_owned_containers_and_native_image_proof(self):

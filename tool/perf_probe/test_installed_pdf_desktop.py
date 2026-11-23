@@ -119,11 +119,38 @@ class DesktopPdfEvidence(unittest.TestCase):
                 subject.validate_desktop_lifecycle(report)
 
     def test_last_native_close_must_finish_before_the_cycle_deadline(self):
-        for elapsed in (None, -1, 300000, 300001):
+        for elapsed in (None, -1, 600000, 600001):
             report = fixture("repeated")
             report["cyclesElapsedMs"] = elapsed
             with self.subTest(elapsed=elapsed), self.assertRaisesRegex(ValueError, "deadline"):
                 subject.validate_repeated_lifecycle(report)
+
+    def test_slower_software_rendered_cycles_retain_every_acceptance_check(self):
+        report = fixture("repeated")
+        report["cyclesElapsedMs"] = 322000
+        for cycle in report["cycles"]:
+            cycle["durationMs"] = 6400
+            cycle["stageDurationMs"] = {"openAndReady": 5100, "nativeProof": 100, "close": 1200}
+        self.assertEqual(subject.validate_repeated_lifecycle(report)["completedCycles"], 50)
+        report["cycles"][-1]["nativeCloseCompleted"] = False
+        with self.assertRaises(ValueError):
+            subject.validate_repeated_lifecycle(report)
+
+    def test_stages_are_finite_nonnegative_and_within_reported_wall_duration(self):
+        for stage in subject.REPEATED_STAGES:
+            for invalid in (None, -1, True, float("nan"), float("inf"), 801):
+                report = fixture("repeated")
+                report["cycles"][0]["stageDurationMs"][stage] = invalid
+                with self.subTest(stage=stage, invalid=invalid), self.assertRaises(ValueError):
+                    subject.validate_repeated_lifecycle(report)
+        report = fixture("repeated")
+        del report["cycles"][-1]["stageDurationMs"]
+        with self.assertRaises(ValueError):
+            subject.validate_repeated_lifecycle(report)
+        report = fixture("repeated")
+        report["cyclesElapsedMs"] = 39999
+        with self.assertRaisesRegex(ValueError, "wall duration"):
+            subject.validate_repeated_lifecycle(report)
 
     def test_all_fifty_cycles_need_rendered_content_and_completed_native_close(self):
         for index in range(50):
