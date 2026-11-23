@@ -219,9 +219,50 @@ void main() {
     }
   });
   test('the final native close must complete before the cycle deadline', () {
-    for (final elapsed in [null, -1, 300000, 300001]) {
+    for (final elapsed in [null, -1, 600000, 600001]) {
       final proof = cycles()..['cyclesElapsedMs'] = elapsed;
       expect(installedPdfRepeatedLifecycleErrors(proof), isNotEmpty);
     }
   });
+  test(
+    'fifty slower software-rendered cycles retain every acceptance check',
+    () {
+      final proof = cycles()..['cyclesElapsedMs'] = 322000;
+      for (final cycle in proof['cycles'] as List) {
+        cycle['durationMs'] = 6400;
+        cycle['stageDurationMs'] = {
+          'openAndReady': 5100,
+          'nativeProof': 100,
+          'close': 1200,
+        };
+      }
+      expect(installedPdfRepeatedLifecycleErrors(proof), isEmpty);
+      proof['cycles'][49]['nativeCloseCompleted'] = false;
+      expect(installedPdfRepeatedLifecycleErrors(proof), isNotEmpty);
+    },
+  );
+  test(
+    'each cycle records finite, nonnegative stage times within its duration',
+    () {
+      for (final stage in installedPdfRepeatedLifecycleStages) {
+        for (final invalid in [
+          null,
+          -1,
+          true,
+          double.nan,
+          double.infinity,
+          801,
+        ]) {
+          final proof = cycles();
+          proof['cycles'][0]['stageDurationMs'][stage] = invalid;
+          expect(installedPdfRepeatedLifecycleErrors(proof), isNotEmpty);
+        }
+      }
+      final missing = cycles();
+      missing['cycles'][49].remove('stageDurationMs');
+      expect(installedPdfRepeatedLifecycleErrors(missing), isNotEmpty);
+      final inconsistent = cycles()..['cyclesElapsedMs'] = 39999;
+      expect(installedPdfRepeatedLifecycleErrors(inconsistent), isNotEmpty);
+    },
+  );
 }

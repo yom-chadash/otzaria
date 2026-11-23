@@ -1,4 +1,12 @@
 const installedPdfDesktopPlatforms = {'linux', 'windows', 'macos'};
+const installedPdfRepeatedLifecycleCycles = 50;
+// Lifecycle liveness budget for serial software-rendered cycles, not a speed gate.
+const installedPdfRepeatedLifecycleTimeout = Duration(minutes: 10);
+const installedPdfRepeatedLifecycleStages = [
+  'openAndReady',
+  'nativeProof',
+  'close',
+];
 const installedPdfDesktopActions = [
   'hide',
   'minimize',
@@ -198,19 +206,27 @@ List<String> installedPdfDesktopErrors(Object? value) {
 List<String> installedPdfRepeatedLifecycleErrors(Object? value) {
   if (value is! Map ||
       value['status'] != 'passed' ||
-      !_integer(value['requiredCycles'], 50) ||
-      !_integer(value['completedCycles'], 50) ||
-      !_integer(value['deadlineSeconds'], 300) ||
+      !_integer(value['requiredCycles'], installedPdfRepeatedLifecycleCycles) ||
+      !_integer(
+        value['completedCycles'],
+        installedPdfRepeatedLifecycleCycles,
+      ) ||
+      !_integer(
+        value['deadlineSeconds'],
+        installedPdfRepeatedLifecycleTimeout.inSeconds,
+      ) ||
       !_number(value['cyclesElapsedMs']) ||
       (value['cyclesElapsedMs'] as num) < 0 ||
-      (value['cyclesElapsedMs'] as num) >= 300000) {
+      (value['cyclesElapsedMs'] as num) >=
+          installedPdfRepeatedLifecycleTimeout.inMilliseconds) {
     return ['Missing fifty completed native PDF open/render/close cycles'];
   }
   final cycles = value['cycles'];
-  if (cycles is! List || cycles.length != 50) {
+  if (cycles is! List || cycles.length != installedPdfRepeatedLifecycleCycles) {
     return ['Missing native PDF cycle receipts'];
   }
   final errors = <String>[];
+  var cyclesDurationMs = 0.0;
   for (var i = 0; i < cycles.length; i++) {
     final cycle = cycles[i];
     final page = i % 4 + 1;
@@ -224,11 +240,28 @@ List<String> installedPdfRepeatedLifecycleErrors(Object? value) {
         cycle['nativeCloseCompleted'] != true ||
         !_integer(cycle['ownedTabsRemaining'], 0) ||
         !_number(cycle['durationMs']) ||
-        (cycle['durationMs'] as num) < 0) {
+        (cycle['durationMs'] as num) < 0 ||
+        !_cycleTimings(cycle['stageDurationMs'], cycle['durationMs'] as num)) {
       errors.add(
         'Native PDF cycle ${i + 1} lacks content or completed teardown',
       );
+    } else {
+      cyclesDurationMs += cycle['durationMs'] as num;
     }
   }
+  if (cyclesDurationMs > (value['cyclesElapsedMs'] as num) + 0.001) {
+    errors.add('Native PDF cycles exceed their reported wall duration');
+  }
   return errors;
+}
+
+bool _cycleTimings(Object? value, num durationMs) {
+  if (value is! Map) return false;
+  var total = 0.0;
+  for (final stage in installedPdfRepeatedLifecycleStages) {
+    final duration = value[stage];
+    if (duration is! num || !duration.isFinite || duration < 0) return false;
+    total += duration;
+  }
+  return total <= durationMs + 0.001;
 }

@@ -585,26 +585,41 @@ class _PdfRuntime {
     final record = step('repeatedLifecycle');
     final cycles = <Map<String, Object?>>[];
     record.addAll({
-      'requiredCycles': 50,
+      'requiredCycles': installedPdfRepeatedLifecycleCycles,
       'cycles': cycles,
-      'deadlineSeconds': 300,
+      'deadlineSeconds': installedPdfRepeatedLifecycleTimeout.inSeconds,
     });
     var previous = _viewerDocument;
     await closeViewer();
     final clock = Stopwatch()..start();
-    for (var cycle = 1; cycle <= 50; cycle++) {
-      if (clock.elapsed >= const Duration(minutes: 5)) {
+    for (var cycle = 1; cycle <= installedPdfRepeatedLifecycleCycles; cycle++) {
+      if (clock.elapsed >= installedPdfRepeatedLifecycleTimeout) {
         throw TimeoutException(
           'Fifty native PDF open/render/close cycles',
           clock.elapsed,
         );
       }
       final page = (cycle - 1) % installedPdfPageSizes.length + 1;
-      final receipt = <String, Object?>{'cycle': cycle, 'targetPage': page};
+      final stageDurationMs = <String, double>{};
+      final receipt = <String, Object?>{
+        'cycle': cycle,
+        'targetPage': page,
+        'stageDurationMs': stageDurationMs,
+      };
       cycles.add(receipt);
       final started = clock.elapsedMicroseconds;
+      Future<T> timed<T>(String name, Future<T> Function() action) async {
+        final stageStarted = clock.elapsedMicroseconds;
+        try {
+          return await action();
+        } finally {
+          stageDurationMs[name] =
+              (clock.elapsedMicroseconds - stageStarted) / 1000;
+        }
+      }
+
       try {
-        await open(book, page);
+        await timed('openAndReady', () => open(book, page));
         final document = _viewerDocument!;
         expect(identical(document, previous), false);
         receipt.addAll({
@@ -612,17 +627,20 @@ class _PdfRuntime {
           'visibleRenderState':
               _tab!.pdfViewerController.visibleRenderState.value.name,
           'targetCenterVisible': true,
-          'raster': await checkNativePage(document.pages[page - 1], page),
+          'raster': await timed(
+            'nativeProof',
+            () => checkNativePage(document.pages[page - 1], page),
+          ),
         });
         previous = document;
       } finally {
-        await closeViewer();
+        await timed('close', closeViewer);
         receipt['nativeCloseCompleted'] = true;
         receipt['ownedTabsRemaining'] = _ownedTabs.length;
         receipt['durationMs'] = (clock.elapsedMicroseconds - started) / 1000;
       }
       record['cyclesElapsedMs'] = clock.elapsedMicroseconds / 1000;
-      if (clock.elapsed >= const Duration(minutes: 5)) {
+      if (clock.elapsed >= installedPdfRepeatedLifecycleTimeout) {
         throw TimeoutException(
           'Native PDF cycles exceeded the deadline after close',
           clock.elapsed,
