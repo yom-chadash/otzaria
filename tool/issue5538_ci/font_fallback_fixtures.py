@@ -26,13 +26,14 @@ def pdf(face: str | None, *, hebrew: bool = True, late: bool = False) -> bytes:
         if has_text:
             content = "BT /F1 36 Tf\n"
             if hebrew:
-                codes = [ord(char) - 0x5D0 + 1 for char in "שלום"]
-                for index, code in enumerate(codes):
-                    content += f"1 0 0 1 {230 - index * 20} 240 Tm (\\{code:03o}) Tj\n"
+                codes = [ord(char) - 0x5D0 + 1 for char in reversed("שלום")]
+                encoded = "".join(f"\\{code:03o}" for code in codes)
+                content += f"1 0 0 1 120 240 Tm ({encoded}) Tj\n"
             else:
                 content += "1 0 0 1 80 240 Tm (Hello) Tj\n"
             content += "ET\n"
-        resources = f"/Font << /F1 {font_id} 0 R >>" if has_text else ""
+            content += "BT /F2 9 Tf 1 0 0 1 24 24 Tm (Standard14 control) Tj ET\n"
+        resources = f"/Font << /F1 {font_id} 0 R /F2 {font_id + 2} 0 R >>" if has_text else ""
         objects.append(
             f"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 320 400] "
             f"/Contents {page_id + 1} 0 R /Resources << {resources} >> >>"
@@ -57,6 +58,7 @@ def pdf(face: str | None, *, hebrew: bool = True, late: bool = False) -> bytes:
             "/FontBBox [0 -250 1000 850] /ItalicAngle 0 /Ascent 750 "
             "/Descent -250 /CapHeight 700 /StemV 80 >>"
         )
+        objects.append("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>")
     output = bytearray(b"%PDF-1.4\n")
     offsets = []
     for index, obj in enumerate(objects, 1):
@@ -94,6 +96,8 @@ def prepare(output: Path) -> dict:
                 "sha256": hashlib.sha256(data).hexdigest(), "sizeBytes": len(data),
                 "pageCount": 3 if late else 1, "targetPage": 3 if late else 1,
                 "requestedFace": face, "expectedWord": "שלום" if hebrew else "Hello",
+                "fontResourcesByPage": {str(3 if late else 1): [face, "Helvetica"]},
+                "expectedControlText": "Standard14 control",
             })
         # A font-free peer proves that recovery does not reopen unrelated books.
         blank = folder / "unrelated.pdf"
@@ -103,6 +107,7 @@ def prepare(output: Path) -> dict:
             "id": "unrelated", "path": str(blank.relative_to(output)),
             "sha256": hashlib.sha256(data).hexdigest(), "sizeBytes": len(data),
             "pageCount": 1, "targetPage": 1, "requestedFace": None, "expectedWord": "",
+            "fontResourcesByPage": {}, "expectedControlText": "",
         })
         cases.append({"id": scenario, "documents": documents})
     manifest = {

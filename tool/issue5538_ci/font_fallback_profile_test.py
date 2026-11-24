@@ -23,6 +23,7 @@ class EvidenceTests(unittest.TestCase):
         image.save(path)
         frame = {"phase": "measurement", "inputId": "unrelated", "documentId": 0,
                  "pageNumber": 1, "renderState": "ready", "elapsedUs": 50, "stableDocument": True,
+                 "captureStartedUs": 40, "renderStateAfterCapture": "ready", "stableView": True,
                  "width": 320, "height": 400, "rgbaSha256": hashlib.sha256(image.tobytes()).hexdigest(),
                  "pngSha256": runner.digest(path), "pngPath": "frame.png"}
         reference = {**frame, "phase": "reference"}
@@ -32,20 +33,27 @@ class EvidenceTests(unittest.TestCase):
                  "rasterHeight": 400, "inkPixels": 0, "stableDocument": True}
         parity = {"textEqual": True, "geometryEqual": True, "fullPageRasterEqual": True,
                   "stableMeasuredDocument": True, "referenceContainsExpectedWord": True,
+                  "referenceContainsControlText": True,
                   "referenceHasInk": True, "firstGoodSampleUs": 50, "samples": 1,
                   "sampledReadyFramesBeforeRecovery": 0, "sampledMismatchingReadyFrames": 0,
                   "sampledPendingFrames": 0}
         self.config = {"sourceCommit": "a" * 40, "appSourcesSha256": "d" * 64, "variant": "C",
                        "scenario": "close-pending-font", "route": "app", "documents": [
                            {"id": "source-0", "absolutePath": str(self.root / "source.pdf"), "pageCount": 1,
-                            "requestedFace": "MissingFace", "targetPage": 1, "expectedWord": "שלום"},
+                            "requestedFace": "MissingFace", "targetPage": 1, "expectedWord": "שלום",
+                            "fontResourcesByPage": {"1": ["MissingFace", "Helvetica"]},
+                            "expectedControlText": "Standard14 control"},
                            {"id": "unrelated", "absolutePath": str(self.root / "blank.pdf"), "pageCount": 1,
-                            "requestedFace": None, "targetPage": 1, "expectedWord": ""}]}
+                            "requestedFace": None, "targetPage": 1, "expectedWord": "",
+                            "fontResourcesByPage": {}, "expectedControlText": ""}]}
+        (self.root / "source.pdf").write_bytes(fixtures.pdf("MissingFace"))
+        (self.root / "blank.pdf").write_bytes(fixtures.pdf(None))
         events = [
             {"type": "nativeOpen", "documentId": 0, "path": str(self.root / "blank.pdf"), "pageCount": 1},
             {"type": "nativeOpen", "documentId": 1, "path": str(self.root / "source.pdf"), "pageCount": 1},
             {"type": "missingFonts", "documentId": 1, "eventOwnsDocument": True,
-             "queries": [{"face": "MissingFace"}], "byPage": {"1": []}},
+             "queries": [{"face": "MissingFace", "weight": 400, "italic": False,
+                          "charset": 0, "pitchFamily": 0}], "byPage": {"1": []}},
         ]
         self.report = {"status": "completed", "mode": "profile", "pid": 123,
                        **{key: self.config[key] for key in ("sourceCommit", "appSourcesSha256", "variant", "scenario", "route")},
@@ -85,6 +93,24 @@ class EvidenceTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "First-good"):
             self.validate()
 
+    def test_view_change_during_capture_is_not_a_first_good_frame(self):
+        self.report["measuredFrames"][0]["stableView"] = False
+        sidecar = json.loads((self.root / "frame-receipts.json").read_text())
+        sidecar["measured"] = self.report["measuredFrames"]
+        runner.save(self.root / "frame-receipts.json", sidecar)
+        with self.assertRaisesRegex(ValueError, "First-good"):
+            self.validate()
+
+    def test_reference_requires_a_stable_painted_ready_target(self):
+        original = json.loads((self.root / "frame-receipts.json").read_text())
+        for key, value in (("renderState", "pending"), ("renderStateAfterCapture", "pending"),
+                           ("stableView", False), ("stableDocument", False), ("pageNumber", 2)):
+            sidecar = json.loads(json.dumps(original))
+            sidecar["reference"][0][key] = value
+            runner.save(self.root / "frame-receipts.json", sidecar)
+            with self.subTest(key=key), self.assertRaisesRegex(ValueError, "Reference oracle"):
+                self.validate()
+
     def test_parity_is_recomputed(self):
         self.report["finalProofs"]["unrelated"]["rasterSha256"] = "e" * 64
         with self.assertRaisesRegex(ValueError, "reported parity"):
@@ -100,6 +126,46 @@ class EvidenceTests(unittest.TestCase):
     def test_other_document_cannot_receive_font_query(self):
         self.report["measuredEvents"][2]["documentId"] = 0
         with self.assertRaisesRegex(ValueError, "wrong-document"):
+            self.validate()
+
+    def test_explicit_standard14_resource_can_report_its_own_query(self):
+        original = self.report["measuredEvents"][2]
+        query = {**original["queries"][0], "face": "Helvetica"}
+        self.report["measuredEvents"].append({**original, "queries": [query], "byPage": {"1": [query]}})
+        self.assertEqual(self.validate()["misattributedEvents"], 0)
+
+    def test_secondary_font_without_actual_resource_is_rejected(self):
+        original = self.report["measuredEvents"][2]
+        query = {**original["queries"][0], "face": "ArbitraryFallback"}
+        self.report["measuredEvents"].append({**original, "queries": [query]})
+        with self.assertRaisesRegex(ValueError, "wrong-document"):
+            self.validate()
+
+    def test_manifest_cannot_invent_a_font_resource(self):
+        self.config["documents"][0]["fontResourcesByPage"]["1"].append("Invented")
+        with self.assertRaisesRegex(ValueError, "source-grounded manifest"):
+            self.validate()
+
+    def test_font_requests_keep_all_five_fields_and_are_not_successes(self):
+        original = self.report["measuredEvents"][2]
+        query = {**original["queries"][0], "charset": 177}
+        self.report["measuredEvents"].append({**original, "queries": [query]})
+        result = self.validate()
+        self.assertEqual(len(result["distinctFiveFieldRequests"]), 2)
+        self.assertEqual(len(result["requestsWithoutObservedSuccessfulFaceRegistration"]), 2)
+        self.assertEqual(result["successfulFontRegistrations"], 0)
+
+    def test_incomplete_font_query_is_rejected(self):
+        del self.report["measuredEvents"][2]["queries"][0]["charset"]
+        with self.assertRaisesRegex(ValueError, "five-field"):
+            self.validate()
+
+    def test_capture_cannot_backdate_completed_observation(self):
+        self.report["measuredFrames"][0]["captureStartedUs"] = 51
+        sidecar = json.loads((self.root / "frame-receipts.json").read_text())
+        sidecar["measured"] = self.report["measuredFrames"]
+        runner.save(self.root / "frame-receipts.json", sidecar)
+        with self.assertRaisesRegex(ValueError, "completion timestamp"):
             self.validate()
 
     def test_missing_cleanup_receipt_fails(self):
@@ -177,9 +243,10 @@ class EvidenceTests(unittest.TestCase):
                 self.assertEqual(runner.digest(path), item["sha256"])
                 reader = PdfReader(path)
                 self.assertEqual(len(reader.pages), item["pageCount"])
+                runner.fixture_font_resources({**item, "absolutePath": str(path)})
                 for page in reader.pages:
                     for font in page["/Resources"].get("/Font", {}).values():
-                        descriptor = font.get_object()["/FontDescriptor"]
+                        descriptor = font.get_object().get("/FontDescriptor", {})
                         self.assertFalse({"/FontFile", "/FontFile2", "/FontFile3"} & set(descriptor))
 
 
