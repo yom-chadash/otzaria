@@ -271,6 +271,10 @@ jobs:
         name: installed-plugin-linux-wpe-${{ matrix.arch }}-profile
         if-no-files-found: warn
         path: ${{ env.INSTALLED_PROBE_ROOT }}
+    - name: Locate native evidence inside the active container
+      if: always()
+      id: multi-window-evidence
+      run: echo "root=$RUNNER_TEMP" >> "$GITHUB_OUTPUT"
     - name: Preserve native multi-window correctness evidence
       if: always()
       uses: actions/upload-artifact@v7.0.2
@@ -278,17 +282,17 @@ jobs:
         name: pdf-multi-window-linux-${{ matrix.arch }}-profile
         if-no-files-found: warn
         retention-days: 14
-        path: '${{ runner.temp }}/pdf-multi-window-smoke/*.json
+        path: '${{ steps.multi-window-evidence.outputs.root }}/pdf-multi-window-smoke/*.json
 
-          ${{ runner.temp }}/pdf-multi-window-smoke/*.log
+          ${{ steps.multi-window-evidence.outputs.root }}/pdf-multi-window-smoke/*.log
 
-          ${{ runner.temp }}/pdf-multi-window-smoke/run/*.json
+          ${{ steps.multi-window-evidence.outputs.root }}/pdf-multi-window-smoke/run/*.json
 
-          ${{ runner.temp }}/pdf-multi-window-smoke/run/*.pdf
+          ${{ steps.multi-window-evidence.outputs.root }}/pdf-multi-window-smoke/run/*.pdf
 
-          ${{ runner.temp }}/pdf-multi-window-smoke/run/*.png
+          ${{ steps.multi-window-evidence.outputs.root }}/pdf-multi-window-smoke/run/*.png
 
-          ${{ runner.temp }}/pdf-multi-window-smoke/data/multi-window.pdf
+          ${{ steps.multi-window-evidence.outputs.root }}/pdf-multi-window-smoke/data/multi-window.pdf
 
           '
   apple-contracts:
