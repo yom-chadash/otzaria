@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "independent post-download verification; original members unchanged",
+  "runId": 45409608660,
+  "jobId": 138499513664,
+  "artifactId": 14930079302,
+  "sourceCommit": "a2943bd597e365e46b41cb110ed1b1e5f7d110b6",
+  "artifactZipSha256": "63c88941a248a96ab6ebf34354be102cc4780ecb474c38a2f5948fb90e377de2",
+  "artifactZipBytes": 1958819,
+  "verifiedOriginalMembers": 123,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45409608660/job/138499513664",
+  "classification": "partial-campaign-cancelled",
+  "declaredScopeComplete": false,
+  "jobConclusion": "cancelled",
+  "lastProducerStatus": "running",
+  "performanceImprovementClaim": false,
+  "wholeCampaignIntegrityClaim": false,
+  "mode": "release",
+  "platform": "Darwin",
+  "sdk": {
+    "frameworkVersion": "3.47.7",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "dartSdkVersion": "3.13.5"
+  },
+  "sourcePair": {
+    "baseline": {
+      "commit": "7a56977418884eec592d8d15fa275f176e29442f",
+      "tree": "06fe0fe4a9127dfd10f3f49867656ead669bf7dc",
+      "harnessObjects": {
+        "tool/perf_probe": "503260ba5f5241de8bd4435d58345b1cf9e10e83",
+        "integration_test": "6c7e52451e21160596e8cd4cfd90841d9bf8367d",
+        "test_driver": "91c9a9494b63768a34eb34c02c4239780b499dc0",
+        "lib/core/diagnostics": "aee09369e7b0b88868d317cb66ff2dd9a169972c",
+        "lib/pdf_book/models/pdf_book_render_observation.dart": "77efcf7aa70954e0417ac161de101c60aaf4c5c3"
+      },
+      "dependencyObjects": {
+        "pubspec.yaml": "0e84e566c2322fff52e03635ccc99a6ea577c15d",
+        "pubspec.lock": "74032bfb6108690ed3235a90afaffe53342d3887"
+      }
+    },
+    "candidate": {
+      "commit": "14f6ee6699082410a61fcc040e748261b7365459",
+      "tree": "87c12c6e031e8d3538fcdd3198b675e8f2a6fe9c",
+      "harnessObjects": {
+        "tool/perf_probe": "503260ba5f5241de8bd4435d58345b1cf9e10e83",
+        "integration_test": "6c7e52451e21160596e8cd4cfd90841d9bf8367d",
+        "test_driver": "91c9a9494b63768a34eb34c02c4239780b499dc0",
+        "lib/core/diagnostics": "aee09369e7b0b88868d317cb66ff2dd9a169972c",
+        "lib/pdf_book/models/pdf_book_render_observation.dart": "77efcf7aa70954e0417ac161de101c60aaf4c5c3"
+      },
+      "dependencyObjects": {
+        "pubspec.yaml": "0e84e566c2322fff52e03635ccc99a6ea577c15d",
+        "pubspec.lock": "74032bfb6108690ed3235a90afaffe53342d3887"
+      }
+    }
+  },
+  "campaignSha256": "1f90b95fa2a4a4369fddd85ceca879aca61b3edb94aa2b0fa39493f6a410a393",
+  "plannedConditions": 12,
+  "completedConditionCount": 0,
+  "completedConditions": [],
+  "attemptedConditions": [],
+  "completedPairedBlocks": 0,
+  "completedBlockProcessLaunches": 0,
+  "repetitionsWithinEachProcess": 5,
+  "retainedGeometry": [],
+  "completedBlockReports": [],
+  "completedBlockProcesses": [],
+  "allRetainedReportFiles": 0,
+  "limitations": [
+    "The workflow was cancelled while its producer still reported running; no whole-campaign success or final integrity guard is claimed.",
+    "Counts use each canonical completed condition/block directory once; duplicated working-result files and preparation passes are not independent launches.",
+    "Complete reports and per-process correctness were rechecked for completed paired blocks, including source cleanliness and identical viewport metadata.",
+    "This preservation summary derives no performance improvement from partial coverage and does not attribute cancellation to product behavior.",
+    "Repetitions within a process are correlated; cold means fresh application data, not a flushed OS file cache."
+  ]
+}

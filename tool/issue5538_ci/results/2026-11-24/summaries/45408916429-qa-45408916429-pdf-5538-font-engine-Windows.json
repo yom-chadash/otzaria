@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "independent post-download verification; original members unchanged",
+  "runId": 45408916429,
+  "jobId": 138497090600,
+  "artifactId": 14927242663,
+  "sourceCommit": "4e1c99dbe5b6770e3d14e558d208d2026bab2cc2",
+  "artifactZipSha256": "2905e4f7c4d483bdcb567b0f76f76d96eb35c521fb012ac8c6f911ca0b72fb32",
+  "artifactZipBytes": 20622,
+  "verifiedOriginalMembers": 7,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45408916429/job/138497090600",
+  "classification": "completed-product-regression-checks",
+  "declaredScopeComplete": true,
+  "jobConclusion": "success",
+  "testedSourceCommit": "964b5e15e082c8633651ffab1d037631af65e156",
+  "scope": "S02 engine backport",
+  "platform": "Windows",
+  "sdk": {
+    "frameworkVersion": "3.47.7",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "engineCommitDate": "2026-10-07 17:09:12.000Z",
+    "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+    "engineBuildDate": "2026-10-07 17:51:44.552",
+    "dartSdkVersion": "3.13.5",
+    "devToolsVersion": "2.60.0",
+    "flutterVersion": "3.47.7",
+    "flutterRoot": "C:\\hostedtoolcache\\windows\\flutter\\stable-3.47.7-x64\\flutter"
+  },
+  "tests": {
+    "passed": 118,
+    "failed": 0,
+    "skipped": 0,
+    "eventRows": 317,
+    "hiddenLifecycleEvents": 2,
+    "nonJsonBuildHookDiagnosticsPreserved": []
+  },
+  "staticAnalysis": "passed",
+  "performanceMeasurement": false,
+  "appFirstGoodFrameMeasured": false,
+  "limitations": [
+    "These are correctness regressions on the exact tested source, not latency or first-good-frame measurements.",
+    "Engine source and fork workflow source are different commits and are recorded separately."
+  ]
+}

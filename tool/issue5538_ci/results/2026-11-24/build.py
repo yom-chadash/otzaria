@@ -1,4 +1,5 @@
 import argparse
+from contextlib import nullcontext
 from collections import Counter
 import gzip
 import hashlib
@@ -42,21 +43,33 @@ def included(path):
         return False, 'pdf-input-or-generated-fixture; identities retained in reports and corpus catalog'
     if path.suffix in {'.zip', '.gz'}:
         return False, 'original-container-or-dependency-archive; container identity retained'
+    if re.fullmatch(r'frame-\d+\.png', path.name):
+        return True, None
     if path.suffix in TEXT_EXTENSIONS or path.name in {'start', 'stop'}:
         return True, None
     return False, 'binary-or-redundant-source; source and binary identities retained in receipts'
 
 
-def group(source_root, relative, run, job, artifact, commit, classification, expected_sha=None, summary=None, supplementary=None, artifact_name=None):
+def group(source_root, relative, run, job, artifact, commit, classification, expected_sha=None, summary=None, supplementary=None, artifact_name=None, job_log=None, job_log_sha256=None, job_log_newline_normalization=None):
     root = WORKSPACE / source_root / relative
     name = Path(relative).name
-    archives = sorted(root.glob('*.zip'))
-    if not archives:
-        # Artifact names can end with a version, such as "fixed-3.50.0".
-        # Preserve that suffix when finding the downloaded sibling archive.
-        candidates = dict.fromkeys([root.with_name(root.name + '.zip'), root.with_suffix('.zip')])
-        archives = [candidate for candidate in candidates if candidate.is_file()]
-    assert len(archives) == 1 and archives[0].is_file(), root
+    if artifact is not None:
+        archives = sorted(root.glob('*.zip'))
+        if not archives:
+            # A version suffix such as "3.50.0" is part of the artifact name.
+            candidates = dict.fromkeys([root.with_name(root.name + '.zip'), root.with_suffix('.zip')])
+            archives = [candidate for candidate in candidates if candidate.is_file()]
+        assert len(archives) == 1 and archives[0].is_file(), root
+    else:
+        assert job_log is not None, 'A group needs an artifact or a decoded job log'
+        archives = [None]
+    if job_log is not None:
+        relative_log = Path(job_log)
+        assert not relative_log.is_absolute() and '..' not in relative_log.parts and '\\' not in job_log and ':' not in job_log
+        assert (root / relative_log).is_file() and relative_log.suffix == '.log'
+        job_log_sha256 = job_log_sha256 or (expected_sha if artifact is None else None)
+        assert job_log_sha256 and re.fullmatch(r'[0-9a-f]{64}', job_log_sha256)
+        assert job_log_newline_normalization in {'LF', 'none; connector text already LF', 'not recorded; saved connector text'}
     if summary is None:
         choices = sorted(root.rglob('analysis-summary.json'))
         assert len(choices) == 1, (root, choices)
@@ -66,7 +79,8 @@ def group(source_root, relative, run, job, artifact, commit, classification, exp
         assert summary.is_file(), summary
     return dict(source_root=source_root, relative=relative, root=root, name=name,
         run=run, job=job, artifact=artifact, commit=commit, classification=classification,
-        archive=archives[0], expected_sha=expected_sha, summary=summary, supplementary=supplementary or [],
+        archive=archives[0], expected_sha=expected_sha, summary=summary, supplementary=supplementary or [], job_log=job_log,
+        job_log_sha256=job_log_sha256, job_log_newline_normalization=job_log_newline_normalization,
         artifact_name=artifact_name or ('pdf-5538-preflight-linux' if name == 'preflight' else name))
 
 
@@ -136,17 +150,35 @@ def expected_zip_sha(g, summary):
 
 def archive_group(g, destination, immutable_sources):
     summary = summary_for(g)
-    zip_bytes = g['archive'].read_bytes()
-    zip_sha = sha(zip_bytes)
-    assert zip_sha == expected_zip_sha(g, summary), ('artifact digest mismatch', g['archive'])
-    immutable_sources[g['archive']] = zip_sha
+    zip_bytes = g['archive'].read_bytes() if g['archive'] is not None else None
+    zip_sha = sha(zip_bytes) if zip_bytes is not None else None
+    if zip_bytes is not None:
+        assert zip_sha == expected_zip_sha(g, summary), ('artifact digest mismatch', g['archive'])
+        immutable_sources[g['archive']] = zip_sha
+    log_bytes = None
+    if g['job_log'] is not None:
+        log_path = g['root'] / g['job_log']
+        log_bytes = log_path.read_bytes()
+        assert sha(log_bytes) == g['job_log_sha256'], 'Decoded job log digest mismatch'
+        if 'jobLogSha256' in summary:
+            assert sha(log_bytes) == summary['jobLogSha256']
+        if zip_bytes is None:
+            assert (summary['runId'], summary['jobId'], summary['sourceCommit']) == (g['run'], g['job'], g['commit'])
+        for item in summary.get('evidenceFiles', []):
+            if item['path'] == g['job_log']:
+                assert item['sha256'] == sha(log_bytes) and item['bytes'] == len(log_bytes)
+        if g['job_log_newline_normalization'] in {'LF', 'none; connector text already LF'}:
+            assert b'\r' not in log_bytes, 'Job log is not LF normalized'
+        immutable_sources[log_path] = sha(log_bytes)
     key = f"{g['run']}-{g['name']}"
     raw_files = []
     omitted = []
     suffix_counts = Counter()
     content = {}
-    with zipfile.ZipFile(io.BytesIO(zip_bytes)) as original:
-        members = {i.filename: i for i in original.infolist() if not i.is_dir()}
+    with (zipfile.ZipFile(io.BytesIO(zip_bytes)) if zip_bytes is not None else nullcontext()) as original:
+        members = ({i.filename: i for i in original.infolist() if not i.is_dir()}
+                   if original is not None else {})
+        assert g['job_log'] not in members, 'Decoded job log must not replace an artifact member'
         for path in sorted(g['root'].rglob('*')):
             if not path.is_file():
                 continue
@@ -157,13 +189,24 @@ def archive_group(g, destination, immutable_sources):
                 omitted.append({'path': relative.as_posix(), 'bytes': path.stat().st_size, 'reason': reason})
                 continue
             payload = path.read_bytes()
-            payload.decode('utf-8')
-            assert not SIGNED.search(payload), ('signed URL or token candidate', path)
+            if path.suffix == '.png':
+                assert payload.startswith(b'\x89PNG\r\n\x1a\n') and payload[12:16] == b'IHDR', 'Invalid frame PNG'
+                sidecar = read_json(path.parent / 'frame-receipts.json')
+                rows = [row for row in sidecar['measured'] + sidecar['reference'] if row['pngPath'] == path.name]
+                assert rows and all(row['pngSha256'] == sha(payload) for row in rows), 'Unreferenced or changed frame PNG'
+                dimensions = (int.from_bytes(payload[16:20], 'big'), int.from_bytes(payload[20:24], 'big'))
+                assert all(dimensions == (row['width'], row['height']) for row in rows), 'Frame PNG dimensions changed'
+            else:
+                payload.decode('utf-8')
+                assert not SIGNED.search(payload), ('signed URL or token candidate', path)
             digest = sha(payload)
             immutable_sources[path] = digest
             name = relative.as_posix()
             origin = 'post-download-analysis-or-receipt'
-            if name in members:
+            if name == g['job_log']:
+                assert payload == log_bytes
+                origin = 'github-connector-decoded-job-log'
+            elif name in members:
                 assert sha(original.read(name)) == digest, ('extracted member mismatch', path)
                 origin = 'original-github-artifact-member'
             else:
@@ -191,7 +234,7 @@ def archive_group(g, destination, immutable_sources):
                 except json.JSONDecodeError:
                     # The product CI names the Dart JSON reporter stream .json.
                     # Preserve its original bytes and require valid JSONL events.
-                    if path.name != 'pdf-product-tests.json':
+                    if path.name not in {'pdf-product-tests.json', 'pdf-font-tests.json'}:
                         raise
                     events = [json.loads(line) for line in payload.splitlines() if line.strip()]
                     assert events and all(isinstance(event, dict) and isinstance(event.get('type'), str) for event in events)
@@ -250,7 +293,12 @@ def archive_group(g, destination, immutable_sources):
             'artifact': {'id': g['artifact'], 'name': g['artifact_name'],
                 'url': f"{FORK}/actions/runs/{g['run']}/artifacts/{g['artifact']}",
                 'zipSha256': zip_sha, 'zipBytes': len(zip_bytes), 'expectedDigestVerified': True,
-                'originalZipStoredAgain': False}},
+                'originalZipStoredAgain': False} if zip_bytes is not None else None,
+            **({'jobLog': {'path': g['job_log'], 'sha256': sha(log_bytes), 'bytes': len(log_bytes),
+                          'origin': 'GitHub connector decoded job log',
+                          'newlineNormalization': g['job_log_newline_normalization'],
+                          'originalActionsLogZip': False,
+                          'expectedDigestVerified': True, 'artifactWasCreated': zip_bytes is not None}} if log_bytes is not None else {})},
         'originalLocation': f"{g['source_root']}/{g['relative']}",
         'summary': {'path': summary_path, 'sha256': sha((destination / summary_path).read_bytes()),
             'derivedFrom': str(g['summary'].relative_to(g['root'])) if isinstance(g['summary'], Path) else g['summary']},
@@ -333,6 +381,8 @@ def main():
             'Upstream suites use their recorded isolated SDK. They do not demonstrate adoption by Otzaria on its locked SDK.',
             'The original E10 loopback server did not implement 304. Its warm redownload observations do not establish behavior with a conditional HTTP server.',
             'Repeated passes within one process are not independent launches; see each summary for sample sizes and timing limits.',
+            'Connector-decoded job logs are labelled separately from byte-verified artifact ZIP members; any recorded newline normalization is explicit.',
+            'Selected S02 frame PNGs retain their original artifact bytes and are checked against frame-receipts.json; a frame capture is not an OS presentation timestamp.',
             'PdfPageHighlights is an advanced-search component. Its literal String case is a component microbenchmark, not a measured acceleration of simple product search. Simple and /regex/ searches use pdfrx.startTextSearch; the advanced-search RegExp fallback is a product path. ResultLines follow-up is mixed and supports neither an improvement nor a non-regression claim.',
             'No PDF corpus, runtime binary, dependency checkout, build tree or signed download URL is embedded in these raw archives.'
         ],
@@ -360,6 +410,9 @@ def main():
             'planFormat': 'JSON array; one object per new group. Existing ids cannot be replaced.',
             'requiredFields': ['source_root', 'relative', 'run', 'job', 'artifact', 'commit', 'classification', 'expected_sha'],
             'optionalFields': {'artifact_name': 'Original GitHub artifact name when the local group directory has a different name.',
+                'job_log': 'Relative path to saved connector-decoded job log, alongside an artifact or alone with artifact null.',
+                'job_log_sha256': 'Required decoded job log digest when an artifact is also present; otherwise defaults to expected_sha.',
+                'job_log_newline_normalization': 'Explicit LF, none; connector text already LF, or not recorded; saved connector text. No original Actions log ZIP identity is implied.',
                 'summary': 'Relative path to analysis-summary.json; discovered automatically if omitted.',
                 'supplementary': 'Explicit list of post-download analysis code paths relative to --workspace; labelled separately from CI artifact members.'},
             'source_root': 'Path relative to --workspace, such as pdf-5538-ci-evidence.',

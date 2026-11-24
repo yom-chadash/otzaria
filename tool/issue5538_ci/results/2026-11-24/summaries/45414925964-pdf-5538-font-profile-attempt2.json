@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "failed-host-harness-before-first-launch",
+  "runId": 45414925964,
+  "jobId": 138518439073,
+  "artifactId": 14931348182,
+  "sourceCommit": "44705a15b9bc1170a572da2076f2fc85451d52fc",
+  "archiveSha256": "bf3d1a89fd5f35d4e4f977325dd732a4b72ae1327e5106f1bed3ed032c8b28de",
+  "jobLogSha256": "0b8c290a678b46e1fd34f6d5460f3bfd4dc696b37a8dfe69f4f94ef76b5bac24",
+  "builds": {
+    "A": {
+      "bundleManifestSha256": "43b812e5f0331f39ce746e654ee396102e39d39dd3569481abe32ed6501e6146",
+      "compilerManifestSha256": "9f8a385e1bc54a5fd3acdd1e62aaaac3391713397612ca74a3e5f22e5752a077",
+      "pdfSourceManifestSha256": "bd5ccb30dff9006eb9efb4d0551a0e983dac7914069f88f0251d6d89db03702c"
+    },
+    "B": {
+      "bundleManifestSha256": "1775f2a30e9fddcf44ddcb6435a815a7bc74d96bfe14c6b80266496c976b3ab6",
+      "compilerManifestSha256": "d8017599bc1e9d72925a40ff1ffbd68f798dffa70d0acd78a32075bca400447f",
+      "pdfSourceManifestSha256": "13347623ae70651257299e548cdde6046956593964fdffea8eed85d7e66b51ea"
+    },
+    "C": {
+      "bundleManifestSha256": "7911571d9ccb0580962ae167589b23eb9d2cae10fc367dc2bd921f164f1b0eb2",
+      "compilerManifestSha256": "f273ab621bf3466bdfc03d6bcfdf9f73f489300e7f51691de6520fcef70707b4",
+      "pdfSourceManifestSha256": "13347623ae70651257299e548cdde6046956593964fdffea8eed85d7e66b51ea"
+    }
+  },
+  "failure": {
+    "file": "tool/issue5538_ci/run_font_fallback_profile.py",
+    "line": 403,
+    "error": "KeyError: 'sha256'",
+    "cause": "BundledFlutterEngine.identity provides bundleSha256, not sha256."
+  },
+  "measuredProcesses": 0,
+  "productPerformanceConclusion": null,
+  "validation": "Full Flutter analysis and three profile builds succeeded; no native launch/parity/frame observation ran."
+}

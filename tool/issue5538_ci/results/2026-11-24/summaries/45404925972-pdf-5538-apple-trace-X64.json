@@ -1,0 +1,479 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "independent post-download verification; original members unchanged",
+  "runId": 45404925972,
+  "jobId": 138482909473,
+  "artifactId": 14928737870,
+  "sourceCommit": "8c85c52c71ea0f03a006dc0f33f60ed9f3857fe7",
+  "artifactZipSha256": "bcd6e25ba5c1f5631f298e8d73041a7a2f794053e962bce02dbc3ac745a96498",
+  "artifactZipBytes": 201113,
+  "verifiedOriginalMembers": 80,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45404925972/job/138482909473",
+  "classification": "partial-measurement-workload-timeout",
+  "declaredScopeComplete": false,
+  "jobConclusion": "failure",
+  "upstreamCommit": "683df93e986af19bbcefd22606a417083116847b",
+  "sourceRole": "baseline plus initializer-only compile compatibility patch",
+  "compileCompatibility": {
+    "upstreamCommit": "683df93e986af19bbcefd22606a417083116847b",
+    "path": "packages/pdfrx_coregraphics/darwin/pdfrx_coregraphics/Sources/PdfrxCoregraphicsPlugin.swift",
+    "sourceRole": "baseline plus initializer-only compile compatibility patch",
+    "originalSha256": "d54b1be2327da05d34eec6e6e1c4f4a65293aa61c244a3e678296b7b760b941b",
+    "patchedSha256": "037ef021d5065cbab8c94832face2bb9d605c0b1e26f47f4f7b112868320ddc4",
+    "patchSha256": "42c8eaeab60bb31bc9f072c138896d5f4a1dfa413bdd004490163f3617b42908",
+    "patch": "--- a/packages/pdfrx_coregraphics/darwin/pdfrx_coregraphics/Sources/PdfrxCoregraphicsPlugin.swift\n+++ b/packages/pdfrx_coregraphics/darwin/pdfrx_coregraphics/Sources/PdfrxCoregraphicsPlugin.swift\n@@ -144,13 +144,7 @@\n   private func createNewDocument(arguments: Any?, result: @escaping FlutterResult) {\n     // Create a truly empty PDF document with no pages\n     // PDFDocument() creates an empty document directly\n-    guard let pdfDocument = PDFDocument() else {\n-      result(\n-        FlutterError(\n-          code: \"pdf-document-failure\", message: \"Failed to create empty PDFDocument.\", details: nil\n-        ))\n-      return\n-    }\n+    let pdfDocument = PDFDocument()\n \n     // Register the document\n     let handle = nextHandle\n@@ -199,23 +193,11 @@\n     }\n \n     // Create an empty PDF document\n-    guard let pdfDocument = PDFDocument() else {\n-      result(\n-        FlutterError(\n-          code: \"pdf-document-failure\", message: \"Failed to create PDFDocument.\", details: nil\n-        ))\n-      return\n-    }\n+    let pdfDocument = PDFDocument()\n \n     // Create a PDF page with the specified dimensions\n     let pageRect = CGRect(x: 0, y: 0, width: width, height: height)\n-    guard let pdfPage = PDFPage() else {\n-      result(\n-        FlutterError(\n-          code: \"pdf-page-failure\", message: \"Failed to create PDF page.\", details: nil\n-        ))\n-      return\n-    }\n+    let pdfPage = PDFPage()\n     pdfPage.setBounds(pageRect, for: .mediaBox)\n \n     // Create image from JPEG data\n",
+    "changedMethods": [
+      "createNewDocument",
+      "createDocumentFromJpegData"
+    ],
+    "reason": "PDFDocument() and PDFPage() are non-optional in the tested Apple SDK; conditional binding cannot compile.",
+    "renderTextSchedulerChanged": false
+  },
+  "sdk": {
+    "frameworkVersion": "3.50.0",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "ab2912035e160d9cad6306df307576da6128ebdb",
+    "frameworkCommitDate": "2026-11-09 08:50:21 -0800",
+    "engineRevision": "371f77202a73e8dff57a8b3bff75bca55c090aee",
+    "engineCommitDate": "2026-11-09 15:57:36.000Z",
+    "engineContentHash": "bf601093ad255aaf5c6d0fc5c4f9acfa60943b2a",
+    "engineBuildDate": "2026-11-09 08:33:19.494",
+    "dartSdkVersion": "3.14.0",
+    "devToolsVersion": "2.61.0",
+    "flutterVersion": "3.50.0",
+    "flutterRoot": "/Users/runner/hostedtoolcache/flutter/stable-3.50.0-x64/flutter"
+  },
+  "architecture": "x86_64",
+  "completedProcesses": 20,
+  "expectedProcesses": 36,
+  "completedAbbaGroups": 5,
+  "expectedAbbaGroups": 9,
+  "observationsIncludingWarmups": 128,
+  "observationsExcludingWarmups": 108,
+  "stoppedAt": "mikraot-gedolot-genesis-1859-lifecycle-1-pdfium",
+  "timeoutSeconds": 600,
+  "profilerRecordings": 0,
+  "postCampaignBundleAndSourceVerification": false,
+  "completedGroups": [
+    {
+      "corpus": "uxlc-genesis",
+      "workload": "file",
+      "processes": [
+        {
+          "backend": "pdfium",
+          "process": {
+            "label": "uxlc-genesis-file-1-pdfium",
+            "reportSha256": "860b4bb7512dfaf8492181a6b6ebecb28ecd349a9ad35b845b5931e309dc675f",
+            "processSeconds": {
+              "real": 11.69,
+              "user": 4.73,
+              "sys": 1.89
+            },
+            "processPeakRssBytes": 75341824
+          },
+          "observations": 2,
+          "textCharacters": [
+            4137
+          ],
+          "medianFirstRasterMs": 1060.581,
+          "medianImageReadyMs": 1144.8135
+        },
+        {
+          "backend": "coregraphics",
+          "process": {
+            "label": "uxlc-genesis-file-2-coregraphics",
+            "reportSha256": "98d257a988969b3132fa3576fd2eff99008a3b3baa3a7a076a0e58c47bb2894e",
+            "processSeconds": {
+              "real": 3.92,
+              "user": 2.52,
+              "sys": 0.7
+            },
+            "processPeakRssBytes": 119308288
+          },
+          "observations": 2,
+          "textCharacters": [
+            4198
+          ],
+          "medianFirstRasterMs": 88.511,
+          "medianImageReadyMs": 201.6545
+        },
+        {
+          "backend": "coregraphics",
+          "process": {
+            "label": "uxlc-genesis-file-3-coregraphics",
+            "reportSha256": "2c7d6de8b647291766637dc1f59959ebaad162aacbc02de874433d931a548214",
+            "processSeconds": {
+              "real": 2.85,
+              "user": 1.9,
+              "sys": 0.4
+            },
+            "processPeakRssBytes": 118734848
+          },
+          "observations": 2,
+          "textCharacters": [
+            4198
+          ],
+          "medianFirstRasterMs": 54.3665,
+          "medianImageReadyMs": 147.6415
+        },
+        {
+          "backend": "pdfium",
+          "process": {
+            "label": "uxlc-genesis-file-4-pdfium",
+            "reportSha256": "31ba2e90249dd83f180364a69b3853005c9a16af52781e290e82d677798ff78e",
+            "processSeconds": {
+              "real": 4.6,
+              "user": 3.13,
+              "sys": 0.54
+            },
+            "processPeakRssBytes": 78426112
+          },
+          "observations": 2,
+          "textCharacters": [
+            4137
+          ],
+          "medianFirstRasterMs": 990.1865,
+          "medianImageReadyMs": 1080.3165
+        }
+      ]
+    },
+    {
+      "corpus": "uxlc-genesis",
+      "workload": "custom",
+      "processes": [
+        {
+          "backend": "pdfium",
+          "process": {
+            "label": "uxlc-genesis-custom-1-pdfium",
+            "reportSha256": "90ea8ce07cd7b6bfbda8165b804d34f50c2916ecf8bdc108060f1dca78221853",
+            "processSeconds": {
+              "real": 4.26,
+              "user": 3.42,
+              "sys": 0.75
+            },
+            "processPeakRssBytes": 79855616
+          },
+          "observations": 2,
+          "textCharacters": [
+            4137
+          ],
+          "medianFirstRasterMs": 933.1095,
+          "medianImageReadyMs": 1021.948
+        },
+        {
+          "backend": "coregraphics",
+          "process": {
+            "label": "uxlc-genesis-custom-2-coregraphics",
+            "reportSha256": "1781124e1598ecbfc6057df5d940e395badab9b66375478333a35755507dae4d",
+            "processSeconds": {
+              "real": 3.51,
+              "user": 2.3,
+              "sys": 0.72
+            },
+            "processPeakRssBytes": 123858944
+          },
+          "observations": 2,
+          "textCharacters": [
+            4198
+          ],
+          "medianFirstRasterMs": 85.3645,
+          "medianImageReadyMs": 186.152
+        },
+        {
+          "backend": "coregraphics",
+          "process": {
+            "label": "uxlc-genesis-custom-3-coregraphics",
+            "reportSha256": "917ca1282257ed9ccc652acab0a65014342f9ffc8a1b392ee3c0b75fe2435e6a",
+            "processSeconds": {
+              "real": 2.61,
+              "user": 1.95,
+              "sys": 0.37
+            },
+            "processPeakRssBytes": 125177856
+          },
+          "observations": 2,
+          "textCharacters": [
+            4198
+          ],
+          "medianFirstRasterMs": 71.066,
+          "medianImageReadyMs": 168.4865
+        },
+        {
+          "backend": "pdfium",
+          "process": {
+            "label": "uxlc-genesis-custom-4-pdfium",
+            "reportSha256": "00507bf7f554561326e43b93cdfe12ce625d65e08afcf431f96b9da182ff5084",
+            "processSeconds": {
+              "real": 3.95,
+              "user": 3.14,
+              "sys": 0.69
+            },
+            "processPeakRssBytes": 81141760
+          },
+          "observations": 2,
+          "textCharacters": [
+            4137
+          ],
+          "medianFirstRasterMs": 801.88,
+          "medianImageReadyMs": 886.839
+        }
+      ]
+    },
+    {
+      "corpus": "uxlc-genesis",
+      "workload": "lifecycle",
+      "processes": [
+        {
+          "backend": "pdfium",
+          "process": {
+            "label": "uxlc-genesis-lifecycle-1-pdfium",
+            "reportSha256": "434f290f15ffa602db11455b553db18158ff6e3e7b1fa39b63b08ae2b5678d46",
+            "processSeconds": {
+              "real": 128.24,
+              "user": 16.2,
+              "sys": 2.37
+            },
+            "processPeakRssBytes": 87412736
+          },
+          "observations": 19,
+          "textCharacters": [
+            4137
+          ],
+          "medianFirstRasterMs": 662.544,
+          "medianImageReadyMs": 763.889
+        },
+        {
+          "backend": "coregraphics",
+          "process": {
+            "label": "uxlc-genesis-lifecycle-2-coregraphics",
+            "reportSha256": "195a756791f3896140e90590db8433b914c5ee76322e581bfcdeb25fa081523f",
+            "processSeconds": {
+              "real": 171.96,
+              "user": 5.99,
+              "sys": 1.51
+            },
+            "processPeakRssBytes": 105660416
+          },
+          "observations": 19,
+          "textCharacters": [
+            4198
+          ],
+          "medianFirstRasterMs": 54.02,
+          "medianImageReadyMs": 3029.272
+        },
+        {
+          "backend": "coregraphics",
+          "process": {
+            "label": "uxlc-genesis-lifecycle-3-coregraphics",
+            "reportSha256": "294fd94007fe1cae8f56f78aeee4a3ca6ddeed620d5252289de89b660f4c2894",
+            "processSeconds": {
+              "real": 89.97,
+              "user": 5.15,
+              "sys": 1.95
+            },
+            "processPeakRssBytes": 98140160
+          },
+          "observations": 19,
+          "textCharacters": [
+            4198
+          ],
+          "medianFirstRasterMs": 31.929,
+          "medianImageReadyMs": 89.846
+        },
+        {
+          "backend": "pdfium",
+          "process": {
+            "label": "uxlc-genesis-lifecycle-4-pdfium",
+            "reportSha256": "a3c440519cebf37253bd7e64bcabac94e9761bee4febc6a4d1258817637283d7",
+            "processSeconds": {
+              "real": 302.48,
+              "user": 10.27,
+              "sys": 1.9
+            },
+            "processPeakRssBytes": 71708672
+          },
+          "observations": 19,
+          "textCharacters": [
+            4137
+          ],
+          "medianFirstRasterMs": 369.982,
+          "medianImageReadyMs": 442.519
+        }
+      ]
+    },
+    {
+      "corpus": "mikraot-gedolot-genesis-1859",
+      "workload": "file",
+      "processes": [
+        {
+          "backend": "pdfium",
+          "process": {
+            "label": "mikraot-gedolot-genesis-1859-file-1-pdfium",
+            "reportSha256": "87af937cd32ac3534db568d38c716b48a34b7472dcf3af4c65784d4eb78ae361",
+            "processSeconds": {
+              "real": 96.21,
+              "user": 9.48,
+              "sys": 1.68
+            },
+            "processPeakRssBytes": 132415488
+          },
+          "observations": 2,
+          "textCharacters": [
+            0
+          ],
+          "medianFirstRasterMs": 2959.0085,
+          "medianImageReadyMs": 7780.6275
+        },
+        {
+          "backend": "coregraphics",
+          "process": {
+            "label": "mikraot-gedolot-genesis-1859-file-2-coregraphics",
+            "reportSha256": "f958f68cc6052d0e1b4444a9ee88de30fb9d7c9effbd6395f97a430686e9e208",
+            "processSeconds": {
+              "real": 56.8,
+              "user": 12.73,
+              "sys": 3.43
+            },
+            "processPeakRssBytes": 262713344
+          },
+          "observations": 2,
+          "textCharacters": [
+            0
+          ],
+          "medianFirstRasterMs": 620.83,
+          "medianImageReadyMs": 13812.8305
+        },
+        {
+          "backend": "coregraphics",
+          "process": {
+            "label": "mikraot-gedolot-genesis-1859-file-3-coregraphics",
+            "reportSha256": "34e7e7ce23d1b062cc086eaf92243b4542fae7497f62d9a76033977b639d1651",
+            "processSeconds": {
+              "real": 119.18,
+              "user": 12.91,
+              "sys": 1.5
+            },
+            "processPeakRssBytes": 265068544
+          },
+          "observations": 2,
+          "textCharacters": [
+            0
+          ],
+          "medianFirstRasterMs": 743.23,
+          "medianImageReadyMs": 35219.9275
+        },
+        {
+          "backend": "pdfium",
+          "process": {
+            "label": "mikraot-gedolot-genesis-1859-file-4-pdfium",
+            "reportSha256": "976b88c6c496ad238becd00c7f1ea916a36f990c0584be64c75cc0250e6b95e8",
+            "processSeconds": {
+              "real": 120.24,
+              "user": 8.53,
+              "sys": 0.99
+            },
+            "processPeakRssBytes": 130117632
+          },
+          "observations": 2,
+          "textCharacters": [
+            0
+          ],
+          "medianFirstRasterMs": 1809.554,
+          "medianImageReadyMs": 21131.2245
+        }
+      ]
+    },
+    {
+      "corpus": "mikraot-gedolot-genesis-1859",
+      "workload": "custom",
+      "processes": [
+        {
+          "backend": "pdfium",
+          "process": {
+            "label": "mikraot-gedolot-genesis-1859-custom-1-pdfium",
+            "reportSha256": "65e29d8b4ffde9a7c686a07b1b329fa93e66b006a489f5fb2231a18db9e102a9",
+            "processSeconds": {
+              "real": 108.14,
+              "user": 14.2,
+              "sys": 5.61
+            },
+            "processPeakRssBytes": 133300224
+          },
+          "observations": 2,
+          "textCharacters": [
+            0
+          ],
+          "medianFirstRasterMs": 4764.422,
+          "medianImageReadyMs": 31727.756
+        },
+        {
+          "backend": "coregraphics",
+          "process": {
+            "label": "mikraot-gedolot-genesis-1859-custom-2-coregraphics",
+            "reportSha256": "63598673b152f69549943ecfdabc3ba7c37a33d2e3eccffad800307030e71b5e",
+            "processSeconds": {
+              "real": 57.91,
+              "user": 16.28,
+              "sys": 2.7
+            },
+            "processPeakRssBytes": 429404160
+          },
+          "observations": 2,
+          "textCharacters": [
+            0
+          ],
+          "medianFirstRasterMs": 1265.2625,
+          "medianImageReadyMs": 18780.668
+        },
+        {
+          "backend": "coregraphics",
+          "process": {
+            "label": "mikraot-gedolot-genesis-1859-custom-3-coregraphics",
+            "reportSha256": "7dc6a296e19d1c6bdf4be57ce636fb090c124b22dbf51740e796b14580efafdb",
+            "processSeconds": {
+              "real": 198.43,
+              "user": 13.64,
+              "sys": 2.46
+            },
+            "processPeakRssBytes": 429871104
+          },
+          "observations": 2,
+          "textCharacters": [
+            0
+          ],
+          "medianFirstRasterMs": 1106.4725,
+          "medianImageReadyMs": 31589.467
+        },
+        {
+          "backend": "pdfium",
+          "process": {
+            "label": "mikraot-gedolot-genesis-1859-custom-4-pdfium",
+            "reportSha256": "c8eac6adab74b151b5527810ddaaac00fbdf955ac21c48335182f4e4b40cedd0",
+            "processSeconds": {
+              "real": 151.3,
+              "user": 15.56,
+              "sys": 5.77
+            },
+            "processPeakRssBytes": 135774208
+          },
+          "observations": 2,
+          "textCharacters": [
+            0
+          ],
+          "medianFirstRasterMs": 32815.2235,
+          "medianImageReadyMs": 44885.185
+        }
+      ]
+    }
+  ],
+  "appAdoptionApproved": false,
+  "physicalDeviceMeasured": false,
+  "limitations": [
+    "Build and per-report validators passed; the lifecycle workload timed out. This is neither a build failure nor a validator rejection.",
+    "The incomplete campaign never executed its final bundle/source guards. No matched whole-campaign integrity is claimed.",
+    "Only the first page is sampled for text/render. The MG first page is a cover with no extracted text; Hebrew text comes from UXLC.",
+    "No GCC observations or thread traces were produced. The timed-out workload has no final report, so its last native phase is unknown.",
+    "Completed raw observations remain available; they are not promoted to a finished E12 comparison or an Otzaria adoption result."
+  ]
+}

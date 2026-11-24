@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "independent post-download verification; original members unchanged",
+  "runId": 45408916429,
+  "jobId": 138497089591,
+  "artifactId": 14928300249,
+  "sourceCommit": "4e1c99dbe5b6770e3d14e558d208d2026bab2cc2",
+  "artifactZipSha256": "5f03f282eb20fa299d481bd793f8bca99f38d4f802e91249feb5efab4dd083d7",
+  "artifactZipBytes": 5490,
+  "verifiedOriginalMembers": 5,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45408916429/job/138497089591",
+  "classification": "partial-product-checks-failed-job",
+  "declaredScopeComplete": false,
+  "jobConclusion": "failure",
+  "testedSourceCommit": "4e1c99dbe5b6770e3d14e558d208d2026bab2cc2",
+  "scope": "S02 app integration",
+  "platform": "Windows",
+  "sdk": {
+    "frameworkVersion": "3.47.7",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "engineCommitDate": "2026-10-07 17:09:12.000Z",
+    "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+    "engineBuildDate": "2026-10-07 17:51:44.552",
+    "dartSdkVersion": "3.13.5",
+    "devToolsVersion": "2.60.0",
+    "flutterVersion": "3.47.7",
+    "flutterRoot": "C:\\hostedtoolcache\\windows\\flutter\\stable-3.47.7-x64\\flutter"
+  },
+  "tests": {
+    "passed": 28,
+    "failed": 0,
+    "skipped": 0,
+    "eventRows": 114,
+    "hiddenLifecycleEvents": 8,
+    "nonJsonBuildHookDiagnosticsPreserved": []
+  },
+  "staticAnalysis": "passed",
+  "performanceMeasurement": false,
+  "appFirstGoodFrameMeasured": false,
+  "limitations": [
+    "These are correctness regressions on the exact tested source, not latency or first-good-frame measurements.",
+    "Engine source and fork workflow source are different commits and are recorded separately.",
+    "The first app job failed after producing passing analyze/test evidence; no whole-job success is claimed."
+  ]
+}

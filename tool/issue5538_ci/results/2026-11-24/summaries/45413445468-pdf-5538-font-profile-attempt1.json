@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "runId": 45413445468,
+  "jobId": 138513149171,
+  "sourceCommit": "ecb14614409c45b97d721dff644fbc66676539de",
+  "conclusion": "failure",
+  "failedStage": "full flutter analyze --no-pub",
+  "durationSeconds": 68.7,
+  "diagnostics": [
+    {
+      "path": "tool/issue5538_ci/font_fallback_profile_app.dart",
+      "line": 5,
+      "code": "unnecessary_import"
+    },
+    {
+      "path": "tool/issue5538_ci/font_fallback_profile_app.dart",
+      "line": 380,
+      "code": "curly_braces_in_flow_control_structures"
+    }
+  ],
+  "measurementsExecuted": false,
+  "artifacts": [],
+  "jobLogSha256": "15a1af3b5c172713aa2833d567a5c722aa876cb32c92ef0a429f0c46561a9c7f",
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45413445468/job/138513149171"
+}

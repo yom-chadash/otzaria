@@ -1,0 +1,301 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "independent post-download verification; original members unchanged",
+  "runId": 45410837868,
+  "jobId": 138503840322,
+  "artifactId": 14932040516,
+  "sourceCommit": "f644e08a8ab1d60b63d77f009b73f0d7a62bf883",
+  "artifactZipSha256": "59bacdfe8fe3776ba9a66fc733c6142daf7d917167dd70b0423ac46a0fdcea52",
+  "artifactZipBytes": 13508662,
+  "verifiedOriginalMembers": 173,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45410837868/job/138503840322",
+  "classification": "completed-measurement",
+  "declaredScopeComplete": true,
+  "jobConclusion": "success",
+  "sourcePlan": {
+    "baseline": "bcf832d7b26f54c97f8ee2f145de0d4d7921f223",
+    "candidate": "f0cf44af351966d820a14299567d3203a2ba9675"
+  },
+  "sdk": {
+    "dartVersionOutput": "Dart SDK version: 3.13.5 (stable) (Tue Sep 29 01:00:52 2026 -0700) on \"linux_x64\"",
+    "flutter": {
+      "frameworkVersion": "3.47.7",
+      "channel": "stable",
+      "repositoryUrl": "https://github.com/flutter/flutter.git",
+      "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+      "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+      "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+      "engineCommitDate": "2026-10-07 17:09:12.000Z",
+      "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+      "engineBuildDate": "2026-10-07 10:51:44.552",
+      "dartSdkVersion": "3.13.5",
+      "devToolsVersion": "2.60.0",
+      "flutterVersion": "3.47.7",
+      "flutterRoot": "/__t/flutter/stable-3.47.7-x64/flutter"
+    }
+  },
+  "documents": [
+    {
+      "corpus": "uxlc-genesis",
+      "inputSha256": "ce28c3ed6f052b633a943d545f766be88d935c71d71b0b4c23ee172fca71af2e",
+      "source": {
+        "baseline": "bcf832d7b26f54c97f8ee2f145de0d4d7921f223",
+        "candidate": "f0cf44af351966d820a14299567d3203a2ba9675"
+      },
+      "processesPerVariant": 6,
+      "blocks": 3,
+      "queries": {
+        "proximity_pair_1_d2_ordered": {
+          "p50BeforeUs": 36503.5,
+          "p50AfterUs": 35575.5,
+          "p50ChangePercent": -2.54222197871437,
+          "microtasksBefore": 166,
+          "microtasksAfter": 108,
+          "matchesPerPass": 4,
+          "blockEffectsPercent": [
+            -16.73782503305421,
+            -15.880385816543685,
+            -1.7155453325666037
+          ],
+          "positiveBlockCount": 0
+        },
+        "proximity_pair_1_d2_any_order_reversed": {
+          "p50BeforeUs": 36604.0,
+          "p50AfterUs": 35533.5,
+          "p50ChangePercent": -2.9245437657086657,
+          "microtasksBefore": 166,
+          "microtasksAfter": 108,
+          "matchesPerPass": 4,
+          "blockEffectsPercent": [
+            -17.116003998223018,
+            -29.266493648408687,
+            -4.247083633645654
+          ],
+          "positiveBlockCount": 0
+        },
+        "proximity_pair_1_d10_ordered": {
+          "p50BeforeUs": 36990.0,
+          "p50AfterUs": 35424.0,
+          "p50ChangePercent": -4.233576642335766,
+          "microtasksBefore": 166,
+          "microtasksAfter": 108,
+          "matchesPerPass": 4,
+          "blockEffectsPercent": [
+            -14.781669067937496,
+            -29.833546734955185,
+            -4.4622709189330205
+          ],
+          "positiveBlockCount": 0
+        },
+        "proximity_pair_1_d10_any_order_reversed": {
+          "p50BeforeUs": 36061.0,
+          "p50AfterUs": 35758.0,
+          "p50ChangePercent": -0.8402429217159813,
+          "microtasksBefore": 168,
+          "microtasksAfter": 108,
+          "matchesPerPass": 6,
+          "blockEffectsPercent": [
+            -13.783945381481432,
+            -28.808349612710206,
+            2.1387865491024005
+          ],
+          "positiveBlockCount": 1
+        },
+        "proximity_pair_2_d2_ordered": {
+          "p50BeforeUs": 36873.5,
+          "p50AfterUs": 35490.5,
+          "p50ChangePercent": -3.7506610438390715,
+          "microtasksBefore": 163,
+          "microtasksAfter": 108,
+          "matchesPerPass": 1,
+          "blockEffectsPercent": [
+            -12.689257390050468,
+            -28.783747661053194,
+            -3.6998094236708967
+          ],
+          "positiveBlockCount": 0
+        },
+        "proximity_pair_2_d2_any_order_reversed": {
+          "p50BeforeUs": 36683.5,
+          "p50AfterUs": 35429.0,
+          "p50ChangePercent": -3.419793640192457,
+          "microtasksBefore": 163,
+          "microtasksAfter": 108,
+          "matchesPerPass": 1,
+          "blockEffectsPercent": [
+            -15.87135042878527,
+            -29.363126422183417,
+            -6.102060435991374
+          ],
+          "positiveBlockCount": 0
+        },
+        "proximity_pair_2_d10_ordered": {
+          "p50BeforeUs": 36237.5,
+          "p50AfterUs": 35481.5,
+          "p50ChangePercent": -2.086236633321835,
+          "microtasksBefore": 167,
+          "microtasksAfter": 108,
+          "matchesPerPass": 5,
+          "blockEffectsPercent": [
+            -10.77572486333126,
+            -26.15645266563902,
+            -0.8697802877282612
+          ],
+          "positiveBlockCount": 0
+        },
+        "proximity_pair_2_d10_any_order_reversed": {
+          "p50BeforeUs": 36076.0,
+          "p50AfterUs": 31929.0,
+          "p50ChangePercent": -11.495176848874598,
+          "microtasksBefore": 168,
+          "microtasksAfter": 108,
+          "matchesPerPass": 6,
+          "blockEffectsPercent": [
+            -17.33146690320435,
+            -37.34603924368709,
+            -0.8647766109058708
+          ],
+          "positiveBlockCount": 0
+        }
+      },
+      "rawHighlightRowsIncludingWarmups": 41472,
+      "allPageParityChecksPassed": true
+    },
+    {
+      "corpus": "mikraot-gedolot-genesis-1859",
+      "inputSha256": "92a145512e33c4a3c8f1b1c92d2d79c4db91a49cc921a316201be81bfa85040d",
+      "source": {
+        "baseline": "bcf832d7b26f54c97f8ee2f145de0d4d7921f223",
+        "candidate": "f0cf44af351966d820a14299567d3203a2ba9675"
+      },
+      "processesPerVariant": 6,
+      "blocks": 3,
+      "queries": {
+        "proximity_pair_1_d2_ordered": {
+          "p50BeforeUs": 158276.0,
+          "p50AfterUs": 143852.5,
+          "p50ChangePercent": -9.112878768733099,
+          "microtasksBefore": 1419,
+          "microtasksAfter": 748,
+          "matchesPerPass": 297,
+          "blockEffectsPercent": [
+            -5.850969233505243,
+            -8.972837865628902,
+            -17.389538434826825
+          ],
+          "positiveBlockCount": 0
+        },
+        "proximity_pair_1_d2_any_order_reversed": {
+          "p50BeforeUs": 153764.0,
+          "p50AfterUs": 144464.5,
+          "p50ChangePercent": -6.047904581046279,
+          "microtasksBefore": 1419,
+          "microtasksAfter": 748,
+          "matchesPerPass": 297,
+          "blockEffectsPercent": [
+            -1.0676091145795041,
+            -7.515149587263215,
+            -13.519437631563703
+          ],
+          "positiveBlockCount": 0
+        },
+        "proximity_pair_1_d10_ordered": {
+          "p50BeforeUs": 149572.0,
+          "p50AfterUs": 144103.0,
+          "p50ChangePercent": -3.656433022223411,
+          "microtasksBefore": 1419,
+          "microtasksAfter": 748,
+          "matchesPerPass": 297,
+          "blockEffectsPercent": [
+            1.593479083749516,
+            -6.935156272704668,
+            -11.79202234182869
+          ],
+          "positiveBlockCount": 1
+        },
+        "proximity_pair_1_d10_any_order_reversed": {
+          "p50BeforeUs": 154221.5,
+          "p50AfterUs": 143923.5,
+          "p50ChangePercent": -6.677408791899962,
+          "microtasksBefore": 1419,
+          "microtasksAfter": 748,
+          "matchesPerPass": 297,
+          "blockEffectsPercent": [
+            -3.4958482882258113,
+            -5.297700810044037,
+            -11.980772160474018
+          ],
+          "positiveBlockCount": 0
+        },
+        "proximity_pair_2_d2_ordered": {
+          "p50BeforeUs": 148890.5,
+          "p50AfterUs": 141916.0,
+          "p50ChangePercent": -4.684314983158765,
+          "microtasksBefore": 1138,
+          "microtasksAfter": 748,
+          "matchesPerPass": 16,
+          "blockEffectsPercent": [
+            -5.0642570723135165,
+            -2.6001653862569363,
+            -9.3470954867373
+          ],
+          "positiveBlockCount": 0
+        },
+        "proximity_pair_2_d2_any_order_reversed": {
+          "p50BeforeUs": 148415.5,
+          "p50AfterUs": 139746.5,
+          "p50ChangePercent": -5.841034123794348,
+          "microtasksBefore": 1138,
+          "microtasksAfter": 748,
+          "matchesPerPass": 16,
+          "blockEffectsPercent": [
+            0.9731346022957554,
+            2.340139218846038,
+            -12.687589825863165
+          ],
+          "positiveBlockCount": 2
+        },
+        "proximity_pair_2_d10_ordered": {
+          "p50BeforeUs": 145870.5,
+          "p50AfterUs": 140301.5,
+          "p50ChangePercent": -3.8177698712213917,
+          "microtasksBefore": 1143,
+          "microtasksAfter": 748,
+          "matchesPerPass": 21,
+          "blockEffectsPercent": [
+            1.570971152620415,
+            -1.0994308986945756,
+            -10.362954726191742
+          ],
+          "positiveBlockCount": 1
+        },
+        "proximity_pair_2_d10_any_order_reversed": {
+          "p50BeforeUs": 141690.0,
+          "p50AfterUs": 138689.0,
+          "p50ChangePercent": -2.118004093443433,
+          "microtasksBefore": 1146,
+          "microtasksAfter": 748,
+          "matchesPerPass": 24,
+          "blockEffectsPercent": [
+            -1.596814817090031,
+            -3.7011763401826214,
+            -7.27714167279162
+          ],
+          "positiveBlockCount": 0
+        }
+      },
+      "rawHighlightRowsIncludingWarmups": 287232,
+      "allPageParityChecksPassed": true
+    }
+  ],
+  "totalIndependentProcesses": 24,
+  "scope": "Actual advanced-search ProximityHighlightPattern component on two real books; not UI latency",
+  "primaryStatistic": "Median of six independent process medians per variant and corpus",
+  "uiLatencyMeasured": false,
+  "limitations": [
+    "Three ABBA blocks give six fresh processes per side and corpus. Repeated page/pass rows are not independent n.",
+    "Primary median effects and the three block effects are different statistics; positive block effects are retained explicitly.",
+    "The microtask audit is untimed. Fewer microtasks are a work reduction, not a direct UI/frame latency claim.",
+    "This measures the actual advanced-search proximity highlight route, not simple literal search, regex search, or full reader interaction."
+  ]
+}

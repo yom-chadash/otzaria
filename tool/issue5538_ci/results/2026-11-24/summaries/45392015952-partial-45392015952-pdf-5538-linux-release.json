@@ -1,0 +1,296 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "independent post-download verification; original members unchanged",
+  "runId": 45392015952,
+  "jobId": 138441654389,
+  "artifactId": 14930987868,
+  "sourceCommit": "27e662d2e64db076d19f9ccc22c9b52a8619ea45",
+  "artifactZipSha256": "16abf5c796cb60000d3feb76b6c1b5e892c59a086553019f9fd0b3e5f758f627",
+  "artifactZipBytes": 11619349,
+  "verifiedOriginalMembers": 1225,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45392015952/job/138441654389",
+  "classification": "partial-campaign-cancelled",
+  "declaredScopeComplete": false,
+  "jobConclusion": "cancelled",
+  "lastProducerStatus": "running",
+  "performanceImprovementClaim": false,
+  "wholeCampaignIntegrityClaim": false,
+  "mode": "release",
+  "platform": "Linux",
+  "sdk": {
+    "frameworkVersion": "3.47.7",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "dartSdkVersion": "3.13.5"
+  },
+  "sourcePair": {
+    "baseline": {
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "tree": "25432af43b91fe7f581b8a1bd84e652c8a0ff6a7",
+      "harnessObjects": {
+        "tool/perf_probe": "503260ba5f5241de8bd4435d58345b1cf9e10e83",
+        "integration_test": "f28d021b931a3785e525a54183a5518d102cb062",
+        "test_driver": "91c9a9494b63768a34eb34c02c4239780b499dc0",
+        "lib/core/diagnostics": "aee09369e7b0b88868d317cb66ff2dd9a169972c",
+        "lib/pdf_book/models/pdf_book_render_observation.dart": "77efcf7aa70954e0417ac161de101c60aaf4c5c3"
+      },
+      "dependencyObjects": {
+        "pubspec.yaml": "0e84e566c2322fff52e03635ccc99a6ea577c15d",
+        "pubspec.lock": "74032bfb6108690ed3235a90afaffe53342d3887"
+      }
+    },
+    "candidate": {
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "tree": "6cb141d9bd8f8c3b2cc5f44c65cd5ce51d2f0fdb",
+      "harnessObjects": {
+        "tool/perf_probe": "503260ba5f5241de8bd4435d58345b1cf9e10e83",
+        "integration_test": "f28d021b931a3785e525a54183a5518d102cb062",
+        "test_driver": "91c9a9494b63768a34eb34c02c4239780b499dc0",
+        "lib/core/diagnostics": "aee09369e7b0b88868d317cb66ff2dd9a169972c",
+        "lib/pdf_book/models/pdf_book_render_observation.dart": "77efcf7aa70954e0417ac161de101c60aaf4c5c3"
+      },
+      "dependencyObjects": {
+        "pubspec.yaml": "0e84e566c2322fff52e03635ccc99a6ea577c15d",
+        "pubspec.lock": "74032bfb6108690ed3235a90afaffe53342d3887"
+      }
+    }
+  },
+  "campaignSha256": "007a464f5a8ee4cc9029e408425dba0abb7517447926d902f6a169305899a220",
+  "plannedConditions": 12,
+  "completedConditionCount": 1,
+  "completedConditions": [
+    "gcc-15_2-cold-pdf-reader"
+  ],
+  "attemptedConditions": [
+    {
+      "id": "gcc-15_2-cold-pdf-reader",
+      "status": "passed",
+      "completedPairedBlocks": 2
+    },
+    {
+      "id": "gcc-15_2-cold-pdf-book-view",
+      "status": "running",
+      "completedPairedBlocks": 1
+    }
+  ],
+  "completedPairedBlocks": 3,
+  "completedBlockProcessLaunches": 18,
+  "repetitionsWithinEachProcess": 5,
+  "retainedGeometry": [
+    {
+      "devicePixelRatio": 1.0,
+      "height": 720.0,
+      "width": 1280.0
+    }
+  ],
+  "completedBlockReports": [
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-reader/block-0/baseline/report.json",
+      "sha256": "735cc349edaaa9cc8c8461a8b408134cf09c3b8cfd3a2ec793fd7b1f471d84c1",
+      "condition": "gcc-15_2-cold-pdf-reader",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 1280.0,
+        "height": 720.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-reader/block-0/candidate/report.json",
+      "sha256": "fd7d9bddb011215553258b75692e64a30a92975e0f4d140a053b221104b8eca4",
+      "condition": "gcc-15_2-cold-pdf-reader",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 1280.0,
+        "height": 720.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-reader/block-1/baseline/report.json",
+      "sha256": "06f3ffd22692460fd06a71ff3718eb06a19b24a39df10a077c99db62ad3cedef",
+      "condition": "gcc-15_2-cold-pdf-reader",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 1280.0,
+        "height": 720.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-reader/block-1/candidate/report.json",
+      "sha256": "37cab801ee2eae6b3baf595893a8fff076f68bba0b931e0ddac6dec3983a277b",
+      "condition": "gcc-15_2-cold-pdf-reader",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 1280.0,
+        "height": 720.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-book-view/block-0/baseline/report.json",
+      "sha256": "b36f0515594a1936fe4466135bb3a3a2e4eb118e9e69a69d07b59b4c0c2fb04c",
+      "condition": "gcc-15_2-cold-pdf-book-view",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 1280.0,
+        "height": 720.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-book-view/block-0/candidate/report.json",
+      "sha256": "5cbe00df5829f0625f130287667fcc35a192305ce865826811b16f33ba1bfa0b",
+      "condition": "gcc-15_2-cold-pdf-book-view",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 1280.0,
+        "height": 720.0,
+        "devicePixelRatio": 1.0
+      }
+    }
+  ],
+  "completedBlockProcesses": [
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-reader/block-0/baseline/launch-000",
+      "condition": "gcc-15_2-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "00a6c29fca10be4fbffcb78835d9cae927a56a34fca90f9a0fe415db9236df69",
+      "phasesSha256": "d54d8ddf53343fe20b945644659442db9547c8679a7d60b6a9c417958f2f6a9a"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-reader/block-0/baseline/launch-001",
+      "condition": "gcc-15_2-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "00a6c29fca10be4fbffcb78835d9cae927a56a34fca90f9a0fe415db9236df69",
+      "phasesSha256": "e3110a5b9be431ddbdfd6ecb5ae69a04699ee3a6bc0ade700749710b4c0bd94c"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-reader/block-0/baseline/launch-002",
+      "condition": "gcc-15_2-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "00a6c29fca10be4fbffcb78835d9cae927a56a34fca90f9a0fe415db9236df69",
+      "phasesSha256": "bfe27d33b9b657c2a0bc0f55878efe5bf2a8382d48ddf446face0faa83e9231c"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-reader/block-0/candidate/launch-000",
+      "condition": "gcc-15_2-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "00a6c29fca10be4fbffcb78835d9cae927a56a34fca90f9a0fe415db9236df69",
+      "phasesSha256": "6586ff37fca544261bd7a7b30e5ebd65efedddcbb73081767ad3a029b4589680"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-reader/block-0/candidate/launch-001",
+      "condition": "gcc-15_2-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "00a6c29fca10be4fbffcb78835d9cae927a56a34fca90f9a0fe415db9236df69",
+      "phasesSha256": "f3affbfdd7940cab32e747014633c4fe5b1b607430ca7f8caffb250261ecc91b"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-reader/block-0/candidate/launch-002",
+      "condition": "gcc-15_2-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "00a6c29fca10be4fbffcb78835d9cae927a56a34fca90f9a0fe415db9236df69",
+      "phasesSha256": "521d066248a3edd075a44282c2f948234dd7ec89487f89355cae461b0994b379"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-reader/block-1/baseline/launch-000",
+      "condition": "gcc-15_2-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "00a6c29fca10be4fbffcb78835d9cae927a56a34fca90f9a0fe415db9236df69",
+      "phasesSha256": "e05b9e60521ba98568f100b46da4a14787e4d052f7a0216dfea07a11adab93ef"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-reader/block-1/baseline/launch-001",
+      "condition": "gcc-15_2-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "00a6c29fca10be4fbffcb78835d9cae927a56a34fca90f9a0fe415db9236df69",
+      "phasesSha256": "6a8dbae617172fc47c9b17a4cf1b2c3e155b3c904d65024491949c5c97950457"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-reader/block-1/baseline/launch-002",
+      "condition": "gcc-15_2-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "00a6c29fca10be4fbffcb78835d9cae927a56a34fca90f9a0fe415db9236df69",
+      "phasesSha256": "604d221a602ef7c74e7e288e9487672a938486b0d017c349805fe70a2047f543"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-reader/block-1/candidate/launch-000",
+      "condition": "gcc-15_2-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "00a6c29fca10be4fbffcb78835d9cae927a56a34fca90f9a0fe415db9236df69",
+      "phasesSha256": "69eb6978aee763f03e5b134e80d950f3999885ec0140bea153b225cdd5bf4d93"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-reader/block-1/candidate/launch-001",
+      "condition": "gcc-15_2-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "00a6c29fca10be4fbffcb78835d9cae927a56a34fca90f9a0fe415db9236df69",
+      "phasesSha256": "949800703317384bd679b3da3f9298380b319a59431a22983bd39e35306a44b9"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-reader/block-1/candidate/launch-002",
+      "condition": "gcc-15_2-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "00a6c29fca10be4fbffcb78835d9cae927a56a34fca90f9a0fe415db9236df69",
+      "phasesSha256": "a22c282448b89a5fc7a3af513a30f54608f50e34096663b03922889b9b14c4d9"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-book-view/block-0/baseline/launch-000",
+      "condition": "gcc-15_2-cold-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "00a6c29fca10be4fbffcb78835d9cae927a56a34fca90f9a0fe415db9236df69",
+      "phasesSha256": "cfddabfed3c492ce936d8d497fc8ddab6430c75187a692d16f20e1e2c629d625"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-book-view/block-0/baseline/launch-001",
+      "condition": "gcc-15_2-cold-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "00a6c29fca10be4fbffcb78835d9cae927a56a34fca90f9a0fe415db9236df69",
+      "phasesSha256": "e4f6b047cc9a6f396f70c483dab17acbeada8bbcc643880ae899003b2ffb8501"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-book-view/block-0/baseline/launch-002",
+      "condition": "gcc-15_2-cold-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "00a6c29fca10be4fbffcb78835d9cae927a56a34fca90f9a0fe415db9236df69",
+      "phasesSha256": "967dd3c7c2035b834b96824ba32ebec5747c03561a5657906425fae5a3a937d1"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-book-view/block-0/candidate/launch-000",
+      "condition": "gcc-15_2-cold-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "00a6c29fca10be4fbffcb78835d9cae927a56a34fca90f9a0fe415db9236df69",
+      "phasesSha256": "e4661ed220c7d930992509caa1f148aec3708b91d121bfbd40f5f97078efcbb4"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-book-view/block-0/candidate/launch-001",
+      "condition": "gcc-15_2-cold-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "00a6c29fca10be4fbffcb78835d9cae927a56a34fca90f9a0fe415db9236df69",
+      "phasesSha256": "0fed7cdac8280f1846589f4e3045e4191c4e4ab65955907d2aa48e009b4f9273"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/gcc-15_2-cold-pdf-book-view/block-0/candidate/launch-002",
+      "condition": "gcc-15_2-cold-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "00a6c29fca10be4fbffcb78835d9cae927a56a34fca90f9a0fe415db9236df69",
+      "phasesSha256": "a42bbe67af2cfee43db79694ec8e5eaf95ffc867179d2b10399005faab44cb95"
+    }
+  ],
+  "allRetainedReportFiles": 6,
+  "limitations": [
+    "The workflow was cancelled while its producer still reported running; no whole-campaign success or final integrity guard is claimed.",
+    "Counts use each canonical completed condition/block directory once; duplicated working-result files and preparation passes are not independent launches.",
+    "Complete reports and per-process correctness were rechecked for completed paired blocks, including source cleanliness and identical viewport metadata.",
+    "This preservation summary derives no performance improvement from partial coverage and does not attribute cancellation to product behavior.",
+    "Repetitions within a process are correlated; cold means fresh application data, not a flushed OS file cache."
+  ]
+}

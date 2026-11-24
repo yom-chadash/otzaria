@@ -1,0 +1,296 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "independent post-download verification; original members unchanged",
+  "runId": 45392015952,
+  "jobId": 138441654379,
+  "artifactId": 14930528941,
+  "sourceCommit": "27e662d2e64db076d19f9ccc22c9b52a8619ea45",
+  "artifactZipSha256": "aecc091f5268a64d14feefb6d72a8d6ab0fb73ab254f5a50aef98994e6160bd9",
+  "artifactZipBytes": 13125570,
+  "verifiedOriginalMembers": 1324,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45392015952/job/138441654379",
+  "classification": "partial-campaign-cancelled",
+  "declaredScopeComplete": false,
+  "jobConclusion": "cancelled",
+  "lastProducerStatus": "running",
+  "performanceImprovementClaim": false,
+  "wholeCampaignIntegrityClaim": false,
+  "mode": "profile",
+  "platform": "Linux",
+  "sdk": {
+    "frameworkVersion": "3.47.7",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "dartSdkVersion": "3.13.5"
+  },
+  "sourcePair": {
+    "baseline": {
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "tree": "25432af43b91fe7f581b8a1bd84e652c8a0ff6a7",
+      "harnessObjects": {
+        "tool/perf_probe": "503260ba5f5241de8bd4435d58345b1cf9e10e83",
+        "integration_test": "f28d021b931a3785e525a54183a5518d102cb062",
+        "test_driver": "91c9a9494b63768a34eb34c02c4239780b499dc0",
+        "lib/core/diagnostics": "aee09369e7b0b88868d317cb66ff2dd9a169972c",
+        "lib/pdf_book/models/pdf_book_render_observation.dart": "77efcf7aa70954e0417ac161de101c60aaf4c5c3"
+      },
+      "dependencyObjects": {
+        "pubspec.yaml": "0e84e566c2322fff52e03635ccc99a6ea577c15d",
+        "pubspec.lock": "74032bfb6108690ed3235a90afaffe53342d3887"
+      }
+    },
+    "candidate": {
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "tree": "6cb141d9bd8f8c3b2cc5f44c65cd5ce51d2f0fdb",
+      "harnessObjects": {
+        "tool/perf_probe": "503260ba5f5241de8bd4435d58345b1cf9e10e83",
+        "integration_test": "f28d021b931a3785e525a54183a5518d102cb062",
+        "test_driver": "91c9a9494b63768a34eb34c02c4239780b499dc0",
+        "lib/core/diagnostics": "aee09369e7b0b88868d317cb66ff2dd9a169972c",
+        "lib/pdf_book/models/pdf_book_render_observation.dart": "77efcf7aa70954e0417ac161de101c60aaf4c5c3"
+      },
+      "dependencyObjects": {
+        "pubspec.yaml": "0e84e566c2322fff52e03635ccc99a6ea577c15d",
+        "pubspec.lock": "74032bfb6108690ed3235a90afaffe53342d3887"
+      }
+    }
+  },
+  "campaignSha256": "0e6d07d12c7e76c8b1e78c8478c16ed892c1f3054fecbbaf2dc0d7d175967c74",
+  "plannedConditions": 20,
+  "completedConditionCount": 1,
+  "completedConditions": [
+    "uxlc-genesis-cold-pdf-reader"
+  ],
+  "attemptedConditions": [
+    {
+      "id": "uxlc-genesis-cold-pdf-reader",
+      "status": "passed",
+      "completedPairedBlocks": 2
+    },
+    {
+      "id": "uxlc-genesis-cold-pdf-book-view",
+      "status": "running",
+      "completedPairedBlocks": 1
+    }
+  ],
+  "completedPairedBlocks": 3,
+  "completedBlockProcessLaunches": 18,
+  "repetitionsWithinEachProcess": 5,
+  "retainedGeometry": [
+    {
+      "devicePixelRatio": 1.0,
+      "height": 720.0,
+      "width": 1280.0
+    }
+  ],
+  "completedBlockReports": [
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-0/baseline/report.json",
+      "sha256": "25d5bd7f14ab7b57723309b35335d05ec716c469e4bc457026d37e0db8b15823",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 1280.0,
+        "height": 720.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-0/candidate/report.json",
+      "sha256": "826953f02a5b5d8725226f04581076238a1b386caf07287760985b7112b33578",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 1280.0,
+        "height": 720.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-1/baseline/report.json",
+      "sha256": "72681528bc2f166d06e9f4040923a57dba8c9134b03cabfc71e2da251c8a74ca",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 1280.0,
+        "height": 720.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-1/candidate/report.json",
+      "sha256": "6c61e4eb92b9554e77089e474c85c4b68094292d61df8d193fc867ed719d4b7a",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 1280.0,
+        "height": 720.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-0/baseline/report.json",
+      "sha256": "fc4cbdf802fc82d294678563d1faf01a127963be47bed8905dc8f5b7cc778b23",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 1280.0,
+        "height": 720.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-0/candidate/report.json",
+      "sha256": "13715b6e919d405edaed009ce42223acc99ac307f4e0a445d7d4a27d480a5831",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 1280.0,
+        "height": 720.0,
+        "devicePixelRatio": 1.0
+      }
+    }
+  ],
+  "completedBlockProcesses": [
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-0/baseline/launch-000",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "61d92c373f57912c08b326e9ba1e79a56870b2c42db13847c1ebdd02f25b8332"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-0/baseline/launch-001",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "6c926028b4b1e5cc27c3cf2a12f19ddbdb8a7156c9dde47988fb7fea751ab847"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-0/baseline/launch-002",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "069b8ce5297db80ce6e7478727f574d74cafd2c7cc649f10afe857cb4f19f79e"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-0/candidate/launch-000",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "fd429da6f9e08f3fb64109000c541d322358ec2bda29a2bc1e9fc380f8cbd0d5"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-0/candidate/launch-001",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "40ce44e9c888d555a16123b3f8c4cd415ce86435474899fb24608a971bba951b"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-0/candidate/launch-002",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "ee441b5299d6edd76cda6eb46370c9f284313ef49c03fe7a408c55c950c98455"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-1/baseline/launch-000",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "c65f4b04a04c5a37d9499a1880f76f1777f0dc1da5f70c61d991831c4d90b8dc"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-1/baseline/launch-001",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "a833a2892ff2c70cc713805296db60a6f5e0aa69a462e209f570a777f4aadfa2"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-1/baseline/launch-002",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "f2388b72d5b9fcdd3de76ceb9f1a54e283d0f8ac6aba7ff56d37212fbf6dab41"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-1/candidate/launch-000",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "c4b2fbac50477b1a75a5c7970544d2ca1e7bc1d1304e5aea364858f135e79b6a"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-1/candidate/launch-001",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "83491c12650d7551a69b8ffa19777d3de682e0aed012bf965cfe0e3fa40f4564"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-1/candidate/launch-002",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "714d6a7dc344048ae22501b2de72a66407e9b05166e951b34acab51ee0b13df0"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-0/baseline/launch-000",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "48de612c955930ec0099832a8ca87606f7935d14e25abea29009febf3cf92727"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-0/baseline/launch-001",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "7bc5f8ba1013db012eaad340a84359b93a278629ccdf105470078b2cac7a2855"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-0/baseline/launch-002",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "a0c274a951613db87d8ad33bc0564cc22fed17bfef608a022b8b6cb672320000"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-0/candidate/launch-000",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "8facedaa15feb46ca69d7ecc10e6535557adb501390948a2b533547e63f59b14"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-0/candidate/launch-001",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "cc5117c59e8c5040177d6e2b61f179a34f3e460532041c67516a7fe6d2ed9816"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-0/candidate/launch-002",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "25bc2d66849fa75e6e6e054b9f423ce15783d11b0d7cc49d76175cbd77541481"
+    }
+  ],
+  "allRetainedReportFiles": 7,
+  "limitations": [
+    "The workflow was cancelled while its producer still reported running; no whole-campaign success or final integrity guard is claimed.",
+    "Counts use each canonical completed condition/block directory once; duplicated working-result files and preparation passes are not independent launches.",
+    "Complete reports and per-process correctness were rechecked for completed paired blocks, including source cleanliness and identical viewport metadata.",
+    "This preservation summary derives no performance improvement from partial coverage and does not attribute cancellation to product behavior.",
+    "Repetitions within a process are correlated; cold means fresh application data, not a flushed OS file cache."
+  ]
+}

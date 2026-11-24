@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "independent post-download verification; original members unchanged",
+  "runId": 45405774308,
+  "jobId": 138485992888,
+  "artifactId": 14931726580,
+  "sourceCommit": "5feef3b10e65091d330a0bd2b719f6d202659b45",
+  "artifactZipSha256": "3bbb83f02030790d688c099af22533f49fec0449653542bdf5f536e274befac3",
+  "artifactZipBytes": 336707,
+  "verifiedOriginalMembers": 14,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45405774308/job/138485992888",
+  "classification": "completed-app-correctness",
+  "declaredScopeComplete": true,
+  "jobConclusion": "success",
+  "platform": "ios",
+  "buildMode": "debug",
+  "flutterVersion": "3.47.7",
+  "reportSha256": "201163a155ee8ac53c219f743aa7ce38d12ca8910db2d6d6bc60a22068056e4c",
+  "wrapperReportSha256": "ba3bdb5de6c53dcf9b253734263e6ee75e40c6133da26e29a0e32faed9a66049",
+  "independentAppLaunches": 1,
+  "passedPdfSteps": [
+    "view",
+    "concurrentWork",
+    "cancelAndRecover",
+    "reopen",
+    "loadedModules",
+    "teardown"
+  ],
+  "fixture": {
+    "path": "/Users/runner/Library/Developer/CoreSimulator/Devices/3D76C563-0D28-4E65-B3E0-18466EFC3EC2/data/Containers/Data/Application/D8E43CCA-F573-43FF-BB69-87CD90D67FCD/tmp/otzaria-pdf-ios-h5B6QG/output/bundle-runtime.pdf",
+    "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939",
+    "bytes": 1631,
+    "pages": 4,
+    "content": "Deterministic vector text and black rectangle; mixed page sizes."
+  },
+  "bundledFiles": [
+    {
+      "path": "/Users/runner/Library/Developer/CoreSimulator/Devices/3D76C563-0D28-4E65-B3E0-18466EFC3EC2/data/Containers/Bundle/Application/59D116EF-A938-495C-BA9B-6CAF5B6B4426/Runner.app/Runner",
+      "bytes": 48128,
+      "sha256": "0a615a2c578285fd295fd22eac60d4b2144fe3486ce2b1963c916d8b5ec8d12d",
+      "relativePath": "Runner",
+      "builtPath": "/Users/runner/work/otzaria/otzaria/build/ios/iphonesimulator/Runner.app/Runner",
+      "macho": {
+        "architecture": "x86_64",
+        "cpuType": 16777223,
+        "fileType": 2,
+        "platform": 7,
+        "minimumOS": 983040,
+        "sdk": 1704192
+      }
+    },
+    {
+      "path": "/Users/runner/Library/Developer/CoreSimulator/Devices/3D76C563-0D28-4E65-B3E0-18466EFC3EC2/data/Containers/Bundle/Application/59D116EF-A938-495C-BA9B-6CAF5B6B4426/Runner.app/Frameworks/PDFium.framework/PDFium",
+      "bytes": 14863840,
+      "sha256": "8330a7cac452ecc56b6ca7bbc8fa2256f7d85b0e59058437237a609f84fca1b9",
+      "relativePath": "Frameworks/PDFium.framework/PDFium",
+      "builtPath": "/Users/runner/work/otzaria/otzaria/build/ios/iphonesimulator/Runner.app/Frameworks/PDFium.framework/PDFium",
+      "macho": {
+        "architecture": "x86_64",
+        "cpuType": 16777223,
+        "fileType": 6,
+        "platform": 7,
+        "minimumOS": 851968,
+        "sdk": 1048576
+      }
+    }
+  ],
+  "abiEvidence": {
+    "source": "Dart FFI Abi.current + Mach-O CPU type and IOSSIMULATOR build platform",
+    "abi": "ios_x64",
+    "architecture": "x86_64"
+  },
+  "simulator": {
+    "schemaVersion": 1,
+    "campaign": "839de0d10bb44a1ab874cabaf3fe2358",
+    "name": "otzaria-pdf-839de0d10bb44a1ab874cabaf3fe2358",
+    "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro",
+    "runtimeIdentifier": "com.apple.CoreSimulator.SimRuntime.iOS-26-2",
+    "runtimeVersion": "26.2",
+    "runtimeBuild": "23C54",
+    "runtimeBundle": "/Library/Developer/CoreSimulator/Volumes/iOS_23C54/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.2.simruntime",
+    "udid": "3D76C563-0D28-4E65-B3E0-18466EFC3EC2",
+    "runtimeRoot": "/Library/Developer/CoreSimulator/Volumes/iOS_23C54/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.2.simruntime/Contents/Resources/RuntimeRoot",
+    "model": "iPhone18,1",
+    "runtimeBefore": "com.apple.CoreSimulator.SimRuntime.iOS-26-2",
+    "stateBefore": "Booted",
+    "runtimeAfter": "com.apple.CoreSimulator.SimRuntime.iOS-26-2",
+    "stateAfter": "Booted",
+    "flutterExitCode": 0,
+    "cleanup": "deletedOwnedSimulator"
+  },
+  "teardown": {
+    "ownedDocumentsRemaining": 0,
+    "ownedTabsRemaining": 0,
+    "indexingActiveAfter": false
+  },
+  "rawRasterHashesVerified": true,
+  "physicalDeviceAcceptance": false,
+  "performanceComparison": false,
+  "limitations": [
+    "Installed-app correctness on an owned Intel iOS Simulator in debug mode; no physical-device or performance acceptance.",
+    "The fixture is generated; no physical printer and no WebView scenario ran in this iOS-specific job.",
+    "Viewer, concurrent work, cancellation/recovery, reopen, loaded modules and teardown passed in one app process."
+  ]
+}

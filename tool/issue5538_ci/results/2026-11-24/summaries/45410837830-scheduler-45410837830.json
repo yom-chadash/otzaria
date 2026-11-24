@@ -1,0 +1,298 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "independent post-download verification; original members unchanged",
+  "runId": 45410837830,
+  "jobId": 138503840538,
+  "artifactId": 14928746460,
+  "sourceCommit": "f644e08a8ab1d60b63d77f009b73f0d7a62bf883",
+  "artifactZipSha256": "30d7c746f70bc3730faba54836b70e92ac7a5be7cdb0a066ab474b281b548867",
+  "artifactZipBytes": 189058,
+  "verifiedOriginalMembers": 281,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45410837830/job/138503840538",
+  "classification": "completed-measurement",
+  "declaredScopeComplete": true,
+  "jobConclusion": "success",
+  "scope": "Synthetic scheduler component A/B; no product UI measurement",
+  "sources": {
+    "before": {
+      "commit": "964b5e15e082c8633651ffab1d037631af65e156",
+      "tree": "dc94d5cbc9d2ded39c18cb4036b32c2a42a81b8e",
+      "workerSha256": "bfa4467064f046e223c0dd05f1217414b51bf9bc1287c96340d053a090e6cda5"
+    },
+    "after": {
+      "commit": "af180fa24bd40f7ad422338b7c1f7e7c342b4a88",
+      "tree": "d4c653d7d6137b2136d2d012986eaba65d3b042e",
+      "workerSha256": "a32a2970c344f25d221ec6921ef7fe7fac8c549a7295e409d6131cabc007419e"
+    }
+  },
+  "sdk": {
+    "frameworkVersion": "3.47.7",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "engineCommitDate": "2026-10-07 17:09:12.000Z",
+    "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+    "engineBuildDate": "2026-10-07 10:51:44.552",
+    "dartSdkVersion": "3.13.5",
+    "devToolsVersion": "2.60.0",
+    "flutterVersion": "3.47.7",
+    "flutterRoot": "/opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter"
+  },
+  "tests": {
+    "before": {
+      "passed": 41,
+      "failed": 0,
+      "skipped": 0,
+      "eventRows": 98,
+      "hiddenLifecycleEvents": 3,
+      "nonJsonBuildHookDiagnosticsPreserved": [
+        {
+          "line": 1,
+          "raw": "Running build hooks...No Visual Studio installation found with the requested Microsoft.VisualStudio.Component.VC.Tools.x86.x64 component."
+        },
+        {
+          "line": 3,
+          "raw": "Running build hooks...{\"protocolVersion\":\"0.1.1\",\"runnerVersion\":\"1.31.1\",\"pid\":3723,\"type\":\"start\",\"time\":0}"
+        }
+      ]
+    },
+    "after": {
+      "passed": 41,
+      "failed": 0,
+      "skipped": 0,
+      "eventRows": 98,
+      "hiddenLifecycleEvents": 3,
+      "nonJsonBuildHookDiagnosticsPreserved": [
+        {
+          "line": 1,
+          "raw": "Running build hooks...No Visual Studio installation found with the requested Microsoft.VisualStudio.Component.VC.Tools.x86.x64 component."
+        },
+        {
+          "line": 3,
+          "raw": "Running build hooks...{\"protocolVersion\":\"0.1.1\",\"runnerVersion\":\"1.31.1\",\"pid\":3905,\"type\":\"start\",\"time\":0}"
+        }
+      ]
+    }
+  },
+  "measuredProcesses": 70,
+  "excludedWarmupProcesses": 14,
+  "sampleOrder": "Five alternating AB/BA pairs per fixture; three AB and two BA pairs",
+  "countProbes": 14,
+  "fixtureResults": [
+    {
+      "mode": "cooperative",
+      "requests": 1000,
+      "samplesPerVariant": 5,
+      "medianWallMs": {
+        "before": 29.398,
+        "after": 33.808
+      },
+      "changePercent": 15.001020477583516,
+      "pairedChangesPercent": [
+        14.573659061848044,
+        16.095573888337377,
+        15.001020477583516,
+        12.083234001975285,
+        11.0705596107056
+      ],
+      "ordinaryCancellationReads": {
+        "before": 0,
+        "after": 0
+      },
+      "cooperativeCancellationReads": {
+        "before": 2500500,
+        "after": 2500500
+      }
+    },
+    {
+      "mode": "mixed",
+      "requests": 4096,
+      "samplesPerVariant": 5,
+      "medianWallMs": {
+        "before": 71.198,
+        "after": 26.916
+      },
+      "changePercent": -62.19556729121605,
+      "pairedChangesPercent": [
+        -63.243895255059826,
+        -63.911093504619345,
+        -63.41302533451794,
+        -61.31211550886261,
+        -61.08998915793278
+      ],
+      "ordinaryCancellationReads": {
+        "before": 8308615,
+        "after": 0
+      },
+      "cooperativeCancellationReads": {
+        "before": 170478,
+        "after": 170478
+      }
+    },
+    {
+      "mode": "mixed",
+      "requests": 10000,
+      "samplesPerVariant": 5,
+      "medianWallMs": {
+        "before": 312.993,
+        "after": 88.206
+      },
+      "changePercent": -71.81853907275881,
+      "pairedChangesPercent": [
+        -70.68206960568646,
+        -71.69082838812379,
+        -71.75525339925835,
+        -71.78371401277344,
+        -73.52143699199603
+      ],
+      "ordinaryCancellationReads": {
+        "before": 49509900,
+        "after": 0
+      },
+      "cooperativeCancellationReads": {
+        "before": 1015050,
+        "after": 1015050
+      }
+    },
+    {
+      "mode": "normal",
+      "requests": 100,
+      "samplesPerVariant": 5,
+      "medianWallMs": {
+        "before": 0.657,
+        "after": 0.62
+      },
+      "changePercent": -5.631659056316596,
+      "pairedChangesPercent": [
+        -4.87062404870624,
+        0.6493506493506551,
+        -19.653179190751445,
+        -9.345794392523366,
+        -13.622291021671828
+      ],
+      "ordinaryCancellationReads": {
+        "before": 5050,
+        "after": 0
+      },
+      "cooperativeCancellationReads": {
+        "before": 0,
+        "after": 0
+      }
+    },
+    {
+      "mode": "normal",
+      "requests": 1000,
+      "samplesPerVariant": 5,
+      "medianWallMs": {
+        "before": 8.793,
+        "after": 5.956
+      },
+      "changePercent": -32.26430114864096,
+      "pairedChangesPercent": [
+        -35.19747579153519,
+        -33.309675893068366,
+        -38.45543207076435,
+        -29.52348459001478,
+        -28.644646924829154
+      ],
+      "ordinaryCancellationReads": {
+        "before": 500500,
+        "after": 0
+      },
+      "cooperativeCancellationReads": {
+        "before": 0,
+        "after": 0
+      }
+    },
+    {
+      "mode": "normal",
+      "requests": 4096,
+      "samplesPerVariant": 5,
+      "medianWallMs": {
+        "before": 68.071,
+        "after": 22.599
+      },
+      "changePercent": -66.80084029909948,
+      "pairedChangesPercent": [
+        -65.88253768844221,
+        -66.80084029909948,
+        -68.95786813961688,
+        -66.67087790224319,
+        -63.788571689025964
+      ],
+      "ordinaryCancellationReads": {
+        "before": 8390656,
+        "after": 0
+      },
+      "cooperativeCancellationReads": {
+        "before": 0,
+        "after": 0
+      }
+    },
+    {
+      "mode": "normal",
+      "requests": 10000,
+      "samplesPerVariant": 5,
+      "medianWallMs": {
+        "before": 306.011,
+        "after": 74.391
+      },
+      "changePercent": -75.6900895719435,
+      "pairedChangesPercent": [
+        -76.17013876114956,
+        -75.20938789782066,
+        -75.60299702350406,
+        -75.40890939863543,
+        -76.88466437126822
+      ],
+      "ordinaryCancellationReads": {
+        "before": 50005000,
+        "after": 0
+      },
+      "cooperativeCancellationReads": {
+        "before": 0,
+        "after": 0
+      }
+    }
+  ],
+  "cooperativeNegativeControl": {
+    "workloadAndScanCountsEqual": true,
+    "latencyNonRegression": false,
+    "slowerInAllFivePairs": true,
+    "result": {
+      "mode": "cooperative",
+      "requests": 1000,
+      "samplesPerVariant": 5,
+      "medianWallMs": {
+        "before": 29.398,
+        "after": 33.808
+      },
+      "changePercent": 15.001020477583516,
+      "pairedChangesPercent": [
+        14.573659061848044,
+        16.095573888337377,
+        15.001020477583516,
+        12.083234001975285,
+        11.0705596107056
+      ],
+      "ordinaryCancellationReads": {
+        "before": 0,
+        "after": 0
+      },
+      "cooperativeCancellationReads": {
+        "before": 2500500,
+        "after": 2500500
+      }
+    }
+  },
+  "productAdoptionApproved": false,
+  "limitations": [
+    "Ordinary-only and 1%-cooperative synthetic queues improve, while cooperative-only is slower in all five pairs.",
+    "The cooperative negative control is balanced in work, not in timing; it does not establish non-regression.",
+    "Untimed scan instrumentation and uninstrumented AOT latency are separate receipts and are not mixed.",
+    "This does not measure actual UI/frame latency or justify adopting the scheduler patch into the application.",
+    "Process CPU is quantized by the host clock; zero for a short sample does not mean zero CPU work."
+  ]
+}

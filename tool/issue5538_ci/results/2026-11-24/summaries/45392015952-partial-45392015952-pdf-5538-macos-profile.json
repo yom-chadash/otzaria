@@ -1,0 +1,1124 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "independent post-download verification; original members unchanged",
+  "runId": 45392015952,
+  "jobId": 138441654404,
+  "artifactId": 14930987862,
+  "sourceCommit": "27e662d2e64db076d19f9ccc22c9b52a8619ea45",
+  "artifactZipSha256": "98d4a77e2dbb4d236331c8ccfabcdf63490eb4e57b5e9e0684db107adac48156",
+  "artifactZipBytes": 42711762,
+  "verifiedOriginalMembers": 3626,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45392015952/job/138441654404",
+  "classification": "partial-campaign-cancelled",
+  "declaredScopeComplete": false,
+  "jobConclusion": "cancelled",
+  "lastProducerStatus": "running",
+  "performanceImprovementClaim": false,
+  "wholeCampaignIntegrityClaim": false,
+  "mode": "profile",
+  "platform": "Darwin",
+  "sdk": {
+    "frameworkVersion": "3.47.7",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "dartSdkVersion": "3.13.5"
+  },
+  "sourcePair": {
+    "baseline": {
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "tree": "25432af43b91fe7f581b8a1bd84e652c8a0ff6a7",
+      "harnessObjects": {
+        "tool/perf_probe": "503260ba5f5241de8bd4435d58345b1cf9e10e83",
+        "integration_test": "f28d021b931a3785e525a54183a5518d102cb062",
+        "test_driver": "91c9a9494b63768a34eb34c02c4239780b499dc0",
+        "lib/core/diagnostics": "aee09369e7b0b88868d317cb66ff2dd9a169972c",
+        "lib/pdf_book/models/pdf_book_render_observation.dart": "77efcf7aa70954e0417ac161de101c60aaf4c5c3"
+      },
+      "dependencyObjects": {
+        "pubspec.yaml": "0e84e566c2322fff52e03635ccc99a6ea577c15d",
+        "pubspec.lock": "74032bfb6108690ed3235a90afaffe53342d3887"
+      }
+    },
+    "candidate": {
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "tree": "6cb141d9bd8f8c3b2cc5f44c65cd5ce51d2f0fdb",
+      "harnessObjects": {
+        "tool/perf_probe": "503260ba5f5241de8bd4435d58345b1cf9e10e83",
+        "integration_test": "f28d021b931a3785e525a54183a5518d102cb062",
+        "test_driver": "91c9a9494b63768a34eb34c02c4239780b499dc0",
+        "lib/core/diagnostics": "aee09369e7b0b88868d317cb66ff2dd9a169972c",
+        "lib/pdf_book/models/pdf_book_render_observation.dart": "77efcf7aa70954e0417ac161de101c60aaf4c5c3"
+      },
+      "dependencyObjects": {
+        "pubspec.yaml": "0e84e566c2322fff52e03635ccc99a6ea577c15d",
+        "pubspec.lock": "74032bfb6108690ed3235a90afaffe53342d3887"
+      }
+    }
+  },
+  "campaignSha256": "ca1a57b1d5fddc9c373abeaa2444c9aeed11d6e25cf38741b5b6cbcfd7088613",
+  "plannedConditions": 20,
+  "completedConditionCount": 7,
+  "completedConditions": [
+    "uxlc-genesis-cold-pdf-reader",
+    "uxlc-genesis-cold-pdf-book-view",
+    "uxlc-genesis-warm-pdf-reader",
+    "uxlc-genesis-warm-pdf-book-view",
+    "mikraot-gedolot-genesis-1859-cold-pdf-reader",
+    "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+    "mikraot-gedolot-genesis-1859-warm-pdf-reader"
+  ],
+  "attemptedConditions": [
+    {
+      "id": "uxlc-genesis-cold-pdf-reader",
+      "status": "passed",
+      "completedPairedBlocks": 2
+    },
+    {
+      "id": "uxlc-genesis-cold-pdf-book-view",
+      "status": "passed",
+      "completedPairedBlocks": 2
+    },
+    {
+      "id": "uxlc-genesis-warm-pdf-reader",
+      "status": "passed",
+      "completedPairedBlocks": 2
+    },
+    {
+      "id": "uxlc-genesis-warm-pdf-book-view",
+      "status": "passed",
+      "completedPairedBlocks": 2
+    },
+    {
+      "id": "mikraot-gedolot-genesis-1859-cold-pdf-reader",
+      "status": "passed",
+      "completedPairedBlocks": 2
+    },
+    {
+      "id": "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+      "status": "passed",
+      "completedPairedBlocks": 2
+    },
+    {
+      "id": "mikraot-gedolot-genesis-1859-warm-pdf-reader",
+      "status": "passed",
+      "completedPairedBlocks": 2
+    },
+    {
+      "id": "mikraot-gedolot-genesis-1859-warm-pdf-book-view",
+      "status": "running",
+      "completedPairedBlocks": 1
+    }
+  ],
+  "completedPairedBlocks": 15,
+  "completedBlockProcessLaunches": 90,
+  "repetitionsWithinEachProcess": 5,
+  "retainedGeometry": [
+    {
+      "devicePixelRatio": 1.0,
+      "height": 600.0,
+      "width": 800.0
+    }
+  ],
+  "completedBlockReports": [
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-0/baseline/report.json",
+      "sha256": "7120647b12c1bb7d186f4abfe9d51dd377884b5345dac154acf794db246af691",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-0/candidate/report.json",
+      "sha256": "79ba8a134397a0d7fe8431b7a196d467f28186f800931b0e99c4dc8cbdeec4b6",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-1/baseline/report.json",
+      "sha256": "d156e6275e5b826f2021adf4e5624be60697334daed7a59ef1dadc3a5dd65ede",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-1/candidate/report.json",
+      "sha256": "99a5c622ecb71b2f2460eb7f0e9a550b6ff4e40b5bab7e72a5c0d0b856ce7915",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-0/baseline/report.json",
+      "sha256": "e7c86ba8485be3876245911c273a42dccd15de81a44d5b95703d386d3038f752",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-0/candidate/report.json",
+      "sha256": "e96b1b1dd37470597d0f53cd7ad12ed4c36539f173859baa54ec9ced9d5ecc87",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-1/baseline/report.json",
+      "sha256": "1a9267413013a6dbdc3a1c5a66316137a3c5c740149dbb1400a71ed330cba2f2",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-1/candidate/report.json",
+      "sha256": "50b48056ff1648aca0ff3ee647cfadc8a8c21d8b38a31904b5e78297f153bc7a",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-reader/block-0/baseline/report.json",
+      "sha256": "80224188c580e13eb22c0fe490d8c798d6c8812391b319822d13d97390bff9ea",
+      "condition": "uxlc-genesis-warm-pdf-reader",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-reader/block-0/candidate/report.json",
+      "sha256": "c0ee9dd2d077098962f0711518164a60bb4cde55c8ca1ed92bcbd5f1029d66d7",
+      "condition": "uxlc-genesis-warm-pdf-reader",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-reader/block-1/baseline/report.json",
+      "sha256": "5829577dade93019ff5d07d83daa50a476fcdf5e1b69eb4c65090e0b83f4642f",
+      "condition": "uxlc-genesis-warm-pdf-reader",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-reader/block-1/candidate/report.json",
+      "sha256": "3461de0139d78e6338abadf9d4911c3319929d54357dddd52c6fc62b5bb24528",
+      "condition": "uxlc-genesis-warm-pdf-reader",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-book-view/block-0/baseline/report.json",
+      "sha256": "c7ad311cd68bd927feb4294c3a39a38c437fe5de908c5e7e7794e1c22e5f8e11",
+      "condition": "uxlc-genesis-warm-pdf-book-view",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-book-view/block-0/candidate/report.json",
+      "sha256": "dd7da4a90053173fb5607961c9efed3e8e8585befe8170b442abe8ece052e4ec",
+      "condition": "uxlc-genesis-warm-pdf-book-view",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-book-view/block-1/baseline/report.json",
+      "sha256": "9e71036d3803c3b7f599881ebe82d8d08dd8e0bcdaf81cf1d7e7faa84ff82f66",
+      "condition": "uxlc-genesis-warm-pdf-book-view",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-book-view/block-1/candidate/report.json",
+      "sha256": "c7c843b87c66fd9905902a9172b41abf85d1f41d98e1a7eb87078ed151592582",
+      "condition": "uxlc-genesis-warm-pdf-book-view",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-reader/block-0/baseline/report.json",
+      "sha256": "3302bc6588302cb9405d15ba7e4473eb8daeb1d3ab439c8bd7f95bca0b68f8bf",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-reader",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-reader/block-0/candidate/report.json",
+      "sha256": "19c1ff784609ad348c043b6ca57b6a755499de04709709057ef7cfb969cf376a",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-reader",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-reader/block-1/baseline/report.json",
+      "sha256": "ecbabd693e6cfb7e164572105747e51fea6321af24214febde3c425ac0dcb11b",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-reader",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-reader/block-1/candidate/report.json",
+      "sha256": "564c06a56a4e647bca285831eeea500d030920604445931c5d215774b9218b91",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-reader",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-book-view/block-0/baseline/report.json",
+      "sha256": "173d58a8c398eae750b36789745afee6bee7d539b89ef9e79e8ac1db7ec0e72a",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-book-view/block-0/candidate/report.json",
+      "sha256": "aca9a842ad54d857d72293a427017e89b26ecfd1efe99c9aad7340a56f9171c1",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-book-view/block-1/baseline/report.json",
+      "sha256": "e6aa2769dc8c1a2d93225b1d43e140a6b853cd505f9709d47f99b9c3342b2d42",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-book-view/block-1/candidate/report.json",
+      "sha256": "c6b1a87d36779970cbb0e2dab6817bafb37233b0e43b539fde6dc028164527af",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-reader/block-0/baseline/report.json",
+      "sha256": "e2caba62b357dd0a7e4bc41039ca191d9647c050dc92076e783d792fe83a71f8",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-reader",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-reader/block-0/candidate/report.json",
+      "sha256": "d53a0526059da4bb26f818e88869d34319eb625275c3007a7f4fa5ae4367a9dc",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-reader",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-reader/block-1/baseline/report.json",
+      "sha256": "7e4fae4f72fef4f18d347151e61aac238d9b5fc11c95da069ca43cb0dfb5e160",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-reader",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-reader/block-1/candidate/report.json",
+      "sha256": "0131110363172760d65b63cd7b74841ffad1aa02b5c543b456356d2786013445",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-reader",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-book-view/block-0/baseline/report.json",
+      "sha256": "0944d7b8efc9e0e667d1ce5b7fd2616e73f41069082ddce673ac4060fac6cf54",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-book-view",
+      "role": "baseline",
+      "commit": "345eeedf8877ce8372056c5b689810f834acf6e0",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-book-view/block-0/candidate/report.json",
+      "sha256": "22a0fe05c7bdc5ee014b8c5afddfd2aca415e97a4c31001801b6691e7e6dd887",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-book-view",
+      "role": "candidate",
+      "commit": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+      "viewport": {
+        "width": 800.0,
+        "height": 600.0,
+        "devicePixelRatio": 1.0
+      }
+    }
+  ],
+  "completedBlockProcesses": [
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-0/baseline/launch-000",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "f9eb9c987cd6f8c218a5e6276e63abeb878f2595016fa56f3b5c00d246d017cd"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-0/baseline/launch-001",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "987439dede77b1ab6afa77a5fc5654aaedf691d9a3d1c1de234018a2fff8ca29"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-0/baseline/launch-002",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "fdd80b25d5c764615cca43529b8cc11b7f36b266a028330182a9a469d61bf4f7"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-0/candidate/launch-000",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "85a693ed2a86c54e91a6d3465ca802369b78e330ab83429c1453d4e98fa3200a"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-0/candidate/launch-001",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "cf04daf0e1ee3576678cfbbec0a78c03533c84d58f945e14c8b945a199d20ba4"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-0/candidate/launch-002",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "ea3ef63dbedf71a244f8c98a781e14c74a612c9588f4634726d77339bc6c32ef"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-1/baseline/launch-000",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "a305ed401a3fe9b60991a6aa78e5649034fe4ac30e73c61d912f59a8a9c1e22b"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-1/baseline/launch-001",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "fc80dfe70868cd044694cce33ebc10da0e0449a5b26570e12238bafd70c8b1e4"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-1/baseline/launch-002",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "0ddd69b1cde5a4c40666757270847dd3336e53e544a708ca39a35288c5621935"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-1/candidate/launch-000",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "235ed012c951b3d36ab3a69197575bdcaa0e920deaf22ca3ff193f6cceac5ad5"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-1/candidate/launch-001",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "b2d53466bce7a19739d38b61341a30d832fa761afdc8e3a807c979a314fb0841"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-reader/block-1/candidate/launch-002",
+      "condition": "uxlc-genesis-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "b86e184858292a554fb6c3e75456f7462c43e244cab21bf1e85069fe41b050f5"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-0/baseline/launch-000",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "69ff4e7467110fd88e4829e866b73b8018ca7f30dca357a65905f86dc3a1db1c"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-0/baseline/launch-001",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "b295a4fadd5bd98e2173798971b6c476b8da41e4041cb111078a4d08891e7469"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-0/baseline/launch-002",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "ad224b91d27bf77e5df1fb94640124d31e1c652098e3d3a28abb0378b03a46b8"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-0/candidate/launch-000",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "86a9609d7c6a033d038193bac87dbf88c2e76ba8ee44a2de2b7221be67f0d6a5"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-0/candidate/launch-001",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "4b56bca1f2db6e8d40d85b3338f28a4d2c0a7b469d647388b638fec0fcb362b2"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-0/candidate/launch-002",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "0a045245cd40721e3ce1e348427e5225be14a5f8eaabbebd5a29572dfad8e0fd"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-1/baseline/launch-000",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "49871eed2490317014a31d4092bce37b4bf51e865d827ba5ba1f1cac7049e70b"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-1/baseline/launch-001",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "fde2af37ec54c8c6c329e4b531785e79f2c250428748e4c6dec4f19662d447e5"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-1/baseline/launch-002",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "9be03b5e862b9615ce2e4ce4df756a6ad11b70ec866bcad4cd6261d7a8d78436"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-1/candidate/launch-000",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "8978d68f0d17189356582e7cc0a5a0be94c9a098137b71d5399158e02ab263e5"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-1/candidate/launch-001",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "df9736cb075d6789347276c2c67392fb2d94ed39b0ee795214ee2872afa8434f"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-cold-pdf-book-view/block-1/candidate/launch-002",
+      "condition": "uxlc-genesis-cold-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "0624c563b49757925191441726229b13d009e24f39631c0c3f7de8082bdaac7b"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-reader/block-0/baseline/launch-000",
+      "condition": "uxlc-genesis-warm-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "0de1caaab0659ebfc0153b391d54a9aa36c916295b39419dbe2323216f5c8d44"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-reader/block-0/baseline/launch-001",
+      "condition": "uxlc-genesis-warm-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "e245a3d47652f7ef9634c19181661ca1f07d00e2cf80d923ca67d5654f6429c1"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-reader/block-0/baseline/launch-002",
+      "condition": "uxlc-genesis-warm-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "27b22b9d01dfd9b92a4a9e29ee2384f512716d195d5a3c6d16bfff30ca804665"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-reader/block-0/candidate/launch-000",
+      "condition": "uxlc-genesis-warm-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "d68754657b7e8e218474827f7b4bcad25488f157fb4a9ffd22a4429a559f319e"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-reader/block-0/candidate/launch-001",
+      "condition": "uxlc-genesis-warm-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "d8be1053597ed799629504909f017741d277dfc9e8ee532d62292ad8c12142c3"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-reader/block-0/candidate/launch-002",
+      "condition": "uxlc-genesis-warm-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "e5cf8dc0a56ce6976b2b4d196a3a04130a95a4e3948973af3f5131d0143909ec"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-reader/block-1/baseline/launch-000",
+      "condition": "uxlc-genesis-warm-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "7f60bb20d7076303658b66e31d144e03e602292c3ef808cf24ef54af10e9230a"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-reader/block-1/baseline/launch-001",
+      "condition": "uxlc-genesis-warm-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "6580c7911c368a341303881ab1f16c40195a66ef71048ecf425db83859621915"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-reader/block-1/baseline/launch-002",
+      "condition": "uxlc-genesis-warm-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "39d27085da248204ef050289aadecad4ab0afe733a72c1341546cff30d7f25c9"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-reader/block-1/candidate/launch-000",
+      "condition": "uxlc-genesis-warm-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "25d35fda110d2ee33573e4212d28b53bc4433ecacaabd51b202e73b259a2b8d4"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-reader/block-1/candidate/launch-001",
+      "condition": "uxlc-genesis-warm-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "b789c1439162ec5692f4c18a46eecd3389a748c185ec6debbee7551fb98f9089"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-reader/block-1/candidate/launch-002",
+      "condition": "uxlc-genesis-warm-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "5fbfc40a3fc710aec2064345d19dc328658f2386b0b5d5ba8db291209993cf22"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-book-view/block-0/baseline/launch-000",
+      "condition": "uxlc-genesis-warm-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "705c152b8bbd44353fe4334f52798964de362741707b08990e04c5ae3feeefa2"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-book-view/block-0/baseline/launch-001",
+      "condition": "uxlc-genesis-warm-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "5e31d9e74a6880e82b02d13746d44305be590ae9a3503e40f20123eb31b7a70b"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-book-view/block-0/baseline/launch-002",
+      "condition": "uxlc-genesis-warm-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "b7795ea9dc5bc73bb43eee16ef7bd73b2737c7005df8012675f51dfae29dbef1"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-book-view/block-0/candidate/launch-000",
+      "condition": "uxlc-genesis-warm-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "a1fb1175df8d77d1cc5a78ae75d122484ce82f4d04de9382a3c6dff24154b261"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-book-view/block-0/candidate/launch-001",
+      "condition": "uxlc-genesis-warm-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "140c2856bab76c26ff8b5cced25b1adbbaadb5b70a55502aac4414c7198d425f"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-book-view/block-0/candidate/launch-002",
+      "condition": "uxlc-genesis-warm-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "bbd3e2eb3c7d5b60a12caef3be7e11b3e44dbe1cb3c3a22a2555176623b02296"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-book-view/block-1/baseline/launch-000",
+      "condition": "uxlc-genesis-warm-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "88d772c1cc1e26ee1cb00f957729fe7fe407c388a203c954db128e34db23495a"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-book-view/block-1/baseline/launch-001",
+      "condition": "uxlc-genesis-warm-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "189e8b45e8e3359606bec31fa3384593c3968401dcbde8876688a33c7c57624a"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-book-view/block-1/baseline/launch-002",
+      "condition": "uxlc-genesis-warm-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "9670f010c117ca9c7afae169f271465af44cfaa17af123347dfa7b86c4447ee5"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-book-view/block-1/candidate/launch-000",
+      "condition": "uxlc-genesis-warm-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "f12ccad1cce92a97a622658fae79cf95b081a23629bf205e991e06ba36991293"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-book-view/block-1/candidate/launch-001",
+      "condition": "uxlc-genesis-warm-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "04a685e13cdfe76112669304df1ae5a86c6ea44f8074b8092f6a80210bae28bf"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/uxlc-genesis-warm-pdf-book-view/block-1/candidate/launch-002",
+      "condition": "uxlc-genesis-warm-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "e3ccc333945f0ba555fdf019b2bbaa2c303a7eaa3fafc4866cddda8ab0bb6f44",
+      "phasesSha256": "7b37b77ff8ecffe39e7c0a83701d2d459fffd462ebccfef7c446d56eda650129"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-reader/block-0/baseline/launch-000",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "a79078d8012108d36e5f111b4c65808a52f139ab89dbf3391fba82ab799e0781"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-reader/block-0/baseline/launch-001",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "94d4462c21f79067763ea8d26c208875f0c6a7d0a0e017f9f7e9a768bd543022"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-reader/block-0/baseline/launch-002",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "d3c749bfdf1b0488af158d0b7e524c76acd14b442fa34b1fffc3cc6378dc60c1"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-reader/block-0/candidate/launch-000",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "b871ba7ca60d1192197da14706a85b0bbdd682d2c082c4bb51f82ef19403da33"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-reader/block-0/candidate/launch-001",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "82b42a08cb06ccda788bc68f8254d5eeb6f3354de4a5bf542a7a070ab5a693e6"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-reader/block-0/candidate/launch-002",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "844ab679b8b97924269c6b36cfa3243ef8d4dc481921b4387657c25ebdaa594f"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-reader/block-1/baseline/launch-000",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "fa2708c851b3925c59ea499ba3178d69a753c17d21c3e791b97bb1367426beb5"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-reader/block-1/baseline/launch-001",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "2e94310f8ac3dc21487cb4f46565bc87fd938d50973bfc947f4d92216fcfc23f"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-reader/block-1/baseline/launch-002",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "bf1184fc734f5cac0d33c10cb00c0b29f38b66d132bad54f005865005355c337"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-reader/block-1/candidate/launch-000",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "8962c2c313421dbbb42d18feb82110c054a53fe0f14c2f68f4aed0ae7b289dd1"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-reader/block-1/candidate/launch-001",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "9d1e1244762f103e03dc89090c82db272c0ecb7528ac2ee557c7fc20fea11f43"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-reader/block-1/candidate/launch-002",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "8d6e94191b44f735b01904b23a126e3fbcc6abc3b312fb91e9d2e012fd20f041"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-book-view/block-0/baseline/launch-000",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "de13e2063335930dfcb8c9c7331d0eccd345d8aac9a4263990dfc0e4453289cc"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-book-view/block-0/baseline/launch-001",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "9bc46c177d8114ee426fe4bed15bb13a5bf4c04cafdf2f7071c933f1e62ad7ca"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-book-view/block-0/baseline/launch-002",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "2e79383947db8f774dfffc36ac33b2c56e46368c39217dabf361475708e55f5a"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-book-view/block-0/candidate/launch-000",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "b08b00bd01abf4c4c8f0e8a7c5aa6e596606f4473c5e30dbe5356b63db5de5c3"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-book-view/block-0/candidate/launch-001",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "5c642576efbb5179165adae55f12d05e21fb95dd2a273f00092e2c7615aae3d7"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-book-view/block-0/candidate/launch-002",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "5c688d4b174cbcd984175d304c8a6798b8fd32e85872ffc704bf01d645d1a3ad"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-book-view/block-1/baseline/launch-000",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "9d8b04673a9580cfe189935017aa3405db4eb9a709f747b545437538f2ddfc3b"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-book-view/block-1/baseline/launch-001",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "acd94615e3af3b2cd12b47bc8d4cf6c4493327ddc788b3700f45a816bff23ffe"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-book-view/block-1/baseline/launch-002",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "674713e679ecb3dbb49ac7bbde2e3adade7d8ade68832a948ced78a2c3f7a4f1"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-book-view/block-1/candidate/launch-000",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "f5cae8b1cde1fd573d2e955513d73e89504a52a94b76adb5e0891e8c6e1e3788"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-book-view/block-1/candidate/launch-001",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "0133f8beb524994b5af27ae3ff40c5b9a6919dcef3d22944501173c51bef830c"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-cold-pdf-book-view/block-1/candidate/launch-002",
+      "condition": "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "d2e2a9b80efd34817c75d229d6fb1af763abc787555124b5c2b7e6a3af88402f"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-reader/block-0/baseline/launch-000",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "01980c43aa690394639ee70e1adba64fffa7d859177faa8cc9a5342cf152abbb"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-reader/block-0/baseline/launch-001",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "454ead505197ae94a863945899d59d98657c84a99a243284d1e7d95f6976b130"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-reader/block-0/baseline/launch-002",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "23528bab1fa82553c78e3817436f288152a7c84b2ae5bcd195ae8bfa16ea298a"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-reader/block-0/candidate/launch-000",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "3abd198e3ec151fe537f0e048cab8baee34b14b11542768dca42427bcf139068"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-reader/block-0/candidate/launch-001",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "f072a9506dfa13b859083b6bb1e5af4ded7296aeeb57ff8479c044155bb6895b"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-reader/block-0/candidate/launch-002",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "011ca80251e9c224d6302219c782048b388c4baedc72f70cfde3ddd7794d9c93"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-reader/block-1/baseline/launch-000",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "e7158e45251adcdbad03f45ce1e2e14819868d0c6d2acae213c9df4f1068eac8"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-reader/block-1/baseline/launch-001",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "67a4008d923fc067a904cb1dbd012040f69b95a8d038dff5e4e701bca8971c1e"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-reader/block-1/baseline/launch-002",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-reader",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "ff0797cfc9927915cb45a934914f7f153ec92b375ce024d7446942cf24792b2e"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-reader/block-1/candidate/launch-000",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "ff05b5a192bf063bb11220fc0cfbdef3b2197f4db05775206835444801b8c6a4"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-reader/block-1/candidate/launch-001",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "772a97bac60c6c12f49b6f0ceeb7f7c3153bec79cd401f1dd7754e0a3a980faa"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-reader/block-1/candidate/launch-002",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-reader",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "8bc7b28e4be2c6d162a638ae3b39b4b63b951b36dfa581599bddf41a353e01a4"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-book-view/block-0/baseline/launch-000",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "6d09f250adbb1f9f77eafbbf156d67c4d59b4e28850137ca0700a95d36ff876b"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-book-view/block-0/baseline/launch-001",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "00e415f7366b3272555f5cbf49da01285140a55889f7051f830642731e1ec252"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-book-view/block-0/baseline/launch-002",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-book-view",
+      "role": "baseline",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "89c993ff1a71ecfe3ba44e552505d98d2c4f46fd4b9d839824fc7fd5ae02bc7b"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-book-view/block-0/candidate/launch-000",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "f36948da1f8ca44f8f293a81b7672b79f44fc7442860a8487892ecc2303a62d5"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-book-view/block-0/candidate/launch-001",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "51457ebdd996792121e493493a3a2aab4dffbac689dddf4e7da6abcfe6ec99ab"
+    },
+    {
+      "path": "pdf-5538-campaign/conditions/mikraot-gedolot-genesis-1859-warm-pdf-book-view/block-0/candidate/launch-002",
+      "condition": "mikraot-gedolot-genesis-1859-warm-pdf-book-view",
+      "role": "candidate",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4",
+      "phasesSha256": "877ee1db6f06a071efb9b2d6593eea6143beda78ccd0f9ec7acd17913a6c8938"
+    }
+  ],
+  "allRetainedReportFiles": 30,
+  "limitations": [
+    "The workflow was cancelled while its producer still reported running; no whole-campaign success or final integrity guard is claimed.",
+    "Counts use each canonical completed condition/block directory once; duplicated working-result files and preparation passes are not independent launches.",
+    "Complete reports and per-process correctness were rechecked for completed paired blocks, including source cleanliness and identical viewport metadata.",
+    "This preservation summary derives no performance improvement from partial coverage and does not attribute cancellation to product behavior.",
+    "Repetitions within a process are correlated; cold means fresh application data, not a flushed OS file cache."
+  ]
+}

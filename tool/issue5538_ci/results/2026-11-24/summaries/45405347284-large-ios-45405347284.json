@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "independent post-download verification; original members unchanged",
+  "runId": 45405347284,
+  "jobId": 138484417297,
+  "artifactId": 14930907727,
+  "sourceCommit": "b74fb91a75498cbc8e248237045712cce8dc8159",
+  "artifactZipSha256": "61a82742cba97c75eef6ad0d902fb889b34eb0e2a697e5253968f75631619f1f",
+  "artifactZipBytes": 1668468,
+  "verifiedOriginalMembers": 111,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45405347284/job/138484417297",
+  "classification": "completed-app-correctness",
+  "declaredScopeComplete": true,
+  "jobConclusion": "success",
+  "platform": "ios",
+  "environment": "Intel-hosted iOS Simulator 26.2",
+  "flutter": {
+    "frameworkVersion": "3.47.7",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "engineCommitDate": "2026-10-07 17:09:12.000Z",
+    "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+    "engineBuildDate": "2026-10-07 10:51:44.552",
+    "dartSdkVersion": "3.13.5",
+    "devToolsVersion": "2.60.0",
+    "flutterVersion": "3.47.7",
+    "flutterRoot": "/Users/runner/hostedtoolcache/flutter/stable-3.47.7-x64/flutter"
+  },
+  "physicalDeviceAcceptance": false,
+  "nativeContractTestsPassed": 22,
+  "realFilesUiTestsPassed": 2,
+  "testNames": {
+    "PdfFileExportTests": [
+      "testActualEngineDeallocationDismissesAndCleansWithoutADartReply",
+      "testBusyDuplicateAndStalePickerDoNotReleaseTheCurrentSource",
+      "testBusyPresenterRejectsExportWithoutDismissingExistingPresentation",
+      "testCancelAcknowledgementRetainsStagingUntilDismissalCompletion",
+      "testCancelDuringPresentationWaitsForThePresentationAndDismissal",
+      "testCleanupDoesNotRecursivelyRemoveUnexpectedChildren",
+      "testDestroyContextDoesNotReleaseSourceBeforePickerTerminal",
+      "testFifoSourceIsRejectedWithoutWaitingForAWriter",
+      "testImplicitEngineRegistrationAndMethodContract",
+      "testInteractiveDismissalCompletesOnlyAfterUIKitDismissed",
+      "testInvalidIdentitiesAndSiblingPathsAreNotAdopted",
+      "testInvalidProviderResultIsNotRewrittenByLateCancellation",
+      "testMissingPresenterIsTerminalAndCleansOnlyItsOwnFile",
+      "testReplacingOperationDirectoryDoesNotDeleteTheReplacement",
+      "testReplacingRootRefusesCleanupSoDartCannotDeleteTheReplacement",
+      "testRootAndOperationSymlinksAreNotFollowed",
+      "testSaveAfterCancelAckWinsAndDuplicateCallbacksCannotChangeIt",
+      "testSavedResultDoesNotInventAnUnavailableDestinationName",
+      "testSceneDisconnectIsDeliveredByFlutterSceneDelegate",
+      "testStagingCleanupFailureCannotTurnSavedIntoFailedOrInventResidualDocument",
+      "testStagingCleanupPreservesRootAndOtherOperations",
+      "testSymlinkAndHardlinkSourcesAreNotAdopted"
+    ],
+    "PdfFileExportUITests": [
+      "testFilesCancelTerminatesTheRealServiceWithoutCreatingADestination",
+      "testFilesSaveCopiesTheRealServiceFileAndReleasesStaging"
+    ]
+  },
+  "realPdfInput": {
+    "sha256": "92a145512e33c4a3c8f1b1c92d2d79c4db91a49cc921a316201be81bfa85040d",
+    "bytes": 41990345,
+    "fixture": "real-scanned-pdf-4-up"
+  },
+  "sourceFilesUnchanged": true,
+  "filesResults": {
+    "files-save": {
+      "status": "saved",
+      "destinationVerified": true,
+      "stagingAbsent": true,
+      "outputBytes": 41605801,
+      "composition": {
+        "fixtureKind": "real-scanned-pdf-4-up",
+        "sourceSha256": "92a145512e33c4a3c8f1b1c92d2d79c4db91a49cc921a316201be81bfa85040d",
+        "sourceBytes": 41990345,
+        "sourcePages": 374,
+        "sheetCount": 94,
+        "composeUs": 17689242,
+        "rows": 2,
+        "cols": 2
+      },
+      "expectedSha256": "30b54881fbbc16168676938772712f7c45c4784b5640a1a1ffd412c0bbce9ad3",
+      "actualSha256": "30b54881fbbc16168676938772712f7c45c4784b5640a1a1ffd412c0bbce9ad3"
+    },
+    "files-cancel": {
+      "status": "cancelled",
+      "destinationVerified": true,
+      "stagingAbsent": true,
+      "outputBytes": 41605801,
+      "composition": {
+        "fixtureKind": "real-scanned-pdf-4-up",
+        "sourceSha256": "92a145512e33c4a3c8f1b1c92d2d79c4db91a49cc921a316201be81bfa85040d",
+        "sourceBytes": 41990345,
+        "sourcePages": 374,
+        "sheetCount": 94,
+        "composeUs": 16691795,
+        "rows": 2,
+        "cols": 2
+      },
+      "expectedSha256": "71577ca7bbe34cf20e75cd934df4993ba6c5526718bc9474a2e611f104cad7ec",
+      "actualSha256": null
+    }
+  },
+  "ownedSimulatorDeleted": true,
+  "performanceComparison": false,
+  "limitations": [
+    "Real UIKit Files save/cancel with a 374-page scanned input, 94 composed sheets; local Simulator Files provider only.",
+    "Composition times are recorded diagnostics of two UI cases, not a paired speedup study, a physical-device latency claim, or an independent memory study.",
+    "Third-party providers, physical devices and physical printing were not exercised."
+  ]
+}

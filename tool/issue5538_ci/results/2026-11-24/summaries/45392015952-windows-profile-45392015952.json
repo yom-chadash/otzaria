@@ -1,0 +1,339 @@
+{
+  "schemaVersion": 1,
+  "classification": "partial-campaign-with-observed-product-navigation-failure-cause-not-yet-isolated",
+  "declaredScopeComplete": false,
+  "provenance": {
+    "run_id": 45392015952,
+    "job_id": 138441654156,
+    "artifact_id": 14927569503,
+    "artifact_name": "pdf-5538-windows-profile",
+    "source_commit": "27e662d2e64db076d19f9ccc22c9b52a8619ea45",
+    "sha256": "e3719be3d48430bc4cbb4312735438734e6939b6d738428b2f9e904f926062a4",
+    "size": 3962706
+  },
+  "sourcePair": {
+    "schemaVersion": 1,
+    "baseline": "345eeedf8877ce8372056c5b689810f834acf6e0",
+    "candidate": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+    "launchesPerBlock": 3,
+    "repetitions": 5,
+    "cacheStates": [
+      "cold",
+      "warm"
+    ],
+    "scenarios": [
+      "pdf-reader",
+      "pdf-book-view"
+    ],
+    "cases": [
+      "uxlc-genesis",
+      "mikraot-gedolot-genesis-1859",
+      "letteris-hebrew-1910",
+      "gcc-15_2",
+      "derived-real-mixed-10000"
+    ]
+  },
+  "mode": "profile",
+  "platform": "Windows",
+  "sdk": {
+    "frameworkVersion": "3.47.7",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "dartSdkVersion": "3.13.5"
+  },
+  "completedConditions": [
+    "uxlc-genesis-cold-pdf-reader",
+    "uxlc-genesis-cold-pdf-book-view",
+    "uxlc-genesis-warm-pdf-reader",
+    "uxlc-genesis-warm-pdf-book-view",
+    "mikraot-gedolot-genesis-1859-cold-pdf-reader"
+  ],
+  "completedConditionCount": 5,
+  "requestedConditionCount": 20,
+  "completedPairedBlocks": 10,
+  "completedMeasuredProcessLaunches": 60,
+  "failedCondition": "mikraot-gedolot-genesis-1859-cold-pdf-book-view",
+  "failedRole": "candidate",
+  "failedProcess": 0,
+  "failedPhase": {
+    "name": "pdf.book_view.jump_forward",
+    "warmup": true,
+    "iteration": 0,
+    "durationMs": 48001.676,
+    "details": {
+      "page": 280,
+      "input": "applicationThumbnailNavigationHandler"
+    },
+    "error": "TimeoutException after 0:00:45.000000: Waiting for live book image of PDF page 280 after page-turn layers clear; last observation: {visible: true, bookView: true, layoutReady: true, viewerState: ready, visiblePages: [1], hasTransitionOverlay: false, pageTurnActive: false, animationRunning: false, queuedTurns: 0, readinessEndpoint: liveViewerAfterTransitionLayersRemoved, gpuPresentation: notMeasured}"
+  },
+  "completedPrecedingPhasesInFailedProcess": [
+    {
+      "name": "startup.first_content",
+      "durationMs": 562.981,
+      "warmup": false,
+      "details": null
+    },
+    {
+      "name": "startup.window_useful",
+      "durationMs": 303,
+      "warmup": false,
+      "details": {
+        "revealMs": 303,
+        "phases": [
+          {
+            "name": "earlyInit",
+            "atMs": 1,
+            "durationMs": 0
+          },
+          {
+            "name": "windowManager",
+            "atMs": 2,
+            "durationMs": 1
+          },
+          {
+            "name": "windowCloseHandling",
+            "atMs": 3,
+            "durationMs": 0
+          },
+          {
+            "name": "certs+settings",
+            "atMs": 3,
+            "durationMs": 183
+          },
+          {
+            "name": "initHive",
+            "atMs": 186,
+            "durationMs": 2
+          },
+          {
+            "name": "portablePaths",
+            "atMs": 188,
+            "durationMs": 0
+          },
+          {
+            "name": "adoptDefaultLibrary",
+            "atMs": 192,
+            "durationMs": 0
+          },
+          {
+            "name": "recoverInterruptedUpdate",
+            "atMs": 192,
+            "durationMs": 1
+          },
+          {
+            "name": "recoverOrphanedBackup",
+            "atMs": 193,
+            "durationMs": 4
+          },
+          {
+            "name": "sqlite",
+            "atMs": 197,
+            "durationMs": 9
+          },
+          {
+            "name": "pluginDbSources",
+            "atMs": 206,
+            "durationMs": 2
+          },
+          {
+            "name": "pluginCrashGuard",
+            "atMs": 208,
+            "durationMs": 0
+          },
+          {
+            "name": "searchEngine",
+            "atMs": 208,
+            "durationMs": 0
+          },
+          {
+            "name": "settingsBloc",
+            "atMs": 220,
+            "durationMs": 0
+          },
+          {
+            "name": "tabsBloc",
+            "atMs": 224,
+            "durationMs": 1
+          },
+          {
+            "name": "navigationBloc",
+            "atMs": 224,
+            "durationMs": 1
+          },
+          {
+            "name": "pluginSystemBloc",
+            "atMs": 226,
+            "durationMs": 0
+          },
+          {
+            "name": "compactCacheDb",
+            "atMs": 303,
+            "durationMs": 0
+          },
+          {
+            "name": "pluginSafeMode",
+            "atMs": 303,
+            "durationMs": 0
+          }
+        ],
+        "marks": [
+          {
+            "name": "bootstrapDone",
+            "atMs": 208
+          },
+          {
+            "name": "bootstrapReady",
+            "atMs": 208
+          },
+          {
+            "name": "appBuild",
+            "atMs": 220
+          },
+          {
+            "name": "mainScreenInit",
+            "atMs": 224
+          },
+          {
+            "name": "waitingForLibrary",
+            "atMs": 244
+          },
+          {
+            "name": "libraryLoaded",
+            "atMs": 262
+          },
+          {
+            "name": "reveal:contentShown",
+            "atMs": 262
+          },
+          {
+            "name": "reveal:firstFrame",
+            "atMs": 279
+          },
+          {
+            "name": "presentMainWindow",
+            "atMs": 279
+          }
+        ]
+      }
+    },
+    {
+      "name": "pdf.book_view.open",
+      "durationMs": 2090.813,
+      "warmup": true,
+      "details": {
+        "page": 1,
+        "layout": "bookView",
+        "checkpointsMs": {
+          "controller_ready": 115.438,
+          "final_image_ready": 2090.81
+        },
+        "finalObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [
+            1
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      }
+    },
+    {
+      "name": "pdf.book_view.thumbnails_first_image",
+      "durationMs": 582.313,
+      "warmup": true,
+      "details": {
+        "readiness": "firstDecodedVisibleImageAndLiveBookImage",
+        "checkpointsMs": {
+          "first_visible_thumbnail_observed": 550.843
+        }
+      }
+    }
+  ],
+  "timingInterpretation": {
+    "applicationNavigationAwaitCapMs": 3000,
+    "applicationNavigationTimeoutPolicy": "_goToPageWithSpreadLock .timeout(..., onTimeout: () {}) completes the wrapper without reporting timeout or verifying arrival",
+    "observerTimeoutMs": 45000,
+    "observedTotalPhaseMs": 48001.676,
+    "inference": "The 48001.676 ms phase is consistent with the existing 3 s application wait cap followed by the separate 45 s observer deadline; no raw event directly timestamps the swallowed timeout.",
+    "lastObservation": {
+      "visible": true,
+      "bookView": true,
+      "layoutReady": true,
+      "viewerState": "ready",
+      "visiblePages": [
+        1
+      ],
+      "hasTransitionOverlay": false,
+      "pageTurnActive": false,
+      "animationRunning": false,
+      "queuedTurns": 0
+    }
+  },
+  "sourceInspection": {
+    "application": "lib/pdf_book/view/pdf_book_screen.dart:_jumpFromNavPane -> _jumpToPage -> _goToPageWithSpreadLock",
+    "applicationNavigationUnchangedAcrossSources": true,
+    "engineVersion": "pdfrx 2.13.1",
+    "mechanism": "PdfViewer._goTo resets AnimationController and awaits animateTo without orCancel; PdfViewerSizeDelegateLegacy.onLayoutUpdate starts another goToPosition on a layout change. A superseding animation can leave the earlier TickerFuture pending.",
+    "mechanismIsProvenCauseOfThisRun": false,
+    "missingDiagnosticData": [
+      "layout identity/geometry at the request",
+      "page isLoaded states at the request",
+      "timeline of other navigation/layout callbacks"
+    ]
+  },
+  "impactOnReplacementCampaign": {
+    "reuseFixRepairsThisFailure": false,
+    "newRunId": 45415519185,
+    "action": "Preserve new samples and diagnose if reproduced. Do not extend deadlines, sleep, retry the benchmark, or count this failed warmup as successful evidence."
+  },
+  "limitations": [
+    "One observed failed navigation, not proof of a candidate-only regression.",
+    "No complete paired measurement exists for the failed MG book-view condition.",
+    "The five completed conditions remain raw historical evidence; this summary makes no performance claim from them.",
+    "No product change was made based only on the suspected cancellation mechanism."
+  ],
+  "evidenceFiles": [
+    {
+      "path": "campaign.json",
+      "bytes": 1093704,
+      "sha256": "28702fa87f9ab107e8791ba7908775a000ab2fe4b6bbbaf7fad37d17edf2d773"
+    },
+    {
+      "path": "results/candidate/manifest.json",
+      "bytes": 2259,
+      "sha256": "bc3e3eb900517a965e134b770071ee6d6b96bca42a3a88dba1b79a018b3389ad"
+    },
+    {
+      "path": "results/candidate/launch-000/completion.json",
+      "bytes": 763,
+      "sha256": "c1b34abe8b165e53a6cb013fa044b2793eb6bfb6d260449803ded992239baa85"
+    },
+    {
+      "path": "results/candidate/launch-000/phases.jsonl",
+      "bytes": 14119,
+      "sha256": "75c10be3e623931493cd882a268159c54abcf0e3ee8ed757b91045176128163b"
+    },
+    {
+      "path": "results/candidate/launch-000/stdout.log",
+      "bytes": 3515,
+      "sha256": "846b22b9d91745fc60467b95944bd99fbe69105f5b51fa400b097249efe692a9"
+    },
+    {
+      "path": "results/candidate/launch-000/stderr.log",
+      "bytes": 1813,
+      "sha256": "86810b0d9fd4de2eec4134a68d1c84b4be5b0095207abda1b89bd0d3b9bc5f58"
+    },
+    {
+      "path": "workflow-job.log",
+      "bytes": 92915,
+      "sha256": "3fa6f0590b521dad24c9dc7ac055559d9e7c59be1b8c0d26e5d46479de7326e6"
+    }
+  ]
+}
