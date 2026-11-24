@@ -158,8 +158,10 @@ def prepare_overlay(checkout, variant, original, output):
     viewer['rootUri'] = copied.as_uri() + '/'
     overlay = output / 'packages.json'
     write(overlay, config)
-    write(output / 'overlay-receipt.json', {'variant': variant, 'officialConfig': identity.file_record(config_path),
-          'officialGraph': identity.file_record(checkout / '.dart_tool/package_graph.json'),
+    installed = install_project_overlay(checkout, copied, overlay)
+    write(output / 'overlay-receipt.json', {'variant': variant, 'officialConfig': installed['officialConfigBackup'],
+          'officialGraph': installed['officialGraphBackup'],
+          'resolution': installed,
           'overlayConfig': identity.file_record(overlay), 'originalArchiveSha256': VIEWER_ARCHIVE_SHA,
           'beforeSearcherSha256': hashlib.sha256(before.encode()).hexdigest(),
           'afterSearcherSha256': hashlib.sha256(after.encode()).hexdigest(),
@@ -168,23 +170,153 @@ def prepare_overlay(checkout, variant, original, output):
     return copied, overlay
 
 
-def compiler_inputs(checkout, viewer):
+def normalized_config(config, path):
+    result = json.loads(json.dumps(config))
+    for package in result['packages']:
+        package['rootUri'] = urljoin(path.as_uri(), package['rootUri'])
+    return result
+
+
+def install_project_overlay(checkout, viewer, overlay):
+    """Use the generated config read by this SDK's Linux KernelSnapshot.
+
+    Only the owned throwaway worktree's generated files are involved. The
+    official pub output remains as exact backup bytes, and the declared private
+    viewer is the only package-root delta. No resolver or Pub cache is changed.
+    """
+    config = checkout / '.dart_tool/package_config.json'
+    graph = config.with_name('package_graph.json')
+    require(config.is_file() and graph.is_file() and not config.is_symlink()
+            and not graph.is_symlink(), 'Missing or aliased official pub resolution')
+    before_config, before_graph = identity.file_record(config), identity.file_record(graph)
+    official = normalized_config(json.loads(config.read_text()), config)
+    expected = json.loads(json.dumps(official))
+    matches = [package for package in expected['packages'] if package['name'] == 'pdfrx']
+    require(len(matches) == 1, 'Official resolution must contain one viewer package')
+    matches[0]['rootUri'] = viewer.as_uri() + '/'
+    require(json.loads(overlay.read_text()) == expected,
+            'Private mapping changed more than the declared viewer root')
+    saved_config = overlay.parent / 'official-package-config.json'
+    saved_graph = overlay.parent / 'official-package-graph.json'
+    require(not saved_config.exists() and not saved_graph.exists(), 'Official resolution backup must be new')
+    shutil.copyfile(config, saved_config)
+    shutil.copyfile(graph, saved_graph)
+    require(digest(saved_config) == before_config['sha256'] == digest(config)
+            and digest(saved_graph) == before_graph['sha256'] == digest(graph),
+            'Official resolution changed while preserving it')
+    shutil.copyfile(overlay, config)
+    require(config.read_bytes() == overlay.read_bytes() and graph.read_bytes() == saved_graph.read_bytes(),
+            'Installed viewer mapping or unchanged package graph differs')
+    receipt = {
+        'method': 'Declared generated package_config overlay in an owned temporary worktree; Linux KernelSnapshot reads this path, not the outer --packages flag.',
+        'resolver': 'flutter pub get --enforce-lockfile completed before the overlay; no resolver rerun',
+        'changedPackageRoots': ['pdfrx'],
+        'officialProjectConfigBeforeOverlay': before_config,
+        'officialProjectGraph': before_graph,
+        'officialConfigBackup': identity.file_record(saved_config),
+        'officialGraphBackup': identity.file_record(saved_graph),
+        'privateMapping': identity.file_record(overlay),
+        'installedProjectConfig': identity.file_record(config),
+        'installedProjectGraph': identity.file_record(graph),
+    }
+    write(overlay.parent / 'installed-resolution.json', receipt)
+    return receipt
+
+
+def verify_installed_overlay(checkout, overlay):
+    path = overlay.parent / 'installed-resolution.json'
+    receipt = json.loads(path.read_text())
+    expected_paths = {
+        'officialConfigBackup': overlay.parent / 'official-package-config.json',
+        'officialGraphBackup': overlay.parent / 'official-package-graph.json',
+        'privateMapping': overlay,
+        'installedProjectConfig': checkout / '.dart_tool/package_config.json',
+        'installedProjectGraph': checkout / '.dart_tool/package_graph.json',
+    }
+    for name, expected in expected_paths.items():
+        require(expected.is_file() and not expected.is_symlink()
+                and identity.file_record(expected) == receipt[name],
+                f'Official/private resolution changed: {name}')
+    require(receipt['installedProjectConfig']['sha256'] == receipt['privateMapping']['sha256']
+            and receipt['installedProjectGraph']['sha256'] == receipt['officialProjectGraph']['sha256']
+            == receipt['officialGraphBackup']['sha256']
+            and receipt['officialConfigBackup']['sha256'] == receipt['officialProjectConfigBeforeOverlay']['sha256'],
+            'Official/private resolution receipt is inconsistent')
+    return {'receipt': identity.file_record(path), 'resolution': receipt}
+
+
+def preserve_compiler_records(checkout, directory):
+    """Keep exact small build-system records even if the build/guard fails.
+
+    .log/.json names match the existing artifact glob; no build or corpus binary
+    is copied. These are compiler records, not inferred application observations.
+    """
+    build = checkout / '.dart_tool/flutter_build'
+    paths = sorted({*build.glob('*/*.d'), *build.glob('*/kernel_snapshot_program.stamp')})
+    records = []
+    for index, path in enumerate(paths):
+        require(path.is_file() and not path.is_symlink(), 'Compiler record is not a regular file')
+        copied = directory / f'compiler-record-{index:03d}.log'
+        require(not copied.exists(), 'Compiler evidence must be new')
+        shutil.copyfile(path, copied)
+        require(digest(path) == digest(copied), 'Compiler record changed while preserving it')
+        records.append({'original': identity.file_record(path), 'copy': identity.file_record(copied)})
+    write(directory / 'compiler-records.json', {'scope': 'Exact raw Flutter build records, collected before source cleanup.', 'records': records})
+
+
+def compiler_inputs(checkout, viewer, diagnostics=None):
     candidates = []
     required = {(checkout / TARGET).resolve(), (checkout / METRICS).resolve(),
                 (checkout / APP[0]).resolve(), (viewer / SEARCHER).resolve()}
-    for depfile in (checkout / '.dart_tool/flutter_build').glob('*/kernel_snapshot_program.d'):
-        sides = depfile.read_text().split(': ')
-        require(len(sides) == 2, 'Invalid compiler depfile')
-        paths = {Path(x) if Path(x).is_absolute() else checkout / x for x in identity.depfile_paths(sides[1])}
-        if required <= {p.resolve() for p in paths}:
-            candidates.append((depfile, paths))
+    findings = []
+    for depfile in sorted((checkout / '.dart_tool/flutter_build').glob('*/kernel_snapshot_program.d')):
+        row = {'depfile': identity.file_record(depfile)}
+        findings.append(row)
+        try:
+            sides = depfile.read_text().split(': ')
+            require(len(sides) == 2, 'Invalid compiler depfile')
+            def paths_from(names):
+                return {Path(x) if Path(x).is_absolute() else checkout / x for x in names}
+            paths = paths_from(identity.depfile_paths(sides[1]))
+            outputs = paths_from(identity.depfile_paths(sides[0]))
+            canonical = {p.resolve() for p in paths}
+            row['inputCount'] = len(paths)
+            row['missingRequiredInputs'] = sorted(map(str, required - canonical))
+            row['searcherInputs'] = sorted(str(p) for p in paths if p.name == Path(SEARCHER).name)
+            kernel = depfile.parent / 'app.dill'
+            row['outputs'] = sorted(map(str, outputs))
+            require(kernel.resolve() in {p.resolve() for p in outputs} and kernel.is_file()
+                    and kernel.stat().st_size > 0, 'Depfile does not produce the official nonempty app.dill')
+            stamp = depfile.with_name('kernel_snapshot_program.stamp')
+            require(stamp.is_file() and not stamp.is_symlink(), 'Missing official kernel build stamp')
+            stamp_data = json.loads(stamp.read_text())
+            require(isinstance(stamp_data.get('inputs'), list) and isinstance(stamp_data.get('outputs'), list),
+                    'Malformed official kernel build stamp')
+            stamp_inputs = {p.resolve() for p in paths_from(stamp_data['inputs'])}
+            stamp_outputs = {p.resolve() for p in paths_from(stamp_data['outputs'])}
+            config = (checkout / '.dart_tool/package_config.json').resolve()
+            row['stampIncludesInstalledPackageConfig'] = config in stamp_inputs
+            require(config in stamp_inputs and required <= stamp_inputs and kernel.resolve() in stamp_outputs,
+                    'Official kernel stamp does not prove the installed package config and required inputs/output')
+            require(not row['missingRequiredInputs'], 'Compiler used different app/session/observer/viewer inputs')
+            # Hash every real compiler input, including the build-system package
+            # mapping, rather than merely checking suffixes or source text names.
+            inputs = paths | paths_from(stamp_data['inputs'])
+            candidates.append({'depfile': identity.file_record(depfile), 'stamp': identity.file_record(stamp),
+                'kernel': identity.file_record(kernel), 'installedPackageConfig': identity.file_record(config),
+                'inputs': [identity.file_record(p) for p in sorted(inputs, key=str)]})
+            row['accepted'] = True
+        except (ValueError, OSError, TypeError, KeyError) as error:
+            row['accepted'] = False
+            row['error'] = str(error)
+    if diagnostics is not None:
+        write(diagnostics / 'compiler-input-diagnostics.json', {'required': sorted(map(str, required)),
+              'candidates': findings, 'matchingDepfiles': len(candidates)})
     require(len(candidates) == 1, 'Need one compiler depfile proving the actual app/session/overlay entrypoints')
-    depfile, paths = candidates[0]
-    return {'depfile': identity.file_record(depfile),
-            'inputs': [identity.file_record(p) for p in sorted(paths, key=str)]}
+    return candidates[0]
 
 
-def snapshot(checkout, viewer, overlay, executable):
+def snapshot(checkout, viewer, overlay, executable, diagnostics=None):
     sdk = identity.sdk_identity(checkout)
     sdk_engine = Path(sdk['root']) / 'bin/cache/artifacts/engine/linux-x64-profile/libflutter_linux_gtk.so'
     require(digest(sdk_engine) == digest(executable.parent / 'lib/libflutter_linux_gtk.so'),
@@ -195,8 +327,9 @@ def snapshot(checkout, viewer, overlay, executable):
             'appAndHarness': {p: identity.file_record(checkout / p) for p in (*HARNESS, *APP)},
             'packageConfig': identity.file_record(checkout / '.dart_tool/package_config.json'),
             'packageGraph': identity.file_record(checkout / '.dart_tool/package_graph.json'),
+            'declaredPackageOverlay': verify_installed_overlay(checkout, overlay),
             'overlay': identity.file_record(overlay), 'viewerFiles': file_manifest(viewer),
-            'compiler': compiler_inputs(checkout, viewer),
+            'compiler': compiler_inputs(checkout, viewer, diagnostics),
             'bundle': identity.bundle_identity(executable, 'linux')}
 
 
@@ -323,13 +456,17 @@ def main():
                     'Locked PDF packages changed')
             viewer, overlay = prepare_overlay(checkout, variant, original, directory)
             run(['flutter', 'analyze', '--no-pub', TARGET, METRICS], checkout, directory / 'analyze.log')
-            command = ['flutter', f'--packages={overlay}', 'build', 'linux', '--profile', '--no-pub',
+            verify_installed_overlay(checkout, overlay)
+            command = ['flutter', 'build', 'linux', '--profile', '--no-pub',
                        f'--target={TARGET}', f'--dart-define=WRAP_SEARCH_SOURCE={commit}',
                        f'--dart-define=WRAP_SEARCH_INSTRUMENTED={str(variant == "counts").lower()}']
             write(directory / 'build-command.json', command)
-            run(command, checkout, directory / 'build.log')
+            try:
+                run(command, checkout, directory / 'build.log')
+            finally:
+                preserve_compiler_records(checkout, directory)
             executable = (checkout / 'build/linux/x64/profile/bundle/otzaria').resolve(strict=True)
-            frozen = snapshot(checkout, viewer, overlay, executable)
+            frozen = snapshot(checkout, viewer, overlay, executable, directory)
             write(directory / 'build-snapshot.json', frozen)
             builds[variant] = {'checkout': checkout, 'viewer': viewer, 'overlay': overlay,
                                'executable': executable, 'snapshot': frozen, 'commit': commit, 'variant': variant,
