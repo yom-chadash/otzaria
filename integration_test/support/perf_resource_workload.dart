@@ -59,6 +59,7 @@ import 'package:otzaria/work_status/work_status_item.dart';
 import 'package:otzaria/widgets/navigation/nav_side_panel.dart';
 import 'package:path/path.dart' as p;
 import 'package:positioned_sliver_list/positioned_list.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../../tool/perf_probe/src/pdf_reader_case.dart';
 import '../../tool/perf_probe/src/pdf_image_budget.dart';
@@ -81,10 +82,7 @@ class PerfResourceProbeSession {
   PerfResourceProbeSession({required this.run, required this.complete});
 
   final Future<void> Function(WidgetController controller) run;
-  final Future<void> Function({
-    required bool passed,
-    List<String> testFailures,
-  })
+  final Future<void> Function({required bool passed, List<String> testFailures})
   complete;
 }
 
@@ -291,8 +289,18 @@ PerfResourceProbeSession createPerfResourceProbeSession(
         installedErrorCapture = true;
       }
 
+      Size? controlledPdfViewport;
       rec.verifyAction = () {
         verifyPerfProbeBinding(binding, bindingMode);
+        final expectedViewport = controlledPdfViewport;
+        if (expectedViewport != null) {
+          final view = binding.platformDispatcher.implicitView!;
+          if (view.physicalSize / view.devicePixelRatio != expectedViewport) {
+            throw StateError(
+              'The controlled PDF viewport changed during an action.',
+            );
+          }
+        }
         if (unexpectedErrors.isNotEmpty) {
           throw StateError('Unhandled app error: ${unexpectedErrors.first}');
         }
@@ -342,6 +350,20 @@ PerfResourceProbeSession createPerfResourceProbeSession(
         },
         'details': startup.toJson(),
       });
+      if (Platform.isMacOS &&
+          (scenarioSet == 'pdf-reader' || scenarioSet == 'pdf-book-view')) {
+        controlledPdfViewport = await _controlMacPdfViewport(binding);
+        rec.write({
+          'type': 'note',
+          'name': 'pdf.controlled_viewport',
+          'width': controlledPdfViewport.width,
+          'height': controlledPdfViewport.height,
+          'startupComparisonExcluded': true,
+          'reason':
+              'Native restored bounds can differ between fresh launches. '
+              'The fixed client viewport is applied after startup and before PDF actions.',
+        });
+      }
       final view = View.of(scenario.context);
       final settings = scenario.context.read<SettingsBloc>().state;
       rec.write({
@@ -470,6 +492,42 @@ PerfResourceProbeSession createPerfResourceProbeSession(
   }
 
   return PerfResourceProbeSession(run: run, complete: complete);
+}
+
+Future<Size> _controlMacPdfViewport(WidgetsBinding binding) async {
+  const expected = Size(1000, 600);
+  if (await windowManager.isFullScreen()) {
+    await windowManager.setFullScreen(false);
+  }
+  if (await windowManager.isMaximized()) await windowManager.unmaximize();
+  Size actual() {
+    final view = binding.platformDispatcher.implicitView!;
+    return view.physicalSize / view.devicePixelRatio;
+  }
+
+  // Window-manager dimensions may include native chrome. Correct against the
+  // measured Flutter client area, then require stable native metrics.
+  for (var attempt = 0; attempt < 3 && actual() != expected; attempt++) {
+    final nativeSize = await windowManager.getSize();
+    final clientSize = actual();
+    await windowManager.setSize(
+      Size(
+        nativeSize.width + expected.width - clientSize.width,
+        nativeSize.height + expected.height - clientSize.height,
+      ),
+    );
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+  }
+  var stable = 0;
+  await _wait(
+    () {
+      stable = actual() == expected ? stable + 1 : 0;
+      return stable >= 4;
+    },
+    'stable 1000x600 PDF client viewport',
+    timeout: const Duration(seconds: 10),
+  );
+  return expected;
 }
 
 Future<void> _wait(
@@ -640,19 +698,16 @@ class _Scenario {
     );
   }
 
-  Future<void> _observePdfAfterClose({String prefix = 'pdf.reader'}) => phase(
-    '$prefix.idle_after_close',
-    () async {
-      if (tabs.state.tabs.isNotEmpty) {
-        throw StateError('PDF idle observation requires closed tabs.');
-      }
-      await waitForPerfObservation(perfPdfPostCloseIdle);
-      if (tabs.state.tabs.isNotEmpty) {
-        throw StateError('A tab opened during the PDF idle observation.');
-      }
-    },
-    observationWindow: perfPdfPostCloseIdle,
-  );
+  Future<void> _observePdfAfterClose({String prefix = 'pdf.reader'}) =>
+      phase('$prefix.idle_after_close', () async {
+        if (tabs.state.tabs.isNotEmpty) {
+          throw StateError('PDF idle observation requires closed tabs.');
+        }
+        await waitForPerfObservation(perfPdfPostCloseIdle);
+        if (tabs.state.tabs.isNotEmpty) {
+          throw StateError('A tab opened during the PDF idle observation.');
+        }
+      }, observationWindow: perfPdfPostCloseIdle);
 
   Future<TextBookTab> openText(String title) async {
     final book = library.getAllBooks().whereType<TextBook>().singleWhere(
