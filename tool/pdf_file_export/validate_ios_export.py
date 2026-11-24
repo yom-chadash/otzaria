@@ -47,13 +47,14 @@ def sha256(path: Path) -> str:
         return hashlib.file_digest(handle, "sha256").hexdigest()
 
 
-def validate(root: Path, source: Path, commit: str) -> dict:
+def validate(root: Path, source: Path, commit: str, *, extra_reviewed_sources: tuple[str, ...] = ()) -> dict:
     provenance = read(root, "source.json")
     require(provenance.get("commit") == commit and bool(re.fullmatch(r"[0-9a-f]{40}", commit)), "source commit mismatch")
     require(bool(re.fullmatch(r"[0-9a-f]{40}", provenance.get("tree", ""))), "missing source tree")
     before, after = provenance.get("filesBefore", {}), provenance.get("filesAfter", {})
-    require(set(before) == set(REVIEWED_SOURCES) and before == after, "reviewed source changed or was not recorded")
-    require(all(before[name] == sha256(source / name) for name in REVIEWED_SOURCES), "source bytes do not match the checkout")
+    reviewed_sources = (*REVIEWED_SOURCES, *extra_reviewed_sources)
+    require(set(before) == set(reviewed_sources) and before == after, "reviewed source changed or was not recorded")
+    require(all(before[name] == sha256(source / name) for name in reviewed_sources), "source bytes do not match the checkout")
     flutter = read(root, "flutter.json")
     require(flutter.get("frameworkVersion") == "3.47.7", "Flutter version changed")
     require(flutter.get("frameworkRevision") == "abaf9c523780a608bd46686fd5e53740a07077f8", "Flutter source revision changed")

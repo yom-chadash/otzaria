@@ -1,0 +1,239 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
+import 'dart:ui' as ui;
+
+import 'package:crypto/crypto.dart';
+import 'package:flutter/material.dart';
+import 'package:pdfrx/pdfrx.dart';
+import 'package:pdfrx_coregraphics/pdfrx_coregraphics.dart';
+
+final displayed = ValueNotifier<ui.Image?>(null);
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final config =
+      jsonDecode(
+            File(Platform.environment['ISSUE5538_CONFIG']!).readAsStringSync(),
+          )
+          as Map<String, dynamic>;
+  final output = File(config['output'] as String);
+  final backend = config['backend'] as String;
+  final workload = config['workload'] as String;
+  final input = File(config['input'] as String);
+  final frames = <Map<String, int>>[];
+  WidgetsBinding.instance.addTimingsCallback((values) {
+    frames.addAll(
+      values.map(
+        (f) => {
+          'buildUs': f.buildDuration.inMicroseconds,
+          'rasterUs': f.rasterDuration.inMicroseconds,
+          'totalUs': f.totalSpan.inMicroseconds,
+        },
+      ),
+    );
+  });
+  runApp(
+    MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: ValueListenableBuilder<ui.Image?>(
+            valueListenable: displayed,
+            builder: (_, image, __) =>
+                RawImage(image: image, fit: BoxFit.contain),
+          ),
+        ),
+      ),
+    ),
+  );
+  await WidgetsBinding.instance.endOfFrame;
+  final clock = Stopwatch()..start();
+  var lastTick = clock.elapsedMicroseconds;
+  final timerGaps = <int>[];
+  final timer = Timer.periodic(const Duration(milliseconds: 10), (_) {
+    final now = clock.elapsedMicroseconds;
+    timerGaps.add(now - lastTick);
+    lastTick = now;
+  });
+  final rows = <Map<String, Object?>>[];
+  final errors = <String>[];
+  var customDisposes = 0;
+  var documentsOpened = 0;
+  var documentsClosed = 0;
+  final beforeRss = ProcessInfo.currentRss;
+  try {
+    if (backend == 'coregraphics') {
+      PdfrxEntryFunctions.instance = PdfrxCoreGraphicsEntryFunctions();
+    }
+    Pdfrx.normalizeHebrewText = true;
+    Pdfrx.decodeLegacyHebrewText = true;
+    await pdfrxFlutterInitialize();
+    final inputHash = (await sha256.bind(input.openRead()).single).toString();
+    if (inputHash != config['inputSha256'])
+      throw StateError('Apple input identity changed');
+    final iterations = workload == 'lifecycle' ? 20 : 3;
+    for (var iteration = 0; iteration < iterations; iteration++) {
+      final operation = Stopwatch()..start();
+      RandomAccessFile? reader;
+      PdfDocument? document;
+      ui.Image? display;
+      var customReads = 0;
+      var customReadBytes = 0;
+      try {
+        if (workload == 'custom') {
+          reader = await input.open();
+          document = await PdfrxEntryFunctions.instance.openCustom(
+            fileSize: input.lengthSync(),
+            sourceName: 'issue5538:$inputHash',
+            read: (buffer, offset, size) async {
+              customReads++;
+              await reader!.setPosition(offset);
+              final count = await reader!.readInto(buffer, 0, size);
+              customReadBytes += count;
+              return count;
+            },
+            onDispose: () {
+              customDisposes++;
+            },
+          );
+        } else {
+          document = await PdfDocument.openFile(input.path);
+        }
+        documentsOpened++;
+        final openUs = operation.elapsedMicroseconds;
+        final page = document.pages.first;
+        final pixels = await page.render(
+          fullWidth: 1000,
+          fullHeight: 1000 * page.height / page.width,
+        );
+        if (pixels == null)
+          throw StateError('Backend returned no first-page image');
+        final rasterUs = operation.elapsedMicroseconds;
+        final pixelHash = sha256.convert(pixels.pixels).toString();
+        final width = pixels.width;
+        final height = pixels.height;
+        try {
+          display = await pixels.createImage();
+        } finally {
+          pixels.dispose();
+        }
+        final imageReadyUs = operation.elapsedMicroseconds;
+        displayed.value = display;
+        await WidgetsBinding.instance.endOfFrame;
+        final frameSubmittedUs = operation.elapsedMicroseconds;
+        final text = (await page.loadText())?.fullText ?? '';
+        final links = await page.loadLinks();
+        final queued = <Map<String, Object?>>[];
+        if (workload != 'lifecycle') {
+          await Future.wait(
+            List.generate(min(document.pages.length, 10), (i) async {
+              final target = document!.pages[i];
+              final token = target.createCancellationToken();
+              final queueClock = Stopwatch()..start();
+              final request = target.render(
+                fullWidth: 512,
+                fullHeight: 512 * target.height / target.width,
+                cancellationToken: token,
+                priority: i == 0
+                    ? PdfPageRenderPriority.high
+                    : PdfPageRenderPriority.low,
+              );
+              if (i.isOdd) token.cancel();
+              final image = await request;
+              try {
+                queued.add({
+                  'page': i + 1,
+                  'cancelRequested': i.isOdd,
+                  'returnedImage': image != null,
+                  'completionUs': queueClock.elapsedMicroseconds,
+                  'returnedPixels': image == null
+                      ? 0
+                      : image.width * image.height,
+                });
+              } finally {
+                image?.dispose();
+              }
+            }),
+          );
+        }
+        rows.add({
+          'iteration': iteration,
+          'warmup': iteration == 0,
+          'openUs': openUs,
+          'firstRasterUs': rasterUs,
+          'imageReadyUs': imageReadyUs,
+          'imageReadyFrameSubmittedUs': frameSubmittedUs,
+          'physicalDisplayLatencyMeasured': false,
+          'pageCount': document.pages.length,
+          'firstPageWidth': page.width,
+          'firstPageHeight': page.height,
+          'pixelSha256': pixelHash,
+          'pixelWidth': width,
+          'pixelHeight': height,
+          'textSha256': sha256.convert(utf8.encode(text)).toString(),
+          'textCharacters': text.length,
+          'hebrewCharacters': RegExp(
+            r'[\u0590-\u05ff]',
+          ).allMatches(text).length,
+          'linkCount': links.length,
+          'customReadCalls': customReads,
+          'customReadBytes': customReadBytes,
+          'queuedCompletions': queued,
+          'nativeCanceledPixelCountMeasured': false,
+          'rssAfterOperation': ProcessInfo.currentRss,
+          'processLifetimePeakRss': ProcessInfo.maxRss,
+        });
+      } finally {
+        displayed.value = null;
+        await WidgetsBinding.instance.endOfFrame;
+        display?.dispose();
+        if (document != null) {
+          await document.dispose();
+          documentsClosed++;
+        }
+        await reader?.close();
+      }
+    }
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+  } catch (error, stack) {
+    errors.add('$error\n$stack');
+  } finally {
+    timer.cancel();
+    if (backend == 'pdfium') {
+      try {
+        await PdfrxEntryFunctions.instance.stopBackgroundWorker();
+      } catch (error) {
+        errors.add('$error');
+      }
+    }
+    output.writeAsStringSync(
+      const JsonEncoder.withIndent('  ').convert({
+        'measurementComplete': errors.isEmpty,
+        'section': 'E12',
+        'backend': backend,
+        'workload': workload,
+        'mode': 'flutter-release',
+        'scope': 'isolated upstream comparison, not Otzaria locked build',
+        'inputSha256': config['inputSha256'],
+        'inputBytes': input.lengthSync(),
+        'dartVersion': Platform.version,
+        'operatingSystemVersion': Platform.operatingSystemVersion,
+        'rssBefore': beforeRss,
+        'rssAfter': ProcessInfo.currentRss,
+        'processLifetimePeakRss': ProcessInfo.maxRss,
+        'observations': rows,
+        'frameTimings': frames,
+        'uiTimerGapsUs': timerGaps,
+        'documentsOpened': documentsOpened,
+        'documentsClosed': documentsClosed,
+        'customDisposeCallbacks': customDisposes,
+        'errors': errors,
+        'physicalDevice': false,
+        'nativeHandleCompatibilityProven': false,
+      }),
+      flush: true,
+    );
+  }
+  exit(errors.isEmpty ? 0 : 1);
+}

@@ -5,7 +5,7 @@ on:
     branches: [perf/5538-final-measurements-20261124]
     paths:
       - '.github/workflows/issue5538_fork_measurements.yml'
-      - 'tool/issue5538_ci/**'
+      - 'tool/issue5538_ci/preflight.py'
   workflow_dispatch:
 
 permissions:

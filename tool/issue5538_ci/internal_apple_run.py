@@ -1,0 +1,172 @@
+"""Compare both upstream Apple backends in one isolated Flutter 3.50 binary."""
+
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import platform
+import plistlib
+import re
+import shutil
+import subprocess
+import traceback
+
+
+UPSTREAM_SHA = "683df93e986af19bbcefd22606a417083116847b"
+FLUTTER_SHA = "ab2912035e160d9cad6306df307576da6128ebdb"
+ENGINE_SHA = "371f77202a73e8dff57a8b3bff75bca55c090aee"
+
+
+def require(value, message):
+    if not value:
+        raise ValueError(message)
+
+
+def digest(path):
+    with Path(path).open("rb") as stream:
+        return hashlib.file_digest(stream, "sha256").hexdigest()
+
+
+def write_json(path, value):
+    Path(path).write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n")
+
+
+def run(command, directory, log, timeout=900, extra_env=None):
+    result = subprocess.run([str(x) for x in command], cwd=directory,
+        env={**os.environ, "CI": "true", **(extra_env or {})}, text=True,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=timeout)
+    log.write_text(result.stdout)
+    require(result.returncode == 0, f"Command exited {result.returncode}: {command}\n{result.stdout[-5000:]}")
+    return result.stdout
+
+
+def validate(report, config):
+    require(report.get("measurementComplete") is True and report.get("errors") == [], "Apple observation did not finish")
+    for key in ("backend", "workload", "inputSha256"):
+        require(report.get(key) == config[key], f"Apple input/backend identity mismatch: {key}")
+    expected = 20 if config["workload"] == "lifecycle" else 3
+    require(report.get("documentsOpened") == expected and report.get("documentsClosed") == expected, "Unclosed Apple document")
+    require(len(report.get("observations", [])) == expected and report.get("frameTimings"), "Missing Apple timing samples")
+    require(all(r["pixelWidth"] > 0 and r["pixelHeight"] > 0 and r["pageCount"] > 0 for r in report["observations"]), "Missing real raster")
+    if config["workload"] == "custom":
+        require(report.get("customDisposeCallbacks") == expected, "Custom reader disposal mismatch")
+        require(all(r["customReadBytes"] > 0 for r in report["observations"]), "Custom reader was not exercised")
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--flutter", type=Path, required=True)
+    parser.add_argument("--corpus-manifest", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    require(platform.system() == "Darwin" and os.environ.get("CI") == "true", "Apple producer needs macOS and CI=true")
+    module = Path(__file__).resolve().parent
+    repo = module.parents[1]
+    output = args.output.resolve()
+    require(not output.exists(), "Apple output must be new")
+    output.mkdir(parents=True)
+    try:
+        sdk = json.loads(run([args.flutter, "--version", "--machine"], repo, output / "flutter.json"))
+        require(sdk.get("frameworkVersion") == "3.50.0" and sdk.get("frameworkRevision") == FLUTTER_SHA
+                and sdk.get("engineRevision") == ENGINE_SHA, "Isolated Apple SDK identity changed")
+        source = run(["git", "rev-parse", "HEAD"], repo, output / "source-sha.log").strip()
+        dirty = run(["git", "status", "--porcelain", "--untracked-files=all"], repo, output / "source-status.log")
+        require(not dirty, "Fork source must be clean")
+        upstream = output / "upstream"
+        upstream.mkdir()
+        run(["git", "init"], upstream, output / "git-init.log")
+        run(["git", "remote", "add", "origin", "https://github.com/espresso3389/pdfrx.git"], upstream, output / "git-remote.log")
+        run(["git", "fetch", "--depth", "1", "origin", UPSTREAM_SHA], upstream, output / "git-fetch.log")
+        run(["git", "checkout", "--detach", "FETCH_HEAD"], upstream, output / "checkout.log")
+        require(run(["git", "rev-parse", "HEAD"], upstream, output / "upstream-sha.log").strip() == UPSTREAM_SHA, "Upstream identity changed")
+        app = upstream / "packages/issue5538_apple"
+        run([args.flutter, "create", "--no-pub", "--platforms=macos", "--project-name=issue5538_apple", app], upstream, output / "create.log")
+        workspace = upstream / "pubspec.yaml"
+        workspace.write_text(workspace.read_text() + "  - packages/issue5538_apple\n")
+        (app / "pubspec.yaml").write_text("""name: issue5538_apple
+publish_to: none
+environment:
+  sdk: ^3.14.0
+resolution: workspace
+dependencies:
+  flutter:
+    sdk: flutter
+  pdfrx: 3.1.0
+  pdfrx_coregraphics: 0.5.3
+  crypto: ^3.0.7
+""")
+        shutil.copyfile(module / "internal_apple_probe.dart.template", app / "lib/main.dart")
+        shutil.rmtree(app / "test", ignore_errors=True)
+        (app / "analysis_options.yaml").write_text("analyzer:\n  errors:\n    depend_on_referenced_packages: error\n")
+        for path in (app / "macos/Runner").glob("*.entitlements"):
+            content = plistlib.loads(path.read_bytes())
+            content["com.apple.security.app-sandbox"] = False
+            path.write_bytes(plistlib.dumps(content))
+        project = app / "macos/Runner.xcodeproj/project.pbxproj"
+        project.write_text(re.sub(r"MACOSX_DEPLOYMENT_TARGET = [0-9.]+;", "MACOSX_DEPLOYMENT_TARGET = 12.0;", project.read_text()))
+        podfile = app / "macos/Podfile"
+        if podfile.exists():
+            podfile.write_text(re.sub(r"platform :osx, '[0-9.]+'", "platform :osx, '12.0'", podfile.read_text()))
+        run([args.flutter, "pub", "get"], app, output / "pub-get.log")
+        lock = upstream / "pubspec.lock"
+        require(lock.exists(), "Missing isolated workspace lock")
+        shutil.copyfile(lock, output / "upstream-pubspec.lock")
+        run([args.flutter, "pub", "get", "--enforce-lockfile"], app, output / "pub-get-enforced.log")
+        run([args.flutter, "analyze", "--no-pub", "lib/main.dart"], app, output / "analyze.log")
+        run([args.flutter, "build", "macos", "--release", "--no-pub"], app, output / "build.log", timeout=1800)
+        bundles = list((app / "build/macos/Build/Products/Release").glob("*.app"))
+        require(len(bundles) == 1, "Ambiguous Apple app bundle")
+        bundle = bundles[0]
+        info = plistlib.loads((bundle / "Contents/Info.plist").read_bytes())
+        executable = bundle / "Contents/MacOS" / info["CFBundleExecutable"]
+        bundle_hashes = {str(p.relative_to(bundle)): digest(p) for p in bundle.rglob("*") if p.is_file() and not p.is_symlink()}
+        corpus = json.loads(args.corpus_manifest.read_text())
+        wanted = {"uxlc-genesis", "mikraot-gedolot-genesis-1859", "gcc-15_2"}
+        documents = [d for d in corpus["documents"] if d["id"] in wanted]
+        require({d["id"] for d in documents} == wanted, "Missing Apple real-corpus inputs")
+        generated = [workspace, app / "pubspec.yaml", app / "lib/main.dart", project,
+                     *(app / "macos/Runner").glob("*.entitlements")]
+        write_json(output / "provenance.json", {"sourceCommit": source, "sourceDirty": False,
+            "upstreamCommit": UPSTREAM_SHA, "flutter": sdk, "bundleFiles": bundle_hashes,
+            "upstreamLockSha256": digest(lock), "corpusManifestSha256": digest(args.corpus_manifest),
+            "harnessFiles": {p.name: digest(p) for p in module.glob("internal_apple_*") if p.is_file()},
+            "generatedOverrides": {str(p.relative_to(upstream)): digest(p) for p in generated},
+            "productionSdkChanged": False, "otzariaPerformanceComparison": False,
+            "runOrder": ["pdfium", "coregraphics", "coregraphics", "pdfium"]})
+        runs = []
+        for document in documents:
+            path = (args.corpus_manifest.parent / document["path"]).resolve()
+            require(digest(path) == document["sha256"], "Apple corpus hash mismatch")
+            for workload in ("file", "custom", "lifecycle"):
+                for index, backend in enumerate(("pdfium", "coregraphics", "coregraphics", "pdfium")):
+                    label = f"{document['id']}-{workload}-{index + 1}-{backend}"
+                    config = {"backend": backend, "workload": workload, "input": str(path),
+                              "inputSha256": document["sha256"], "output": str(output / f"{label}.json")}
+                    config_path = output / f"{label}-config.json"
+                    write_json(config_path, config)
+                    usage = run(["/usr/bin/time", "-lp", executable], app, output / f"{label}.log", timeout=600,
+                                extra_env={"ISSUE5538_CONFIG": str(config_path)})
+                    report = json.loads(Path(config["output"]).read_text())
+                    validate(report, config)
+                    cpu = {name: float(value) for name, value in re.findall(r"(?m)^(real|user|sys)\s+([\d.]+)$", usage)}
+                    peak = re.search(r"(?m)^\s*(\d+)\s+maximum resident set size\s*$", usage)
+                    require(set(cpu) == {"real", "user", "sys"} and peak, "Missing macOS process resource usage")
+                    runs.append({"label": label, "reportSha256": digest(config["output"]),
+                                 "processSeconds": cpu, "processPeakRssBytes": int(peak.group(1))})
+                    write_json(output / "runs.json", runs)
+        require({str(p.relative_to(bundle)): digest(p) for p in bundle.rglob("*") if p.is_file() and not p.is_symlink()} == bundle_hashes,
+                "Apple binary changed between paired runs")
+        write_json(output / "summary.json", {"measurementComplete": True, "section": "E12", "runs": runs,
+            "scope": "isolated upstream Apple backends on the same Flutter 3.50.0 binary",
+            "otzariaAdoptionApproved": False, "physicalDevice": False})
+    except Exception:
+        write_json(output / "failure.json", {"measurementComplete": False, "error": traceback.format_exc()})
+        raise
+    finally:
+        if (output / "upstream").exists():
+            shutil.rmtree(output / "upstream")
+
+
+if __name__ == "__main__":
+    main()
