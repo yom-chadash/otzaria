@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "post-download correctness analysis; original artifact members are unchanged",
+  "runId": 45405774308,
+  "jobId": 138485992781,
+  "artifactId": 14925424470,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45405774308/job/138485992781",
+  "sourceCommit": "5feef3b10e65091d330a0bd2b719f6d202659b45",
+  "artifactZipSha256": "93d34e7f5cfc61a439339aebb178ca0243ace336a40eb250345b124b6920ff0e",
+  "artifactZipBytes": 41183,
+  "performanceComparison": false,
+  "rawEvidence": [
+    {
+      "path": "app.log",
+      "bytes": 6960,
+      "sha256": "db5698aa857f863f82d2e66b32ad7cb88d28557ef327840b795cee9b11007868"
+    },
+    {
+      "path": "data/multi-window.pdf",
+      "bytes": 1631,
+      "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939"
+    },
+    {
+      "path": "build.log",
+      "bytes": 266,
+      "sha256": "918c3b215bd906210362e8f32897e5b57fda0b8164d8c5d801d756bfcea78697"
+    },
+    {
+      "path": "engine-mapping-raw.json",
+      "bytes": 139931,
+      "sha256": "f9bc375a811351be6c9e2d6c2cb5967a7bf54d45f7413a47b235d86962a8e5bf"
+    },
+    {
+      "path": "engine-mapping.json",
+      "bytes": 463,
+      "sha256": "dab0649f4e61f993f6adf79adf3eb6270f7e5813fa0a918efee0caa37a9e7d90"
+    },
+    {
+      "path": "host.json",
+      "bytes": 41700,
+      "sha256": "63061e97937e5f7c4dda4443b13375af890861a21b666d79362214eb6c4d2b88"
+    },
+    {
+      "path": "openbox.log",
+      "bytes": 85,
+      "sha256": "6f748c3cd02a858c087697c3afac639205c62b7b206558bd40d1bcbd98165a5c"
+    },
+    {
+      "path": "run/completion.json",
+      "bytes": 577,
+      "sha256": "713f0512958959a7f4e90a2295ca8dc97a38f5822776a212ec728708f6974213"
+    },
+    {
+      "path": "run/report.json",
+      "bytes": 6522,
+      "sha256": "76f6b32baf0f07ccbe47cb3c1baf7dda4179bc663ab294746a4701158c155208"
+    },
+    {
+      "path": "run/secondary.pdf",
+      "bytes": 1631,
+      "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939"
+    },
+    {
+      "path": "run/two-up.pdf",
+      "bytes": 1555,
+      "sha256": "96973239294da38467dfeae1a75a9ed72a325a45fd0e7204309b4f95b7dd9bb9"
+    },
+    {
+      "path": "run/two-up.png",
+      "bytes": 6049,
+      "sha256": "a6f08922d3828d60a31e768d96992749be8395b92811256e670dfac4244b17ba"
+    },
+    {
+      "path": "session.json",
+      "bytes": 100232,
+      "sha256": "46b0bd11e98e0fcbb0d0b59aefb1aa99f8109347d80aa74df97b1b0470534145"
+    },
+    {
+      "path": "session.log",
+      "bytes": 2875,
+      "sha256": "37a0eb87ffa5ece0ae806a0944a68f21f3a1a23b6ceacd28e751f18bd7c1c47d"
+    },
+    {
+      "path": "verified.json",
+      "bytes": 762,
+      "sha256": "fa49b4779e169670af32a71fa4e5e4f3d8aaed7546a42e3de4bc002055cdfafd"
+    },
+    {
+      "path": "xvfb.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "classification": "completed-app-correctness",
+  "declaredScopeComplete": true,
+  "jobConclusion": "success",
+  "platform": "linux",
+  "buildMode": "profile",
+  "flutter": {
+    "frameworkVersion": "3.47.7",
+    "channel": "[user-branch]",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "engineCommitDate": "2026-10-07 17:09:12.000Z",
+    "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+    "engineBuildDate": "2026-10-07 17:51:44.552",
+    "dartSdkVersion": "3.13.5",
+    "devToolsVersion": "2.60.0",
+    "flutterVersion": "3.47.7",
+    "flutterRoot": "/opt/flutter"
+  },
+  "sourceUnchanged": true,
+  "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+  "engineIdentity": {
+    "schemaVersion": 1,
+    "platform": "linux",
+    "buildMode": "profile",
+    "binaryName": "libflutter_linux_gtk.so",
+    "bytes": 16844536,
+    "bundleSha256": "f67f6f2b3c18d25d603e500291fb8f096fa40cbbd81d7be379a5b2d525202cab"
+  },
+  "bundleManifestSha256": "8630af0ed96e2a298c8ba740cc07a7b2bdf89fd9d8ccacef9c460b404966e24a",
+  "aotPayload": {
+    "path": "lib/libapp.so",
+    "resolved": "lib/libapp.so",
+    "bytes": 51118984,
+    "sha256": "a1b52d5b2e7a2df3ee7cdbf8568a8e6e75ae03ab6346c2ba7e2cb17380cc8e24",
+    "mode": 420
+  },
+  "reportSha256": "76f6b32baf0f07ccbe47cb3c1baf7dda4179bc663ab294746a4701158c155208",
+  "processExitCode": 0,
+  "independentAppLaunches": 1,
+  "rawScenarioReportRetained": true,
+  "postDownloadScenarioContractRevalidation": true,
+  "passedSteps": [
+    "open",
+    "concurrentWork",
+    "minimizeRestore",
+    "closeSecondary",
+    "reopen",
+    "closeReopened",
+    "teardown"
+  ],
+  "separateNativeWindowsVerified": true,
+  "teardown": {
+    "status": "passed",
+    "primaryDocumentEventsClosed": true,
+    "primaryNativeDisposeAwaited": true,
+    "ownedWindowsRemaining": 0,
+    "ownedDocumentsRemaining": 0,
+    "pendingOperations": 0,
+    "indexingActive": false,
+    "finalViewIds": [
+      0
+    ]
+  },
+  "fixture": {
+    "sourceKind": "generated",
+    "pageCount": 4,
+    "sourcePath": "/__w/_temp/pdf-multi-window-smoke/data/multi-window.pdf",
+    "copyPath": "/__w/_temp/pdf-multi-window-smoke/run/secondary.pdf",
+    "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939",
+    "copySha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939"
+  },
+  "limitations": [
+    "Functional correctness, one owned process on this host; no frame-time, CPU, memory or performance improvement claim.",
+    "The fixture has four generated vector pages; this is not the real-book paired measurement campaign.",
+    "Overlapping submissions do not demonstrate native parallel execution; no physical printer or physical sleep.",
+    "Visible readiness uses the rendered layer tree, not GPU presentation time."
+  ]
+}

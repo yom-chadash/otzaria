@@ -1,0 +1,72 @@
+{
+  "analysisKind": "verified-upstream-correctness-suite",
+  "runId": 45404925981,
+  "jobId": 138482908716,
+  "jobConclusion": "success",
+  "verifiedArtifact": {
+    "runId": 45404925981,
+    "artifactId": 14926450826,
+    "artifactName": "pdf-5538-upstream-suites-fixed-3.50.0",
+    "zipSha256": "cd60d3b628079ce09f36f5a647d11b6dfdcc9cf0fbf9b36c7005f830e2177cb2",
+    "zipBytes": 95036,
+    "expectedDigestVerified": true,
+    "sourceCommit": "8c85c52c71ea0f03a006dc0f33f60ed9f3857fe7",
+    "zipPath": "/workspace/scratch/8fd497e5cf89/ci-upstream-audit/45404925981/pdf-5538-upstream-suites-fixed-3.50.0.zip"
+  },
+  "forkCommit": "8c85c52c71ea0f03a006dc0f33f60ed9f3857fe7",
+  "upstreamCommit": "e567d27ce513845b5aebedb2fe66e7c5e4132ea5",
+  "baselineUpstreamCommit": "683df93e986af19bbcefd22606a417083116847b",
+  "sourceRole": "Q01 PR874 candidate: CI, test fixtures and documentation only; no runtime or SDK constraint changes.",
+  "flutter": {
+    "frameworkVersion": "3.50.0",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "ab2912035e160d9cad6306df307576da6128ebdb",
+    "frameworkCommitDate": "2026-11-09 08:50:21 -0800",
+    "engineRevision": "371f77202a73e8dff57a8b3bff75bca55c090aee",
+    "engineCommitDate": "2026-11-09 15:57:36.000Z",
+    "engineContentHash": "bf601093ad255aaf5c6d0fc5c4f9acfa60943b2a",
+    "engineBuildDate": "2026-11-09 08:33:19.494",
+    "dartSdkVersion": "3.14.0",
+    "devToolsVersion": "2.61.0",
+    "flutterVersion": "3.50.0",
+    "flutterRoot": "/opt/hostedtoolcache/flutter/stable-3.50.0-x64/flutter"
+  },
+  "platform": "Linux",
+  "architecture": "x86_64",
+  "suites": {
+    "native": {
+      "passed": 441,
+      "failed": 0,
+      "skipped": 0,
+      "skippedTests": []
+    },
+    "viewer": {
+      "passed": 642,
+      "failed": 0,
+      "skipped": 0,
+      "skippedTests": []
+    },
+    "chrome": {
+      "passed": 64,
+      "failed": 0,
+      "skipped": 0,
+      "skippedTests": []
+    },
+    "node": {
+      "passed": 164,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "totalPassed": 1311,
+  "totalFailed": 0,
+  "totalSkipped": 0,
+  "nativeOnly": false,
+  "omittedSuites": {},
+  "limitations": [
+    "Correctness evidence only; no performance or physical-device inference.",
+    "PR874 fixes test fixtures/CI/docs; it does not change runtime product code.",
+    "Application SDK is unchanged; these isolated upstream lanes use Flutter3.50.0 or separately identified3.50.1 canary."
+  ]
+}

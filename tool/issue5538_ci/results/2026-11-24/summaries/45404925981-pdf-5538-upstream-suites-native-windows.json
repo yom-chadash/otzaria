@@ -1,0 +1,77 @@
+{
+  "analysisKind": "verified-upstream-correctness-suite",
+  "runId": 45404925981,
+  "jobId": 138482908870,
+  "jobConclusion": "success",
+  "verifiedArtifact": {
+    "runId": 45404925981,
+    "artifactId": 14926490556,
+    "artifactName": "pdf-5538-upstream-suites-native-windows",
+    "zipSha256": "6256c93dd2650f584f3206cc47eec97d21f6cb0678e7489cfe64c2b44fca3477",
+    "zipBytes": 82232,
+    "expectedDigestVerified": true,
+    "sourceCommit": "8c85c52c71ea0f03a006dc0f33f60ed9f3857fe7",
+    "zipPath": "/workspace/scratch/8fd497e5cf89/ci-upstream-audit/45404925981/pdf-5538-upstream-suites-native-windows.zip"
+  },
+  "forkCommit": "8c85c52c71ea0f03a006dc0f33f60ed9f3857fe7",
+  "upstreamCommit": "e567d27ce513845b5aebedb2fe66e7c5e4132ea5",
+  "baselineUpstreamCommit": "683df93e986af19bbcefd22606a417083116847b",
+  "sourceRole": "Q01 PR874 candidate: CI, test fixtures and documentation only; no runtime or SDK constraint changes.",
+  "flutter": {
+    "frameworkVersion": "3.50.0",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "ab2912035e160d9cad6306df307576da6128ebdb",
+    "frameworkCommitDate": "2026-11-09 08:50:21 -0800",
+    "engineRevision": "371f77202a73e8dff57a8b3bff75bca55c090aee",
+    "engineCommitDate": "2026-11-09 15:57:36.000Z",
+    "engineContentHash": "bf601093ad255aaf5c6d0fc5c4f9acfa60943b2a",
+    "engineBuildDate": "2026-11-09 08:33:19.494",
+    "dartSdkVersion": "3.14.0",
+    "devToolsVersion": "2.61.0",
+    "flutterVersion": "3.50.0",
+    "flutterRoot": "C:\\hostedtoolcache\\windows\\flutter\\stable-3.50.0-x64\\flutter"
+  },
+  "platform": "Windows",
+  "architecture": "AMD64",
+  "suites": {
+    "native": {
+      "passed": 440,
+      "failed": 0,
+      "skipped": 1,
+      "skippedTests": [
+        {
+          "name": "retargeting a symbolic link does not change another canonical alias",
+          "reason": "Creating symbolic links requires Windows privileges"
+        }
+      ]
+    },
+    "viewer": {
+      "passed": 642,
+      "failed": 0,
+      "skipped": 0,
+      "skippedTests": []
+    }
+  },
+  "totalPassed": 1082,
+  "totalFailed": 0,
+  "totalSkipped": 1,
+  "nativeOnly": true,
+  "omittedSuites": {
+    "chrome": {
+      "status": "not-run-in-this-lane",
+      "reason": "Real Chrome and Node suites run in the separate Linux lanes."
+    },
+    "node": {
+      "status": "not-run-in-this-lane",
+      "reason": "Real Chrome and Node suites run in the separate Linux lanes."
+    }
+  },
+  "limitations": [
+    "Correctness evidence only; no performance or physical-device inference.",
+    "PR874 fixes test fixtures/CI/docs; it does not change runtime product code.",
+    "Application SDK is unchanged; these isolated upstream lanes use Flutter3.50.0 or separately identified3.50.1 canary.",
+    "Chrome and Node omitted by design here and executed successfully in both Linux lanes.",
+    "One symbolic-link alias fixture skips because hosted Windows lacks symbolic-link privileges; the whole job now succeeds after temporary-checkout cleanup was removed."
+  ]
+}

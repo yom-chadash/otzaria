@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "post-download correctness analysis; original artifact members are unchanged",
+  "runId": 45405461134,
+  "jobId": 138484851747,
+  "artifactId": 14927275396,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45405461134/job/138484851747",
+  "sourceCommit": "da36dd3e4c3f1de82e4daa53c53d2c3731235d1d",
+  "artifactZipSha256": "60d24190a89b57272217c6d2f1ba2e809b4db021b08f4faabd1a0627ae958375",
+  "artifactZipBytes": 11065,
+  "performanceComparison": false,
+  "rawEvidence": [
+    {
+      "path": "pdf-product-sdk.json",
+      "bytes": 646,
+      "sha256": "bc323debabb52b574e6dbb72d1d103042157dd1da87177edd20788cb886735dd"
+    },
+    {
+      "path": "pdf-product-source.txt",
+      "bytes": 41,
+      "sha256": "31e717451f8d803c58b42172bbdeb10ba699dfcaf83eef78c776c2d34f17f418"
+    },
+    {
+      "path": "pdf-product-analyze.log",
+      "bytes": 97,
+      "sha256": "fcd7be5948be99151db09b3f1da96eb27ef53a5511a749d947a9c6c06dcdfc5d"
+    },
+    {
+      "path": "pdf-product-tests.json",
+      "bytes": 57807,
+      "sha256": "545d4b9de64af8f3d812298e4f1658223d33b3bcd2778641128a9560ed0a2255"
+    },
+    {
+      "path": "pdf-product-tests.log",
+      "bytes": 22260,
+      "sha256": "98152f33273621f68afe2b9ef7d0217b9b72264c512f637f30a7a908a275ded2"
+    }
+  ],
+  "flutter": {
+    "frameworkVersion": "3.47.7",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "engineCommitDate": "2026-10-07 17:09:12.000Z",
+    "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+    "engineBuildDate": "2026-10-07 17:51:44.552",
+    "dartSdkVersion": "3.13.5",
+    "devToolsVersion": "2.60.0",
+    "flutterVersion": "3.47.7",
+    "flutterRoot": "C:\\hostedtoolcache\\windows\\flutter\\stable-3.47.7-x64\\flutter"
+  },
+  "platform": "Windows",
+  "classification": "completed-product-regression-checks",
+  "declaredScopeComplete": true,
+  "jobConclusion": "success",
+  "fullFlutterAnalyze": "passed",
+  "testsPassed": 93,
+  "testsFailed": 0,
+  "testsSkipped": 0,
+  "hiddenFixtureLifecycleEvents": 10,
+  "jsonlRows": 229,
+  "testReportFormat": "JSON Lines in a .json-named file",
+  "suites": [
+    "D:/a/otzaria/otzaria/test/pdf_book/book_view_layout_memo_test.dart",
+    "D:/a/otzaria/otzaria/test/pdf_book/pdf_search_highlight_pattern_test.dart",
+    "D:/a/otzaria/otzaria/test/pdf_book/pdf_search_no_text_layer_test.dart",
+    "D:/a/otzaria/otzaria/test/pdf_book/pdf_page_highlights_test.dart"
+  ],
+  "limitations": [
+    "Static analysis and correctness regressions do not measure product performance.",
+    "Fixture lifecycle events marked hidden are reported separately, not counted as additional tests.",
+    "These results belong to the exact QA source SHA in this summary."
+  ]
+}

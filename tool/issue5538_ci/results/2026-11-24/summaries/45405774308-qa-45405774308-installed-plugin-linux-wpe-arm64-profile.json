@@ -1,0 +1,637 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "post-download correctness analysis; original artifact members are unchanged",
+  "runId": 45405774308,
+  "jobId": 138485992781,
+  "artifactId": 14925494273,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45405774308/job/138485992781",
+  "sourceCommit": "5feef3b10e65091d330a0bd2b719f6d202659b45",
+  "artifactZipSha256": "78407dfa885745ff9f6cc0615c1172b23b490c196d3b8ef9ed4f894ae290a1e2",
+  "artifactZipBytes": 196343,
+  "performanceComparison": false,
+  "rawEvidence": [
+    {
+      "path": "analyze.log",
+      "bytes": 97,
+      "sha256": "a339012af7e37a6aecfca6a0f418773c9816951171bdec4a8ee15f15d0fd20c7"
+    },
+    {
+      "path": "apt-bootstrap.log",
+      "bytes": 33484,
+      "sha256": "5b89da42b1083ec744b26aebcb7ebfeb82829952a5429b94bdaff922a0d9da77"
+    },
+    {
+      "path": "apt-native.log",
+      "bytes": 251490,
+      "sha256": "4ab9ec63e3983583e909ec3d50959f27c9a5d95a8c24e9d4133c881c8b25ac6f"
+    },
+    {
+      "path": "apt-update.log",
+      "bytes": 522,
+      "sha256": "cba9c9e8d69117b07ee2b2c8216acf86fde93aa81ec2fc21d9db3153c814438f"
+    },
+    {
+      "path": "build-diagnostics/arm64/profile/CMakeCache.txt",
+      "bytes": 245313,
+      "sha256": "ee8f44397f945d59dc3490f9a70aac3b2848fdec12282bbbf2926c6d4048578e"
+    },
+    {
+      "path": "build-diagnostics/arm64/profile/CMakeFiles/CMakeError.log",
+      "bytes": 3776,
+      "sha256": "e1ec573db33a7d84cf0f0178722a5b5015daaa1079f7931068d376570c7f2492"
+    },
+    {
+      "path": "build-diagnostics/arm64/profile/CMakeFiles/CMakeOutput.log",
+      "bytes": 41502,
+      "sha256": "271caf71e0e8badb88fc0d273d3012ea7859b186f63dde069b758d2cc716a808"
+    },
+    {
+      "path": "build-diagnostics/arm64/profile/_deps/nlohmann_json-subbuild/CMakeCache.txt",
+      "bytes": 4364,
+      "sha256": "47d2f2b08ffce40b597d77fc154bf0020e691047378ef7aaa39616290327e6cc"
+    },
+    {
+      "path": "build-diagnostics/arm64/profile/_deps/nlohmann_json-subbuild/CMakeFiles/CMakeOutput.log",
+      "bytes": 50,
+      "sha256": "5c5f68873b6badaa3bad9484a18cf0c9873a336834e4125063ee0135c0095bc5"
+    },
+    {
+      "path": "build-diagnostics/arm64/profile/_deps/sn-build/vendor/libunwind/CMakeFiles/CheckASM/CMakeCache.txt",
+      "bytes": 7637,
+      "sha256": "ec135357be922240b38e920dc0718c5e925dccb8073f59e7db19d66c1a477666"
+    },
+    {
+      "path": "build-diagnostics/arm64/profile/_deps/sn-subbuild/CMakeCache.txt",
+      "bytes": 4254,
+      "sha256": "c055d7b8f9841f71c34fef92ddf0762397a3cd9106a83647da056dab4ac2f74e"
+    },
+    {
+      "path": "build-diagnostics/arm64/profile/_deps/sn-build/vendor/libunwind/CMakeFiles/CheckASM/CMakeFiles/CMakeOutput.log",
+      "bytes": 408,
+      "sha256": "ad4f0873f7fe059103b4e88f76cec096d629f719c0f684f6c19ec380ecb32cf9"
+    },
+    {
+      "path": "build-diagnostics/arm64/profile/_deps/sn-subbuild/CMakeFiles/CMakeOutput.log",
+      "bytes": 50,
+      "sha256": "5c5f68873b6badaa3bad9484a18cf0c9873a336834e4125063ee0135c0095bc5"
+    },
+    {
+      "path": "build-diagnostics/arm64/profile/pdfium-download/CMakeCache.txt",
+      "bytes": 4256,
+      "sha256": "c97c8c2cb7f7575e2b76229bc185f54436e6c6ebd5ef247b58ff9fd515d0c420"
+    },
+    {
+      "path": "build-diagnostics/arm64/profile/pdfium-download/CMakeFiles/CMakeOutput.log",
+      "bytes": 100,
+      "sha256": "fc8d77235f098088d3e8fa831d19ccdd4670c7554ce129371b00c451419a3de9"
+    },
+    {
+      "path": "build-profile.log",
+      "bytes": 1332,
+      "sha256": "3bdaf7e9f096e2a63033b838bb2aa6e0621915711bf6a90bb137482fea0d0ffc"
+    },
+    {
+      "path": "contract-tests.log",
+      "bytes": 29753,
+      "sha256": "a122a46c35c42c75dd9e071af354eac09159a6da687323377b5206deb461d908"
+    },
+    {
+      "path": "dart.txt",
+      "bytes": 84,
+      "sha256": "3fdb7ff7f33750dba0e7bc368a7ee303b432e4cfe3388a572233c9d4cb545e5b"
+    },
+    {
+      "path": "device/bundle-runtime-cancel.pdf",
+      "bytes": 1631,
+      "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939"
+    },
+    {
+      "path": "device/bundle-runtime-export.pdf",
+      "bytes": 1555,
+      "sha256": "80a27c3caba3949ff2d01df64865c4bcba30ae75f0400e0c3ddfae28bd12b04e"
+    },
+    {
+      "path": "device/bundle-runtime-export.png",
+      "bytes": 6049,
+      "sha256": "a6f08922d3828d60a31e768d96992749be8395b92811256e670dfac4244b17ba"
+    },
+    {
+      "path": "device/bundle-runtime-print.png",
+      "bytes": 3983,
+      "sha256": "1c1a4daf61afa6ea872ec0a975ebd47fedf97820183c2cfa5bd014e44e876775"
+    },
+    {
+      "path": "device/bundle-runtime-maps.txt",
+      "bytes": 154321,
+      "sha256": "1de758c392600c203545dba27740ab0df5c5ae93ec45d4d2c5cd8598da8efdf7"
+    },
+    {
+      "path": "device/bundle-runtime-secondary.pdf",
+      "bytes": 1631,
+      "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939"
+    },
+    {
+      "path": "device/bundle-runtime-tab-10.pdf",
+      "bytes": 1631,
+      "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939"
+    },
+    {
+      "path": "device/bundle-runtime-tab-3.pdf",
+      "bytes": 1631,
+      "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939"
+    },
+    {
+      "path": "device/bundle-runtime-tab-4.pdf",
+      "bytes": 1631,
+      "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939"
+    },
+    {
+      "path": "device/bundle-runtime-tab-5.pdf",
+      "bytes": 1631,
+      "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939"
+    },
+    {
+      "path": "device/bundle-runtime-tab-6.pdf",
+      "bytes": 1631,
+      "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939"
+    },
+    {
+      "path": "device/bundle-runtime-tab-7.pdf",
+      "bytes": 1631,
+      "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939"
+    },
+    {
+      "path": "device/bundle-runtime-tab-8.pdf",
+      "bytes": 1631,
+      "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939"
+    },
+    {
+      "path": "device/bundle-runtime-tab-9.pdf",
+      "bytes": 1631,
+      "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939"
+    },
+    {
+      "path": "device/bundle-runtime.pdf",
+      "bytes": 1631,
+      "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939"
+    },
+    {
+      "path": "device/installed-plugin-report.json",
+      "bytes": 408898,
+      "sha256": "cb88f7ccca2c5c3fb7b2a591d45e2f45f5568633f3c1342874e5ac8c5eb937db"
+    },
+    {
+      "path": "drive-profile.log",
+      "bytes": 6763,
+      "sha256": "b1c2f66a12d7a7c12249abbf53cdec8102564ef48223da21a1d6f193e523c27f"
+    },
+    {
+      "path": "fixture-tests.log",
+      "bytes": 2150,
+      "sha256": "5203651c270c8d862465986ececc3c23f83deb277125255342d13416cf950318"
+    },
+    {
+      "path": "host/run-LPUMST/report.json",
+      "bytes": 434282,
+      "sha256": "013d29b005775df50ee78239538ebc39b0f35ab25db92920c0e25517a759cc42"
+    },
+    {
+      "path": "kernel.txt",
+      "bytes": 114,
+      "sha256": "ce1bf940f4107f70404c1b733919f45af052192dd2b99f0083c278570e7bbb70"
+    },
+    {
+      "path": "flutter.json",
+      "bytes": 600,
+      "sha256": "37ea2407bdc04a949e7f945e5e1448414458faccbe33e119aa207812b6284516"
+    },
+    {
+      "path": "multi-window-host-tests.log",
+      "bytes": 3329,
+      "sha256": "eced9db764cb829a36878cf4736b0dffbbee90e165d7cf905f97523b43078279"
+    },
+    {
+      "path": "os-release.txt",
+      "bytes": 267,
+      "sha256": "59a77b5f2666d9c85c489bd1911a6eebbd91ef22fe48b90a3b75f1b21f3844d4"
+    },
+    {
+      "path": "pdf-architecture.json",
+      "bytes": 1733,
+      "sha256": "757ea5b54e5168ff5ea9cd01351c74a899d16ffd2eac71384bc6a2fd9972efa7"
+    },
+    {
+      "path": "pdfium-disk-bytes.txt",
+      "bytes": 137,
+      "sha256": "75a0c384324d8bdbeddb4fa5c256d8a9bfc371d31fc9241a31e77a5683de9546"
+    },
+    {
+      "path": "pdfium-sha256.txt",
+      "bytes": 241,
+      "sha256": "b32a1d875bce46e902c6b3a788ee71c4b6791717242c873c87faf999cb947334"
+    },
+    {
+      "path": "printing-elf-dynamic.txt",
+      "bytes": 2785,
+      "sha256": "efd02cd8b7dab49662770b4fcae5172d6de8452d7bf5de29903dd72b2fe89332"
+    },
+    {
+      "path": "pub-get.log",
+      "bytes": 6633,
+      "sha256": "a108aa0f9aa6667d9ccc0cfaaf6a59054e738f89b3247427b36737ac51194003"
+    },
+    {
+      "path": "rust.txt",
+      "bytes": 574,
+      "sha256": "9a5b865215f734dc8e0f31cae2b1fbac416fe0a1b3cbbd1f2accf067e7960473"
+    },
+    {
+      "path": "session/openbox.log",
+      "bytes": 85,
+      "sha256": "6f748c3cd02a858c087697c3afac639205c62b7b206558bd40d1bcbd98165a5c"
+    },
+    {
+      "path": "session/session.json",
+      "bytes": 182858,
+      "sha256": "e1ef59c6df195dabcf063509c8a3738d372459ad72c0697680a8fb69027ca675"
+    },
+    {
+      "path": "session/xdg-runtime/dconf/user",
+      "bytes": 2,
+      "sha256": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7"
+    },
+    {
+      "path": "session/xvfb.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "session-tests.log",
+      "bytes": 1837,
+      "sha256": "715b995ed8e81f06e3ea7a433f208758ee25f42eb7bb960edd5b345955165b87"
+    },
+    {
+      "path": "source-commit.txt",
+      "bytes": 41,
+      "sha256": "da2ef4d8d0e1ffdd5c853a19833dbfa80e15010fe0c090427d0a26a54409f514"
+    },
+    {
+      "path": "source-provenance.json",
+      "bytes": 570,
+      "sha256": "dd825a80d3507fe2892842a5a73133a0fc20ab9a09cad5764100bd9b1c812d69"
+    },
+    {
+      "path": "source.log",
+      "bytes": 121,
+      "sha256": "4e8c212937d551440a0c325c4637184ae94eba37395050ded7b4f08929559e6f"
+    },
+    {
+      "path": "wpe-sdk-sha256.txt",
+      "bytes": 56,
+      "sha256": "792518fc0cc0308180b3f64ba328b4f2af155a47d19c9605ec817e847ae2e180"
+    },
+    {
+      "path": "wpe-sdk-versions.txt",
+      "bytes": 525,
+      "sha256": "cd7caafb276fb08763cf248439882e443c8455920c9ad6d91a12e758ccebe0c2"
+    }
+  ],
+  "classification": "completed-app-correctness",
+  "declaredScopeComplete": true,
+  "jobConclusion": "success",
+  "platform": "linux",
+  "buildMode": "profile",
+  "flutterVersion": "3.47.7",
+  "dartVersion": "3.13.5 (stable) (Tue Sep 29 01:00:52 2026 -0700) on \"linux_arm64\"",
+  "independentAppLaunches": 1,
+  "pdfSteps": [
+    "view",
+    "concurrentWork",
+    "cancelAndRecover",
+    "reopen",
+    "loadedModules",
+    "teardown",
+    "desktopLifecycle",
+    "repeatedLifecycle"
+  ],
+  "completedOpenRenderCloseCycles": 50,
+  "verifiedNativeCloses": 50,
+  "fixture": {
+    "path": "/__w/_temp/installed-plugin-linux-45405774308-1/device/bundle-runtime.pdf",
+    "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939",
+    "bytes": 1631,
+    "pages": 4,
+    "content": "Deterministic vector text and black rectangle; mixed page sizes."
+  },
+  "reportSha256": "cb88f7ccca2c5c3fb7b2a591d45e2f45f5568633f3c1342874e5ac8c5eb937db",
+  "hostReportSha256": "013d29b005775df50ee78239538ebc39b0f35ab25db92920c0e25517a759cc42",
+  "loadedModules": {
+    "status": "passed",
+    "modules": [
+      {
+        "name": "libpdfium.so",
+        "path": "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libpdfium.so",
+        "bytes": 8127624,
+        "sha256": "8cdc437dce84a6493b9ec6c4f5ad9ff2c299e505acfd7b0ad38cb440805b2c70"
+      },
+      {
+        "name": "libpdfium_printing.so",
+        "path": "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libpdfium_printing.so",
+        "bytes": 5723016,
+        "sha256": "47a642b9172e6f239a7fc454409d3cea7fb74b699d181c3390d7e65b3534ef39"
+      },
+      {
+        "name": "libprinting_plugin.so",
+        "path": "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libprinting_plugin.so",
+        "bytes": 85496,
+        "sha256": "251f54e6e8dab87c07c7e888eac0ac3154f14bf471f5b57abf792ae7dafd1db4"
+      }
+    ],
+    "observedModulePaths": [
+      "/SYSV00000000 (deleted)",
+      "/__w/_temp/installed-plugin-linux-data/app-fixture/databases/cache.db-shm",
+      "/__w/_temp/installed-plugin-linux-data/app-fixture/databases/personal_notes.db-shm",
+      "/__w/_temp/installed-plugin-linux-data/app-fixture/databases/plugins_host.db-shm",
+      "/__w/_temp/installed-plugin-linux-data/app-fixture/databases/user_state.db-shm",
+      "/__w/_temp/installed-plugin-linux-data/app-fixture/index/576ee07c4c5f49a89c663dfc65ffc925.fast",
+      "/__w/_temp/installed-plugin-linux-data/app-fixture/index/576ee07c4c5f49a89c663dfc65ffc925.fieldnorm",
+      "/__w/_temp/installed-plugin-linux-data/app-fixture/index/576ee07c4c5f49a89c663dfc65ffc925.idx",
+      "/__w/_temp/installed-plugin-linux-data/app-fixture/index/576ee07c4c5f49a89c663dfc65ffc925.pos",
+      "/__w/_temp/installed-plugin-linux-data/app-fixture/index/576ee07c4c5f49a89c663dfc65ffc925.store",
+      "/__w/_temp/installed-plugin-linux-data/app-fixture/index/576ee07c4c5f49a89c663dfc65ffc925.term",
+      "/__w/_temp/installed-plugin-linux-data/app-fixture/index/fd5bb538529c48dd82c9285cc0ccd0c3.fast",
+      "/__w/_temp/installed-plugin-linux-data/app-fixture/index/fd5bb538529c48dd82c9285cc0ccd0c3.fieldnorm",
+      "/__w/_temp/installed-plugin-linux-data/app-fixture/index/fd5bb538529c48dd82c9285cc0ccd0c3.idx",
+      "/__w/_temp/installed-plugin-linux-data/app-fixture/index/fd5bb538529c48dd82c9285cc0ccd0c3.pos",
+      "/__w/_temp/installed-plugin-linux-data/app-fixture/index/fd5bb538529c48dd82c9285cc0ccd0c3.store",
+      "/__w/_temp/installed-plugin-linux-data/app-fixture/index/fd5bb538529c48dd82c9285cc0ccd0c3.term",
+      "/__w/_temp/installed-plugin-linux-data/app-fixture/library/seforim.db",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/data/flutter_assets/fonts/FrankRuehlCLM-Medium.ttf",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/data/flutter_assets/fonts/NotoRashiHebrew-VariableFont_wght.ttf",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/data/flutter_assets/fonts/NotoSerifHebrew-VariableFont_wdth,wght.ttf",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/data/flutter_assets/fonts/Rubik-VariableFont_wght.ttf",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/data/flutter_assets/packages/fluentui_system_icons/fonts/FluentSystemIcons-Filled.ttf",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/data/flutter_assets/packages/fluentui_system_icons/fonts/FluentSystemIcons-Regular.ttf",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/data/flutter_assets/packages/otzaria_icons/lib/fonts/otzaria_icons.otf",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/data/icudtl.dat",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libapp.so",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libfile_selector_linux_plugin.so",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libflutter_inappwebview_linux_plugin.so",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libflutter_linux_gtk.so",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libirondash_engine_context_plugin.so",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libpdfium.so",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libpdfium_printing.so",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libprinting_plugin.so",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libscreen_retriever_linux_plugin.so",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libsearch_engine.so",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libsentry.so",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libsqlite3.so",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libsuper_native_extensions.so",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libsuper_native_extensions_plugin.so",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/liburl_launcher_linux_plugin.so",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libwindow_manager_plugin.so",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libzstandard_linux_plugin.so",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/otzaria",
+      "/__w/otzaria/otzaria/build/linux/arm64/profile/plugins/zstandard_linux/zstd_build/libzstandard_linux.so",
+      "/memfd:WebKitSharedMemory (deleted)",
+      "/opt/wpe-sdk/lib/libWPEPlatform-2.0.so.0.0.0",
+      "/opt/wpe-sdk/lib/libWPEWebKit-2.0.so.1.5.12",
+      "/opt/wpe-sdk/lib/libwpe-1.0.so.1.9.6",
+      "/root/.cache/mesa_shader_cache/index",
+      "/usr/lib/aarch64-linux-gnu/dri/swrast_dri.so",
+      "/usr/lib/aarch64-linux-gnu/gconv/gconv-modules.cache",
+      "/usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1",
+      "/usr/lib/aarch64-linux-gnu/libEGL.so.1.1.0",
+      "/usr/lib/aarch64-linux-gnu/libEGL_mesa.so.0.0.0",
+      "/usr/lib/aarch64-linux-gnu/libGL.so.1.7.0",
+      "/usr/lib/aarch64-linux-gnu/libGLESv2.so.2.1.0",
+      "/usr/lib/aarch64-linux-gnu/libGLX.so.0.0.0",
+      "/usr/lib/aarch64-linux-gnu/libGLX_mesa.so.0.0.0",
+      "/usr/lib/aarch64-linux-gnu/libGLdispatch.so.0.0.0",
+      "/usr/lib/aarch64-linux-gnu/libLLVM-15.so.1",
+      "/usr/lib/aarch64-linux-gnu/libSvtAv1Enc.so.1.4.1",
+      "/usr/lib/aarch64-linux-gnu/libX11-xcb.so.1.0.0",
+      "/usr/lib/aarch64-linux-gnu/libX11.so.6.4.0",
+      "/usr/lib/aarch64-linux-gnu/libXau.so.6.0.0",
+      "/usr/lib/aarch64-linux-gnu/libXcomposite.so.1.0.0",
+      "/usr/lib/aarch64-linux-gnu/libXcursor.so.1.0.2",
+      "/usr/lib/aarch64-linux-gnu/libXdamage.so.1.1.0",
+      "/usr/lib/aarch64-linux-gnu/libXdmcp.so.6.0.0",
+      "/usr/lib/aarch64-linux-gnu/libXext.so.6.4.0",
+      "/usr/lib/aarch64-linux-gnu/libXfixes.so.3.1.0",
+      "/usr/lib/aarch64-linux-gnu/libXi.so.6.1.0",
+      "/usr/lib/aarch64-linux-gnu/libXinerama.so.1.0.0",
+      "/usr/lib/aarch64-linux-gnu/libXrandr.so.2.2.0",
+      "/usr/lib/aarch64-linux-gnu/libXrender.so.1.3.0",
+      "/usr/lib/aarch64-linux-gnu/libXxf86vm.so.1.0.0",
+      "/usr/lib/aarch64-linux-gnu/libabsl_base.so.20220623.0.0",
+      "/usr/lib/aarch64-linux-gnu/libabsl_debugging_internal.so.20220623.0.0",
+      "/usr/lib/aarch64-linux-gnu/libabsl_demangle_internal.so.20220623.0.0",
+      "/usr/lib/aarch64-linux-gnu/libabsl_graphcycles_internal.so.20220623.0.0",
+      "/usr/lib/aarch64-linux-gnu/libabsl_int128.so.20220623.0.0",
+      "/usr/lib/aarch64-linux-gnu/libabsl_malloc_internal.so.20220623.0.0",
+      "/usr/lib/aarch64-linux-gnu/libabsl_raw_logging_internal.so.20220623.0.0",
+      "/usr/lib/aarch64-linux-gnu/libabsl_spinlock_wait.so.20220623.0.0",
+      "/usr/lib/aarch64-linux-gnu/libabsl_stacktrace.so.20220623.0.0",
+      "/usr/lib/aarch64-linux-gnu/libabsl_strings.so.20220623.0.0",
+      "/usr/lib/aarch64-linux-gnu/libabsl_strings_internal.so.20220623.0.0",
+      "/usr/lib/aarch64-linux-gnu/libabsl_symbolize.so.20220623.0.0",
+      "/usr/lib/aarch64-linux-gnu/libabsl_synchronization.so.20220623.0.0",
+      "/usr/lib/aarch64-linux-gnu/libabsl_throw_delegate.so.20220623.0.0",
+      "/usr/lib/aarch64-linux-gnu/libabsl_time.so.20220623.0.0",
+      "/usr/lib/aarch64-linux-gnu/libabsl_time_zone.so.20220623.0.0",
+      "/usr/lib/aarch64-linux-gnu/libaom.so.3.6.0",
+      "/usr/lib/aarch64-linux-gnu/libatk-1.0.so.0.24609.1",
+      "/usr/lib/aarch64-linux-gnu/libatk-bridge-2.0.so.0.0.0",
+      "/usr/lib/aarch64-linux-gnu/libatomic.so.1.2.0",
+      "/usr/lib/aarch64-linux-gnu/libatspi.so.0.0.1",
+      "/usr/lib/aarch64-linux-gnu/libavif.so.15.0.1",
+      "/usr/lib/aarch64-linux-gnu/libblkid.so.1.1.0",
+      "/usr/lib/aarch64-linux-gnu/libbrotlicommon.so.1.0.9",
+      "/usr/lib/aarch64-linux-gnu/libbrotlidec.so.1.0.9",
+      "/usr/lib/aarch64-linux-gnu/libbrotlienc.so.1.0.9",
+      "/usr/lib/aarch64-linux-gnu/libbsd.so.0.11.7",
+      "/usr/lib/aarch64-linux-gnu/libbz2.so.1.0.4",
+      "/usr/lib/aarch64-linux-gnu/libc.so.6",
+      "/usr/lib/aarch64-linux-gnu/libcairo-gobject.so.2.11600.0",
+      "/usr/lib/aarch64-linux-gnu/libcairo.so.2.11600.0",
+      "/usr/lib/aarch64-linux-gnu/libcap.so.2.66",
+      "/usr/lib/aarch64-linux-gnu/libcom_err.so.2.1",
+      "/usr/lib/aarch64-linux-gnu/libcrypto.so.3",
+      "/usr/lib/aarch64-linux-gnu/libcurl.so.4.8.0",
+      "/usr/lib/aarch64-linux-gnu/libdatrie.so.1.4.0",
+      "/usr/lib/aarch64-linux-gnu/libdav1d.so.6.6.0",
+      "/usr/lib/aarch64-linux-gnu/libdbus-1.so.3.32.4",
+      "/usr/lib/aarch64-linux-gnu/libdl.so.2",
+      "/usr/lib/aarch64-linux-gnu/libdrm.so.2.4.0",
+      "/usr/lib/aarch64-linux-gnu/libdrm_amdgpu.so.1.0.0",
+      "/usr/lib/aarch64-linux-gnu/libdrm_nouveau.so.2.0.0",
+      "/usr/lib/aarch64-linux-gnu/libdrm_radeon.so.1.0.1",
+      "/usr/lib/aarch64-linux-gnu/libdw-0.188.so",
+      "/usr/lib/aarch64-linux-gnu/libedit.so.2.0.70",
+      "/usr/lib/aarch64-linux-gnu/libelf-0.188.so",
+      "/usr/lib/aarch64-linux-gnu/libepoxy.so.0.0.0",
+      "/usr/lib/aarch64-linux-gnu/libexpat.so.1.8.10",
+      "/usr/lib/aarch64-linux-gnu/libffi.so.8.1.2",
+      "/usr/lib/aarch64-linux-gnu/libfontconfig.so.1.12.0",
+      "/usr/lib/aarch64-linux-gnu/libfreetype.so.6.18.3",
+      "/usr/lib/aarch64-linux-gnu/libfribidi.so.0.4.0",
+      "/usr/lib/aarch64-linux-gnu/libgav1.so.1.0.0",
+      "/usr/lib/aarch64-linux-gnu/libgbm.so.1.0.0",
+      "/usr/lib/aarch64-linux-gnu/libgcc_s.so.1",
+      "/usr/lib/aarch64-linux-gnu/libgcrypt.so.20.4.1",
+      "/usr/lib/aarch64-linux-gnu/libgdk-3.so.0.2406.32",
+      "/usr/lib/aarch64-linux-gnu/libgdk_pixbuf-2.0.so.0.4200.10",
+      "/usr/lib/aarch64-linux-gnu/libgio-2.0.so.0.7400.6",
+      "/usr/lib/aarch64-linux-gnu/libglapi.so.0.0.0",
+      "/usr/lib/aarch64-linux-gnu/libglib-2.0.so.0.7400.6",
+      "/usr/lib/aarch64-linux-gnu/libgmodule-2.0.so.0.7400.6",
+      "/usr/lib/aarch64-linux-gnu/libgmp.so.10.4.1",
+      "/usr/lib/aarch64-linux-gnu/libgnutls.so.30.34.3",
+      "/usr/lib/aarch64-linux-gnu/libgobject-2.0.so.0.7400.6",
+      "/usr/lib/aarch64-linux-gnu/libgpg-error.so.0.33.1",
+      "/usr/lib/aarch64-linux-gnu/libgraphite2.so.3.2.1",
+      "/usr/lib/aarch64-linux-gnu/libgssapi_krb5.so.2.2",
+      "/usr/lib/aarch64-linux-gnu/libgstallocators-1.0.so.0.2200.0",
+      "/usr/lib/aarch64-linux-gnu/libgstapp-1.0.so.0.2200.0",
+      "/usr/lib/aarch64-linux-gnu/libgstaudio-1.0.so.0.2200.0",
+      "/usr/lib/aarch64-linux-gnu/libgstbase-1.0.so.0.2200.0",
+      "/usr/lib/aarch64-linux-gnu/libgstfft-1.0.so.0.2200.0",
+      "/usr/lib/aarch64-linux-gnu/libgstgl-1.0.so.0.2200.0",
+      "/usr/lib/aarch64-linux-gnu/libgstpbutils-1.0.so.0.2200.0",
+      "/usr/lib/aarch64-linux-gnu/libgstreamer-1.0.so.0.2200.0",
+      "/usr/lib/aarch64-linux-gnu/libgsttag-1.0.so.0.2200.0",
+      "/usr/lib/aarch64-linux-gnu/libgsttranscoder-1.0.so.0",
+      "/usr/lib/aarch64-linux-gnu/libgstvideo-1.0.so.0.2200.0",
+      "/usr/lib/aarch64-linux-gnu/libgtk-3.so.0.2406.32",
+      "/usr/lib/aarch64-linux-gnu/libgudev-1.0.so.0.3.0",
+      "/usr/lib/aarch64-linux-gnu/libharfbuzz-icu.so.0.60000.0",
+      "/usr/lib/aarch64-linux-gnu/libharfbuzz.so.0.60000.0",
+      "/usr/lib/aarch64-linux-gnu/libhogweed.so.6.6",
+      "/usr/lib/aarch64-linux-gnu/libhwy.so.1.0.3",
+      "/usr/lib/aarch64-linux-gnu/libicudata.so.72.1",
+      "/usr/lib/aarch64-linux-gnu/libicui18n.so.72.1",
+      "/usr/lib/aarch64-linux-gnu/libicuuc.so.72.1",
+      "/usr/lib/aarch64-linux-gnu/libidn2.so.0.3.8",
+      "/usr/lib/aarch64-linux-gnu/libjpeg.so.62.3.0",
+      "/usr/lib/aarch64-linux-gnu/libjxl.so.0.7.0",
+      "/usr/lib/aarch64-linux-gnu/libk5crypto.so.3.1",
+      "/usr/lib/aarch64-linux-gnu/libkeyutils.so.1.10",
+      "/usr/lib/aarch64-linux-gnu/libkrb5.so.3.3",
+      "/usr/lib/aarch64-linux-gnu/libkrb5support.so.0.1",
+      "/usr/lib/aarch64-linux-gnu/liblber-2.5.so.0.1.8",
+      "/usr/lib/aarch64-linux-gnu/liblcms2.so.2.0.14",
+      "/usr/lib/aarch64-linux-gnu/libldap-2.5.so.0.1.8",
+      "/usr/lib/aarch64-linux-gnu/liblz4.so.1.9.4",
+      "/usr/lib/aarch64-linux-gnu/liblzma.so.5.4.1",
+      "/usr/lib/aarch64-linux-gnu/libm.so.6",
+      "/usr/lib/aarch64-linux-gnu/libmd.so.0.0.5",
+      "/usr/lib/aarch64-linux-gnu/libmount.so.1.1.0",
+      "/usr/lib/aarch64-linux-gnu/libnettle.so.8.6",
+      "/usr/lib/aarch64-linux-gnu/libnghttp2.so.14.24.1",
+      "/usr/lib/aarch64-linux-gnu/liborc-0.4.so.0.33.0",
+      "/usr/lib/aarch64-linux-gnu/libp11-kit.so.0.3.0",
+      "/usr/lib/aarch64-linux-gnu/libpango-1.0.so.0.5000.12",
+      "/usr/lib/aarch64-linux-gnu/libpangocairo-1.0.so.0.5000.12",
+      "/usr/lib/aarch64-linux-gnu/libpangoft2-1.0.so.0.5000.12",
+      "/usr/lib/aarch64-linux-gnu/libpcre2-8.so.0.11.2",
+      "/usr/lib/aarch64-linux-gnu/libpixman-1.so.0.42.2",
+      "/usr/lib/aarch64-linux-gnu/libpng16.so.16.39.0",
+      "/usr/lib/aarch64-linux-gnu/libpsl.so.5.3.4",
+      "/usr/lib/aarch64-linux-gnu/libpthread.so.0",
+      "/usr/lib/aarch64-linux-gnu/librav1e.so.0.5.1",
+      "/usr/lib/aarch64-linux-gnu/libresolv.so.2",
+      "/usr/lib/aarch64-linux-gnu/librtmp.so.1",
+      "/usr/lib/aarch64-linux-gnu/libsasl2.so.2.0.25",
+      "/usr/lib/aarch64-linux-gnu/libsecret-1.so.0.0.0",
+      "/usr/lib/aarch64-linux-gnu/libselinux.so.1",
+      "/usr/lib/aarch64-linux-gnu/libsensors.so.5.0.0",
+      "/usr/lib/aarch64-linux-gnu/libsoup-3.0.so.0.6.0",
+      "/usr/lib/aarch64-linux-gnu/libsqlite3.so.0.8.6",
+      "/usr/lib/aarch64-linux-gnu/libssh2.so.1.0.1",
+      "/usr/lib/aarch64-linux-gnu/libssl.so.3",
+      "/usr/lib/aarch64-linux-gnu/libstdc++.so.6.0.30",
+      "/usr/lib/aarch64-linux-gnu/libsystemd.so.0.35.0",
+      "/usr/lib/aarch64-linux-gnu/libtasn1.so.6.6.3",
+      "/usr/lib/aarch64-linux-gnu/libthai.so.0.3.1",
+      "/usr/lib/aarch64-linux-gnu/libtinfo.so.6.4",
+      "/usr/lib/aarch64-linux-gnu/libudev.so.1.7.5",
+      "/usr/lib/aarch64-linux-gnu/libunistring.so.2.2.0",
+      "/usr/lib/aarch64-linux-gnu/libunwind.so.8.0.1",
+      "/usr/lib/aarch64-linux-gnu/libwayland-client.so.0.21.0",
+      "/usr/lib/aarch64-linux-gnu/libwayland-cursor.so.0.21.0",
+      "/usr/lib/aarch64-linux-gnu/libwayland-egl.so.1.21.0",
+      "/usr/lib/aarch64-linux-gnu/libwayland-server.so.0.21.0",
+      "/usr/lib/aarch64-linux-gnu/libwebp.so.7.1.5",
+      "/usr/lib/aarch64-linux-gnu/libwebpdemux.so.2.0.11",
+      "/usr/lib/aarch64-linux-gnu/libwebpmux.so.3.0.10",
+      "/usr/lib/aarch64-linux-gnu/libwoff2common.so.1.0.2",
+      "/usr/lib/aarch64-linux-gnu/libwoff2dec.so.1.0.2",
+      "/usr/lib/aarch64-linux-gnu/libxcb-dri2.so.0.0.0",
+      "/usr/lib/aarch64-linux-gnu/libxcb-dri3.so.0.1.0",
+      "/usr/lib/aarch64-linux-gnu/libxcb-glx.so.0.0.0",
+      "/usr/lib/aarch64-linux-gnu/libxcb-present.so.0.0.0",
+      "/usr/lib/aarch64-linux-gnu/libxcb-randr.so.0.1.0",
+      "/usr/lib/aarch64-linux-gnu/libxcb-render.so.0.0.0",
+      "/usr/lib/aarch64-linux-gnu/libxcb-shm.so.0.0.0",
+      "/usr/lib/aarch64-linux-gnu/libxcb-sync.so.1.0.0",
+      "/usr/lib/aarch64-linux-gnu/libxcb-xfixes.so.0.0.0",
+      "/usr/lib/aarch64-linux-gnu/libxcb.so.1.1.0",
+      "/usr/lib/aarch64-linux-gnu/libxkbcommon.so.0.0.0",
+      "/usr/lib/aarch64-linux-gnu/libxml2.so.2.9.14",
+      "/usr/lib/aarch64-linux-gnu/libxshmfence.so.1.0.0",
+      "/usr/lib/aarch64-linux-gnu/libxslt.so.1.1.35",
+      "/usr/lib/aarch64-linux-gnu/libyuv.so.0.0.1857",
+      "/usr/lib/aarch64-linux-gnu/libz.so.1.2.13",
+      "/usr/lib/aarch64-linux-gnu/libz3.so.4",
+      "/usr/lib/aarch64-linux-gnu/libzstd.so.1.5.4",
+      "/usr/lib/locale/C.utf8/LC_CTYPE",
+      "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+      "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+      "/usr/share/mime/mime.cache"
+    ],
+    "configuredPdfrxModule": null,
+    "durationMs": 549.141
+  },
+  "teardown": {
+    "ownedDocumentsRemaining": 0,
+    "ownedTabsRemaining": 0,
+    "indexingActiveAfter": false
+  },
+  "verifiedArchitecture": "arm64",
+  "nativeModules": [
+    {
+      "name": "libpdfium.so",
+      "path": "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libpdfium.so",
+      "bytes": 8127624,
+      "sha256": "8cdc437dce84a6493b9ec6c4f5ad9ff2c299e505acfd7b0ad38cb440805b2c70",
+      "format": "ELF",
+      "machine": 183,
+      "architecture": "arm64"
+    },
+    {
+      "name": "libpdfium_printing.so",
+      "path": "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libpdfium_printing.so",
+      "bytes": 5723016,
+      "sha256": "47a642b9172e6f239a7fc454409d3cea7fb74b699d181c3390d7e65b3534ef39",
+      "format": "ELF",
+      "machine": 183,
+      "architecture": "arm64"
+    },
+    {
+      "name": "libprinting_plugin.so",
+      "path": "/__w/otzaria/otzaria/build/linux/arm64/profile/bundle/lib/libprinting_plugin.so",
+      "bytes": 85496,
+      "sha256": "251f54e6e8dab87c07c7e888eac0ac3154f14bf471f5b57abf792ae7dafd1db4",
+      "format": "ELF",
+      "machine": 183,
+      "architecture": "arm64"
+    }
+  ],
+  "limitations": [
+    "General WebView/installed-app QA and PDF functional checks; recorded phase timings are not an A/B performance study.",
+    "Fifty reopen cycles occur inside one process and are not fifty independent launches.",
+    "Four generated PDF pages; no physical printer, physical sleep, or physical mobile-device acceptance.",
+    "The installed-app desktop lifecycle uses tabs; actual OS windows have a separate artifact."
+  ]
+}

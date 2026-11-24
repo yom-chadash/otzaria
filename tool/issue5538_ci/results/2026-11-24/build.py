@@ -52,7 +52,10 @@ def group(source_root, relative, run, job, artifact, commit, classification, exp
     name = Path(relative).name
     archives = sorted(root.glob('*.zip'))
     if not archives:
-        archives = [root.with_suffix('.zip')]
+        # Artifact names can end with a version, such as "fixed-3.50.0".
+        # Preserve that suffix when finding the downloaded sibling archive.
+        candidates = dict.fromkeys([root.with_name(root.name + '.zip'), root.with_suffix('.zip')])
+        archives = [candidate for candidate in candidates if candidate.is_file()]
     assert len(archives) == 1 and archives[0].is_file(), root
     if summary is None:
         choices = sorted(root.rglob('analysis-summary.json'))
