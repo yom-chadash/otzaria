@@ -61,14 +61,16 @@
     {
       "id": "birkon-3_0",
       "title": "Birkon 3.0 for the Open Siddur Project",
-      "sourceUrl": "https://opensiddur.org/wp-content/uploads/2011/06/Birkon-3.0-for-the-Open-Siddur-Project.pdf",
+      "sourceUrl": "https://raw.githubusercontent.com/yom-chadash/otzaria/66586eabf5a94e3e1c7db18469e1a65f4cc333e6/tool/issue5538_ci/fixtures/birkon-3_0.pdf",
       "sha256": "7e9d3f6af17b68da9400d575cd8b62913344a862490c75133b2c9b72b7783436",
       "sizeBytes": 1611139,
       "pageCount": 2,
       "classification": "real dense two-page Hebrew and English multi-column text; not a large-book benchmark",
       "attribution": "Aharon Varady, 2012, Open Siddur Project; original attribution retained inside the PDF",
       "license": "Creative Commons Attribution-ShareAlike 3.0 Unported",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/"
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "originalSourceUrl": "https://opensiddur.org/wp-content/uploads/2011/06/Birkon-3.0-for-the-Open-Siddur-Project.pdf",
+      "distributionNote": "Unmodified CC BY-SA 3.0 public copy in the measurement fork, with attribution. Exactly the same pinned PDF bytes; the original provider returns HTTP 403 to the GitHub runner. No authentication or access-control bypass is used."
     }
   ]
 }
