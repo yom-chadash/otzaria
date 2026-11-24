@@ -1,0 +1,138 @@
+name: PDF 5538 font backport integration validation in fork
+on:
+  push:
+    branches: [ci/5538-font-integration-20261124]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pdf-5538-font-integration-validation-${{ github.ref }}-${{ github.sha }}
+  cancel-in-progress: false
+env:
+  CI: 'true'
+  FLUTTER_SUPPRESS_ANALYTICS: 'true'
+  DART_SUPPRESS_ANALYTICS: 'true'
+  OTZARIA_REQUIRE_SEARCH_ENGINE: '1'
+jobs:
+  product:
+    name: Full analysis and font lifecycle regressions / ${{ matrix.os }}
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: Support long paths in pinned Git dependencies on Windows
+        if: runner.os == 'Windows'
+        run: git config --global core.longpaths true
+      - uses: ./.github/actions/setup-flutter
+        with:
+          flutter-version: 3.47.7
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Resolve the exact committed dependencies
+        run: |
+          set -euo pipefail
+          flutter --version --machine > "$RUNNER_TEMP/pdf-font-sdk.json"
+          git rev-parse HEAD > "$RUNNER_TEMP/pdf-font-source.txt"
+          flutter pub get --enforce-lockfile
+          git diff --exit-code -- pubspec.yaml pubspec.lock
+      - name: Require complete analysis with no diagnostics
+        run: |
+          set -euo pipefail
+          flutter analyze --no-pub 2>&1 | tee "$RUNNER_TEMP/pdf-font-analyze.log"
+      - name: Verify document ownership, late fonts, replacement and indexing
+        run: |
+          set -euo pipefail
+          flutter test --no-pub --concurrency=1 --reporter expanded \
+            --file-reporter "json:$RUNNER_TEMP/pdf-font-tests.json" \
+            test/pdf_book/pdf_document_font_recovery_test.dart \
+            test/pdf_book/pdf_font_fallback_lifecycle_test.dart \
+            test/pdf_book/pdf_font_fallback_test.dart \
+            test/indexing/utils/pdf_indexing_document_test.dart 2>&1 | tee "$RUNNER_TEMP/pdf-font-tests.log"
+          git diff --exit-code -- pubspec.yaml pubspec.lock lib test
+      - name: Preserve complete or failed validation evidence
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pdf-5538-font-integration-validation-${{ runner.os }}
+          retention-days: 90
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/pdf-font-sdk.json
+            ${{ runner.temp }}/pdf-font-source.txt
+            ${{ runner.temp }}/pdf-font-analyze.log
+            ${{ runner.temp }}/pdf-font-tests.json
+            ${{ runner.temp }}/pdf-font-tests.log
+
+  engine:
+    name: Backported engine / old SDK / ${{ matrix.os }}
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022, macos-15-intel]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: Normalize pinned dependency checkouts
+        run: |
+          git config --global core.longpaths true
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: ./.github/actions/setup-flutter
+        with:
+          flutter-version: 3.47.7
+      - uses: actions/checkout@v7.0.1
+        with:
+          repository: yom-chadash/pdfrx
+          ref: 964b5e15e082c8633651ffab1d037631af65e156
+          path: engine-source
+          persist-credentials: false
+      - name: Resolve old SDK and record exact package source
+        working-directory: engine-source
+        run: |
+          set -euo pipefail
+          flutter --version --machine > "$RUNNER_TEMP/pdf-font-engine-sdk.json"
+          git rev-parse HEAD > "$RUNNER_TEMP/pdf-font-engine-source.txt"
+          flutter pub get
+          cp pubspec.lock "$RUNNER_TEMP/pdf-font-engine-pubspec.lock"
+          cp .dart_tool/package_config.json "$RUNNER_TEMP/pdf-font-engine-package-config.json"
+          git diff --exit-code -- packages/pdfrx/pubspec.yaml packages/pdfrx_engine/pubspec.yaml
+      - name: Analyze old engine and WASM reset hook
+        working-directory: engine-source
+        run: |
+          set -euo pipefail
+          dart analyze packages/pdfrx_engine packages/pdfrx/lib/src/wasm/pdfrx_wasm.dart 2>&1 | tee "$RUNNER_TEMP/pdf-font-engine-analyze.log"
+      - name: Test native ownership and single-flight font loading
+        working-directory: engine-source/packages/pdfrx_engine
+        run: |
+          set -euo pipefail
+          dart test --concurrency=1 --reporter expanded --file-reporter "json:$RUNNER_TEMP/pdf-font-engine-tests.jsonl" \
+            test/pdf_font_resolver_test.dart test/pdf_document_test.dart 2>&1 | tee "$RUNNER_TEMP/pdf-font-engine-tests.log"
+      - name: Preserve engine validation evidence
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pdf-5538-font-engine-${{ runner.os }}
+          retention-days: 90
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/pdf-font-engine-*.json
+            ${{ runner.temp }}/pdf-font-engine-*.jsonl
+            ${{ runner.temp }}/pdf-font-engine-*.txt
+            ${{ runner.temp }}/pdf-font-engine-*.log
+            ${{ runner.temp }}/pdf-font-engine-*.lock
