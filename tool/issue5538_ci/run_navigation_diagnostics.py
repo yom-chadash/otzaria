@@ -67,6 +67,11 @@ def run(args):
         pair.git(source, 'worktree', 'add', '--detach', str(checkout), commit)
         created = True
         pair.verify_checkout(checkout, commit)
+        # Flutter's first Windows invocation may bootstrap the tool and print
+        # non-JSON startup output. Keep that explicit preparation in a log;
+        # the subsequent machine identity still uses the strict JSON parser.
+        pair.run_logged([flutter, '--version'], checkout, logs / 'sdk-bootstrap.log')
+        pair.verify_checkout(checkout, commit)
         summary['sdk'] = pair.sdk_identity(flutter, checkout)
         for name, arguments in (
             ('resolve', ['pub', 'get', '--enforce-lockfile']),
