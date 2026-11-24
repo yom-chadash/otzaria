@@ -128,13 +128,21 @@ def documents(corpus_path, output):
     return result
 
 
-def read_packages(path):
-    config = json.loads(path.read_text())
+def normalized_packages(config, path):
+    config = json.loads(json.dumps(config))
+    require(config.get('configVersion') == 2 and isinstance(config.get('packages'), list),
+            'Invalid official package configuration.')
+    names = [package['name'] for package in config['packages']]
+    require(len(set(names)) == len(names), 'Duplicate package names.')
     for package in config["packages"]:
         uri = urllib.parse.urljoin(path.as_uri(), package["rootUri"])
         require(urllib.parse.urlparse(uri).scheme == "file", "Non-local package root.")
         package["rootUri"] = Path(urllib.parse.unquote(urllib.parse.urlparse(uri).path)).resolve(strict=True).as_uri() + "/"
     return config
+
+
+def read_packages(path):
+    return normalized_packages(json.loads(path.read_text()), path)
 
 
 def package_root(config, name):
@@ -166,21 +174,91 @@ def copy_package_graph(original_config, overlay_config):
             'packageGraphSource': 'Byte-for-byte copy of the official flutter pub get --enforce-lockfile output; no resolution edits.'}
 
 
+def install_project_overlay(root, viewer, private):
+    """Keep the declared mapping at the SDK's project-local generated path.
+
+    The exact pub output is preserved first. No resolution runs after this
+    step, and only the private copied viewer root may differ semantically.
+    """
+    config = root / '.dart_tool/package_config.json'
+    graph = config.with_name('package_graph.json')
+    require(config.parent.is_dir() and not config.parent.is_symlink()
+            and config.is_file() and not config.is_symlink()
+            and graph.is_file() and not graph.is_symlink()
+            and private.is_file() and not private.is_symlink(),
+            'Official/private pub resolution is missing or aliased.')
+    original_config_hash, original_graph_hash = digest(config), digest(graph)
+    official = read_packages(config)
+    expected = json.loads(json.dumps(official))
+    matches = [package for package in expected['packages'] if package['name'] == 'pdfrx']
+    require(len(matches) == 1, 'Official resolution must contain exactly one pdfrx package.')
+    require(viewer.is_dir() and not viewer.is_symlink(), 'Private viewer directory is missing or aliased.')
+    matches[0]['rootUri'] = viewer.resolve(strict=True).as_uri() + '/'
+    require(read_packages(private) == expected,
+            'Private package mapping changed more than the declared viewer root.')
+    saved_config = private.parent / 'official-package-config.json'
+    saved_graph = private.parent / 'official-package-graph.json'
+    require(not saved_config.exists() and not saved_config.is_symlink()
+            and not saved_graph.exists() and not saved_graph.is_symlink(),
+            'Official resolution backups must be new.')
+    shutil.copyfile(config, saved_config)
+    shutil.copyfile(graph, saved_graph)
+    require(digest(saved_config) == digest(config) == original_config_hash
+            and digest(saved_graph) == digest(graph) == original_graph_hash,
+            'Official pub resolution changed while preserving it.')
+    shutil.copyfile(private, config)
+    require(config.read_bytes() == private.read_bytes()
+            and digest(graph) == original_graph_hash, 'Installed package mapping or original graph differs.')
+    return {'originalPackageConfigSha256': original_config_hash,
+            'originalPackageConfigBackupPath': str(saved_config),
+            'originalPackageGraphBackupPath': str(saved_graph),
+            'originalPackageGraphBackupSha256': original_graph_hash,
+            'privatePackageConfigPath': str(private),
+            'overlayPackageConfigSha256': digest(private),
+            'installedPackageConfigPath': str(config),
+            'installedPackageConfigSha256': digest(config),
+            'privateViewerRoot': str(viewer.resolve(strict=True)),
+            'changedPackageRoots': ['pdfrx'],
+            'installation': 'Declared overlay in the owned worktree .dart_tool/package_config.json; original pub config and graph retained verbatim; no resolver rerun.'}
+
+
 def verify_package_inputs(root, packages, receipt):
-    require(digest(packages) == receipt['overlayPackageConfigSha256']
-            and digest(root / '.dart_tool/package_config.json') == receipt['originalPackageConfigSha256'],
-            'Original/private package mapping changed.')
+    installed = root / '.dart_tool/package_config.json'
+    private = Path(receipt['privatePackageConfigPath'])
+    backup_config = Path(receipt['originalPackageConfigBackupPath'])
+    backup_graph = Path(receipt['originalPackageGraphBackupPath'])
+    require(packages == installed and str(installed) == receipt['installedPackageConfigPath']
+            and not installed.parent.is_symlink(), 'Native test must use the owned project-local package configuration.')
+    for path, checksum in ((installed, receipt['installedPackageConfigSha256']),
+                           (private, receipt['overlayPackageConfigSha256']),
+                           (backup_config, receipt['originalPackageConfigSha256']),
+                           (backup_graph, receipt['originalPackageGraphBackupSha256'])):
+        require(path.is_file() and not path.is_symlink() and digest(path) == checksum,
+                'Original/private/installed package mapping changed.')
+    require(receipt['installedPackageConfigSha256'] == receipt['overlayPackageConfigSha256']
+            and receipt['changedPackageRoots'] == ['pdfrx'], 'Installed overlay receipt is inconsistent.')
+    expected = normalized_packages(json.loads(backup_config.read_text()), installed)
+    viewers = [package for package in expected['packages'] if package['name'] == 'pdfrx']
+    require(len(viewers) == 1, 'Saved official mapping must identify one viewer.')
+    viewers[0]['rootUri'] = Path(receipt['privateViewerRoot']).resolve(strict=True).as_uri() + '/'
+    require(read_packages(installed) == read_packages(private) == expected,
+            'Installed mapping changed more than the declared viewer root.')
     original_graph = root / '.dart_tool/package_graph.json'
-    overlay_graph = packages.with_name('package_graph.json')
+    overlay_graph = private.with_name('package_graph.json')
     require(str(original_graph) == receipt['originalPackageGraphPath']
             and str(overlay_graph) == receipt['overlayPackageGraphPath']
+            and original_graph.is_file() and not original_graph.is_symlink()
+            and overlay_graph.is_file() and not overlay_graph.is_symlink()
             and digest(original_graph) == receipt['originalPackageGraphSha256']
-            and digest(overlay_graph) == receipt['overlayPackageGraphSha256'],
+            and digest(overlay_graph) == receipt['overlayPackageGraphSha256']
+            == receipt['originalPackageGraphBackupSha256'],
             'Original/private package graph changed.')
 
 
 def prepare_overlay(root, variant, output, metrics_uri):
-    original_path = (root / ".dart_tool/package_config.json").resolve(strict=True)
+    original_path = root / ".dart_tool/package_config.json"
+    require(original_path.is_file() and not original_path.is_symlink()
+            and not original_path.parent.is_symlink(), 'Official package mapping is missing or aliased.')
     config = read_packages(original_path)
     lock = yaml.safe_load((root / "pubspec.lock").read_text())
     package_receipts = {}
@@ -211,14 +289,15 @@ def prepare_overlay(root, variant, output, metrics_uri):
     config_path = output / "packages.json"
     save(config_path, overlay)
     graph_receipt = copy_package_graph(original_path, config_path)
-    receipt = {"originalPackageConfigSha256": digest(original_path), "overlayPackageConfigSha256": digest(config_path),
-               **graph_receipt,
+    installed_receipt = install_project_overlay(root, copied, config_path)
+    receipt = {**graph_receipt, **installed_receipt,
                "originalIndexSha256": hashlib.sha256(before.encode()).hexdigest(),
                "instrumentedIndexSha256": hashlib.sha256(after.encode()).hexdigest(),
                "observerPatchSha256": digest(output / "observer.patch"), "packages": package_receipts,
-               "sourceMutation": "Only private copied pdfrx/lib/src/widgets/internals/page_layout_index.dart is instrumented; application and Pub cache stay intact."}
+               "sourceMutation": "Only the private copied pdfrx index is instrumented and its root is installed in the owned generated package config; tracked app sources, pubspec, lock and Pub cache remain unchanged."}
     save(output / "overlay-receipt.json", receipt)
-    return config_path, overlay, receipt
+    verify_package_inputs(root, original_path, receipt)
+    return original_path, overlay, receipt
 
 
 def owned_exit(process):
@@ -329,6 +408,13 @@ def validate_result(directory, value, config):
 
 
 def launch(flutter, sdk, root, packages, target, config, directory):
+    require(packages == root / '.dart_tool/package_config.json'
+            and (root / 'pubspec.yaml').is_file()
+            and packages.is_file() and not packages.is_symlink()
+            and not packages.parent.is_symlink(), 'Native launch requires the owned project-local package configuration.')
+    require(digest(packages) == config['packageConfigSha256']
+            and digest(packages.with_name('package_graph.json')) == config['packageGraphSha256'],
+            'Installed package mapping/graph changed before native launch.')
     directory.mkdir()
     config = {**config, "output": str(directory)}
     save(directory / "config.json", config)
