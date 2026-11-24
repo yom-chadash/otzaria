@@ -1,6 +1,7 @@
 """Compare both upstream Apple backends in one isolated Flutter 3.50 binary."""
 
 import argparse
+import difflib
 import hashlib
 import json
 import os
@@ -18,6 +19,7 @@ import internal_apple_trace
 UPSTREAM_SHA = "683df93e986af19bbcefd22606a417083116847b"
 FLUTTER_SHA = "ab2912035e160d9cad6306df307576da6128ebdb"
 ENGINE_SHA = "371f77202a73e8dff57a8b3bff75bca55c090aee"
+SWIFT_PLUGIN = "packages/pdfrx_coregraphics/darwin/pdfrx_coregraphics/Sources/PdfrxCoregraphicsPlugin.swift"
 
 
 def require(value, message):
@@ -56,6 +58,44 @@ def validate(report, config):
         require(all(r["customReadBytes"] > 0 for r in report["observations"]), "Custom reader was not exercised")
 
 
+def apply_swift_initializer_compatibility(upstream, output):
+    path = upstream / SWIFT_PLUGIN
+    original = subprocess.check_output(["git", "show", f"{UPSTREAM_SHA}:{SWIFT_PLUGIN}"], cwd=upstream, timeout=60)
+    require(path.read_bytes() == original, "CoreGraphics Swift source changed before the compatibility patch")
+    before = original.decode("utf-8")
+    after = before
+    for variable, constructor, code, message in (
+        ("pdfDocument", "PDFDocument", "pdf-document-failure", "Failed to create empty PDFDocument."),
+        ("pdfDocument", "PDFDocument", "pdf-document-failure", "Failed to create PDFDocument."),
+        ("pdfPage", "PDFPage", "pdf-page-failure", "Failed to create PDF page."),
+    ):
+        old = f'''    guard let {variable} = {constructor}() else {{
+      result(
+        FlutterError(
+          code: "{code}", message: "{message}", details: nil
+        ))
+      return
+    }}'''
+        require(after.count(old) == 1, "CoreGraphics initializer compatibility anchor changed")
+        after = after.replace(old, f"    let {variable} = {constructor}()", 1)
+    patch = "".join(difflib.unified_diff(before.splitlines(keepends=True), after.splitlines(keepends=True),
+                                       fromfile="a/" + SWIFT_PLUGIN, tofile="b/" + SWIFT_PLUGIN))
+    patched = after.encode("utf-8")
+    receipt = {
+        "upstreamCommit": UPSTREAM_SHA, "path": SWIFT_PLUGIN,
+        "sourceRole": "baseline plus initializer-only compile compatibility patch",
+        "originalSha256": hashlib.sha256(original).hexdigest(),
+        "patchedSha256": hashlib.sha256(patched).hexdigest(),
+        "patchSha256": hashlib.sha256(patch.encode("utf-8")).hexdigest(), "patch": patch,
+        "changedMethods": ["createNewDocument", "createDocumentFromJpegData"],
+        "reason": "PDFDocument() and PDFPage() are non-optional in the tested Apple SDK; conditional binding cannot compile.",
+        "renderTextSchedulerChanged": False,
+    }
+    path.write_bytes(patched)
+    write_json(output / "upstream-swift-compatibility.json", receipt)
+    return receipt
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--flutter", type=Path, required=True)
@@ -84,6 +124,8 @@ def main():
         run(["git", "fetch", "--depth", "1", "origin", UPSTREAM_SHA], upstream, output / "git-fetch.log")
         run(["git", "checkout", "--detach", "FETCH_HEAD"], upstream, output / "checkout.log")
         require(run(["git", "rev-parse", "HEAD"], upstream, output / "upstream-sha.log").strip() == UPSTREAM_SHA, "Upstream identity changed")
+        compatibility = apply_swift_initializer_compatibility(upstream, output)
+        xcode_version = run(["xcodebuild", "-version"], upstream, output / "xcode-version.log")
         app = upstream / "packages/issue5538_apple"
         run([args.flutter, "create", "--no-pub", "--platforms=macos", "--project-name=issue5538_apple", app], upstream, output / "create.log")
         workspace = upstream / "pubspec.yaml"
@@ -118,7 +160,9 @@ dependencies:
         shutil.copyfile(lock, output / "upstream-pubspec.lock")
         run([args.flutter, "pub", "get", "--enforce-lockfile"], app, output / "pub-get-enforced.log")
         run([args.flutter, "analyze", "--no-pub", "lib/main.dart"], app, output / "analyze.log")
+        require(digest(upstream / SWIFT_PLUGIN) == compatibility["patchedSha256"], "CoreGraphics compatibility source changed before build")
         run([args.flutter, "build", "macos", "--release", "--no-pub"], app, output / "build.log", timeout=1800)
+        require(digest(upstream / SWIFT_PLUGIN) == compatibility["patchedSha256"], "CoreGraphics compatibility source changed during build")
         bundles = list((app / "build/macos/Build/Products/Release").glob("*.app"))
         require(len(bundles) == 1, "Ambiguous Apple app bundle")
         bundle = bundles[0]
@@ -133,6 +177,8 @@ dependencies:
                      *(app / "macos/Runner").glob("*.entitlements")]
         write_json(output / "provenance.json", {"sourceCommit": source, "sourceDirty": False,
             "upstreamCommit": UPSTREAM_SHA, "flutter": sdk, "bundleFiles": bundle_hashes,
+            "upstreamSourceRole": compatibility["sourceRole"], "compileCompatibility": compatibility,
+            "xcodeVersion": xcode_version.strip(),
             "operatingSystem": platform.platform(), "architecture": platform.machine(),
             "upstreamLockSha256": digest(lock), "corpusManifestSha256": digest(args.corpus_manifest),
             "harnessFiles": {p.name: digest(p) for p in module.glob("internal_apple_*") if p.is_file()},

@@ -182,10 +182,6 @@ def main():
         upstream.write_json(output / 'failure.json', {'status': 'failed', 'completedSuites': receipts,
                                                      'error': traceback.format_exc()})
         raise
-    finally:
-        if source.exists():
-            shutil.rmtree(source)
-
 
 if __name__ == '__main__':
     main()
