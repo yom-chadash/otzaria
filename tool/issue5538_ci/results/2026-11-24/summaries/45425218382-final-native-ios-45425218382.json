@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "Post-download analysis; original ZIP members verified without modification",
+  "artifactZipSha256": "787221f4d0980da9e15dac71443d90b6c62b536272bd8a956637661d70e60420",
+  "artifactZipBytes": 300867,
+  "verifiedOriginalFiles": 8,
+  "section": "Q02",
+  "runId": 45425218382,
+  "jobId": 138555238942,
+  "artifactId": 14940337143,
+  "sourceCommit": "b103bdf2e3ee2fc1e389af30aa7d4bec4b6af341",
+  "classification": "failed-correctness-harness-lifecycle",
+  "platform": "ios",
+  "buildMode": "debug",
+  "flutterVersion": "3.47.7",
+  "physicalDeviceAcceptance": false,
+  "rawReport": "partial-device-output/installed-pdf-ios-report.json",
+  "rawReportSha256": "090d5aeb19b325c957d5de2c0dfecdbfa7414e1cacd67d9d2d755fd8e3fa1abd",
+  "observedFailure": {
+    "status": "failed",
+    "error": "Expected: contains 'bundlepage1'\n  Actual: <null>\n   Which: is not a string, map or iterable\n",
+    "durationMs": 6776.748
+  },
+  "followingPdfSteps": {
+    "concurrentWork": "notRun",
+    "cancelAndRecover": "notRun",
+    "reopen": "notRun",
+    "loadedModules": "notRun",
+    "teardown": "notRun"
+  },
+  "pluginPhases": [],
+  "pluginPassedCount": 0,
+  "fixture": {
+    "path": "/Users/runner/Library/Developer/CoreSimulator/Devices/78167863-5CA5-4DF9-9A28-E0E7775DAE32/data/Containers/Data/Application/4DF997F0-367F-41FB-8436-143DD332CC28/tmp/otzaria-pdf-ios-48y3kI/output/bundle-runtime.pdf",
+    "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939",
+    "bytes": 1631,
+    "pages": 4,
+    "content": "Deterministic vector text and black rectangle; mixed page sizes."
+  },
+  "trackedOwnerCleanup": {
+    "ownedDocumentsRemaining": 0,
+    "ownedTabsRemaining": 0,
+    "indexingActiveAfter": false
+  },
+  "sourceGroundedDiagnosis": "The runtime reads the native document captured before navigation; S02 may publish and dispose replacement owners. This source-level lifetime defect explains the null-text symptom, but the old raw report does not identify the replacement event.",
+  "performanceMeasurement": false,
+  "limitations": [
+    "No complete PDF view/index/export/native-module/teardown acceptance passed.",
+    "The old cleanup counters cover the initially captured owners and do not prove every replacement owner closed.",
+    "No product rendering defect or performance regression is established by this failed harness."
+  ],
+  "declaredScopeComplete": false,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45425218382/job/138555238942",
+  "jobLogSha256": "87602412e6a7981b0025348f08987493b37d908acf62f3afd093c5aa1e1b4441",
+  "jobLogBytes": 108713,
+  "jobLogOrigin": "GitHub connector decoded job log; not an original Actions log ZIP",
+  "jobLogNewlineTransformation": "none; connector text already LF"
+}

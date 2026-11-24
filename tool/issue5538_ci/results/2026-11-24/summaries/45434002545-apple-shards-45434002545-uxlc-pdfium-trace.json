@@ -1,0 +1,293 @@
+{
+  "schemaVersion": 1,
+  "section": "E12",
+  "runId": 45434002545,
+  "jobId": 138592848182,
+  "artifactId": 14942335004,
+  "sourceCommit": "9b5e7b2fde53fe6ad0408940ece653ff8d0c49e4",
+  "upstreamCommit": "683df93e986af19bbcefd22606a417083116847b",
+  "artifactZipSha256": "3ef1110c5b2a85ae7599ff690d85b481d9c735b1d83dfbb5325e7a9d5fc74b70",
+  "artifactZipBytes": 3293729,
+  "verifiedOriginalFiles": 308,
+  "classification": "completed-measurement",
+  "kind": "isolated-upstream-native-thread-diagnostic",
+  "executableSha256": "f64dc03667732988912cb12bcb33655b7947989311615b1fb8063cb4d6db06c6",
+  "transportSha256": "198b569f8135ab6d47354e92447e950e3405bc6cd2706c840ffbc5f66a109b11",
+  "sdk": {
+    "frameworkVersion": "3.50.0",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "ab2912035e160d9cad6306df307576da6128ebdb",
+    "frameworkCommitDate": "2026-11-09 08:50:21 -0800",
+    "engineRevision": "371f77202a73e8dff57a8b3bff75bca55c090aee",
+    "engineCommitDate": "2026-11-09 15:57:36.000Z",
+    "engineContentHash": "bf601093ad255aaf5c6d0fc5c4f9acfa60943b2a",
+    "engineBuildDate": "2026-11-09 08:33:19.494",
+    "dartSdkVersion": "3.14.0",
+    "devToolsVersion": "2.61.0",
+    "flutterVersion": "3.50.0",
+    "flutterRoot": "/Users/runner/hostedtoolcache/flutter/stable-3.50.0-x64/flutter"
+  },
+  "declaredDocuments": [
+    "uxlc-genesis"
+  ],
+  "declaredBackends": [
+    "pdfium"
+  ],
+  "workloadProcesses": 1,
+  "observationsPerProcessIncludingWarmup": 3,
+  "xctraceVersion": "xctrace version 16.0 (16F6)",
+  "workloadsComplete": true,
+  "exports": [
+    {
+      "document": "uxlc-genesis",
+      "backend": "pdfium",
+      "path": "uxlc-genesis-pdfium-1-time-profile.xml",
+      "sha256": "6461b1207594a7d0aee7be7edf1272e1286a4dc9f5cf09828e102d72f6f6490a",
+      "rows": 5640,
+      "otherProcessRows": 0,
+      "unidentifiableRows": 89,
+      "threadSamples": 5551,
+      "nativeSymbolSamples": 2940,
+      "threads": [
+        {
+          "label": "Main Thread 0x3104 (issue5538_apple, pid: 2916)",
+          "tid": "12548",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 1395,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        },
+        {
+          "label": "issue5538_apple 0x3349 (issue5538_apple, pid: 2916)",
+          "tid": "13129",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 161,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        },
+        {
+          "label": "issue5538_apple 0x334b (issue5538_apple, pid: 2916)",
+          "tid": "13131",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 62,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        },
+        {
+          "label": "io.flutter.io 0x335e (issue5538_apple, pid: 2916)",
+          "tid": "13150",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 4,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        },
+        {
+          "label": "io.flutter.raster 0x335d (issue5538_apple, pid: 2916)",
+          "tid": "13149",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 40,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        },
+        {
+          "label": "issue5538_apple 0x334c (issue5538_apple, pid: 2916)",
+          "tid": "13132",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 11,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        },
+        {
+          "label": "CVDisplayLink 0x335c (issue5538_apple, pid: 2916)",
+          "tid": "13148",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 3,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        },
+        {
+          "label": "issue5538_apple 0x3376 (issue5538_apple, pid: 2916)",
+          "tid": "13174",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 49,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        },
+        {
+          "label": "issue5538_apple 0x337e (issue5538_apple, pid: 2916)",
+          "tid": "13182",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 21,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        },
+        {
+          "label": "issue5538_apple 0x337f (issue5538_apple, pid: 2916)",
+          "tid": "13183",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 42,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        },
+        {
+          "label": "issue5538_apple 0x337d (issue5538_apple, pid: 2916)",
+          "tid": "13181",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 22,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        },
+        {
+          "label": "com.apple.NSEventThread 0x3393 (issue5538_apple, pid: 2916)",
+          "tid": "13203",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 2,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        },
+        {
+          "label": "dart:io EventHandler 0x3361 (issue5538_apple, pid: 2916)",
+          "tid": "13153",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 243,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        },
+        {
+          "label": "DartWorker 0x3394 (issue5538_apple, pid: 2916)",
+          "tid": "13204",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 3456,
+          "nativeSymbolSamples": 2940,
+          "nativeFrames": {
+            "FPDF_LoadPage": 2512,
+            "FPDF_RenderPage_Continue": 200,
+            "FPDF_RenderPageBitmap_Start": 161,
+            "CPDFSDK_RenderPageWithContext(CPDF_PageRenderContext*, CPDF_Page*, int, int, int, int, int, int, FPDF_COLORSCHEME_ const*, bool, CPDFSDK_PauseAdapter*)": 161,
+            "(anonymous namespace)::RenderPageImpl(CPDF_PageRenderContext*, CPDF_Page*, CFX_Matrix const&, FX_RECT const&, int, FPDF_COLORSCHEME_ const*, bool, CPDFSDK_PauseAdapter*)": 161,
+            "FPDF_RenderPageBitmapWithColorScheme_Start": 161,
+            "FPDFText_LoadPage": 45,
+            "FPDFBitmap_FillRect": 17,
+            "FPDF_FreeDefaultSystemFontInfo": 8,
+            "FPDF_InitLibrary": 1,
+            "FPDFText_GetCharBox": 1,
+            "FPDFLink_LoadWebLinks": 1
+          }
+        },
+        {
+          "label": "DartWorker 0x3399 (issue5538_apple, pid: 2916)",
+          "tid": "13209",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 15,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        },
+        {
+          "label": "io.worker.2 0x3360 (issue5538_apple, pid: 2916)",
+          "tid": "13152",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 14,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        },
+        {
+          "label": "DartWorker 0x3bf3 (issue5538_apple, pid: 2916)",
+          "tid": "15347",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 2,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        },
+        {
+          "label": "CVDisplayLink 0x3be4 (issue5538_apple, pid: 2916)",
+          "tid": "15332",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 1,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        },
+        {
+          "label": "io.worker.1 0x335f (issue5538_apple, pid: 2916)",
+          "tid": "13151",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 7,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        },
+        {
+          "label": "CVDisplayLink 0x3c6a (issue5538_apple, pid: 2916)",
+          "tid": "15466",
+          "process": "issue5538_apple (2916)",
+          "pid": "2916",
+          "samples": 1,
+          "nativeSymbolSamples": 0,
+          "nativeFrames": {}
+        }
+      ]
+    },
+    {
+      "document": "uxlc-genesis",
+      "backend": "pdfium",
+      "path": "uxlc-genesis-pdfium-1-time-sample.xml",
+      "sha256": "3eec63e1fa397f70c9763f21078dcb4513841bd0a8c4c97c85d598e25143c68b",
+      "rows": 5642,
+      "otherProcessRows": 0,
+      "unidentifiableRows": 5642,
+      "threadSamples": 0,
+      "nativeSymbolSamples": 0,
+      "threads": []
+    }
+  ],
+  "nativeTraceFiles": 281,
+  "nativeTraceBytes": 4387053,
+  "baselineTimingEvidence": false,
+  "processAttribution": "Executable name matched in exported stacks; PIDs are retained, but there is no independent launch-PID receipt.",
+  "compileCompatibility": {
+    "upstreamCommit": "683df93e986af19bbcefd22606a417083116847b",
+    "path": "packages/pdfrx_coregraphics/darwin/pdfrx_coregraphics/Sources/PdfrxCoregraphicsPlugin.swift",
+    "sourceRole": "baseline plus initializer-only compile compatibility patch",
+    "originalSha256": "d54b1be2327da05d34eec6e6e1c4f4a65293aa61c244a3e678296b7b760b941b",
+    "patchedSha256": "037ef021d5065cbab8c94832face2bb9d605c0b1e26f47f4f7b112868320ddc4",
+    "patchSha256": "42c8eaeab60bb31bc9f072c138896d5f4a1dfa413bdd004490163f3617b42908",
+    "patch": "--- a/packages/pdfrx_coregraphics/darwin/pdfrx_coregraphics/Sources/PdfrxCoregraphicsPlugin.swift\n+++ b/packages/pdfrx_coregraphics/darwin/pdfrx_coregraphics/Sources/PdfrxCoregraphicsPlugin.swift\n@@ -144,13 +144,7 @@\n   private func createNewDocument(arguments: Any?, result: @escaping FlutterResult) {\n     // Create a truly empty PDF document with no pages\n     // PDFDocument() creates an empty document directly\n-    guard let pdfDocument = PDFDocument() else {\n-      result(\n-        FlutterError(\n-          code: \"pdf-document-failure\", message: \"Failed to create empty PDFDocument.\", details: nil\n-        ))\n-      return\n-    }\n+    let pdfDocument = PDFDocument()\n \n     // Register the document\n     let handle = nextHandle\n@@ -199,23 +193,11 @@\n     }\n \n     // Create an empty PDF document\n-    guard let pdfDocument = PDFDocument() else {\n-      result(\n-        FlutterError(\n-          code: \"pdf-document-failure\", message: \"Failed to create PDFDocument.\", details: nil\n-        ))\n-      return\n-    }\n+    let pdfDocument = PDFDocument()\n \n     // Create a PDF page with the specified dimensions\n     let pageRect = CGRect(x: 0, y: 0, width: width, height: height)\n-    guard let pdfPage = PDFPage() else {\n-      result(\n-        FlutterError(\n-          code: \"pdf-page-failure\", message: \"Failed to create PDF page.\", details: nil\n-        ))\n-      return\n-    }\n+    let pdfPage = PDFPage()\n     pdfPage.setBounds(pageRect, for: .mediaBox)\n \n     // Create image from JPEG data\n",
+    "changedMethods": [
+      "createNewDocument",
+      "createDocumentFromJpegData"
+    ],
+    "reason": "PDFDocument() and PDFPage() are non-optional in the tested Apple SDK; conditional binding cannot compile.",
+    "renderTextSchedulerChanged": false
+  },
+  "limitations": [
+    "Sampled stacks are attributed by executable name; exported PIDs are retained but not independently matched to a launch-PID receipt.",
+    "Native symbol samples count stack rows containing a backend symbol; multiple symbols can occur in one sample.",
+    "Unidentifiable rows and exports without resolved thread/backtrace remain explicit. No symbol sample is not proof of no native work.",
+    "Overlapping xctrace schemas are retained separately and their samples are not added into an independent sample count.",
+    "Profiler and phase-progress I/O are enabled only for this diagnostic; its times are not ABBA performance measurements.",
+    "One captured workload does not establish that all backend operations always use the same thread.",
+    "This is isolated upstream Flutter 3.50 on a hosted Intel Mac, with no product UI equivalence or adoption claim."
+  ],
+  "otzariaAdoptionApproved": false,
+  "productionSdkChanged": false,
+  "physicalDeviceAcceptance": false,
+  "analysisScriptSha256": "854509f3defac3c647cb94bad02b8760fb1d972b0ef662136179c411a52fcae4"
+}

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "Post-download analysis; original ZIP members verified without modification",
+  "artifactZipSha256": "4cbd5017fb8e63bc017fd8b46aa985819a2a382e96d475ea361ebb96986b5d7d",
+  "artifactZipBytes": 95227,
+  "verifiedOriginalFiles": 14,
+  "section": "navigation correctness",
+  "runId": 45430642965,
+  "jobId": 138574689417,
+  "artifactId": 14939278783,
+  "sourceCommit": "a56059a6459f937ed39f202cc2cd6ce4cd84d473",
+  "originalProductCommit": "cdea38083d06b445b4ec67d8345109a0457924af",
+  "candidateProductCommit": "4f7d95e3d9e7d932a3675d837bfa3f8e7f3be703",
+  "sourceAndDependencyGuardsPassed": true,
+  "candidateAnalyzePassed": true,
+  "candidateTestsRun": 0,
+  "performanceMeasurement": false,
+  "classification": "cancelled-before-recorded-regression-results",
+  "recordedVisibleTestCompletions": 0,
+  "limitations": [
+    "Cancellation interrupted the baseline test step; the artifact has no JSON test stream or exit receipt.",
+    "No baseline or candidate correctness result and no performance measurement can be inferred."
+  ],
+  "declaredScopeComplete": false,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45430642965/job/138574689417"
+}

@@ -1,0 +1,133 @@
+{
+  "analysisOrigin": "post-download analysis; raw original ZIP members unchanged",
+  "analysisScript": {
+    "path": "pdf-5538-analysis-tools/analyze_owner_qa.py",
+    "sha256": "87e369bc0c44b996bb797ddc5cb18bd0a84924cfb3386bf411f9a8d33ad44013"
+  },
+  "classification": "completed-source-analysis-and-targeted-correctness",
+  "declaredScopeComplete": true,
+  "fullAnalyze": {
+    "evidence": "pdf-product-analyze.log",
+    "passed": true
+  },
+  "limitations": [
+    "These artifacts prove source analysis and the selected correctness tests, not an actual installed application run or native two-window completion.",
+    "No timings are interpreted as performance evidence; hidden loading and teardown events are excluded from the stated test count.",
+    "The analyzed CI commit differs from its product parent only in the listed workflow; exact GitHub commit response is retained separately as post-download provenance."
+  ],
+  "nativeApplicationOutcome": "not-measured-by-this-artifact",
+  "provenance": {
+    "archiveBytes": 28077,
+    "archiveSha256": "622ce15a99214115fa9848b703a9634c9ad4e459c89392106b298321089dc2a9",
+    "artifact": 14940976408,
+    "ciOnlyDeltaPaths": [
+      ".github/workflows/issue5538_final_native_validation.yml"
+    ],
+    "ciSourceCommit": "13cac860d30c5186493c7c6faf154cd5f6cc4cd1",
+    "job": 138589850049,
+    "originalFiles": [
+      {
+        "bytes": 41,
+        "path": "pdf-product-source.txt",
+        "sha256": "9155623f7211ac2d15085bf1feaf58152b680cacdc8df222f559f6e687a0983b"
+      },
+      {
+        "bytes": 97,
+        "path": "pdf-product-analyze.log",
+        "sha256": "3b962c5cff104108fb3fdaa01f6e9d71d26f170c2329c5c7e46d00d9e9058ec4"
+      },
+      {
+        "bytes": 635,
+        "path": "pdf-product-sdk.json",
+        "sha256": "4322aeb138356aa1d65d10275d629e648d0381daa1c445b7e2439e7f9b4b9acf"
+      },
+      {
+        "bytes": 163681,
+        "path": "pdf-product-tests.json",
+        "sha256": "90cdb9dc9593fa3ac7ed963ce0eafdd7e21bf9b8f92970ef9a83c76ee27982d7"
+      },
+      {
+        "bytes": 62946,
+        "path": "pdf-product-tests.log",
+        "sha256": "61cd1f13d170862bf3b0e33e5a2da9c40004c927a20beda85b8a8dc61f70a45c"
+      }
+    ],
+    "originalMembersVerified": 5,
+    "productSourceCommit": "129bc17e16174767739d24d0ea59f6a433e91cb0",
+    "repository": "yom-chadash/otzaria",
+    "run": 45434875911,
+    "runUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45434875911/job/138589850049",
+    "sourceCommitApiReceipt": {
+      "origin": "post-download connector response, not an artifact member",
+      "path": "source-commit-api.json",
+      "sha256": "7422335fba94531d9caf9bc80f10f527326a8572ea9394bfbec1c2ad9199c1cd"
+    }
+  },
+  "requiredOwnerContracts": {
+    "legacyMultiWindow": 0,
+    "ownerTracker": 6,
+    "retainedMultiWindow": 24
+  },
+  "schemaVersion": 1,
+  "sdk": {
+    "dartSdkVersion": "3.13.5",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "frameworkVersion": "3.47.7"
+  },
+  "tests": {
+    "failed": 0,
+    "hiddenSuccessfulLoadingAndTeardownEvents": 32,
+    "jsonlDoneSuccess": true,
+    "passed": 266,
+    "perSuite": {
+      "test/indexing/utils/pdf_indexing_document_test.dart": {
+        "passed": 8
+      },
+      "test/pdf_book/book_view_layout_memo_test.dart": {
+        "passed": 13
+      },
+      "test/pdf_book/book_view_layout_scale_test.dart": {
+        "passed": 8
+      },
+      "test/pdf_book/pdf_book_view_current_page_test.dart": {
+        "passed": 2
+      },
+      "test/pdf_book/pdf_document_font_recovery_test.dart": {
+        "passed": 9
+      },
+      "test/pdf_book/pdf_font_fallback_lifecycle_test.dart": {
+        "passed": 10
+      },
+      "test/pdf_book/pdf_font_fallback_test.dart": {
+        "passed": 2
+      },
+      "test/pdf_book/pdf_multi_window_contract_test.dart": {
+        "passed": 24
+      },
+      "test/pdf_book/pdf_native_owner_tracker_test.dart": {
+        "passed": 6
+      },
+      "test/pdf_book/pdf_page_highlights_test.dart": {
+        "passed": 11
+      },
+      "test/pdf_book/pdf_per_book_layout_zoom_test.dart": {
+        "passed": 1
+      },
+      "test/pdf_book/pdf_search_highlight_pattern_test.dart": {
+        "passed": 67
+      },
+      "test/pdf_book/pdf_search_no_text_layer_test.dart": {
+        "passed": 10
+      },
+      "test/pdf_book/pdf_spread_layout_test.dart": {
+        "passed": 60
+      },
+      "test/tool/perf_probe/installed_plugin_pdf_runtime_test.dart": {
+        "passed": 35
+      }
+    },
+    "skipped": 0,
+    "testStartAndDoneIdsMatch": true
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "section": "S02",
+  "attempt": 5,
+  "classification": "infrastructure-failure-before-build-or-measurement",
+  "repository": "yom-chadash/otzaria",
+  "runId": 45429028236,
+  "jobId": 138568866137,
+  "headSha": "bb5e3d2402ed6da301148b88405bd55f1aacf8d0",
+  "runUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45429028236",
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45429028236/job/138568866137",
+  "failedStep": {
+    "name": "Verify shared harness, frozen sources and native producer",
+    "status": "completed",
+    "conclusion": "failure",
+    "number": 8
+  },
+  "cause": "Full Flutter analysis rejected undefined SearchEngineLibrary in fork-only wrap_search_app.dart:499:9 before the S02 build/launch step.",
+  "diagnostics": [
+    "2026-11-24T15:50:58.9560354Z   error • Undefined name 'SearchEngineLibrary'. Try correcting the name to one that is defined, or defining the name • tool/issue5538_ci/wrap_search_app.dart:499:9 • undefined_identifier"
+  ],
+  "appBuildsCompleted": 0,
+  "appLaunches": 0,
+  "measuredProcesses": 0,
+  "measurementComplete": false,
+  "artifactCount": 0,
+  "measurementStepConclusion": "skipped",
+  "productPerformanceEvidence": false,
+  "productCorrectnessFailureProven": false,
+  "logReceipt": "log-receipt.json",
+  "logSha256": "d4c6b513be2f193ec8fb375cd58884bf8c340e11a6aaedc546d2003d155358f8",
+  "limitations": [
+    "The decoded connector log is preserved as UTF-8 with its original LF; it is not a downloaded Actions log ZIP.",
+    "No S02 runtime or font-fallback conclusion can be drawn from this attempt."
+  ]
+}

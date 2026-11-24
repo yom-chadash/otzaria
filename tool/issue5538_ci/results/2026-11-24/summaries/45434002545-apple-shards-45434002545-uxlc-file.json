@@ -1,0 +1,483 @@
+{
+  "schemaVersion": 1,
+  "section": "E12",
+  "runId": 45434002545,
+  "jobId": 138592848496,
+  "artifactId": 14941826693,
+  "sourceCommit": "9b5e7b2fde53fe6ad0408940ece653ff8d0c49e4",
+  "upstreamCommit": "683df93e986af19bbcefd22606a417083116847b",
+  "artifactZipSha256": "a19d287fd23a5b63f8a3acff6c0b05e86cb7c146420715a14e7b4289d93c477a",
+  "artifactZipBytes": 104572,
+  "verifiedOriginalFiles": 22,
+  "classification": "completed-measurement",
+  "kind": "unprofiled-isolated-upstream-ABBA",
+  "document": "uxlc-genesis",
+  "workload": "file",
+  "transportSha256": "198b569f8135ab6d47354e92447e950e3405bc6cd2706c840ffbc5f66a109b11",
+  "executableSha256": "f64dc03667732988912cb12bcb33655b7947989311615b1fb8063cb4d6db06c6",
+  "macOSVersion": "15.7.9",
+  "runOrder": [
+    "pdfium",
+    "coregraphics",
+    "coregraphics",
+    "pdfium"
+  ],
+  "independentProcessesPerBackend": 2,
+  "totalProcesses": 4,
+  "totalObservationsIncludingWarmup": 12,
+  "measuredObservationsPerProcess": 2,
+  "sameHostBlock": true,
+  "timingsPooledAcrossHosts": false,
+  "processes": [
+    {
+      "label": "uxlc-genesis-file-1-pdfium",
+      "backend": "pdfium",
+      "reportSha256": "d420d2656ebff5baf6da50143e39ed4a3e511dd2f52c7c1fbdc95c9b50d15e86",
+      "processGroupPid": 4406,
+      "measuredObservations": 2,
+      "warmupObservations": 1,
+      "operationMediansUs": {
+        "openUs": 753451.5,
+        "firstRasterUs": 784458.5,
+        "imageReadyUs": 890575.5,
+        "imageReadyFrameSubmittedUs": 915376.0
+      },
+      "processPeakRssBytes": 78520320,
+      "wholeProcessSecondsIncludingStartupAndWarmup": {
+        "real": 9.95,
+        "user": 4.14,
+        "sys": 1.58
+      },
+      "rssBefore": 43925504,
+      "rssAfter": 72527872,
+      "documentsOpened": 3,
+      "documentsClosed": 3,
+      "customDisposeCallbacks": 0,
+      "customReadBytesPerObservation": [
+        0,
+        0
+      ],
+      "customReadCallsPerObservation": [
+        0,
+        0
+      ],
+      "cancellationObservations": {
+        "requests": 20,
+        "cancelRequested": 10,
+        "cancelRequestedAndReturnedImage": 0,
+        "nonCancelledReturnedImage": 10,
+        "nativePixelsRenderedForCancelledWorkMeasured": false
+      },
+      "wholeProcessFrameSamplesIncludingWarmup": {
+        "buildUs": {
+          "n": 5,
+          "p50": 158,
+          "p95NearestRank": 233,
+          "min": 54,
+          "max": 233
+        },
+        "rasterUs": {
+          "n": 5,
+          "p50": 67879,
+          "p95NearestRank": 1037689,
+          "min": 55144,
+          "max": 1037689
+        },
+        "totalUs": {
+          "n": 5,
+          "p50": 98093,
+          "p95NearestRank": 1748726,
+          "min": 63190,
+          "max": 1748726
+        }
+      },
+      "wholeProcessUiTimerGapsUsIncludingWarmup": {
+        "n": 348,
+        "p50": 10036.5,
+        "p95NearestRank": 15784,
+        "min": 208,
+        "max": 119786
+      }
+    },
+    {
+      "label": "uxlc-genesis-file-2-coregraphics",
+      "backend": "coregraphics",
+      "reportSha256": "384170afd2216cc9f63a32754942c83ac0150961f06d6a8f9f86a1b0dc057418",
+      "processGroupPid": 4520,
+      "measuredObservations": 2,
+      "warmupObservations": 1,
+      "operationMediansUs": {
+        "openUs": 5934.5,
+        "firstRasterUs": 89227.0,
+        "imageReadyUs": 173455.5,
+        "imageReadyFrameSubmittedUs": 188665.5
+      },
+      "processPeakRssBytes": 130686976,
+      "wholeProcessSecondsIncludingStartupAndWarmup": {
+        "real": 4.41,
+        "user": 2.62,
+        "sys": 1.43
+      },
+      "rssBefore": 42491904,
+      "rssAfter": 90890240,
+      "documentsOpened": 3,
+      "documentsClosed": 3,
+      "customDisposeCallbacks": 0,
+      "customReadBytesPerObservation": [
+        0,
+        0
+      ],
+      "customReadCallsPerObservation": [
+        0,
+        0
+      ],
+      "cancellationObservations": {
+        "requests": 20,
+        "cancelRequested": 10,
+        "cancelRequestedAndReturnedImage": 0,
+        "nonCancelledReturnedImage": 10,
+        "nativePixelsRenderedForCancelledWorkMeasured": false
+      },
+      "wholeProcessFrameSamplesIncludingWarmup": {
+        "buildUs": {
+          "n": 7,
+          "p50": 159,
+          "p95NearestRank": 284,
+          "min": 58,
+          "max": 284
+        },
+        "rasterUs": {
+          "n": 7,
+          "p50": 5729,
+          "p95NearestRank": 244965,
+          "min": 4928,
+          "max": 244965
+        },
+        "totalUs": {
+          "n": 7,
+          "p50": 13535,
+          "p95NearestRank": 248204,
+          "min": 5788,
+          "max": 248204
+        }
+      },
+      "wholeProcessUiTimerGapsUsIncludingWarmup": {
+        "n": 60,
+        "p50": 11329.0,
+        "p95NearestRank": 325683,
+        "min": 1348,
+        "max": 1161955
+      }
+    },
+    {
+      "label": "uxlc-genesis-file-3-coregraphics",
+      "backend": "coregraphics",
+      "reportSha256": "debffb4cda4b653eb880765608d75e60a63f19fd00b65193f838a1766d9070ab",
+      "processGroupPid": 4660,
+      "measuredObservations": 2,
+      "warmupObservations": 1,
+      "operationMediansUs": {
+        "openUs": 4497.5,
+        "firstRasterUs": 46609.0,
+        "imageReadyUs": 5313344.0,
+        "imageReadyFrameSubmittedUs": 5336958.5
+      },
+      "processPeakRssBytes": 116690944,
+      "wholeProcessSecondsIncludingStartupAndWarmup": {
+        "real": 23.05,
+        "user": 2.48,
+        "sys": 0.63
+      },
+      "rssBefore": 42450944,
+      "rssAfter": 77242368,
+      "documentsOpened": 3,
+      "documentsClosed": 3,
+      "customDisposeCallbacks": 0,
+      "customReadBytesPerObservation": [
+        0,
+        0
+      ],
+      "customReadCallsPerObservation": [
+        0,
+        0
+      ],
+      "cancellationObservations": {
+        "requests": 20,
+        "cancelRequested": 10,
+        "cancelRequestedAndReturnedImage": 0,
+        "nonCancelledReturnedImage": 10,
+        "nativePixelsRenderedForCancelledWorkMeasured": false
+      },
+      "wholeProcessFrameSamplesIncludingWarmup": {
+        "buildUs": {
+          "n": 4,
+          "p50": 191.0,
+          "p95NearestRank": 316,
+          "min": 41,
+          "max": 316
+        },
+        "rasterUs": {
+          "n": 4,
+          "p50": 4116.5,
+          "p95NearestRank": 1744767,
+          "min": 1143,
+          "max": 1744767
+        },
+        "totalUs": {
+          "n": 4,
+          "p50": 50222.5,
+          "p95NearestRank": 1749999,
+          "min": 4903,
+          "max": 1749999
+        }
+      },
+      "wholeProcessUiTimerGapsUsIncludingWarmup": {
+        "n": 1115,
+        "p50": 10024,
+        "p95NearestRank": 11865,
+        "min": 1083,
+        "max": 3873008
+      }
+    },
+    {
+      "label": "uxlc-genesis-file-4-pdfium",
+      "backend": "pdfium",
+      "reportSha256": "551c3bcc071696cebd41f9011d0f4af5db594c06fbab47ed8b55e4181ef2c9d8",
+      "processGroupPid": 5084,
+      "measuredObservations": 2,
+      "warmupObservations": 1,
+      "operationMediansUs": {
+        "openUs": 539197.5,
+        "firstRasterUs": 563596.0,
+        "imageReadyUs": 2204583.0,
+        "imageReadyFrameSubmittedUs": 2236745.5
+      },
+      "processPeakRssBytes": 74919936,
+      "wholeProcessSecondsIncludingStartupAndWarmup": {
+        "real": 12.27,
+        "user": 2.5,
+        "sys": 0.39
+      },
+      "rssBefore": 42622976,
+      "rssAfter": 72798208,
+      "documentsOpened": 3,
+      "documentsClosed": 3,
+      "customDisposeCallbacks": 0,
+      "customReadBytesPerObservation": [
+        0,
+        0
+      ],
+      "customReadCallsPerObservation": [
+        0,
+        0
+      ],
+      "cancellationObservations": {
+        "requests": 20,
+        "cancelRequested": 10,
+        "cancelRequestedAndReturnedImage": 0,
+        "nonCancelledReturnedImage": 10,
+        "nativePixelsRenderedForCancelledWorkMeasured": false
+      },
+      "wholeProcessFrameSamplesIncludingWarmup": {
+        "buildUs": {
+          "n": 6,
+          "p50": 117.0,
+          "p95NearestRank": 432,
+          "min": 88,
+          "max": 432
+        },
+        "rasterUs": {
+          "n": 6,
+          "p50": 3959.0,
+          "p95NearestRank": 3768406,
+          "min": 921,
+          "max": 3768406
+        },
+        "totalUs": {
+          "n": 6,
+          "p50": 7957.0,
+          "p95NearestRank": 3769009,
+          "min": 3987,
+          "max": 3769009
+        }
+      },
+      "wholeProcessUiTimerGapsUsIncludingWarmup": {
+        "n": 284,
+        "p50": 10018.0,
+        "p95NearestRank": 15452,
+        "min": 251,
+        "max": 3394873
+      }
+    }
+  ],
+  "comparisonOfProcessMedians": {
+    "openUs": {
+      "pdfiumProcessMedians": [
+        753451.5,
+        539197.5
+      ],
+      "coregraphicsProcessMedians": [
+        5934.5,
+        4497.5
+      ],
+      "pdfiumMedianOfProcessMedians": 646324.5,
+      "coregraphicsMedianOfProcessMedians": 5216.0,
+      "coregraphicsRelativePercent": -99.19297504581677,
+      "orderedPairEffectsPercent": [
+        -99.21235806153416,
+        -99.1658900495644
+      ]
+    },
+    "firstRasterUs": {
+      "pdfiumProcessMedians": [
+        784458.5,
+        563596.0
+      ],
+      "coregraphicsProcessMedians": [
+        89227.0,
+        46609.0
+      ],
+      "pdfiumMedianOfProcessMedians": 674027.25,
+      "coregraphicsMedianOfProcessMedians": 67918.0,
+      "coregraphicsRelativePercent": -89.92355279404505,
+      "orderedPairEffectsPercent": [
+        -88.62565706152715,
+        -91.73006905655825
+      ]
+    },
+    "imageReadyUs": {
+      "pdfiumProcessMedians": [
+        890575.5,
+        2204583.0
+      ],
+      "coregraphicsProcessMedians": [
+        173455.5,
+        5313344.0
+      ],
+      "pdfiumMedianOfProcessMedians": 1547579.25,
+      "coregraphicsMedianOfProcessMedians": 2743399.75,
+      "coregraphicsRelativePercent": 77.27038857622316,
+      "orderedPairEffectsPercent": [
+        -80.52321223748015,
+        141.01356129481175
+      ]
+    },
+    "imageReadyFrameSubmittedUs": {
+      "pdfiumProcessMedians": [
+        915376.0,
+        2236745.5
+      ],
+      "coregraphicsProcessMedians": [
+        188665.5,
+        5336958.5
+      ],
+      "pdfiumMedianOfProcessMedians": 1576060.75,
+      "coregraphicsMedianOfProcessMedians": 2762812.0,
+      "coregraphicsRelativePercent": 75.29857272316438,
+      "orderedPairEffectsPercent": [
+        -79.38928921011694,
+        138.6037436981543
+      ]
+    }
+  },
+  "observedOutputSignatures": {
+    "pdfium": {
+      "pixelSha256": [
+        "9dc7d595c0469961268cf0d0576eda33dbaa53de5768ce9a5b7eac38772a20b7"
+      ],
+      "textSha256": [
+        "8f1ecf4c84fb263b8eeab5909c3b8b76224ba1ea4329f832d326645f283f452a"
+      ],
+      "textCharacters": [
+        4137
+      ],
+      "hebrewCharacters": [
+        2911
+      ],
+      "pageCount": [
+        54
+      ],
+      "pixelWidth": [
+        1000
+      ],
+      "pixelHeight": [
+        1294
+      ],
+      "linkCount": [
+        0
+      ]
+    },
+    "coregraphics": {
+      "pixelSha256": [
+        "f27f0bab8721b49a192ca99f5677c9e207a867320636a31941241989952895b8"
+      ],
+      "textSha256": [
+        "856aa5fa46cb6955658dffb9dccd5747017d4605925bf577738239e14d595341"
+      ],
+      "textCharacters": [
+        4198
+      ],
+      "hebrewCharacters": [
+        2752
+      ],
+      "pageCount": [
+        54
+      ],
+      "pixelWidth": [
+        1000
+      ],
+      "pixelHeight": [
+        1294
+      ],
+      "linkCount": [
+        0
+      ]
+    }
+  },
+  "crossBackendTextHashEqual": false,
+  "crossBackendPixelHashEqual": false,
+  "sdk": {
+    "frameworkVersion": "3.50.0",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "ab2912035e160d9cad6306df307576da6128ebdb",
+    "frameworkCommitDate": "2026-11-09 08:50:21 -0800",
+    "engineRevision": "371f77202a73e8dff57a8b3bff75bca55c090aee",
+    "engineCommitDate": "2026-11-09 15:57:36.000Z",
+    "engineContentHash": "bf601093ad255aaf5c6d0fc5c4f9acfa60943b2a",
+    "engineBuildDate": "2026-11-09 08:33:19.494",
+    "dartSdkVersion": "3.14.0",
+    "devToolsVersion": "2.61.0",
+    "flutterVersion": "3.50.0",
+    "flutterRoot": "/Users/runner/hostedtoolcache/flutter/stable-3.50.0-x64/flutter"
+  },
+  "compileCompatibility": {
+    "upstreamCommit": "683df93e986af19bbcefd22606a417083116847b",
+    "path": "packages/pdfrx_coregraphics/darwin/pdfrx_coregraphics/Sources/PdfrxCoregraphicsPlugin.swift",
+    "sourceRole": "baseline plus initializer-only compile compatibility patch",
+    "originalSha256": "d54b1be2327da05d34eec6e6e1c4f4a65293aa61c244a3e678296b7b760b941b",
+    "patchedSha256": "037ef021d5065cbab8c94832face2bb9d605c0b1e26f47f4f7b112868320ddc4",
+    "patchSha256": "42c8eaeab60bb31bc9f072c138896d5f4a1dfa413bdd004490163f3617b42908",
+    "patch": "--- a/packages/pdfrx_coregraphics/darwin/pdfrx_coregraphics/Sources/PdfrxCoregraphicsPlugin.swift\n+++ b/packages/pdfrx_coregraphics/darwin/pdfrx_coregraphics/Sources/PdfrxCoregraphicsPlugin.swift\n@@ -144,13 +144,7 @@\n   private func createNewDocument(arguments: Any?, result: @escaping FlutterResult) {\n     // Create a truly empty PDF document with no pages\n     // PDFDocument() creates an empty document directly\n-    guard let pdfDocument = PDFDocument() else {\n-      result(\n-        FlutterError(\n-          code: \"pdf-document-failure\", message: \"Failed to create empty PDFDocument.\", details: nil\n-        ))\n-      return\n-    }\n+    let pdfDocument = PDFDocument()\n \n     // Register the document\n     let handle = nextHandle\n@@ -199,23 +193,11 @@\n     }\n \n     // Create an empty PDF document\n-    guard let pdfDocument = PDFDocument() else {\n-      result(\n-        FlutterError(\n-          code: \"pdf-document-failure\", message: \"Failed to create PDFDocument.\", details: nil\n-        ))\n-      return\n-    }\n+    let pdfDocument = PDFDocument()\n \n     // Create a PDF page with the specified dimensions\n     let pageRect = CGRect(x: 0, y: 0, width: width, height: height)\n-    guard let pdfPage = PDFPage() else {\n-      result(\n-        FlutterError(\n-          code: \"pdf-page-failure\", message: \"Failed to create PDF page.\", details: nil\n-        ))\n-      return\n-    }\n+    let pdfPage = PDFPage()\n     pdfPage.setBounds(pageRect, for: .mediaBox)\n \n     // Create image from JPEG data\n",
+    "changedMethods": [
+      "createNewDocument",
+      "createDocumentFromJpegData"
+    ],
+    "reason": "PDFDocument() and PDFPage() are non-optional in the tested Apple SDK; conditional binding cannot compile.",
+    "renderTextSchedulerChanged": false
+  },
+  "limitations": [
+    "One ABBA block on one hosted Intel Mac per document/workload; two processes per backend are not broad performance assurance.",
+    "The first observation in each process is excluded from operation medians. Remaining observations within that process are dependent.",
+    "firstRasterUs, imageReadyUs and imageReadyFrameSubmittedUs are cumulative from open, not isolated render/paint durations.",
+    "The frame-submitted endpoint follows endOfFrame and does not measure physical display presentation.",
+    "Text/raster signatures are recorded independently. Different backend output is not accepted as equivalent rendering or Hebrew extraction.",
+    "Queued cancellation reports whether an image returned, not whether native rendering/pixel work occurred before cancellation.",
+    "Frame/timer/RSS values describe this small harness including warmup and startup; they are not Otzaria reader jank or leak acceptance.",
+    "Both backends use one experimental Flutter 3.50 binary. No Otzaria SDK, package or native-handle adoption is established."
+  ],
+  "otzariaAdoptionApproved": false,
+  "productionSdkChanged": false,
+  "physicalDeviceAcceptance": false,
+  "analysisScriptSha256": "854509f3defac3c647cb94bad02b8760fb1d972b0ef662136179c411a52fcae4"
+}

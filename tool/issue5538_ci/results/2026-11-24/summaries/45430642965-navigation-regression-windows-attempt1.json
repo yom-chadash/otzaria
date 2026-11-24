@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "Post-download analysis; original ZIP members verified without modification",
+  "artifactZipSha256": "b2f9c604c0c949190f5979d97c4297de8e4a3a2118c20046e9bd0812cde842fa",
+  "artifactZipBytes": 97729,
+  "verifiedOriginalFiles": 16,
+  "section": "navigation correctness",
+  "runId": 45430642965,
+  "jobId": 138574689556,
+  "artifactId": 14938022985,
+  "sourceCommit": "a56059a6459f937ed39f202cc2cd6ce4cd84d473",
+  "originalProductCommit": "cdea38083d06b445b4ec67d8345109a0457924af",
+  "candidateProductCommit": "4f7d95e3d9e7d932a3675d837bfa3f8e7f3be703",
+  "sourceAndDependencyGuardsPassed": true,
+  "candidateAnalyzePassed": true,
+  "candidateTestsRun": 0,
+  "performanceMeasurement": false,
+  "classification": "baseline-regression-reproduced-gate-parser-failed-before-candidate",
+  "baseline": {
+    "schemaVersion": 1,
+    "classification": "expected-product-regression-reproduced",
+    "reportSha256": "b34ddffddbd274c15efa75ae6750ed01083b0c1893f947ff0ab4b5bb5f6d9b42",
+    "exitCode": 1,
+    "visibleTests": 4,
+    "errors": 4,
+    "cases": [
+      {
+        "name": "navigation retains page 280 through geometry changes (smart: false, matrix: false)",
+        "testId": 3,
+        "result": "error"
+      },
+      {
+        "name": "navigation retains page 280 through geometry changes (smart: false, matrix: true)",
+        "testId": 4,
+        "result": "error"
+      },
+      {
+        "name": "navigation retains page 280 through geometry changes (smart: true, matrix: false)",
+        "testId": 5,
+        "result": "error"
+      },
+      {
+        "name": "navigation retains page 280 through geometry changes (smart: true, matrix: true)",
+        "testId": 6,
+        "result": "error"
+      }
+    ]
+  },
+  "gateFailure": "The old parser expected direct TestFailure JSON; Flutter emitted widget-test wrappers and the exact assertions in print events.",
+  "postDownloadValidation": {
+    "path": "baseline-validated.json",
+    "sha256": "d81ed578663b8760060b867e568e661e508fb94787dbef390c84b82e227bf401",
+    "validatorSha256": "972da42cc2f66866bdde1c2b0a4b8c1b35ef363b3b709084f19f35d234b9fe3d",
+    "origin": "Post-download derivation; not an original artifact member"
+  },
+  "limitations": [
+    "Four original-product regression failures were reproduced; candidate tests were skipped by the parser failure.",
+    "This is correctness evidence, not latency or UI performance evidence."
+  ],
+  "declaredScopeComplete": false,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45430642965/job/138574689556"
+}

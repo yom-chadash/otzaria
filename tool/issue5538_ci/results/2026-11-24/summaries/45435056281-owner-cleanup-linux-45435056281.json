@@ -1,0 +1,112 @@
+{
+  "analysisOrigin": "post-download analysis; raw original ZIP members unchanged",
+  "analysisScript": {
+    "path": "pdf-5538-analysis-tools/analyze_owner_qa.py",
+    "sha256": "87e369bc0c44b996bb797ddc5cb18bd0a84924cfb3386bf411f9a8d33ad44013"
+  },
+  "classification": "completed-source-analysis-and-targeted-correctness",
+  "declaredScopeComplete": true,
+  "fullAnalyze": {
+    "evidence": "pdf-product-analyze.log",
+    "passed": true
+  },
+  "limitations": [
+    "These artifacts prove source analysis and the selected correctness tests, not an actual installed application run or native two-window completion.",
+    "No timings are interpreted as performance evidence; hidden loading and teardown events are excluded from the stated test count.",
+    "The analyzed CI commit differs from its product parent only in the listed workflow; exact GitHub commit response is retained separately as post-download provenance."
+  ],
+  "nativeApplicationOutcome": "not-measured-by-this-artifact",
+  "provenance": {
+    "archiveBytes": 10914,
+    "archiveSha256": "ee1db1ed3a2558db82a61bf5091db572b6c0b36c9534e9c26c8222a272654a66",
+    "artifact": 14940038818,
+    "ciOnlyDeltaPaths": [
+      ".github/workflows/issue5538_cleanup_owner_validation.yml"
+    ],
+    "ciSourceCommit": "b4038be75ab087df49ab3ec450d589cc51842644",
+    "job": 138590480263,
+    "originalFiles": [
+      {
+        "bytes": 635,
+        "path": "pdf-product-sdk.json",
+        "sha256": "4322aeb138356aa1d65d10275d629e648d0381daa1c445b7e2439e7f9b4b9acf"
+      },
+      {
+        "bytes": 52943,
+        "path": "pdf-product-tests.json",
+        "sha256": "9caf2871d34e1d2e3e8d804c7cda6bb14b9ce23d3896eb14d690334623f30102"
+      },
+      {
+        "bytes": 41,
+        "path": "pdf-product-source.txt",
+        "sha256": "637ed9557e040959e94f457254808af5b279182231952cfe0dd7a73ad10c0d8d"
+      },
+      {
+        "bytes": 97,
+        "path": "pdf-product-analyze.log",
+        "sha256": "4a92ba7452814a77368fe4e1cc758bffd3f2af771bb7648f574993c7bd927d5f"
+      },
+      {
+        "bytes": 19937,
+        "path": "pdf-product-tests.log",
+        "sha256": "9de33bb2016fc0e7f3e7443b5866b2de96dba2a12c785d5906c209e19e6b7e57"
+      }
+    ],
+    "originalMembersVerified": 5,
+    "productSourceCommit": "cad5c247d8b2d0c3727faf71dd73df4f0d72da68",
+    "repository": "yom-chadash/otzaria",
+    "run": 45435056281,
+    "runUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45435056281/job/138590480263",
+    "sourceCommitApiReceipt": {
+      "origin": "post-download connector response, not an artifact member",
+      "path": "source-commit-api.json",
+      "sha256": "4bbacff778bc427c34cb06947f51c01539e69797b02d4402e45a500e0ad9b2dc"
+    }
+  },
+  "requiredOwnerContracts": {
+    "legacyMultiWindow": 0,
+    "ownerTracker": 6,
+    "retainedMultiWindow": 24
+  },
+  "schemaVersion": 1,
+  "sdk": {
+    "dartSdkVersion": "3.13.5",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "frameworkVersion": "3.47.7"
+  },
+  "tests": {
+    "failed": 0,
+    "hiddenSuccessfulLoadingAndTeardownEvents": 17,
+    "jsonlDoneSuccess": true,
+    "passed": 91,
+    "perSuite": {
+      "test/pdf_book/pdf_multi_window_contract_test.dart": {
+        "passed": 24
+      },
+      "test/pdf_book/pdf_native_owner_tracker_test.dart": {
+        "passed": 6
+      },
+      "test/tool/perf_probe/installed_plugin_memory_pressure_test.dart": {
+        "passed": 1
+      },
+      "test/tool/perf_probe/installed_plugin_pdf_desktop_test.dart": {
+        "passed": 14
+      },
+      "test/tool/perf_probe/installed_plugin_pdf_fixture_test.dart": {
+        "passed": 7
+      },
+      "test/tool/perf_probe/installed_plugin_pdf_runtime_test.dart": {
+        "passed": 35
+      },
+      "test/tool/perf_probe/perf_fixture_startup_settings_test.dart": {
+        "passed": 1
+      },
+      "test/tool/perf_probe/perf_fixture_test.dart": {
+        "passed": 3
+      }
+    },
+    "skipped": 0,
+    "testStartAndDoneIdsMatch": true
+  }
+}

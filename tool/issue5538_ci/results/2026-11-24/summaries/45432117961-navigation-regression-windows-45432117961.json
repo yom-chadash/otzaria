@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "classification": "baseline-regression-reproduced-candidate-correctness-passed",
+  "declaredScopeComplete": true,
+  "runId": 45432117961,
+  "jobId": 138579983842,
+  "artifactId": 14940305912,
+  "workflowSourceCommit": "512ea5c693064c31e0c532edf47fa5f2c420ae56",
+  "platform": "windows",
+  "artifact": {
+    "bytes": 115125,
+    "sha256": "d47aa208897b96765dc76e142d294d98a01c145dc027b19ddae458f812fe6ce4",
+    "originalMembers": 21
+  },
+  "sources": {
+    "baselineCommit": "cdea38083d06b445b4ec67d8345109a0457924af",
+    "candidateCommit": "4f7d95e3d9e7d932a3675d837bfa3f8e7f3be703",
+    "baselineTree": "d2357e6a40ee8a4cbb6acc4040b998e3fe5a0ddd",
+    "candidateTree": "96e1226463df0994f547f72681f343d918b2e255",
+    "reviewedProductSha256": "1b4bc0a7cf375fe3eac309af1cbc2a847dd238215313f14ba178a73315dbb2b9",
+    "identicalTestsSha256": "1d1588d63d1148e25dc3d650d337ca5266ebf4335ada71f4e45bc59187e0cc90",
+    "baselineOverlayOnly": "packages/pdfrx/test/pdf_viewer_test.dart",
+    "trackedSourceFilesVerified": 532,
+    "sharedLockSha256": "a6de60245621d50431f2bd5a32d1bb89af505ac119deefbae7ddb06fee4e2234",
+    "sourceSdkDependenciesUnchangedAfterTests": true
+  },
+  "sdk": {
+    "frameworkVersion": "3.47.7",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "dartSdkVersion": "3.13.5"
+  },
+  "baseline": {
+    "cases": [
+      {
+        "name": "navigation retains page 280 through geometry changes (smart: false, matrix: false)",
+        "testId": 3,
+        "result": "error"
+      },
+      {
+        "name": "navigation retains page 280 through geometry changes (smart: false, matrix: true)",
+        "testId": 4,
+        "result": "error"
+      },
+      {
+        "name": "navigation retains page 280 through geometry changes (smart: true, matrix: false)",
+        "testId": 5,
+        "result": "error"
+      },
+      {
+        "name": "navigation retains page 280 through geometry changes (smart: true, matrix: true)",
+        "testId": 6,
+        "result": "error"
+      }
+    ],
+    "expectedProductFailures": 4,
+    "unrelatedErrors": 0,
+    "reportSha256": "fbd952f2d39d2ed9e2a2444504669722c13793ef2296957a131daa067ac389fc",
+    "failureReason": "relayout must settle the original Future without an application timeout"
+  },
+  "candidate": {
+    "passed": 123,
+    "failed": 0,
+    "skipped": 0,
+    "suiteCounts": {
+      "pdf_page_layout_snapshot_test.dart": 3,
+      "pdf_viewer_test.dart": 112,
+      "page_layout_index_test.dart": 8
+    },
+    "navigationRegressionsPassed": 11,
+    "navigationCases": [
+      "navigation retains page 280 through geometry changes (smart: false, matrix: false)",
+      "navigation retains page 280 through geometry changes (smart: false, matrix: true)",
+      "navigation retains page 280 through geometry changes (smart: true, matrix: false)",
+      "navigation retains page 280 through geometry changes (smart: true, matrix: true)",
+      "navigation superseded by a newer request completes without restoring the old page (0:00:00.000000)",
+      "navigation superseded by a newer request completes without restoring the old page (0:00:00.200000)",
+      "navigation completes on disposal without a late page callback",
+      "navigation from a replaced document cannot complete on the new owner",
+      "navigation started after a geometry resize wins over the deferred layout callback",
+      "navigation is not cut short by a rebuild with unchanged page geometry (width: 400.0)",
+      "navigation is not cut short by a rebuild with unchanged page geometry (width: 500.0)"
+    ],
+    "reportSha256": "e6c67e8f57369e7041473a30ea35146cce74741a424f67fff265b6afd02a0536",
+    "analyze": "passed"
+  },
+  "analysis": {
+    "origin": "derived after download from verified original ZIP members",
+    "validatorSha256": "972da42cc2f66866bdde1c2b0a4b8c1b35ef363b3b709084f19f35d234b9fe3d",
+    "checks": "Revalidated both raw JSONL files with the reviewed validator; verified complete source snapshots, overlay, lock, SDK and per-suite counts."
+  },
+  "conclusion": "The original product reproduces the unresolved navigation Future in all four Legacy/Smart and matrix/page cases; the candidate preserves destination and completes all eleven navigation/lifecycle regressions plus existing selected viewer/layout tests.",
+  "limitations": [
+    "Correctness tests with controlled widget fixtures, not application performance or native PDF corpus measurements.",
+    "The geometry-change fix finishes the active animation at its requested destination before remapping; it does not preserve the original animation duration.",
+    "Other operating-system lanes and the native MG374 application diagnostic are separate evidence and are not implied by this result."
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "Post-download analysis; original ZIP members verified without modification",
+  "artifactZipSha256": "ad04dcb80ce4c33d0946079468e6bb891e704827df25ed38ede1423bdcd9e2e8",
+  "artifactZipBytes": 11683,
+  "verifiedOriginalFiles": 6,
+  "section": "Q02",
+  "runId": 45425218382,
+  "jobId": 138555238966,
+  "artifactId": 14938161402,
+  "sourceCommit": "b103bdf2e3ee2fc1e389af30aa7d4bec4b6af341",
+  "classification": "failed-correctness-harness-lifecycle",
+  "platform": "windows",
+  "buildMode": "release",
+  "flutter": {
+    "frameworkVersion": "3.47.7",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "engineCommitDate": "2026-10-07 17:09:12.000Z",
+    "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+    "engineBuildDate": "2026-10-07 17:51:44.552",
+    "dartSdkVersion": "3.13.5",
+    "devToolsVersion": "2.60.0",
+    "flutterVersion": "3.47.7",
+    "flutterRoot": "C:\\hostedtoolcache\\windows\\flutter\\stable-3.47.7-x64\\flutter"
+  },
+  "observedFailure": {
+    "status": "failed",
+    "error": "Bad state: Reader document identity changed."
+  },
+  "reportSha256": "317ade43a8fd865b688bccca8c8b5aceac9649e2d674edb6317d627e295a9a43",
+  "completionSha256": "3e7e85a0f66dd162458efe17c8540f257e96eb9da1a1616c40970195ff1be8b5",
+  "sourceBuildReceiptsEqualAndClean": true,
+  "engineIdentityRoundtrip": true,
+  "reportedTrackedOwnerTeardown": {
+    "status": "passed",
+    "primaryDocumentEventsClosed": true,
+    "primaryNativeDisposeAwaited": true,
+    "ownedWindowsRemaining": 0,
+    "ownedDocumentsRemaining": 0,
+    "pendingOperations": 0,
+    "indexingActive": false,
+    "finalViewIds": [
+      0
+    ]
+  },
+  "twoWindowScenarioComplete": false,
+  "performanceMeasurement": false,
+  "sourceGroundedDiagnosis": "The old harness captures controller.document in _Reader before navigation, then requires the same owner forever. S02 recovery permits replacing the document on the same reference. The observed failure proves the captured and current owners differed; it does not identify a bad product rendering.",
+  "limitations": [
+    "Search/index/export/window lifecycle acceptance did not complete.",
+    "The old cleanup tracked the initially captured document; its zero counters do not prove every replacement owner closed.",
+    "Build/source and engine identity receipts are retained, but this failed host report has no complete post-run identity guard."
+  ],
+  "declaredScopeComplete": false,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45425218382/job/138555238966"
+}

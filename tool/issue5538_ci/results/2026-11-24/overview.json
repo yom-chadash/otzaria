@@ -2,23 +2,29 @@
   "schemaVersion": 1,
   "snapshotDate": "2026-11-24",
   "groupCountsByClassification": {
+    "baseline-reproduced-candidate-not-tested": 2,
     "blocked-before-device-test": 2,
     "blocked-before-measurement": 13,
     "blocked-before-product-checks": 1,
-    "completed-app-correctness": 14,
+    "cancelled-before-recorded-regression-results": 1,
+    "completed-app-correctness": 15,
     "completed-app-correctness-partial-artifact": 2,
-    "completed-measurement": 15,
-    "completed-product-regression-checks": 11,
+    "completed-measurement": 18,
+    "completed-product-regression-checks": 20,
     "completed-upstream-correctness": 9,
-    "environment-preflight": 1,
+    "environment-preflight": 2,
+    "failed-correctness-harness-lifecycle": 6,
     "failed-upstream-correctness": 2,
     "failed-viewer-test-spy": 3,
     "failed-warmup-fixture-and-frame-validation": 1,
+    "infrastructure-failure-before-build-or-measurement": 2,
+    "infrastructure-failure-before-native-handshake": 1,
+    "infrastructure-failure-before-sdk-setup-or-measurement": 1,
     "invalid-performance-comparison": 1,
     "partial-campaign-cancelled": 5,
     "partial-campaign-with-observed-product-navigation-failure-cause-not-yet-isolated": 1,
     "partial-correctness-failed-measurement": 1,
-    "partial-harness-gate-failure": 1,
+    "partial-harness-gate-failure": 2,
     "partial-job-completed-upstream-correctness": 1,
     "partial-measurement-workload-timeout": 1,
     "partial-product-checks-failed-job": 2,
@@ -2866,6 +2872,946 @@
       "rawJsonlRows": 0,
       "compressedBytes": 1765411,
       "parts": 2
+    },
+    {
+      "id": "45425218382-final-native-ios-45425218382",
+      "classification": "failed-correctness-harness-lifecycle",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45425218382,
+        "jobId": 138555238942,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45425218382/job/138555238942",
+        "sourceCommit": "b103bdf2e3ee2fc1e389af30aa7d4bec4b6af341",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/b103bdf2e3ee2fc1e389af30aa7d4bec4b6af341",
+        "artifact": {
+          "id": 14940337143,
+          "name": "installed-pdf-ios-simulator-debug",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45425218382/artifacts/14940337143",
+          "zipSha256": "787221f4d0980da9e15dac71443d90b6c62b536272bd8a956637661d70e60420",
+          "zipBytes": 300867,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        },
+        "jobLog": {
+          "path": "workflow-job.log",
+          "sha256": "87602412e6a7981b0025348f08987493b37d908acf62f3afd093c5aa1e1b4441",
+          "bytes": 108713,
+          "origin": "GitHub connector decoded job log",
+          "newlineNormalization": "none; connector text already LF",
+          "originalActionsLogZip": false,
+          "expectedDigestVerified": true,
+          "artifactWasCreated": true
+        }
+      },
+      "summary": {
+        "path": "summaries/45425218382-final-native-ios-45425218382.json",
+        "sha256": "66a9ab0e6fd999435706a4af4c3d851f3a0cb45d9846ed60294043cd720217d1",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 12,
+      "rawJsonlRows": 0,
+      "compressedBytes": 319493,
+      "parts": 1
+    },
+    {
+      "id": "45425218382-final-native-macos-45425218382",
+      "classification": "failed-correctness-harness-lifecycle",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45425218382,
+        "jobId": 138555238890,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45425218382/job/138555238890",
+        "sourceCommit": "b103bdf2e3ee2fc1e389af30aa7d4bec4b6af341",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/b103bdf2e3ee2fc1e389af30aa7d4bec4b6af341",
+        "artifact": {
+          "id": 14940046349,
+          "name": "apple-webview-macos-profile",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45425218382/artifacts/14940046349",
+          "zipSha256": "7e5fbead564495576e192b99ef1d6498f81f5cd433abd98c78d71f36015f9951",
+          "zipBytes": 1684910,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        },
+        "jobLog": {
+          "path": "workflow-job.log",
+          "sha256": "57a2c4debf22ebc4731032d1cd1300d6808a3e8c3d37438ab8989fed9dee9a03",
+          "bytes": 399099,
+          "origin": "GitHub connector decoded job log",
+          "newlineNormalization": "none; connector text already LF",
+          "originalActionsLogZip": false,
+          "expectedDigestVerified": true,
+          "artifactWasCreated": true
+        }
+      },
+      "summary": {
+        "path": "summaries/45425218382-final-native-macos-45425218382.json",
+        "sha256": "2cc65e781e25bc3b1fcf65d169be7f8739f4912b87f41a21110b1e93c981b8b7",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 20,
+      "rawJsonlRows": 0,
+      "compressedBytes": 146527,
+      "parts": 1
+    },
+    {
+      "id": "45425218382-final-native-windows-45425218382",
+      "classification": "failed-correctness-harness-lifecycle",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45425218382,
+        "jobId": 138555238966,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45425218382/job/138555238966",
+        "sourceCommit": "b103bdf2e3ee2fc1e389af30aa7d4bec4b6af341",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/b103bdf2e3ee2fc1e389af30aa7d4bec4b6af341",
+        "artifact": {
+          "id": 14938161402,
+          "name": "pdf-multi-window-windows-release-correctness",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45425218382/artifacts/14938161402",
+          "zipSha256": "ad04dcb80ce4c33d0946079468e6bb891e704827df25ed38ede1423bdcd9e2e8",
+          "zipBytes": 11683,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45425218382-final-native-windows-45425218382.json",
+        "sha256": "2b9f5596c8a06602a365b20f2469486d5a4ffbe3ae010224ed9cbcc3d52f3224",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 8,
+      "rawJsonlRows": 0,
+      "compressedBytes": 16701,
+      "parts": 1
+    },
+    {
+      "id": "45425218382-pdf-5538-native-qa-45425218382-installed-plugin-android-emulator-debug",
+      "classification": "failed-correctness-harness-lifecycle",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45425218382,
+        "jobId": 138555238989,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45425218382/job/138555238989",
+        "sourceCommit": "b103bdf2e3ee2fc1e389af30aa7d4bec4b6af341",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/b103bdf2e3ee2fc1e389af30aa7d4bec4b6af341",
+        "artifact": {
+          "id": 14937006824,
+          "name": "installed-plugin-android-emulator-debug",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45425218382/artifacts/14937006824",
+          "zipSha256": "82cd9bbbac568bd6f0cbbc97f0336abd4ebef38350d234e46307b1676e9d9fd9",
+          "zipBytes": 369749,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        },
+        "jobLog": {
+          "path": "workflow-job.log",
+          "sha256": "62ecd17a2729aa5bf15b18b894edff8de09b495d5a99d84fad5bd79ec78e97d3",
+          "bytes": 120553,
+          "origin": "GitHub connector decoded job log",
+          "newlineNormalization": "none; connector text already LF",
+          "originalActionsLogZip": false,
+          "expectedDigestVerified": true,
+          "artifactWasCreated": true
+        }
+      },
+      "summary": {
+        "path": "summaries/45425218382-pdf-5538-native-qa-45425218382-installed-plugin-android-emulator-debug.json",
+        "sha256": "37aae90886512bbce7d9c8c89256c03fc165336e43a17a51c9ad83b2a4e97f7a",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 13,
+      "rawJsonlRows": 79,
+      "compressedBytes": 179967,
+      "parts": 1
+    },
+    {
+      "id": "45425218382-pdf-5538-native-qa-45425218382-installed-plugin-linux-wpe-arm64-profile",
+      "classification": "failed-correctness-harness-lifecycle",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45425218382,
+        "jobId": 138555239002,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45425218382/job/138555239002",
+        "sourceCommit": "b103bdf2e3ee2fc1e389af30aa7d4bec4b6af341",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/b103bdf2e3ee2fc1e389af30aa7d4bec4b6af341",
+        "artifact": {
+          "id": 14937610160,
+          "name": "installed-plugin-linux-wpe-arm64-profile",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45425218382/artifacts/14937610160",
+          "zipSha256": "8469b5d72cd58ae75b22d5f0b88e276a6fdd53d8ac166f77d040c6789aa60d58",
+          "zipBytes": 149343,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        },
+        "jobLog": {
+          "path": "workflow-job.log",
+          "sha256": "1d8c354883b1b5ac8d5f20d45f71f68d261ae9c5859d84acc03ce383e75c1c2f",
+          "bytes": 602833,
+          "origin": "GitHub connector decoded job log",
+          "newlineNormalization": "none; connector text already LF",
+          "originalActionsLogZip": false,
+          "expectedDigestVerified": true,
+          "artifactWasCreated": true
+        }
+      },
+      "summary": {
+        "path": "summaries/45425218382-pdf-5538-native-qa-45425218382-installed-plugin-linux-wpe-arm64-profile.json",
+        "sha256": "424a977762eabc52bbee0479ce395ae7e23a0475ec2f22fdd6f6bc50587025a0",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 45,
+      "rawJsonlRows": 0,
+      "compressedBytes": 253310,
+      "parts": 1
+    },
+    {
+      "id": "45425218382-pdf-5538-native-qa-45425218382-installed-plugin-linux-wpe-x64-profile",
+      "classification": "failed-correctness-harness-lifecycle",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45425218382,
+        "jobId": 138555239310,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45425218382/job/138555239310",
+        "sourceCommit": "b103bdf2e3ee2fc1e389af30aa7d4bec4b6af341",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/b103bdf2e3ee2fc1e389af30aa7d4bec4b6af341",
+        "artifact": {
+          "id": 14939040158,
+          "name": "installed-plugin-linux-wpe-x64-profile",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45425218382/artifacts/14939040158",
+          "zipSha256": "659e6fa7fe873a6365770c77d73ca30e8690de97204637a7c6eb109441cba4fb",
+          "zipBytes": 148360,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        },
+        "jobLog": {
+          "path": "workflow-job.log",
+          "sha256": "57038a8db4fbb260a77d36bf1391f06296f27f865e2324840271ba734dc7cccc",
+          "bytes": 610776,
+          "origin": "GitHub connector decoded job log",
+          "newlineNormalization": "none; connector text already LF",
+          "originalActionsLogZip": false,
+          "expectedDigestVerified": true,
+          "artifactWasCreated": true
+        }
+      },
+      "summary": {
+        "path": "summaries/45425218382-pdf-5538-native-qa-45425218382-installed-plugin-linux-wpe-x64-profile.json",
+        "sha256": "f9a04cc3a4ec29659db415242fff20ddf17d7c412114a79b928b31343692c459",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 45,
+      "rawJsonlRows": 0,
+      "compressedBytes": 253127,
+      "parts": 1
+    },
+    {
+      "id": "45426169680-final-native-windows-arm64-45426169680",
+      "classification": "completed-app-correctness",
+      "declaredScopeComplete": true,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45426169680,
+        "jobId": 138558664303,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45426169680/job/138558664303",
+        "sourceCommit": "cb8be0a523780785c088314cd25a6127633632ca",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/cb8be0a523780785c088314cd25a6127633632ca",
+        "artifact": {
+          "id": 14937993368,
+          "name": "installed-plugin-windows-arm64-profile",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45426169680/artifacts/14937993368",
+          "zipSha256": "90c6f2dca0d8281253b37f06ab1d612995b948045136d337f960e7c0684f28d1",
+          "zipBytes": 142985,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45426169680-final-native-windows-arm64-45426169680.json",
+        "sha256": "8ae6ee843c38b4672d81c286ff53f515f32fd3314daa0416c84428c23bcc12a3",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 30,
+      "rawJsonlRows": 0,
+      "compressedBytes": 140510,
+      "parts": 1
+    },
+    {
+      "id": "45427001661-wrap-search-attempt2-45427001661",
+      "classification": "infrastructure-failure-before-build-or-measurement",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45427001661,
+        "jobId": 138561608155,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45427001661/job/138561608155",
+        "sourceCommit": "063d4eec0696b5c48452c28e8f21fd88df6aea7d",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/063d4eec0696b5c48452c28e8f21fd88df6aea7d",
+        "artifact": {
+          "id": 14936956779,
+          "name": "pdf-5538-wrap-search-linux-profile",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45427001661/artifacts/14936956779",
+          "zipSha256": "a6747089c430f52b36b2d591c415e4900e417028a8100356a0d5323401459ae5",
+          "zipBytes": 33664,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        },
+        "jobLog": {
+          "path": "workflow-job.log",
+          "sha256": "4aefedf69577790edb5587d1b454017810df43c910623dd1d14e8024f3454e23",
+          "bytes": 505674,
+          "origin": "GitHub connector decoded job log",
+          "newlineNormalization": "none; connector text already LF",
+          "originalActionsLogZip": false,
+          "expectedDigestVerified": true,
+          "artifactWasCreated": true
+        }
+      },
+      "summary": {
+        "path": "summaries/45427001661-wrap-search-attempt2-45427001661.json",
+        "sha256": "de70d0cb019f486285eed9c0bfc063e90187111e0f7afe07761e11ac0d6f3607",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 19,
+      "rawJsonlRows": 0,
+      "compressedBytes": 133837,
+      "parts": 1
+    },
+    {
+      "id": "45429028236-pdf-5538-font-profile-attempt5",
+      "classification": "infrastructure-failure-before-build-or-measurement",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45429028236,
+        "jobId": 138568866137,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45429028236/job/138568866137",
+        "sourceCommit": "bb5e3d2402ed6da301148b88405bd55f1aacf8d0",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/bb5e3d2402ed6da301148b88405bd55f1aacf8d0",
+        "artifact": null,
+        "jobLog": {
+          "path": "workflow-job.log",
+          "sha256": "d4c6b513be2f193ec8fb375cd58884bf8c340e11a6aaedc546d2003d155358f8",
+          "bytes": 504877,
+          "origin": "GitHub connector decoded job log",
+          "newlineNormalization": "none; connector text already LF",
+          "originalActionsLogZip": false,
+          "expectedDigestVerified": true,
+          "artifactWasCreated": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45429028236-pdf-5538-font-profile-attempt5.json",
+        "sha256": "5e5b18720b7da30c413ff76dd1eee980f0c9a4b454fa4107e4cd7f55c47fa1c2",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 6,
+      "rawJsonlRows": 0,
+      "compressedBytes": 98531,
+      "parts": 1
+    },
+    {
+      "id": "45429426627-layout-probe-attempt1-45429426627",
+      "classification": "infrastructure-failure-before-sdk-setup-or-measurement",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45429426627,
+        "jobId": 138570274623,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45429426627/job/138570274623",
+        "sourceCommit": "41cc03a19889e5719d76ce70abdf5f272058f3d3",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/41cc03a19889e5719d76ce70abdf5f272058f3d3",
+        "artifact": {
+          "id": 14937881893,
+          "name": "pdf-5538-layout-counts-native-linux-x64",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45429426627/artifacts/14937881893",
+          "zipSha256": "1a4c5c4921bf50a6d09deeae04c3a2b7a0c3c7beaf7189756205410ccbb1d7a8",
+          "zipBytes": 4788,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        },
+        "jobLog": {
+          "path": "workflow-job.log",
+          "sha256": "724942eb6e69296ca568038ebbc8ef35c9a44ed9cdab7ad4568e37b03c07c004",
+          "bytes": 269970,
+          "origin": "GitHub connector decoded job log",
+          "newlineNormalization": "none; connector text already LF",
+          "originalActionsLogZip": false,
+          "expectedDigestVerified": true,
+          "artifactWasCreated": true
+        }
+      },
+      "summary": {
+        "path": "summaries/45429426627-layout-probe-attempt1-45429426627.json",
+        "sha256": "ecc9812db1665949d065c26e1f21c9bdbc1ae743e13f56c76301a64a0baf3837",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 7,
+      "rawJsonlRows": 0,
+      "compressedBytes": 60641,
+      "parts": 1
+    },
+    {
+      "id": "45430295651-navigation-fixed-45430295651",
+      "classification": "completed-product-regression-checks",
+      "declaredScopeComplete": true,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45430295651,
+        "jobId": 138573412819,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45430295651/job/138573412819",
+        "sourceCommit": "4fa899d188943a17fb55c74cf52bdfccf437f842",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/4fa899d188943a17fb55c74cf52bdfccf437f842",
+        "artifact": {
+          "id": 14940452582,
+          "name": "pdf-5538-navigation-windows-profile",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45430295651/artifacts/14940452582",
+          "zipSha256": "c17e6650768b09b2d08c6724a146461d2fd2c031b2f96995d600440c04a29ed8",
+          "zipBytes": 3204897,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45430295651-navigation-fixed-45430295651.json",
+        "sha256": "7d93f6ef9cd91a6aa9b8f4cd0db8e108419f520259793da390d338d2171d553d",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 135,
+      "rawJsonlRows": 384,
+      "compressedBytes": 3205544,
+      "parts": 3
+    },
+    {
+      "id": "45430642965-navigation-regression-linux-attempt1",
+      "classification": "baseline-reproduced-candidate-not-tested",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45430642965,
+        "jobId": 138574688999,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45430642965/job/138574688999",
+        "sourceCommit": "a56059a6459f937ed39f202cc2cd6ce4cd84d473",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/a56059a6459f937ed39f202cc2cd6ce4cd84d473",
+        "artifact": {
+          "id": 14936994662,
+          "name": "pdf-5538-navigation-regression-Linux",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45430642965/artifacts/14936994662",
+          "zipSha256": "d1d87d9ed98ffc0555493bf1a2987c068b56468e2229f83b4c42b3b1dec1317f",
+          "zipBytes": 97659,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45430642965-navigation-regression-linux-attempt1.json",
+        "sha256": "6a10dfc9d453878072b4c98133b7ba6a196c8c74eac8bf777799a01963b2c91c",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 20,
+      "rawJsonlRows": 31,
+      "compressedBytes": 101707,
+      "parts": 1
+    },
+    {
+      "id": "45430642965-navigation-regression-macos-attempt1",
+      "classification": "cancelled-before-recorded-regression-results",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45430642965,
+        "jobId": 138574689417,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45430642965/job/138574689417",
+        "sourceCommit": "a56059a6459f937ed39f202cc2cd6ce4cd84d473",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/a56059a6459f937ed39f202cc2cd6ce4cd84d473",
+        "artifact": {
+          "id": 14939278783,
+          "name": "pdf-5538-navigation-regression-macOS",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45430642965/artifacts/14939278783",
+          "zipSha256": "4cbd5017fb8e63bc017fd8b46aa985819a2a382e96d475ea361ebb96986b5d7d",
+          "zipBytes": 95227,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45430642965-navigation-regression-macos-attempt1.json",
+        "sha256": "2453a7f271ed9eb638a6e78b7fe16db395f7754312c3849b3c7b2e7a95c7e7de",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 18,
+      "rawJsonlRows": 0,
+      "compressedBytes": 99652,
+      "parts": 1
+    },
+    {
+      "id": "45430642965-navigation-regression-windows-attempt1",
+      "classification": "baseline-reproduced-candidate-not-tested",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45430642965,
+        "jobId": 138574689556,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45430642965/job/138574689556",
+        "sourceCommit": "a56059a6459f937ed39f202cc2cd6ce4cd84d473",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/a56059a6459f937ed39f202cc2cd6ce4cd84d473",
+        "artifact": {
+          "id": 14938022985,
+          "name": "pdf-5538-navigation-regression-Windows",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45430642965/artifacts/14938022985",
+          "zipSha256": "b2f9c604c0c949190f5979d97c4297de8e4a3a2118c20046e9bd0812cde842fa",
+          "zipBytes": 97729,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45430642965-navigation-regression-windows-attempt1.json",
+        "sha256": "7ff38087cab913317bd39bac65d286af3752276679333f29478bc035685c33b5",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 22,
+      "rawJsonlRows": 31,
+      "compressedBytes": 107119,
+      "parts": 1
+    },
+    {
+      "id": "45431072132-layout-probe-attempt3-45431072132",
+      "classification": "infrastructure-failure-before-native-handshake",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45431072132,
+        "jobId": 138576188847,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45431072132/job/138576188847",
+        "sourceCommit": "a30e22f1878981eda9be41cb896188f07cfd0dca",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/a30e22f1878981eda9be41cb896188f07cfd0dca",
+        "artifact": {
+          "id": 14938119909,
+          "name": "pdf-5538-layout-counts-native-linux-x64",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45431072132/artifacts/14938119909",
+          "zipSha256": "7c0d05e228eb52d5f6adcec30a33d0bedb712b1852c9910e57f5d83aa580fb70",
+          "zipBytes": 1341908,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45431072132-layout-probe-attempt3-45431072132.json",
+        "sha256": "125c5cc6397f24d19ffbd9e4dce04ef4f1206dcb299916b5d9efa393c3f9611f",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 29,
+      "rawJsonlRows": 0,
+      "compressedBytes": 1170508,
+      "parts": 1
+    },
+    {
+      "id": "45431324033-pdf-5538-font-profile-attempt6",
+      "classification": "partial-harness-gate-failure",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45431324033,
+        "jobId": 138577099871,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45431324033/job/138577099871",
+        "sourceCommit": "d169dde56c8372086e02302346f9a3e5606fc9d6",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/d169dde56c8372086e02302346f9a3e5606fc9d6",
+        "artifact": {
+          "id": 14942110080,
+          "name": "pdf-5538-font-profile-abc-linux-x64",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45431324033/artifacts/14942110080",
+          "zipSha256": "d55c845d5f74d3de71334497d87f26c1f7652518f3de5c0b817ecae314f2456f",
+          "zipBytes": 4707900,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45431324033-pdf-5538-font-profile-attempt6.json",
+        "sha256": "661746c402f610d249b197046655b29fa5561a0a6a017a04699029922e8fc493",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 1356,
+      "rawJsonlRows": 0,
+      "compressedBytes": 4036003,
+      "parts": 3
+    },
+    {
+      "id": "45432117961-navigation-regression-linux-45432117961",
+      "classification": "completed-product-regression-checks",
+      "declaredScopeComplete": true,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45432117961,
+        "jobId": 138579982899,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45432117961/job/138579982899",
+        "sourceCommit": "512ea5c693064c31e0c532edf47fa5f2c420ae56",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/512ea5c693064c31e0c532edf47fa5f2c420ae56",
+        "artifact": {
+          "id": 14939811464,
+          "name": "pdf-5538-navigation-regression-Linux",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45432117961/artifacts/14939811464",
+          "zipSha256": "55fc2c72916cdc21a371f303e043c0fe371d6fe0a7e751da477f81347c529fbc",
+          "zipBytes": 114963,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45432117961-navigation-regression-linux-45432117961.json",
+        "sha256": "b494551ba2986b76ac40eb880955f3fbbf3cb872d2f618f19d42c08c63a07ce4",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 24,
+      "rawJsonlRows": 518,
+      "compressedBytes": 117219,
+      "parts": 1
+    },
+    {
+      "id": "45432117961-navigation-regression-macos-45432117961",
+      "classification": "completed-product-regression-checks",
+      "declaredScopeComplete": true,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45432117961,
+        "jobId": 138579983855,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45432117961/job/138579983855",
+        "sourceCommit": "512ea5c693064c31e0c532edf47fa5f2c420ae56",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/512ea5c693064c31e0c532edf47fa5f2c420ae56",
+        "artifact": {
+          "id": 14941855950,
+          "name": "pdf-5538-navigation-regression-macOS",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45432117961/artifacts/14941855950",
+          "zipSha256": "35d4156c72f440c645520cfab0c5f5f052216310cc036cd2b88627fb840d16c0",
+          "zipBytes": 115231,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45432117961-navigation-regression-macos-45432117961.json",
+        "sha256": "c01a073f96eee57dcc693f029b5bb778adea2ad8565c02dcc56c5f3f4962f934",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 24,
+      "rawJsonlRows": 518,
+      "compressedBytes": 117451,
+      "parts": 1
+    },
+    {
+      "id": "45432117961-navigation-regression-windows-45432117961",
+      "classification": "completed-product-regression-checks",
+      "declaredScopeComplete": true,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45432117961,
+        "jobId": 138579983842,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45432117961/job/138579983842",
+        "sourceCommit": "512ea5c693064c31e0c532edf47fa5f2c420ae56",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/512ea5c693064c31e0c532edf47fa5f2c420ae56",
+        "artifact": {
+          "id": 14940305912,
+          "name": "pdf-5538-navigation-regression-Windows",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45432117961/artifacts/14940305912",
+          "zipSha256": "d47aa208897b96765dc76e142d294d98a01c145dc027b19ddae458f812fe6ce4",
+          "zipBytes": 115125,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45432117961-navigation-regression-windows-45432117961.json",
+        "sha256": "6bdb3d24e76f8fda482d319e0ad22cdda29a5d5f3ea4d93cfa14fd7b63653631",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 24,
+      "rawJsonlRows": 518,
+      "compressedBytes": 117250,
+      "parts": 1
+    },
+    {
+      "id": "45434002545-apple-shards-45434002545-preparation",
+      "classification": "environment-preflight",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45434002545,
+        "jobId": 138586748557,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45434002545/job/138586748557",
+        "sourceCommit": "9b5e7b2fde53fe6ad0408940ece653ff8d0c49e4",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/9b5e7b2fde53fe6ad0408940ece653ff8d0c49e4",
+        "artifact": {
+          "id": 14940363130,
+          "name": "pdf-5538-apple-preparation-X64",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45434002545/artifacts/14940363130",
+          "zipSha256": "0b048d270360cc141bbb5dddde66ab054b1535211c5d4b61daf0527f58788bcb",
+          "zipBytes": 23754,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45434002545-apple-shards-45434002545-preparation.json",
+        "sha256": "3c208da906e6494a84e2e5d4a29b92e0aced783d21cdff47e9ca2678bce87834",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 39,
+      "rawJsonlRows": 0,
+      "compressedBytes": 29107,
+      "parts": 1
+    },
+    {
+      "id": "45434002545-apple-shards-45434002545-uxlc-custom",
+      "classification": "completed-measurement",
+      "declaredScopeComplete": true,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45434002545,
+        "jobId": 138592848731,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45434002545/job/138592848731",
+        "sourceCommit": "9b5e7b2fde53fe6ad0408940ece653ff8d0c49e4",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/9b5e7b2fde53fe6ad0408940ece653ff8d0c49e4",
+        "artifact": {
+          "id": 14941851502,
+          "name": "pdf-5538-apple-baseline-uxlc-genesis-custom-X64",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45434002545/artifacts/14941851502",
+          "zipSha256": "a9cf9e8240832c24a421f4c452a4c63125e60bb44de1c7a57736ce3803f7e322",
+          "zipBytes": 101542,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45434002545-apple-shards-45434002545-uxlc-custom.json",
+        "sha256": "95165703fc809bec2abaeb6291ef336995004177266097cede1f5ff08bb9e3b2",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 26,
+      "rawJsonlRows": 0,
+      "compressedBytes": 109477,
+      "parts": 1
+    },
+    {
+      "id": "45434002545-apple-shards-45434002545-uxlc-file",
+      "classification": "completed-measurement",
+      "declaredScopeComplete": true,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45434002545,
+        "jobId": 138592848496,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45434002545/job/138592848496",
+        "sourceCommit": "9b5e7b2fde53fe6ad0408940ece653ff8d0c49e4",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/9b5e7b2fde53fe6ad0408940ece653ff8d0c49e4",
+        "artifact": {
+          "id": 14941826693,
+          "name": "pdf-5538-apple-baseline-uxlc-genesis-file-X64",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45434002545/artifacts/14941826693",
+          "zipSha256": "a19d287fd23a5b63f8a3acff6c0b05e86cb7c146420715a14e7b4289d93c477a",
+          "zipBytes": 104572,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45434002545-apple-shards-45434002545-uxlc-file.json",
+        "sha256": "3810dabd0e001b6d2b6c1b8404ff95f16772fe2b33bd283f43a915e79ebd8b75",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 26,
+      "rawJsonlRows": 0,
+      "compressedBytes": 112313,
+      "parts": 1
+    },
+    {
+      "id": "45434002545-apple-shards-45434002545-uxlc-pdfium-trace",
+      "classification": "completed-measurement",
+      "declaredScopeComplete": true,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45434002545,
+        "jobId": 138592848182,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45434002545/job/138592848182",
+        "sourceCommit": "9b5e7b2fde53fe6ad0408940ece653ff8d0c49e4",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/9b5e7b2fde53fe6ad0408940ece653ff8d0c49e4",
+        "artifact": {
+          "id": 14942335004,
+          "name": "pdf-5538-apple-thread-trace-uxlc-genesis-pdfium-X64",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45434002545/artifacts/14942335004",
+          "zipSha256": "3ef1110c5b2a85ae7599ff690d85b481d9c735b1d83dfbb5325e7a9d5fc74b70",
+          "zipBytes": 3293729,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45434002545-apple-shards-45434002545-uxlc-pdfium-trace.json",
+        "sha256": "f5e6c89910943d72503a3f131874835cbad2d45376f22f2c6c2f2582e60309b3",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 313,
+      "rawJsonlRows": 0,
+      "compressedBytes": 3131254,
+      "parts": 3
+    },
+    {
+      "id": "45434650728-owner-product-linux-45434650728",
+      "classification": "completed-product-regression-checks",
+      "declaredScopeComplete": true,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45434650728,
+        "jobId": 138589053288,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45434650728/job/138589053288",
+        "sourceCommit": "4fc776c52b09c981121e157a6d4515eec3ac53fd",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/4fc776c52b09c981121e157a6d4515eec3ac53fd",
+        "artifact": {
+          "id": 14941410992,
+          "name": "pdf-5538-product-validation-Linux",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45434650728/artifacts/14941410992",
+          "zipSha256": "b15cda6f640df391b18504687624cb63372a382a88e9a44b2f52fdcdf84d97f0",
+          "zipBytes": 27141,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45434650728-owner-product-linux-45434650728.json",
+        "sha256": "2d0bb4077087c94e59c576f7353e67a06de762891bcc04b1a6abc4db30ee9422",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 9,
+      "rawJsonlRows": 673,
+      "compressedBytes": 32210,
+      "parts": 1
+    },
+    {
+      "id": "45434650728-owner-product-windows-45434650728",
+      "classification": "completed-product-regression-checks",
+      "declaredScopeComplete": true,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45434650728,
+        "jobId": 138589052696,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45434650728/job/138589052696",
+        "sourceCommit": "4fc776c52b09c981121e157a6d4515eec3ac53fd",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/4fc776c52b09c981121e157a6d4515eec3ac53fd",
+        "artifact": {
+          "id": 14942076468,
+          "name": "pdf-5538-product-validation-Windows",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45434650728/artifacts/14942076468",
+          "zipSha256": "70b0a17aafa4e2db1400696cf4b75b5caa1864404343ee2963ec32aa637e5f5f",
+          "zipBytes": 27215,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45434650728-owner-product-windows-45434650728.json",
+        "sha256": "a59f46fae1b6ac2d6e8c922b9d6427a3f0e1b2444d919345c0c57b7e579053ec",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 9,
+      "rawJsonlRows": 673,
+      "compressedBytes": 32249,
+      "parts": 1
+    },
+    {
+      "id": "45434875911-owner-combined-source-45434875911",
+      "classification": "completed-product-regression-checks",
+      "declaredScopeComplete": true,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45434875911,
+        "jobId": 138589850049,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45434875911/job/138589850049",
+        "sourceCommit": "13cac860d30c5186493c7c6faf154cd5f6cc4cd1",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/13cac860d30c5186493c7c6faf154cd5f6cc4cd1",
+        "artifact": {
+          "id": 14940976408,
+          "name": "pdf-5538-combined-source-contracts",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45434875911/artifacts/14940976408",
+          "zipSha256": "622ce15a99214115fa9848b703a9634c9ad4e459c89392106b298321089dc2a9",
+          "zipBytes": 28077,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45434875911-owner-combined-source-45434875911.json",
+        "sha256": "215a8705fd6180d3d51686a96e279f46500d0d8322ccedab1ffad91b58a20604",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 9,
+      "rawJsonlRows": 724,
+      "compressedBytes": 40690,
+      "parts": 1
+    },
+    {
+      "id": "45435056281-owner-cleanup-linux-45435056281",
+      "classification": "completed-product-regression-checks",
+      "declaredScopeComplete": true,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45435056281,
+        "jobId": 138590480263,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45435056281/job/138590480263",
+        "sourceCommit": "b4038be75ab087df49ab3ec450d589cc51842644",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/b4038be75ab087df49ab3ec450d589cc51842644",
+        "artifact": {
+          "id": 14940038818,
+          "name": "pdf-5538-cleanup-owner-validation-Linux",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45435056281/artifacts/14940038818",
+          "zipSha256": "ee1db1ed3a2558db82a61bf5091db572b6c0b36c9534e9c26c8222a272654a66",
+          "zipBytes": 10914,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45435056281-owner-cleanup-linux-45435056281.json",
+        "sha256": "c3429be812b5329375561f89acba84dac729debf45aaf181acdc9eec015263d6",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 9,
+      "rawJsonlRows": 264,
+      "compressedBytes": 15045,
+      "parts": 1
+    },
+    {
+      "id": "45435056281-owner-cleanup-windows-45435056281",
+      "classification": "completed-product-regression-checks",
+      "declaredScopeComplete": true,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45435056281,
+        "jobId": 138590479405,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45435056281/job/138590479405",
+        "sourceCommit": "b4038be75ab087df49ab3ec450d589cc51842644",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/b4038be75ab087df49ab3ec450d589cc51842644",
+        "artifact": {
+          "id": 14940533492,
+          "name": "pdf-5538-cleanup-owner-validation-Windows",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45435056281/artifacts/14940533492",
+          "zipSha256": "523f8291fa6ce3504032562d1ba584729fd210794100526dc3fcac7bd5b15de7",
+          "zipBytes": 10890,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45435056281-owner-cleanup-windows-45435056281.json",
+        "sha256": "c8fd9d7176ba40b9ec699f2b78ee6f4e2ac5fa961c28dc60d613b6760a7200e4",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 9,
+      "rawJsonlRows": 264,
+      "compressedBytes": 14971,
+      "parts": 1
     }
   ],
   "interpretationCaveats": [
@@ -2878,8 +3824,9 @@
     "Connector-decoded job logs are labelled separately from byte-verified artifact ZIP members; any recorded newline normalization is explicit.",
     "Selected S02 frame PNGs retain their original artifact bytes and are checked against frame-receipts.json; a frame capture is not an OS presentation timestamp.",
     "Small S02 synthetic PDF inputs are retained only under their fixture paths and verified against the original fixture manifest and artifact ZIP; real-book corpus bytes remain excluded.",
+    "Native xctrace containers are retained only under the declared E12 corpus/backend trace paths; every opaque member is byte-verified against its original artifact ZIP, while exported XML remains independently readable.",
     "PdfPageHighlights is an advanced-search component. Its literal String case is a component microbenchmark, not a measured acceleration of simple product search. Simple and /regex/ searches use pdfrx.startTextSearch; the advanced-search RegExp fallback is a product path. ResultLines follow-up is mixed and supports neither an improvement nor a non-regression claim.",
-    "No PDF corpus, runtime binary, dependency checkout, build tree or signed download URL is embedded in these raw archives."
+    "Real-book PDF inputs, executable runtime bundles, dependency checkouts, generated build trees and signed download URLs are excluded; the explicit native-profiler and small synthetic-fixture exceptions above preserve primary evidence."
   ],
   "evidenceCorrections": [
     {

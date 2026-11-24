@@ -1,0 +1,934 @@
+{
+  "schemaVersion": 1,
+  "section": "M02 navigation",
+  "classification": "completed-product-regression-checks",
+  "runId": 45430295651,
+  "jobId": 138573412819,
+  "artifactId": 14940452582,
+  "artifactZipSha256": "c17e6650768b09b2d08c6724a146461d2fd2c031b2f96995d600440c04a29ed8",
+  "artifactZipBytes": 3204897,
+  "verifiedOriginalFiles": 131,
+  "sourceCommit": "0ee3c5cf92f79c6dc6f61b280b21c6ed2f8cb989",
+  "orchestratorCommit": "4fa899d188943a17fb55c74cf52bdfccf437f842",
+  "platform": "Windows",
+  "buildMode": "profile",
+  "sdk": {
+    "frameworkVersion": "3.47.7",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "dartSdkVersion": "3.13.5"
+  },
+  "diagnosticOnly": true,
+  "performanceComparable": false,
+  "physicalGpuPresentationMeasured": false,
+  "nativeBuildReceiptSha256": "9a4107c39700a7e832cc5b3dfd39672b39bc06969d7b86d60fa08f751bb34f8a",
+  "compiledViewer": {
+    "path": "C:\\Users\\runneradmin\\AppData\\Local\\Pub\\Cache\\git\\pdfrx-6b740a73d1b65efd23dd2b4f81caabf4588e9c23\\packages\\pdfrx\\lib\\src\\widgets\\pdf_viewer.dart",
+    "canonicalPath": "C:\\Users\\runneradmin\\AppData\\Local\\Pub\\Cache\\git\\pdfrx-6b740a73d1b65efd23dd2b4f81caabf4588e9c23\\packages\\pdfrx\\lib\\src\\widgets\\pdf_viewer.dart",
+    "bytes": 263806,
+    "sha256": "1b4bc0a7cf375fe3eac309af1cbc2a847dd238215313f14ba178a73315dbb2b9",
+    "mode": 438
+  },
+  "corpus": {
+    "inputManifestSha256": "d7fad6a418860452d028ffc009146101823642ea1cec085aaa088263ed068093",
+    "manifestSha256": "8dff08c00497c767139c20b6de0d1b1f3555b530f9f5afc810eb737c3287657e",
+    "case": {
+      "schemaVersion": 1,
+      "source": {
+        "kind": "external",
+        "pageCount": 374,
+        "sha256": "92a145512e33c4a3c8f1b1c92d2d79c4db91a49cc921a316201be81bfa85040d"
+      },
+      "navigation": {
+        "initialPage": 1,
+        "forwardPage": 280,
+        "backwardPage": 37,
+        "zoomFactor": 2.0,
+        "zoomPage": 37,
+        "zoomAnchor": "pageCenter"
+      }
+    },
+    "sourceSha256": "92a145512e33c4a3c8f1b1c92d2d79c4db91a49cc921a316201be81bfa85040d",
+    "sourceBytes": 41990345
+  },
+  "independentProcesses": 3,
+  "iterationsIncludingWarmup": 18,
+  "measuredIterations": 15,
+  "successfulJumpsByTarget": {
+    "280": 18,
+    "37": 18
+  },
+  "totalBookViewPassedPhases": 144,
+  "passedPhasesByName": {
+    "pdf.book_view.open": 18,
+    "pdf.book_view.thumbnails_first_image": 18,
+    "pdf.book_view.jump_forward": 18,
+    "pdf.book_view.jump_backward": 18,
+    "pdf.book_view.prepare_reversals": 18,
+    "pdf.book_view.rapid_reversals": 18,
+    "pdf.book_view.close": 18,
+    "pdf.book_view.idle_after_close": 18
+  },
+  "iterationsWithRelayoutDuringPendingGoTo": {
+    "280": 12,
+    "37": 7
+  },
+  "processes": [
+    {
+      "attempt": 1,
+      "pid": 5156,
+      "buildPolicy": "create",
+      "bookViewPassedPhases": 48,
+      "skippedCapabilities": [
+        {
+          "name": "windows.native_open_close",
+          "reason": "This PDF workload observes one native application window; native window open/close is a separate scenario."
+        },
+        {
+          "name": "queues.depth",
+          "reason": "The application exposes active work and indexing state, not complete queue depths."
+        },
+        {
+          "name": "pdf.book_view.first_preview_image",
+          "reason": "pdfrx 2.13.1 exposes final visible-image readiness, not the first painted preview. Controller readiness and page paint callbacks can precede any image; screenshot readback is not added to this workload."
+        }
+      ],
+      "traces": 6,
+      "manifestSha256": "b34b0aac6d6024bc8c4c80eb679ed4817a863f257996700c90eb087438494b50",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4"
+    },
+    {
+      "attempt": 2,
+      "pid": 6004,
+      "buildPolicy": "reuse",
+      "bookViewPassedPhases": 48,
+      "skippedCapabilities": [
+        {
+          "name": "windows.native_open_close",
+          "reason": "This PDF workload observes one native application window; native window open/close is a separate scenario."
+        },
+        {
+          "name": "queues.depth",
+          "reason": "The application exposes active work and indexing state, not complete queue depths."
+        },
+        {
+          "name": "pdf.book_view.first_preview_image",
+          "reason": "pdfrx 2.13.1 exposes final visible-image readiness, not the first painted preview. Controller readiness and page paint callbacks can precede any image; screenshot readback is not added to this workload."
+        }
+      ],
+      "traces": 6,
+      "manifestSha256": "4483492319839e082af603d576428c910c47200174bcc47d3c34e755e194e1f5",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4"
+    },
+    {
+      "attempt": 3,
+      "pid": 1676,
+      "buildPolicy": "reuse",
+      "bookViewPassedPhases": 48,
+      "skippedCapabilities": [
+        {
+          "name": "windows.native_open_close",
+          "reason": "This PDF workload observes one native application window; native window open/close is a separate scenario."
+        },
+        {
+          "name": "queues.depth",
+          "reason": "The application exposes active work and indexing state, not complete queue depths."
+        },
+        {
+          "name": "pdf.book_view.first_preview_image",
+          "reason": "pdfrx 2.13.1 exposes final visible-image readiness, not the first painted preview. Controller readiness and page paint callbacks can precede any image; screenshot readback is not added to this workload."
+        }
+      ],
+      "traces": 6,
+      "manifestSha256": "501e59ea09376ea3c538ba34fb03beee827f171f38775e001b37ffb6ed96284b",
+      "completionSha256": "ee541aaf0063740b6f03a864d1d178253030ca5b1d474825c37f8f34a3198cb4"
+    }
+  ],
+  "iterations": [
+    {
+      "path": "attempt-1/launch-000/navigation-measured-0.json",
+      "sha256": "32bb95b70079c93d21f50d5bf3a62adf10695c204946b00f81cf90b74f7c4f07",
+      "warmup": false,
+      "droppedRecords": 0,
+      "pendingCallsAtClose": {},
+      "jumps": [
+        {
+          "targetPage": 280,
+          "callId": 6,
+          "requestSequence": 20,
+          "callSequence": 21,
+          "completedSequence": 34,
+          "applicationReturnedSequence": 35,
+          "readyImageSequence": 52,
+          "visiblePages": [
+            280,
+            281
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": []
+        },
+        {
+          "targetPage": 37,
+          "callId": 12,
+          "requestSequence": 56,
+          "callSequence": 57,
+          "completedSequence": 68,
+          "applicationReturnedSequence": 69,
+          "readyImageSequence": 77,
+          "visiblePages": [
+            36,
+            37
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": []
+        }
+      ]
+    },
+    {
+      "path": "attempt-1/launch-000/navigation-measured-1.json",
+      "sha256": "a8cc802c85a2dd5f875e015fce32fced4005701c2fe5d421bef26d5f36e2a2d9",
+      "warmup": false,
+      "droppedRecords": 0,
+      "pendingCallsAtClose": {},
+      "jumps": [
+        {
+          "targetPage": 280,
+          "callId": 6,
+          "requestSequence": 20,
+          "callSequence": 21,
+          "completedSequence": 26,
+          "applicationReturnedSequence": 27,
+          "readyImageSequence": 47,
+          "visiblePages": [
+            280,
+            281
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            25
+          ]
+        },
+        {
+          "targetPage": 37,
+          "callId": 12,
+          "requestSequence": 48,
+          "callSequence": 49,
+          "completedSequence": 61,
+          "applicationReturnedSequence": 62,
+          "readyImageSequence": 69,
+          "visiblePages": [
+            36,
+            37
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            60
+          ]
+        }
+      ]
+    },
+    {
+      "path": "attempt-1/launch-000/navigation-measured-2.json",
+      "sha256": "a874dafe6bcd98f74ab3dd8be0f1752f51898fefbfc2cd55d4ab7c15a840fa12",
+      "warmup": false,
+      "droppedRecords": 0,
+      "pendingCallsAtClose": {},
+      "jumps": [
+        {
+          "targetPage": 280,
+          "callId": 5,
+          "requestSequence": 18,
+          "callSequence": 19,
+          "completedSequence": 22,
+          "applicationReturnedSequence": 23,
+          "readyImageSequence": 47,
+          "visiblePages": [
+            280,
+            281
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            20
+          ]
+        },
+        {
+          "targetPage": 37,
+          "callId": 14,
+          "requestSequence": 56,
+          "callSequence": 57,
+          "completedSequence": 66,
+          "applicationReturnedSequence": 67,
+          "readyImageSequence": 69,
+          "visiblePages": [
+            36,
+            37
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": []
+        }
+      ]
+    },
+    {
+      "path": "attempt-1/launch-000/navigation-measured-3.json",
+      "sha256": "9719438c5e47bcd9b21e1e0dd35797e6f294efa718b77ef5dd7bc31579b77b07",
+      "warmup": false,
+      "droppedRecords": 0,
+      "pendingCallsAtClose": {},
+      "jumps": [
+        {
+          "targetPage": 280,
+          "callId": 5,
+          "requestSequence": 18,
+          "callSequence": 19,
+          "completedSequence": 22,
+          "applicationReturnedSequence": 23,
+          "readyImageSequence": 47,
+          "visiblePages": [
+            280,
+            281
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            20
+          ]
+        },
+        {
+          "targetPage": 37,
+          "callId": 12,
+          "requestSequence": 48,
+          "callSequence": 49,
+          "completedSequence": 63,
+          "applicationReturnedSequence": 64,
+          "readyImageSequence": 69,
+          "visiblePages": [
+            36,
+            37
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": []
+        }
+      ]
+    },
+    {
+      "path": "attempt-1/launch-000/navigation-measured-4.json",
+      "sha256": "31989f20c4d112f7860f5c0e55c2336a468d6bec36faed607f90e3d669251d47",
+      "warmup": false,
+      "droppedRecords": 0,
+      "pendingCallsAtClose": {},
+      "jumps": [
+        {
+          "targetPage": 280,
+          "callId": 6,
+          "requestSequence": 21,
+          "callSequence": 22,
+          "completedSequence": 25,
+          "applicationReturnedSequence": 26,
+          "readyImageSequence": 50,
+          "visiblePages": [
+            280,
+            281
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            23
+          ]
+        },
+        {
+          "targetPage": 37,
+          "callId": 14,
+          "requestSequence": 57,
+          "callSequence": 58,
+          "completedSequence": 69,
+          "applicationReturnedSequence": 70,
+          "readyImageSequence": 72,
+          "visiblePages": [
+            36,
+            37
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": []
+        }
+      ]
+    },
+    {
+      "path": "attempt-1/launch-000/navigation-warmup-0.json",
+      "sha256": "367f91958c4f630cabe57c0a1c06d09fa7bb6738afab84e89f095e4d0092f9b6",
+      "warmup": true,
+      "droppedRecords": 0,
+      "pendingCallsAtClose": {},
+      "jumps": [
+        {
+          "targetPage": 280,
+          "callId": 6,
+          "requestSequence": 20,
+          "callSequence": 21,
+          "completedSequence": 33,
+          "applicationReturnedSequence": 34,
+          "readyImageSequence": 47,
+          "visiblePages": [
+            280,
+            281
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": []
+        },
+        {
+          "targetPage": 37,
+          "callId": 11,
+          "requestSequence": 51,
+          "callSequence": 52,
+          "completedSequence": 62,
+          "applicationReturnedSequence": 63,
+          "readyImageSequence": 68,
+          "visiblePages": [
+            36,
+            37
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": []
+        }
+      ]
+    },
+    {
+      "path": "attempt-2/launch-000/navigation-measured-0.json",
+      "sha256": "49e232b03f515414d295cd5bab5f73d5a12d591a335b63f5102c8ccf233736c6",
+      "warmup": false,
+      "droppedRecords": 0,
+      "pendingCallsAtClose": {},
+      "jumps": [
+        {
+          "targetPage": 280,
+          "callId": 6,
+          "requestSequence": 20,
+          "callSequence": 21,
+          "completedSequence": 29,
+          "applicationReturnedSequence": 30,
+          "readyImageSequence": 46,
+          "visiblePages": [
+            280,
+            281
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            28
+          ]
+        },
+        {
+          "targetPage": 37,
+          "callId": 12,
+          "requestSequence": 52,
+          "callSequence": 53,
+          "completedSequence": 66,
+          "applicationReturnedSequence": 67,
+          "readyImageSequence": 69,
+          "visiblePages": [
+            36,
+            37
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": []
+        }
+      ]
+    },
+    {
+      "path": "attempt-2/launch-000/navigation-measured-1.json",
+      "sha256": "e5c0c70695f31d32958b16f5adcfd9b73ca827cefaf504bf22d05dcfc13262bb",
+      "warmup": false,
+      "droppedRecords": 0,
+      "pendingCallsAtClose": {},
+      "jumps": [
+        {
+          "targetPage": 280,
+          "callId": 5,
+          "requestSequence": 17,
+          "callSequence": 18,
+          "completedSequence": 22,
+          "applicationReturnedSequence": 23,
+          "readyImageSequence": 47,
+          "visiblePages": [
+            280,
+            281
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            20
+          ]
+        },
+        {
+          "targetPage": 37,
+          "callId": 14,
+          "requestSequence": 56,
+          "callSequence": 57,
+          "completedSequence": 68,
+          "applicationReturnedSequence": 69,
+          "readyImageSequence": 71,
+          "visiblePages": [
+            36,
+            37
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": []
+        }
+      ]
+    },
+    {
+      "path": "attempt-2/launch-000/navigation-measured-2.json",
+      "sha256": "4a1d71fc5bae91a19861872e3245ad26c7fa7d43ac5b2f9b72076279590aa2e6",
+      "warmup": false,
+      "droppedRecords": 0,
+      "pendingCallsAtClose": {},
+      "jumps": [
+        {
+          "targetPage": 280,
+          "callId": 6,
+          "requestSequence": 20,
+          "callSequence": 21,
+          "completedSequence": 30,
+          "applicationReturnedSequence": 31,
+          "readyImageSequence": 44,
+          "visiblePages": [
+            280,
+            281
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            29
+          ]
+        },
+        {
+          "targetPage": 37,
+          "callId": 13,
+          "requestSequence": 56,
+          "callSequence": 57,
+          "completedSequence": 69,
+          "applicationReturnedSequence": 70,
+          "readyImageSequence": 72,
+          "visiblePages": [
+            36,
+            37
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": []
+        }
+      ]
+    },
+    {
+      "path": "attempt-2/launch-000/navigation-measured-3.json",
+      "sha256": "a5c6c9a6752bc680d591d28f78eece27f5233f284bd29e55c9bfa2fbee3b35f0",
+      "warmup": false,
+      "droppedRecords": 0,
+      "pendingCallsAtClose": {},
+      "jumps": [
+        {
+          "targetPage": 280,
+          "callId": 6,
+          "requestSequence": 20,
+          "callSequence": 21,
+          "completedSequence": 34,
+          "applicationReturnedSequence": 35,
+          "readyImageSequence": 48,
+          "visiblePages": [
+            280,
+            281
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            33
+          ]
+        },
+        {
+          "targetPage": 37,
+          "callId": 12,
+          "requestSequence": 55,
+          "callSequence": 56,
+          "completedSequence": 61,
+          "applicationReturnedSequence": 62,
+          "readyImageSequence": 67,
+          "visiblePages": [
+            36,
+            37
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            59
+          ]
+        }
+      ]
+    },
+    {
+      "path": "attempt-2/launch-000/navigation-measured-4.json",
+      "sha256": "23150dcb5b9934022f431c5781ef79d524e411b073770ef4ecc26a36e686f7e8",
+      "warmup": false,
+      "droppedRecords": 0,
+      "pendingCallsAtClose": {},
+      "jumps": [
+        {
+          "targetPage": 280,
+          "callId": 6,
+          "requestSequence": 21,
+          "callSequence": 22,
+          "completedSequence": 25,
+          "applicationReturnedSequence": 26,
+          "readyImageSequence": 46,
+          "visiblePages": [
+            280,
+            281
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            23
+          ]
+        },
+        {
+          "targetPage": 37,
+          "callId": 13,
+          "requestSequence": 50,
+          "callSequence": 51,
+          "completedSequence": 62,
+          "applicationReturnedSequence": 63,
+          "readyImageSequence": 65,
+          "visiblePages": [
+            36,
+            37
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": []
+        }
+      ]
+    },
+    {
+      "path": "attempt-2/launch-000/navigation-warmup-0.json",
+      "sha256": "590e96f9ae7ca68483cbe94ffe43088b825f34408badec47ada8d85f4499619e",
+      "warmup": true,
+      "droppedRecords": 0,
+      "pendingCallsAtClose": {},
+      "jumps": [
+        {
+          "targetPage": 280,
+          "callId": 6,
+          "requestSequence": 20,
+          "callSequence": 21,
+          "completedSequence": 30,
+          "applicationReturnedSequence": 31,
+          "readyImageSequence": 44,
+          "visiblePages": [
+            280,
+            281
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            29
+          ]
+        },
+        {
+          "targetPage": 37,
+          "callId": 11,
+          "requestSequence": 48,
+          "callSequence": 49,
+          "completedSequence": 63,
+          "applicationReturnedSequence": 64,
+          "readyImageSequence": 71,
+          "visiblePages": [
+            36,
+            37
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            62
+          ]
+        }
+      ]
+    },
+    {
+      "path": "attempt-3/launch-000/navigation-measured-0.json",
+      "sha256": "210afb2ee3b27ca365102cb05ba4f0a5e45b51cb8dfca4c7306ffa22ddb679be",
+      "warmup": false,
+      "droppedRecords": 0,
+      "pendingCallsAtClose": {},
+      "jumps": [
+        {
+          "targetPage": 280,
+          "callId": 5,
+          "requestSequence": 17,
+          "callSequence": 18,
+          "completedSequence": 22,
+          "applicationReturnedSequence": 23,
+          "readyImageSequence": 47,
+          "visiblePages": [
+            280,
+            281
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            20
+          ]
+        },
+        {
+          "targetPage": 37,
+          "callId": 13,
+          "requestSequence": 51,
+          "callSequence": 52,
+          "completedSequence": 63,
+          "applicationReturnedSequence": 64,
+          "readyImageSequence": 71,
+          "visiblePages": [
+            36,
+            37
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": []
+        }
+      ]
+    },
+    {
+      "path": "attempt-3/launch-000/navigation-measured-1.json",
+      "sha256": "cf59667b111faf2a0f1e5df9ac6849cd18f3d7d3713a93b7709aee8b33f87599",
+      "warmup": false,
+      "droppedRecords": 0,
+      "pendingCallsAtClose": {},
+      "jumps": [
+        {
+          "targetPage": 280,
+          "callId": 6,
+          "requestSequence": 20,
+          "callSequence": 21,
+          "completedSequence": 34,
+          "applicationReturnedSequence": 35,
+          "readyImageSequence": 52,
+          "visiblePages": [
+            280,
+            281
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": []
+        },
+        {
+          "targetPage": 37,
+          "callId": 12,
+          "requestSequence": 56,
+          "callSequence": 57,
+          "completedSequence": 69,
+          "applicationReturnedSequence": 70,
+          "readyImageSequence": 79,
+          "visiblePages": [
+            36,
+            37
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": []
+        }
+      ]
+    },
+    {
+      "path": "attempt-3/launch-000/navigation-measured-2.json",
+      "sha256": "0966f6c2db2cb68edee5c12cbf50f43583d1c05fc806a239483f74f50b6e4782",
+      "warmup": false,
+      "droppedRecords": 0,
+      "pendingCallsAtClose": {},
+      "jumps": [
+        {
+          "targetPage": 280,
+          "callId": 6,
+          "requestSequence": 20,
+          "callSequence": 21,
+          "completedSequence": 36,
+          "applicationReturnedSequence": 37,
+          "readyImageSequence": 53,
+          "visiblePages": [
+            280,
+            281
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": []
+        },
+        {
+          "targetPage": 37,
+          "callId": 12,
+          "requestSequence": 57,
+          "callSequence": 58,
+          "completedSequence": 68,
+          "applicationReturnedSequence": 69,
+          "readyImageSequence": 76,
+          "visiblePages": [
+            36,
+            37
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            67
+          ]
+        }
+      ]
+    },
+    {
+      "path": "attempt-3/launch-000/navigation-measured-3.json",
+      "sha256": "d9d25956f3021ea58bae134a31b018bef863a6e1476e4c410b4ac7ca1573ccb3",
+      "warmup": false,
+      "droppedRecords": 0,
+      "pendingCallsAtClose": {},
+      "jumps": [
+        {
+          "targetPage": 280,
+          "callId": 6,
+          "requestSequence": 20,
+          "callSequence": 21,
+          "completedSequence": 35,
+          "applicationReturnedSequence": 36,
+          "readyImageSequence": 46,
+          "visiblePages": [
+            280,
+            281
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": []
+        },
+        {
+          "targetPage": 37,
+          "callId": 11,
+          "requestSequence": 53,
+          "callSequence": 54,
+          "completedSequence": 61,
+          "applicationReturnedSequence": 62,
+          "readyImageSequence": 67,
+          "visiblePages": [
+            36,
+            37
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            60
+          ]
+        }
+      ]
+    },
+    {
+      "path": "attempt-3/launch-000/navigation-measured-4.json",
+      "sha256": "71da67e68187841e34dece4a32ef2863668faf2e24dc2ec39deee6248c4ffcfc",
+      "warmup": false,
+      "droppedRecords": 0,
+      "pendingCallsAtClose": {},
+      "jumps": [
+        {
+          "targetPage": 280,
+          "callId": 6,
+          "requestSequence": 20,
+          "callSequence": 21,
+          "completedSequence": 34,
+          "applicationReturnedSequence": 35,
+          "readyImageSequence": 48,
+          "visiblePages": [
+            280,
+            281
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": []
+        },
+        {
+          "targetPage": 37,
+          "callId": 11,
+          "requestSequence": 52,
+          "callSequence": 53,
+          "completedSequence": 60,
+          "applicationReturnedSequence": 61,
+          "readyImageSequence": 66,
+          "visiblePages": [
+            36,
+            37
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            59
+          ]
+        }
+      ]
+    },
+    {
+      "path": "attempt-3/launch-000/navigation-warmup-0.json",
+      "sha256": "bc6dfafae85de6ddebf143860bba040ccb197846e2baca72520555533bf8bb99",
+      "warmup": true,
+      "droppedRecords": 0,
+      "pendingCallsAtClose": {},
+      "jumps": [
+        {
+          "targetPage": 280,
+          "callId": 5,
+          "requestSequence": 17,
+          "callSequence": 18,
+          "completedSequence": 22,
+          "applicationReturnedSequence": 23,
+          "readyImageSequence": 47,
+          "visiblePages": [
+            280,
+            281
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            20
+          ]
+        },
+        {
+          "targetPage": 37,
+          "callId": 13,
+          "requestSequence": 51,
+          "callSequence": 52,
+          "completedSequence": 59,
+          "applicationReturnedSequence": 60,
+          "readyImageSequence": 65,
+          "visiblePages": [
+            36,
+            37
+          ],
+          "documentEpoch": 1,
+          "ownerAndDocumentStable": true,
+          "layoutReanchorDuringPendingGoTo": [
+            58
+          ]
+        }
+      ]
+    }
+  ],
+  "finding": "The fixed viewer completed both navigation Futures and reached the requested ready page in all 18 iterations. Legacy layout callbacks still occurred during active navigation; neither the destination nor the original Future was lost.",
+  "limitations": [
+    "Three independent Windows x64 profile processes; the 18 iterations are not independent population samples.",
+    "This diagnostic captures stacks and controller state; none of its times is used as a performance comparison.",
+    "The previous real-corpus failure and this fixed run are distinct source builds; this is correctness evidence, not a randomized timing comparison.",
+    "The first preview, complete queue depths, and separate native-window open/close scenario were explicitly skipped.",
+    "Ready visible-page state does not measure physical display presentation or all private engine calls."
+  ],
+  "analysisScriptSha256": "62991850b36dfdc141719c14979f4891419e2b6abaf3fa25a547e6f0a07f36c4"
+}

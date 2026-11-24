@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "Post-download analysis; original ZIP members verified without modification",
+  "artifactZipSha256": "a6747089c430f52b36b2d591c415e4900e417028a8100356a0d5323401459ae5",
+  "artifactZipBytes": 33664,
+  "verifiedOriginalFiles": 14,
+  "section": "M02 wrap search",
+  "runId": 45427001661,
+  "jobId": 138561608155,
+  "artifactId": 14936956779,
+  "sourceCommit": "063d4eec0696b5c48452c28e8f21fd88df6aea7d",
+  "classification": "infrastructure-failure-before-build-or-measurement",
+  "cause": "Target analysis rejected missing SearchEngineLibrary import before the first profile build.",
+  "failure": {
+    "status": "failed",
+    "error": "analyze failed (1):\nAnalyzing 2 items...                                            \n\n  error • Undefined name 'SearchEngineLibrary'. Try correcting the name to one that is defined, or defining the name • tool/issue5538_ci/wrap_search_app.dart:499:9 • undefined_identifier\n\n1 issue found. (ran in 28.6s)\n",
+    "stack": "Traceback (most recent call last):\n  File \"/__w/otzaria/otzaria/tool/issue5538_ci/wrap_search_run.py\", line 325, in main\n    run(['flutter', 'analyze', '--no-pub', TARGET, METRICS], checkout, directory / 'analyze.log')\n  File \"/__w/otzaria/otzaria/tool/issue5538_ci/wrap_search_run.py\", line 67, in run\n    require(completed.returncode == 0,\n  File \"/__w/otzaria/otzaria/tool/issue5538_ci/wrap_search_run.py\", line 48, in require\n    raise ValueError(message)\nValueError: analyze failed (1):\nAnalyzing 2 items...                                            \n\n  error • Undefined name 'SearchEngineLibrary'. Try correcting the name to one that is defined, or defining the name • tool/issue5538_ci/wrap_search_app.dart:499:9 • undefined_identifier\n\n1 issue found. (ran in 28.6s)\n\n",
+    "completedIndependentProcesses": 0
+  },
+  "completedProcesses": 0,
+  "completedObservations": 0,
+  "performanceMeasurement": false,
+  "limitations": [
+    "Preparation/overlay receipts prove input construction only; no search workload ran."
+  ],
+  "declaredScopeComplete": false,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45427001661/job/138561608155",
+  "jobLogSha256": "4aefedf69577790edb5587d1b454017810df43c910623dd1d14e8024f3454e23",
+  "jobLogBytes": 505674,
+  "jobLogOrigin": "GitHub connector decoded job log; not an original Actions log ZIP",
+  "jobLogNewlineTransformation": "none; connector text already LF"
+}

@@ -15,7 +15,8 @@ BASE = 'ac0237f34011d823a856117834a18cf02a64b774'
 FORK = 'https://github.com/yom-chadash/otzaria'
 MAX_PART_BYTES = 1_500_000
 TEXT_EXTENSIONS = {'.json', '.jsonl', '.csv', '.log', '.patch', '.diff', '.lock', '.txt', '.tap', '.d', '.xml'}
-BUILD_RECEIPTS = {'build-command.json', 'bundle.json', 'compiler-inputs.json', 'resolution.json', 'source.json'}
+BUILD_RECEIPTS = {'build-command.json', 'bundle.json', 'compiler-inputs.json', 'resolution.json', 'source.json',
+                  'provenance.json', 'flutter.json', 'upstream-swift-compatibility.json', 'prepared-context.json'}
 SIGNED = re.compile(rb'(?i)(?:[?&](?:sig|signature|x-amz-signature|x-goog-signature|token|access_token)=|github_pat_|ghp_[A-Za-z0-9]{20})')
 
 
@@ -32,12 +33,21 @@ def write_json(path, value):
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 
 
+def native_trace_member(path):
+    return (len(path.parts) >= 3 and path.parts[0] == 'traces'
+            and re.fullmatch(r'(uxlc-genesis|mikraot-gedolot-genesis-1859)-(pdfium|coregraphics)\.trace',
+                             path.parts[1]) is not None)
+
+
 def included(path):
+    if native_trace_member(path):
+        return True, None
     if 'data' in path.parts[:-1] and any(p in {'app-fixture', 'pinned-store'} for p in path.parts[:-1]):
         return False, 'generated-application-data; scenario reports and source identities retained'
     if any(p in {'engine-original', 'engine', '.dart_tool', 'node_modules', '.git', 'runtime', '.pub-cache'} for p in path.parts[:-1]):
         return False, 'dependency-build-or-runtime-copy'
-    if 'build' in path.parts[:-1] and path.name not in BUILD_RECEIPTS and path.suffix not in {'.log', '.d', '.lock'}:
+    if ('build' in path.parts[:-1] and path.name not in BUILD_RECEIPTS
+            and not path.name.endswith('.process.json') and path.suffix not in {'.log', '.d', '.lock'}):
         return False, 'build-tree-content-other-than-provenance-receipts'
     if path.suffix == '.pdf':
         if (len(path.parts) == 4 and path.parts[:2] == ('pdf-5538-font-profile', 'fixtures')
@@ -81,7 +91,7 @@ def validate_frame_png(path, payload, *, incomplete_launch=False):
             'completedFrameReceipt': False, 'firstGoodOrReferenceEvidence': False}
 
 
-def group(source_root, relative, run, job, artifact, commit, classification, expected_sha=None, summary=None, supplementary=None, artifact_name=None, job_log=None, job_log_sha256=None, job_log_newline_normalization=None):
+def group(source_root, relative, run, job, artifact, commit, classification, expected_sha=None, summary=None, supplementary=None, artifact_name=None, job_log=None, job_log_sha256=None, job_log_newline_normalization=None, annotations=None):
     root = WORKSPACE / source_root / relative
     name = Path(relative).name
     if artifact is not None:
@@ -108,10 +118,19 @@ def group(source_root, relative, run, job, artifact, commit, classification, exp
     elif summary not in {'first-attempt', 'preflight'}:
         summary = root / summary
         assert summary.is_file(), summary
+    annotations = annotations or {}
+    for annotation_name, checksum in annotations.items():
+        path = Path(annotation_name)
+        assert isinstance(annotation_name, str) and path.as_posix() == annotation_name and not path.is_absolute()
+        assert '..' not in path.parts and '\\' not in annotation_name and ':' not in annotation_name and not any(ord(c) < 32 for c in annotation_name)
+        assert annotation_name != job_log and re.fullmatch(r'[0-9a-f]{64}', checksum)
+        assert (root / path).resolve(strict=True).is_relative_to(root.resolve()), 'Annotation escapes its source group'
+        assert (root / path).is_file() and not (root / path).is_symlink() and sha((root / path).read_bytes()) == checksum
     return dict(source_root=source_root, relative=relative, root=root, name=name,
         run=run, job=job, artifact=artifact, commit=commit, classification=classification,
         archive=archives[0], expected_sha=expected_sha, summary=summary, supplementary=supplementary or [], job_log=job_log,
         job_log_sha256=job_log_sha256, job_log_newline_normalization=job_log_newline_normalization,
+        annotations=annotations,
         artifact_name=artifact_name or ('pdf-5538-preflight-linux' if name == 'preflight' else name))
 
 
@@ -194,7 +213,9 @@ def archive_group(g, destination, immutable_sources):
         if 'jobLogSha256' in summary:
             assert sha(log_bytes) == summary['jobLogSha256']
         if zip_bytes is None:
-            assert (summary['runId'], summary['jobId'], summary['sourceCommit']) == (g['run'], g['job'], g['commit'])
+            source_commit = summary.get('sourceCommit', summary.get('headSha'))
+            assert (summary['runId'], summary['jobId'], source_commit) == (g['run'], g['job'], g['commit'])
+            assert summary.get('headSha', source_commit) == source_commit
         for item in summary.get('evidenceFiles', []):
             if item['path'] == g['job_log']:
                 assert item['sha256'] == sha(log_bytes) and item['bytes'] == len(log_bytes)
@@ -210,6 +231,7 @@ def archive_group(g, destination, immutable_sources):
         members = ({i.filename: i for i in original.infolist() if not i.is_dir()}
                    if original is not None else {})
         assert g['job_log'] not in members, 'Decoded job log must not replace an artifact member'
+        assert not set(g['annotations']) & set(members), 'An annotation must not replace an original artifact member'
         for path in sorted(g['root'].rglob('*')):
             if not path.is_file():
                 continue
@@ -221,7 +243,11 @@ def archive_group(g, destination, immutable_sources):
                 continue
             payload = path.read_bytes()
             frame_evidence = None
-            if path.suffix == '.pdf':
+            native_trace = native_trace_member(relative)
+            if native_trace:
+                assert original is not None and relative.as_posix() in members, 'Native trace must be an original artifact member'
+                assert not SIGNED.search(payload), ('signed URL or token candidate', path)
+            elif path.suffix == '.pdf':
                 validate_font_fixture(path, payload)
             elif path.suffix == '.png':
                 incomplete_launch = (g['classification'] == 'partial-harness-gate-failure' and original is not None
@@ -240,12 +266,16 @@ def archive_group(g, destination, immutable_sources):
             elif name in members:
                 assert sha(original.read(name)) == digest, ('extracted member mismatch', path)
                 origin = 'original-github-artifact-member'
+            elif name in g['annotations']:
+                assert digest == g['annotations'][name], ('declared annotation changed', path)
             else:
                 assert path.name in {'analysis-summary.json', 'download-receipt.json', 'artifact-receipt.json'}, ('unexplained local file', path)
             item = {'path': name, 'bytes': len(payload), 'sha256': digest, 'origin': origin}
+            if native_trace:
+                item['contentFormat'] = 'xctrace-native-container-member'
             if frame_evidence is not None:
                 item['frameEvidence'] = frame_evidence
-            if path.suffix == '.jsonl':
+            if path.suffix == '.jsonl' and not native_trace:
                 records = 0
                 other_lines = []
                 for number, line in enumerate(payload.splitlines(), 1):
@@ -261,7 +291,7 @@ def archive_group(g, destination, immutable_sources):
                 item['jsonlRows'] = records
                 if other_lines:
                     item['nonJsonOutputLineNumbersPreservedVerbatim'] = other_lines
-            if path.suffix == '.json':
+            if path.suffix == '.json' and not native_trace:
                 try:
                     json.loads(payload)
                 except json.JSONDecodeError:
@@ -276,6 +306,7 @@ def archive_group(g, destination, immutable_sources):
             raw_files.append(item)
             suffix_counts[path.suffix or '<extensionless-text>'] += 1
             content[name] = payload
+    assert set(g['annotations']) <= set(content), 'A declared annotation was excluded or not archived'
     for relative in g['supplementary']:
         path = (WORKSPACE / relative).resolve()
         assert path.is_relative_to(WORKSPACE) and path.is_file() and not path.is_symlink(), path
@@ -417,8 +448,9 @@ def main():
             'Connector-decoded job logs are labelled separately from byte-verified artifact ZIP members; any recorded newline normalization is explicit.',
             'Selected S02 frame PNGs retain their original artifact bytes and are checked against frame-receipts.json; a frame capture is not an OS presentation timestamp.',
             'Small S02 synthetic PDF inputs are retained only under their fixture paths and verified against the original fixture manifest and artifact ZIP; real-book corpus bytes remain excluded.',
+            'Native xctrace containers are retained only under the declared E12 corpus/backend trace paths; every opaque member is byte-verified against its original artifact ZIP, while exported XML remains independently readable.',
             'PdfPageHighlights is an advanced-search component. Its literal String case is a component microbenchmark, not a measured acceleration of simple product search. Simple and /regex/ searches use pdfrx.startTextSearch; the advanced-search RegExp fallback is a product path. ResultLines follow-up is mixed and supports neither an improvement nor a non-regression claim.',
-            'No PDF corpus, runtime binary, dependency checkout, build tree or signed download URL is embedded in these raw archives.'
+            'Real-book PDF inputs, executable runtime bundles, dependency checkouts, generated build trees and signed download URLs are excluded; the explicit native-profiler and small synthetic-fixture exceptions above preserve primary evidence.'
         ],
         'highlightProductScopeSources': [
             f'{FORK}/blob/{BASE}/lib/pdf_book/view/pdf_search_screen.dart',
@@ -448,6 +480,7 @@ def main():
                 'job_log_sha256': 'Required decoded job log digest when an artifact is also present; otherwise defaults to expected_sha.',
                 'job_log_newline_normalization': 'Explicit LF, none; connector text already LF, or not recorded; saved connector text. No original Actions log ZIP identity is implied.',
                 'summary': 'Relative path to analysis-summary.json; discovered automatically if omitted.',
+                'annotations': 'Explicit relative-path to SHA-256 map for supplemental metadata or derived results; never original ZIP members.',
                 'supplementary': 'Explicit list of post-download analysis code paths relative to --workspace; labelled separately from CI artifact members.'},
             'source_root': 'Path relative to --workspace, such as pdf-5538-ci-evidence.',
             'relative': 'Group directory relative to source_root.',
@@ -455,6 +488,13 @@ def main():
         'tools': tools,
         'groups': groups}
     manifest['evidenceCorrections'] = corrections
+    infrastructure = output / 'infrastructure-status.json'
+    if infrastructure.is_file():
+        infrastructure_bytes = infrastructure.read_bytes()
+        json.loads(infrastructure_bytes)
+        immutable_sources[infrastructure] = sha(infrastructure_bytes)
+        manifest['infrastructureStatus'] = {'path': infrastructure.name, 'sha256': sha(infrastructure_bytes),
+            'scope': 'Separate job/API/annotation status receipts; no inferred measurement results.'}
     overview = {'schemaVersion': 1, 'snapshotDate': '2026-11-24', 'groupCountsByClassification': counts,
         'groups': [{k: g[k] for k in ['id', 'classification', 'declaredScopeComplete', 'ci', 'summary']} |
             {'rawFiles': g['rawArchive']['fileCount'], 'rawJsonlRows': g['rawArchive']['jsonlRows'],

@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "Post-download failure analysis; no remeasurement",
+  "repository": "yom-chadash/otzaria",
+  "runId": 45425218382,
+  "jobId": 138555239310,
+  "runUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45425218382",
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45425218382/job/138555239310",
+  "artifactId": 14939040158,
+  "artifactZipSha256": "659e6fa7fe873a6365770c77d73ca30e8690de97204637a7c6eb109441cba4fb",
+  "artifactZipBytes": 148360,
+  "verifiedOriginalFiles": 42,
+  "sourceCommit": "b103bdf2e3ee2fc1e389af30aa7d4bec4b6af341",
+  "pdfrxCompatiblePin": "cdea38083d06b445b4ec67d8345109a0457924af",
+  "platform": "linux",
+  "buildMode": "profile",
+  "flutterVersion": "3.47.7",
+  "dartVersion": "3.13.5 (stable) (Tue Sep 29 01:00:52 2026 -0700) on \"linux_x64\"",
+  "physicalDeviceAcceptance": false,
+  "rawReport": "device/installed-plugin-report.json",
+  "rawReportSha256": "9d2a69100bfe1b37d748cac7b28610ac1c9e22839651c7927869a71121130023",
+  "workflowJobSteps": {
+    "path": "workflow-job-steps.json",
+    "sha256": "2735c049cf53b806acd496e0055da811a281d282af2632afb295087ecb98e94b",
+    "scope": "Supplemental decoded connector response; not an original ZIP member"
+  },
+  "workflowJobLog": {
+    "path": "workflow-job.log",
+    "sha256": "57038a8db4fbb260a77d36bf1391f06296f27f865e2324840271ba734dc7cccc",
+    "scope": "Supplemental decoded connector log; saved as UTF-8 with the supplied line endings; not an original ZIP member"
+  },
+  "outcome": "Native app build reached PDF runtime; first-page text check failed. No complete PDF functional pass.",
+  "observedPdfFailure": {
+    "step": "view",
+    "error": "Expected: contains 'bundlepage1'\n  Actual: <null>\n   Which: is not a string, map or iterable\n",
+    "stackSite": "installed_plugin_pdf_runtime.dart:689 _PdfRuntime.checkNativePage",
+    "followingSteps": {
+      "concurrentWork": "notRun",
+      "cancelAndRecover": "notRun",
+      "reopen": "notRun",
+      "loadedModules": "notRun",
+      "teardown": "notRun",
+      "desktopLifecycle": "notRun",
+      "repeatedLifecycle": "notRun"
+    }
+  },
+  "pluginPhases": [
+    {
+      "name": "startup",
+      "status": "passed"
+    },
+    {
+      "name": "firstOpen",
+      "status": "passed"
+    },
+    {
+      "name": "visibleIdle",
+      "status": "passed"
+    },
+    {
+      "name": "stateAndScroll",
+      "status": "passed"
+    },
+    {
+      "name": "multipleOpen",
+      "status": "passed"
+    },
+    {
+      "name": "hiddenIdle",
+      "status": "passed"
+    },
+    {
+      "name": "memoryPressure",
+      "status": "passed"
+    },
+    {
+      "name": "restore",
+      "status": "passed"
+    },
+    {
+      "name": "protectedControls",
+      "status": "passed"
+    },
+    {
+      "name": "countPolicy",
+      "status": "passed"
+    },
+    {
+      "name": "agePolicy",
+      "status": "passed"
+    },
+    {
+      "name": "storeRestore",
+      "status": "passed"
+    },
+    {
+      "name": "backgroundOpen",
+      "status": "passed"
+    },
+    {
+      "name": "backgroundIdle",
+      "status": "passed"
+    },
+    {
+      "name": "backgroundClose",
+      "status": "passed"
+    },
+    {
+      "name": "close",
+      "status": "passed"
+    },
+    {
+      "name": "closedIdle",
+      "status": "passed"
+    },
+    {
+      "name": "minimize",
+      "status": "passed"
+    },
+    {
+      "name": "hide",
+      "status": "passed"
+    },
+    {
+      "name": "osBackground",
+      "status": "notRun"
+    }
+  ],
+  "pluginPassedCount": 19,
+  "fixture": {
+    "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939",
+    "pages": 4,
+    "bytes": 1631,
+    "independentCheck": {
+      "artifactContainsPdfBytes": true,
+      "file": "device/bundle-runtime.pdf",
+      "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939",
+      "independentExtractor": "pypdf",
+      "pageTexts": [
+        "bundleruntime bundlepage1",
+        "bundleruntime bundlepage2",
+        "bundleruntime bundlepage3",
+        "bundleruntime bundlepage4"
+      ],
+      "scope": "Independent content check only; not proof of PDFium text/raster or app recovery."
+    }
+  },
+  "cleanupEvidence": {
+    "ownedDocumentsRemaining": 0,
+    "ownedTabsRemaining": 0,
+    "indexingActiveAfter": false,
+    "limitation": "Existing final cleanup counters reached zero, but the old harness tracked only the initially captured viewer document; this does not establish closure of every replacement owner."
+  },
+  "sourceGroundedDiagnosis": {
+    "classification": "Concrete harness lifetime defect found in source; occurrence of its owner replacement in this run remains an inference.",
+    "observedSourceFacts": [
+      "The b103 harness stores controller.document in _OwnedPdfViewer before awaiting target navigation and keeps reading that snapshot.",
+      "S02 font recovery can publish a replacement on the same document reference; publication disposes the old native document.",
+      "The locked native loadText returns null for a disposed document or an unloaded page. The first native page is measured before openFile returns.",
+      "The old close guard waits for only the initially captured owner, so it can miss a replacement owner."
+    ],
+    "sources": [
+      "https://github.com/yom-chadash/otzaria/blob/b103bdf2e3ee2fc1e389af30aa7d4bec4b6af341/integration_test/support/installed_plugin_pdf_runtime.dart",
+      "https://github.com/yom-chadash/otzaria/blob/b103bdf2e3ee2fc1e389af30aa7d4bec4b6af341/lib/pdf_book/utils/pdf_font_fallback.dart",
+      "https://github.com/yom-chadash/pdfrx/blob/cdea38083d06b445b4ec67d8345109a0457924af/packages/pdfrx/lib/src/pdf_document_ref.dart",
+      "https://github.com/yom-chadash/pdfrx/blob/cdea38083d06b445b4ec67d8345109a0457924af/packages/pdfrx_engine/lib/src/native/pdfrx_pdfium.dart"
+    ],
+    "missingRuntimeEvidence": "The original raw report has no live published owner/generation identity at the failed loadText boundary; it does not directly prove which reload occurred.",
+    "repairUnderTest": "Resolve the live published owner for each operation, verify its identity before/after native awaits, record every observed generation, and await all observed native closes after detach.",
+    "productDefectEstablished": false,
+    "productCorrectnessEstablished": false
+  },
+  "limitations": [
+    "No performance conclusion is drawn from this failed correctness run or from its incidental timings.",
+    "Plugin phases that passed do not imply the subsequent PDF indexing/export/cancellation/lifecycle phases passed.",
+    "The generation-aware harness fix requires its own regression and native CI evidence; no result is substituted into these original raw files.",
+    "Android is an emulator run, and Linux uses the hosted native WPE/Xvfb setup; these are not physical-device acceptance results."
+  ]
+}

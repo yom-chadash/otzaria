@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "classification": "baseline-regression-reproduced-gate-parser-failed-before-candidate",
+  "declaredScopeComplete": false,
+  "runId": 45430642965,
+  "jobId": 138574688999,
+  "artifactId": 14936994662,
+  "workflowSourceCommit": "a56059a6459f937ed39f202cc2cd6ce4cd84d473",
+  "artifact": {
+    "bytes": 97659,
+    "sha256": "d1d87d9ed98ffc0555493bf1a2987c068b56468e2229f83b4c42b3b1dec1317f",
+    "originalMembers": 16
+  },
+  "originalProductCommit": "cdea38083d06b445b4ec67d8345109a0457924af",
+  "candidateProductCommit": "4f7d95e3d9e7d932a3675d837bfa3f8e7f3be703",
+  "baseline": {
+    "schemaVersion": 1,
+    "classification": "expected-product-regression-reproduced",
+    "reportSha256": "7dec65886eff7b4dd6bad554d4328076b0848224b5018f2f2fa4fbb8341198d0",
+    "exitCode": 1,
+    "visibleTests": 4,
+    "errors": 4,
+    "cases": [
+      {
+        "name": "navigation retains page 280 through geometry changes (smart: false, matrix: false)",
+        "testId": 3,
+        "result": "error"
+      },
+      {
+        "name": "navigation retains page 280 through geometry changes (smart: false, matrix: true)",
+        "testId": 4,
+        "result": "error"
+      },
+      {
+        "name": "navigation retains page 280 through geometry changes (smart: true, matrix: false)",
+        "testId": 5,
+        "result": "error"
+      },
+      {
+        "name": "navigation retains page 280 through geometry changes (smart: true, matrix: true)",
+        "testId": 6,
+        "result": "error"
+      }
+    ]
+  },
+  "candidate": {
+    "targetedAnalyze": "passed",
+    "testsRun": 0,
+    "reason": "gate parser rejected widget-test wrapper format before candidate test step"
+  },
+  "failureCause": {
+    "kind": "harness-validation",
+    "expectedFormat": "result=failure; error.isFailure=true",
+    "actualFormat": "result=error; error.isFailure=false; wrapper error with exact TestFailure in print event tied to the same testID",
+    "originalAssertion": "relayout must settle the original Future without an application timeout",
+    "matchedCases": 4
+  },
+  "postDownloadValidation": {
+    "validatorPath": "tool/issue5538_ci/navigation_regression_gate.py",
+    "validatorSha256": "972da42cc2f66866bdde1c2b0a4b8c1b35ef363b3b709084f19f35d234b9fe3d",
+    "pythonContractsPassed": 7,
+    "validatedJson": "baseline-validated.json",
+    "origin": "derived after download; not an original artifact member",
+    "strictChecks": [
+      "exactly four expected case names and test IDs",
+      "only four wrapper errors",
+      "one TestFailure print per case with exact expected reason and Expected true / Actual false",
+      "same test name and _registerNavigationLayoutTests stack",
+      "no compiler, setup, teardown or unrelated assertion errors"
+    ]
+  },
+  "limitations": [
+    "Correctness regression test evidence, not performance measurements.",
+    "Candidate runtime correctness was not tested by this failed job.",
+    "Analyze and source/dependency guards passed; the complete replacement gate still needs CI."
+  ]
+}

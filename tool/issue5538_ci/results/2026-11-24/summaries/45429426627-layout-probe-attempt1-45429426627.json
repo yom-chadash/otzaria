@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "Post-download analysis; original ZIP members verified without modification",
+  "artifactZipSha256": "1a4c5c4921bf50a6d09deeae04c3a2b7a0c3c7beaf7189756205410ccbb1d7a8",
+  "artifactZipBytes": 4788,
+  "verifiedOriginalFiles": 2,
+  "section": "M02",
+  "runId": 45429426627,
+  "jobId": 138570274623,
+  "artifactId": 14937881893,
+  "sourceCommit": "41cc03a19889e5719d76ce70abdf5f272058f3d3",
+  "classification": "infrastructure-failure-before-sdk-setup-or-measurement",
+  "failedStep": {
+    "name": "Run subosito/flutter-action@v2",
+    "status": "completed",
+    "conclusion": "failure",
+    "number": 5
+  },
+  "cause": "The Flutter setup action stopped because jq was not installed in the container.",
+  "nativeHandshakeCompleted": false,
+  "completedProcesses": 0,
+  "completedObservations": 0,
+  "performanceMeasurement": false,
+  "limitations": [
+    "Artifact contains only container preflight OS/package receipts; no layout measurements ran."
+  ],
+  "declaredScopeComplete": false,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45429426627/job/138570274623",
+  "jobLogSha256": "724942eb6e69296ca568038ebbc8ef35c9a44ed9cdab7ad4568e37b03c07c004",
+  "jobLogBytes": 269970,
+  "jobLogOrigin": "GitHub connector decoded job log; not an original Actions log ZIP",
+  "jobLogNewlineTransformation": "none; connector text already LF"
+}

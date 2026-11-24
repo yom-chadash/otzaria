@@ -76,6 +76,37 @@
         "The job did not acquire a runner; it supplies no ARM64 native measurement or correctness result.",
         "The retry is recorded only as a separate run identifier; its outcome is not inferred here."
       ]
+    },
+    {
+      "runId": 45425597093,
+      "runAttempt": 2,
+      "jobId": 138572107909,
+      "sourceCommit": "7896b18ce6d2ce278d49748baa82f40a28ef84e9",
+      "runStatus": "completed",
+      "runConclusion": "failure",
+      "job": {
+        "id": 138572107909,
+        "name": "macos arm64 / profile / continuous reader / frozen AOT corpus",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "run_id": 45425597093,
+        "logs_url": null,
+        "steps": null
+      },
+      "artifactApiCount": 0,
+      "artifactApiResponse": {
+        "artifacts": []
+      },
+      "classification": "cancelled-arm64-job-without-artifacts",
+      "measurementResults": [],
+      "completedWorkloadCount": null,
+      "annotationVerified": false,
+      "cause": "Not established by the available API metadata.",
+      "limitations": [
+        "The job exposes no completed steps and the run has no artifact. It does not supply ARM64 native correctness or performance evidence.",
+        "The previous run's runner-capacity annotation is not evidence for this later attempt; no cause is inferred.",
+        "The Linux runner/receipt contract job succeeded independently and is not ARM64 workload coverage."
+      ]
     }
   ]
 }

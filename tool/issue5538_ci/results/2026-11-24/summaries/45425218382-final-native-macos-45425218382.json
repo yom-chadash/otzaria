@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "Post-download analysis; original ZIP members verified without modification",
+  "artifactZipSha256": "7e5fbead564495576e192b99ef1d6498f81f5cd433abd98c78d71f36015f9951",
+  "artifactZipBytes": 1684910,
+  "verifiedOriginalFiles": 61,
+  "section": "Q02",
+  "runId": 45425218382,
+  "jobId": 138555238890,
+  "artifactId": 14940046349,
+  "sourceCommit": "b103bdf2e3ee2fc1e389af30aa7d4bec4b6af341",
+  "classification": "failed-correctness-harness-lifecycle",
+  "platform": "macos",
+  "buildMode": "profile",
+  "flutterVersion": "3.47.7",
+  "physicalDeviceAcceptance": false,
+  "rawReport": "apple-installed-pdf/device/installed-plugin-report.json",
+  "rawReportSha256": "4b51b997f3d78c1b4767b05d1cb2b7393a5d927960b727eb4ffeb19de0c9aca9",
+  "observedFailure": {
+    "status": "failed",
+    "error": "Expected: contains 'bundlepage1'\n  Actual: <null>\n   Which: is not a string, map or iterable\n",
+    "durationMs": 918.988
+  },
+  "followingPdfSteps": {
+    "concurrentWork": "notRun",
+    "cancelAndRecover": "notRun",
+    "reopen": "notRun",
+    "loadedModules": "notRun",
+    "teardown": "notRun",
+    "desktopLifecycle": "notRun",
+    "repeatedLifecycle": "notRun"
+  },
+  "pluginPhases": [
+    {
+      "name": "startup",
+      "status": "passed"
+    },
+    {
+      "name": "firstOpen",
+      "status": "passed"
+    },
+    {
+      "name": "visibleIdle",
+      "status": "passed"
+    },
+    {
+      "name": "stateAndScroll",
+      "status": "passed"
+    },
+    {
+      "name": "multipleOpen",
+      "status": "passed"
+    },
+    {
+      "name": "hiddenIdle",
+      "status": "passed"
+    },
+    {
+      "name": "memoryPressure",
+      "status": "passed"
+    },
+    {
+      "name": "restore",
+      "status": "passed"
+    },
+    {
+      "name": "protectedControls",
+      "status": "passed"
+    },
+    {
+      "name": "countPolicy",
+      "status": "passed"
+    },
+    {
+      "name": "agePolicy",
+      "status": "passed"
+    },
+    {
+      "name": "storeRestore",
+      "status": "passed"
+    },
+    {
+      "name": "backgroundOpen",
+      "status": "passed"
+    },
+    {
+      "name": "backgroundIdle",
+      "status": "passed"
+    },
+    {
+      "name": "backgroundClose",
+      "status": "passed"
+    },
+    {
+      "name": "close",
+      "status": "passed"
+    },
+    {
+      "name": "closedIdle",
+      "status": "passed"
+    },
+    {
+      "name": "minimize",
+      "status": "passed"
+    },
+    {
+      "name": "hide",
+      "status": "passed"
+    },
+    {
+      "name": "osBackground",
+      "status": "notRun"
+    }
+  ],
+  "pluginPassedCount": 19,
+  "fixture": {
+    "path": "/Users/runner/work/_temp/apple-installed-pdf/device/bundle-runtime.pdf",
+    "sha256": "45864014ff59109585244df6b4fab736d45996531a8eb24ff248a8090406d939",
+    "bytes": 1631,
+    "pages": 4,
+    "content": "Deterministic vector text and black rectangle; mixed page sizes."
+  },
+  "trackedOwnerCleanup": {
+    "ownedDocumentsRemaining": 0,
+    "ownedTabsRemaining": 0,
+    "indexingActiveAfter": false
+  },
+  "sourceGroundedDiagnosis": "The runtime reads the native document captured before navigation; S02 may publish and dispose replacement owners. This source-level lifetime defect explains the null-text symptom, but the old raw report does not identify the replacement event.",
+  "performanceMeasurement": false,
+  "limitations": [
+    "No complete PDF view/index/export/native-module/teardown acceptance passed.",
+    "The old cleanup counters cover the initially captured owners and do not prove every replacement owner closed.",
+    "No product rendering defect or performance regression is established by this failed harness."
+  ],
+  "declaredScopeComplete": false,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45425218382/job/138555238890",
+  "jobLogSha256": "57a2c4debf22ebc4731032d1cd1300d6808a3e8c3d37438ab8989fed9dee9a03",
+  "jobLogBytes": 399099,
+  "jobLogOrigin": "GitHub connector decoded job log; not an original Actions log ZIP",
+  "jobLogNewlineTransformation": "none; connector text already LF"
+}

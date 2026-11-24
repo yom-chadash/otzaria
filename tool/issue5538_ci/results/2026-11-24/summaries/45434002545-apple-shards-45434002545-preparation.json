@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "section": "E12",
+  "runId": 45434002545,
+  "jobId": 138586748557,
+  "artifactId": 14940363130,
+  "sourceCommit": "9b5e7b2fde53fe6ad0408940ece653ff8d0c49e4",
+  "upstreamCommit": "683df93e986af19bbcefd22606a417083116847b",
+  "artifactZipSha256": "0b048d270360cc141bbb5dddde66ab054b1535211c5d4b61daf0527f58788bcb",
+  "artifactZipBytes": 23754,
+  "verifiedOriginalFiles": 35,
+  "classification": "environment-preflight",
+  "kind": "prepared-experimental-binary-only",
+  "preparedComplete": true,
+  "transportSha256": "198b569f8135ab6d47354e92447e950e3405bc6cd2706c840ffbc5f66a109b11",
+  "archiveSha256": "a897cf3ac2611b0f4bf0185c529e43bc9435e5e605b46ac60c8d4444c7b8c99c",
+  "executableSha256": "f64dc03667732988912cb12bcb33655b7947989311615b1fb8063cb4d6db06c6",
+  "measurementComplete": false,
+  "measurementProcesses": 0,
+  "sdk": {
+    "frameworkVersion": "3.50.0",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "ab2912035e160d9cad6306df307576da6128ebdb",
+    "frameworkCommitDate": "2026-11-09 08:50:21 -0800",
+    "engineRevision": "371f77202a73e8dff57a8b3bff75bca55c090aee",
+    "engineCommitDate": "2026-11-09 15:57:36.000Z",
+    "engineContentHash": "bf601093ad255aaf5c6d0fc5c4f9acfa60943b2a",
+    "engineBuildDate": "2026-11-09 08:33:19.494",
+    "dartSdkVersion": "3.14.0",
+    "devToolsVersion": "2.61.0",
+    "flutterVersion": "3.50.0",
+    "flutterRoot": "/Users/runner/hostedtoolcache/flutter/stable-3.50.0-x64/flutter"
+  },
+  "compileCompatibility": {
+    "upstreamCommit": "683df93e986af19bbcefd22606a417083116847b",
+    "path": "packages/pdfrx_coregraphics/darwin/pdfrx_coregraphics/Sources/PdfrxCoregraphicsPlugin.swift",
+    "sourceRole": "baseline plus initializer-only compile compatibility patch",
+    "originalSha256": "d54b1be2327da05d34eec6e6e1c4f4a65293aa61c244a3e678296b7b760b941b",
+    "patchedSha256": "037ef021d5065cbab8c94832face2bb9d605c0b1e26f47f4f7b112868320ddc4",
+    "patchSha256": "42c8eaeab60bb31bc9f072c138896d5f4a1dfa413bdd004490163f3617b42908",
+    "patch": "--- a/packages/pdfrx_coregraphics/darwin/pdfrx_coregraphics/Sources/PdfrxCoregraphicsPlugin.swift\n+++ b/packages/pdfrx_coregraphics/darwin/pdfrx_coregraphics/Sources/PdfrxCoregraphicsPlugin.swift\n@@ -144,13 +144,7 @@\n   private func createNewDocument(arguments: Any?, result: @escaping FlutterResult) {\n     // Create a truly empty PDF document with no pages\n     // PDFDocument() creates an empty document directly\n-    guard let pdfDocument = PDFDocument() else {\n-      result(\n-        FlutterError(\n-          code: \"pdf-document-failure\", message: \"Failed to create empty PDFDocument.\", details: nil\n-        ))\n-      return\n-    }\n+    let pdfDocument = PDFDocument()\n \n     // Register the document\n     let handle = nextHandle\n@@ -199,23 +193,11 @@\n     }\n \n     // Create an empty PDF document\n-    guard let pdfDocument = PDFDocument() else {\n-      result(\n-        FlutterError(\n-          code: \"pdf-document-failure\", message: \"Failed to create PDFDocument.\", details: nil\n-        ))\n-      return\n-    }\n+    let pdfDocument = PDFDocument()\n \n     // Create a PDF page with the specified dimensions\n     let pageRect = CGRect(x: 0, y: 0, width: width, height: height)\n-    guard let pdfPage = PDFPage() else {\n-      result(\n-        FlutterError(\n-          code: \"pdf-page-failure\", message: \"Failed to create PDF page.\", details: nil\n-        ))\n-      return\n-    }\n+    let pdfPage = PDFPage()\n     pdfPage.setBounds(pageRect, for: .mediaBox)\n \n     // Create image from JPEG data\n",
+    "changedMethods": [
+      "createNewDocument",
+      "createDocumentFromJpegData"
+    ],
+    "reason": "PDFDocument() and PDFPage() are non-optional in the tested Apple SDK; conditional binding cannot compile.",
+    "renderTextSchedulerChanged": false
+  },
+  "provenanceSha256": "1de154d7096e4de1bcbfdd58ff8c63fe644543ddc2ace8ffb30a2af3c831d710",
+  "completedPreparationCommands": 15,
+  "expectedBaselineProcesses": 36,
+  "limitations": [
+    "Build/preparation receipts contain no completed performance observations.",
+    "The runtime bundle is transported separately between CI jobs and is not embedded in the permanent evidence archive."
+  ],
+  "otzariaAdoptionApproved": false,
+  "productionSdkChanged": false,
+  "physicalDeviceAcceptance": false,
+  "analysisScriptSha256": "854509f3defac3c647cb94bad02b8760fb1d972b0ef662136179c411a52fcae4"
+}

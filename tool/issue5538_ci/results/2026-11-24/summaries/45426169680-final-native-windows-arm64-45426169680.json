@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "classification": "completed-app-correctness",
+  "declaredScopeComplete": true,
+  "runId": 45426169680,
+  "jobId": 138558664303,
+  "artifactId": 14937993368,
+  "sourceCommit": "cb8be0a523780785c088314cd25a6127633632ca",
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45426169680/job/138558664303",
+  "artifactZipSha256": "90c6f2dca0d8281253b37f06ab1d612995b948045136d337f960e7c0684f28d1",
+  "artifactZipBytes": 142985,
+  "verifiedOriginalFiles": 37,
+  "pdfrxCompatiblePin": "cdea38083d06b445b4ec67d8345109a0457924af",
+  "platform": "windows",
+  "architecture": "arm64",
+  "buildMode": "profile",
+  "flutterVersion": "3.47.7",
+  "dartVersion": "3.13.5 (stable) (Tue Sep 29 01:00:52 2026 -0700) on \"windows_arm64\"",
+  "analyze": "passed",
+  "dartContracts": {
+    "passed": 131,
+    "failed": 0,
+    "skipped": 1,
+    "skipReason": "Creating symlinks needs a separate Windows privilege."
+  },
+  "javascriptFixtureContracts": {
+    "passed": 10,
+    "failed": 0,
+    "skipped": 0
+  },
+  "pluginPhasesPassed": 19,
+  "pdfPhasesPassed": 8,
+  "nativeWindowTransitionsPassed": 6,
+  "repeatedOpenCloseCycles": 50,
+  "indexedPages": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "vectorExport": {
+    "sourcePages": [
+      2,
+      3
+    ],
+    "sheets": 1,
+    "textPreserved": true,
+    "rightToLeft": true,
+    "bytes": 1555,
+    "sha256": "351b3ce0203a656365da9625d23e2f1ab502de95d5d8c9feed136b515feb0f75",
+    "printingRasterVerified": true,
+    "printingInkPixels": 4836
+  },
+  "architectureReceipt": {
+    "path": "installed-plugin-probe/pdf-architecture.json",
+    "sha256": "0724a50717ec8b2db9ad9db9a48b038bf01130f9b304831f8fde73af811a71b0",
+    "appAndMappedPdfLibraries": 4,
+    "machine": "0xAA64",
+    "hostReportSha256Verified": true
+  },
+  "nativeExit": {
+    "status": "passed",
+    "exitStatusHex": "0xFFFFFFFF",
+    "terminationCause": "Not inferred: flutter drive can stop the app after the test."
+  },
+  "performanceMeasurement": false,
+  "physicalDeviceAcceptance": false,
+  "physicalPrinter": "notRun",
+  "multipleNativeWindows": "notRun",
+  "physicalSleep": "notRun",
+  "limitations": [
+    "This is the historical cb8be0a/cdea source, before the owner-tracker and 4f navigation fixes; it is not their final acceptance.",
+    "The old fixture tracks initially captured owners; this successful run does not establish all replacement-owner lifecycle coverage.",
+    "Native process exit 0xFFFFFFFF was observed; the driver can stop the app and the termination cause is not inferred.",
+    "Functional counters and native file-header receipts are verified, not a latency improvement or physical-device/printer qualification."
+  ]
+}
