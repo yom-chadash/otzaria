@@ -1,0 +1,142 @@
+name: PDF 5538 Windows profile continuous reader after explicit SDK bootstrap
+'on':
+  push:
+    branches:
+    - perf/5538-final-measurements-20261124
+    paths:
+    - .github/workflows/issue5538_reader_windows_profile.yml
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: pdf-5538-reader-windows-profile-bootstrap-${{ github.sha }}
+  cancel-in-progress: false
+env:
+  CI: 'true'
+  FLUTTER_SUPPRESS_ANALYTICS: 'true'
+  DART_SUPPRESS_ANALYTICS: 'true'
+  PYTHONUNBUFFERED: '1'
+  PYTHONDONTWRITEBYTECODE: '1'
+jobs:
+  contracts:
+    name: Build receipt and runner contracts / ${{ matrix.os }}
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+        - windows-2025
+    steps:
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: 'false'
+    - uses: actions/setup-python@v7.1.0
+      with:
+        python-version: '3.13'
+    - name: Verify both frozen source pairs and the orchestrator before native builds
+      shell: bash
+      run: 'python -B tool/issue5538_ci/prepare_campaign.py --plan tool/issue5538_ci/campaign_plan.profile.json
+
+        python -B tool/issue5538_ci/prepare_campaign.py --plan tool/issue5538_ci/campaign_plan.release.json
+
+        '
+    - name: Immutable receipt and native orchestration contracts
+      run: 'python -B -m unittest discover -s tool/perf_probe -p ''test_build_receipt.py''
+
+        python -B -m unittest discover -s tool/perf_probe -p ''test_pdf_pair.py''
+
+        '
+      shell: bash
+    - name: POSIX owned-process and engine mapping contracts
+      if: runner.os == 'Linux'
+      shell: bash
+      run: 'python -B -m unittest discover -s tool/perf_probe -p ''test_perf_probe_posix.py''
+
+        python -B -m unittest discover -s tool/perf_probe -p ''test_posix_engine.py''
+
+        '
+    - name: Parse native Windows entrypoints before any app build
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: "Set-StrictMode -Version Latest\n$ErrorActionPreference = 'Stop'\nforeach ($path in @('tool/perf_probe/runner.ps1', 'tool/perf_probe/run_perf_probe.ps1'))\
+        \ {\n  $tokens = $null\n  $parseErrors = $null\n  [void][System.Management.Automation.Language.Parser]::ParseFile((Join-Path $PWD $path),\
+        \ [ref]$tokens, [ref]$parseErrors)\n  if ($parseErrors.Count) { throw ($parseErrors | Out-String) }\n}\n"
+  windows:
+    name: Windows x64 / ${{ matrix.mode }} / continuous reader / frozen AOT corpus
+    needs: contracts
+    if: github.repository == 'yom-chadash/otzaria'
+    strategy:
+      fail-fast: false
+      matrix:
+        mode:
+        - profile
+    runs-on: windows-2025
+    timeout-minutes: 300
+    steps:
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: 'false'
+    - uses: actions/setup-python@v7.1.0
+      with:
+        python-version: '3.13'
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        flutter-version: 3.47.7
+        cache: 'false'
+    - name: Bootstrap Flutter before strict machine identity
+      shell: pwsh
+      run: 'Set-StrictMode -Version Latest
+
+        $ErrorActionPreference = ''Stop''
+
+        flutter --version
+
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+        '
+    - uses: dtolnay/rust-toolchain@stable
+    - uses: actions/download-artifact@v8.0.2
+      with:
+        name: pdf-5538-pinned-corpus
+        path: ${{ runner.temp }}/pdf-5538-inputs
+        run-id: 45392015952
+        repository: yom-chadash/otzaria
+        github-token: ${{ github.token }}
+    - name: Install the verified release engine
+      if: matrix.mode == 'release'
+      uses: ./.github/actions/patched-flutter-engine
+      with:
+        arch: x64
+    - name: Freeze one native build per source and measure all corpus conditions
+      shell: pwsh
+      env:
+        CAMPAIGN_MODE: ${{ matrix.mode }}
+      run: "Set-StrictMode -Version Latest\n$ErrorActionPreference = 'Stop'\ngit config --global core.longpaths true\nif ($LASTEXITCODE -ne 0)\
+        \ { exit $LASTEXITCODE }\n$plan = \"tool/issue5538_ci/campaign_plan.$env:CAMPAIGN_MODE.json\"\npython tool/issue5538_ci/prepare_campaign.py\
+        \ --plan $plan\nif ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }\n$arguments = @('tool/issue5538_ci/run_campaign.py', '--plan', $plan,\n\
+        \  '--corpus', (Join-Path $env:RUNNER_TEMP 'pdf-5538-inputs/pdf-5538-corpus/cases'),\n  '--output', (Join-Path $env:RUNNER_TEMP 'pdf-5538-campaign'),\
+        \ '--mode', $env:CAMPAIGN_MODE)\nif ($env:CAMPAIGN_MODE -eq 'release') {\n  if ($env:PATCHED_FLUTTER_DLL_SHA256 -cnotmatch '^[a-f0-9]{64}$')\
+        \ { throw 'Missing verified release engine hash.' }\n  $arguments += @('--expected-engine-sha256', $env:PATCHED_FLUTTER_DLL_SHA256)\n\
+        }\npython @arguments\nif ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }\n"
+    - name: Preserve complete and partial evidence
+      if: always()
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: pdf-5538-reused-windows-${{ matrix.mode }}
+        retention-days: 90
+        if-no-files-found: warn
+        path: '${{ runner.temp }}/pdf-5538-campaign/**/*.json
+
+          ${{ runner.temp }}/pdf-5538-campaign/**/*.jsonl
+
+          ${{ runner.temp }}/pdf-5538-campaign/**/*.csv
+
+          ${{ runner.temp }}/pdf-5538-campaign/**/*.log
+
+          ${{ runner.temp }}/pdf-5538-campaign/**/*.md
+
+          '
