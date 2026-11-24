@@ -16,8 +16,8 @@ UPSTREAM_SHA = "683df93e986af19bbcefd22606a417083116847b"
 FLUTTER_SHA = "ab2912035e160d9cad6306df307576da6128ebdb"
 ENGINE_SHA = "371f77202a73e8dff57a8b3bff75bca55c090aee"
 GENERATED_REGISTRANTS = (
-    "example/pdf_combine/windows/flutter/generated_plugin_registrant.cc",
-    "example/pdf_combine/windows/flutter/generated_plugins.cmake",
+    "packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugin_registrant.cc",
+    "packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugins.cmake",
 )
 
 
