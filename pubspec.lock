@@ -1376,8 +1376,8 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/pdfrx"
-      ref: cdea38083d06b445b4ec67d8345109a0457924af
-      resolved-ref: cdea38083d06b445b4ec67d8345109a0457924af
+      ref: "964b5e15e082c8633651ffab1d037631af65e156"
+      resolved-ref: "964b5e15e082c8633651ffab1d037631af65e156"
       url: "https://github.com/yom-chadash/pdfrx.git"
     source: git
     version: "2.13.1"
@@ -1385,8 +1385,8 @@ packages:
     dependency: "direct overridden"
     description:
       path: "packages/pdfrx_engine"
-      ref: cdea38083d06b445b4ec67d8345109a0457924af
-      resolved-ref: cdea38083d06b445b4ec67d8345109a0457924af
+      ref: "964b5e15e082c8633651ffab1d037631af65e156"
+      resolved-ref: "964b5e15e082c8633651ffab1d037631af65e156"
       url: "https://github.com/yom-chadash/pdfrx.git"
     source: git
     version: "0.9.3"

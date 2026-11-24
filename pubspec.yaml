@@ -184,12 +184,12 @@ dependency_overrides:
   pdfrx:
     git:
       url: https://github.com/yom-chadash/pdfrx.git
-      ref: cdea38083d06b445b4ec67d8345109a0457924af
+      ref: 964b5e15e082c8633651ffab1d037631af65e156
       path: packages/pdfrx
   pdfrx_engine:
     git:
       url: https://github.com/yom-chadash/pdfrx.git
-      ref: cdea38083d06b445b4ec67d8345109a0457924af
+      ref: 964b5e15e082c8633651ffab1d037631af65e156
       path: packages/pdfrx_engine
   # TODO: לחזור לגרסת timezone הרשמית אחרי מיזוג ה-PRים ב-dart-lang/labs
   # ופרסום גרסה שכוללת את התיקונים.
