@@ -179,6 +179,18 @@ dependencies:
   wakelock_plus: ^1.8.2
 
 dependency_overrides:
+  # דיווחי גופנים לפי מסמך ושיתוף טעינות, על בסיס 2.13.1/0.9.3.
+  # ה-backport אינו דורש את Flutter 3.50 של pdfrx 3.x.
+  pdfrx:
+    git:
+      url: https://github.com/yom-chadash/pdfrx.git
+      ref: 6b740a73d1b65efd23dd2b4f81caabf4588e9c23
+      path: packages/pdfrx
+  pdfrx_engine:
+    git:
+      url: https://github.com/yom-chadash/pdfrx.git
+      ref: 6b740a73d1b65efd23dd2b4f81caabf4588e9c23
+      path: packages/pdfrx_engine
   # TODO: לחזור לגרסת timezone הרשמית אחרי מיזוג ה-PRים ב-dart-lang/labs
   # ופרסום גרסה שכוללת את התיקונים.
   # ענף codex/timezone-integrated-20261111. מוצמד לקומיט שעבר QA.
