@@ -22,6 +22,7 @@ import urllib.request
 
 import yaml
 from PIL import Image
+from pypdf import PdfReader
 
 from font_fallback_fixtures import SCENARIOS, prepare
 from run_export_profile import (
@@ -59,6 +60,27 @@ def require(condition, message):
 
 def json_hash(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def fixture_font_resources(item):
+    reader = PdfReader(item["absolutePath"])
+    actual = {}
+    for number, page in enumerate(reader.pages, 1):
+        fonts = page["/Resources"].get("/Font", {}).values()
+        faces = sorted({str(font.get_object()["/BaseFont"])[1:] for font in fonts})
+        if faces:
+            actual[str(number)] = faces
+    expected = {str(page): sorted(faces) for page, faces in item["fontResourcesByPage"].items()}
+    require(actual == expected and len(reader.pages) == item["pageCount"],
+            "Fixture font resources differ from its source-grounded manifest.")
+    return actual
+
+
+def font_query_key(query):
+    require(isinstance(query.get("face"), str) and type(query.get("weight")) is int
+            and type(query.get("italic")) is bool and type(query.get("charset")) is int
+            and type(query.get("pitchFamily")) is int, "Incomplete five-field font query.")
+    return tuple(query[key] for key in ("face", "weight", "italic", "charset", "pitchFamily"))
 
 
 def validate_common_framework(builds):
@@ -213,6 +235,9 @@ def validate_pngs(directory, report):
     require(sidecar["measured"] == rows, "Frame receipt sidecar differs from the report.")
     rows += sidecar["reference"]
     for row in rows:
+        require(type(row.get("captureStartedUs")) is int and type(row.get("elapsedUs")) is int
+                and 0 <= row["captureStartedUs"] <= row["elapsedUs"],
+                "Capture completion timestamp precedes its start.")
         relative = Path(row["pngPath"])
         path = (directory / relative).resolve(strict=True)
         require(not relative.is_absolute() and path.is_relative_to(directory), "Frame path escapes evidence.")
@@ -224,6 +249,7 @@ def validate_pngs(directory, report):
             require(hashlib.sha256(rgba.tobytes()).hexdigest() == row["rgbaSha256"], "Decoded native frame differs.")
     references = {row["inputId"]: row["rgbaSha256"] for row in sidecar["reference"]}
     require(references == report["referenceFrames"], "Reference frame identity differs.")
+    return sidecar["reference"]
 
 
 def validate_result(directory, report, config, owned_pid):
@@ -233,11 +259,19 @@ def validate_result(directory, report, config, owned_pid):
         require(report.get(key) == config[key], f"Different compiled result identity: {key}")
     require(report.get("allNativeCloseFuturesCompleted") is True, "Native lifetime cleanup did not finish.")
     require(isinstance(report.get("frameworkErrors"), list), "Framework error receipt is missing.")
-    validate_pngs(directory, report)
+    reference_rows = validate_pngs(directory, report)
     expected_ids = ({"unrelated"} if config["scenario"] in ("close-pending-font", "replace-pending-font")
                     else {item["id"] for item in config["documents"]})
     require(all(set(report[name]) == expected_ids for name in ("finalProofs", "referenceProofs", "referenceFrames", "parity")),
             "Incomplete actual/reference page evidence.")
+    require(len(reference_rows) == len(expected_ids) and {row["inputId"] for row in reference_rows} == expected_ids,
+            "Reference frame coverage differs from the expected documents.")
+    for row in reference_rows:
+        item = next(item for item in config["documents"] if item["id"] == row["inputId"])
+        require(row["phase"] == "reference" and row["renderState"] == "ready"
+                and row["renderStateAfterCapture"] == "ready" and row["stableView"] is True
+                and row["stableDocument"] is True and row["pageNumber"] == item["targetPage"],
+                "Reference oracle is not the stable painted-ready target image.")
     for name in ("finalProofs", "referenceProofs"):
         for proof in report[name].values():
             require(hashlib.sha256(proof["text"].encode("utf-8")).hexdigest() == proof["textSha256"]
@@ -255,11 +289,13 @@ def validate_result(directory, report, config, owned_pid):
                     "fullPageRasterEqual": actual["rasterSha256"] == reference["rasterSha256"],
                     "stableMeasuredDocument": actual["stableDocument"],
                     "referenceContainsExpectedWord": input_doc["expectedWord"] in reference["text"],
+                    "referenceContainsControlText": input_doc["expectedControlText"] in reference["text"],
                     "referenceHasInk": not input_doc["expectedWord"] or reference["inkPixels"] > 100}
         require(all(parity.get(key) == value for key, value in computed.items()), "A reported parity verdict differs from raw proofs.")
         samples = [row for row in report["measuredFrames"] if row["inputId"] == document_id
                    and row["pageNumber"] == input_doc["targetPage"] and row["stableDocument"] is True]
         good = [row for row in samples if row["renderState"] == "ready"
+                and row["renderStateAfterCapture"] == "ready" and row["stableView"] is True
                 and row["rgbaSha256"] == report["referenceFrames"][document_id]]
         first_good = good[0]["elapsedUs"] if good else None
         require(parity["firstGoodSampleUs"] == first_good
@@ -272,6 +308,7 @@ def validate_result(directory, report, config, owned_pid):
                 and parity["sampledPendingFrames"] == sum(row["renderState"] == "pending" for row in samples),
                 "First-good or frame mismatch counts differ from the recorded frames.")
     inputs = {item["absolutePath"]: item for item in config["documents"]}
+    resources = {path: fixture_font_resources(item) for path, item in inputs.items()}
     opens = {row["documentId"]: row for row in report["measuredEvents"] if row["type"] == "nativeOpen"}
     counts = {item["id"]: 0 for item in config["documents"]}
     for row in opens.values():
@@ -279,24 +316,41 @@ def validate_result(directory, report, config, owned_pid):
         counts[inputs[row["path"]]["id"]] += 1
     misattributed = []
     reported_faces = set()
+    request_keys = set()
     for row in report["measuredEvents"]:
         if row["type"] != "missingFonts":
             continue
         require(row["documentId"] in opens and row["eventOwnsDocument"] is True, "Event object differs from its stream owner.")
         input_doc = inputs[opens[row["documentId"]]["path"]]
+        by_page_resources = resources[opens[row["documentId"]]["path"]]
+        allowed_faces = {face for faces in by_page_resources.values() for face in faces}
+        request_keys.update(font_query_key(query) for query in row["queries"])
         reported_faces.update(query["face"] for query in row["queries"])
-        if any(query["face"] != input_doc["requestedFace"] for query in row["queries"]):
+        if any(query["face"] not in allowed_faces for query in row["queries"]):
             misattributed.append(row)
         if row["byPage"] is not None:
             require(all(1 <= int(page) <= input_doc["pageCount"] for page in row["byPage"]), "Invalid page attribution.")
+            for page, queries in row["byPage"].items():
+                require(all(font_query_key(query) in {font_query_key(q) for q in row["queries"]}
+                            for query in queries), "Per-page query is absent from the operation snapshot.")
+                if any(query["face"] not in by_page_resources.get(page, []) for query in queries):
+                    misattributed.append(row)
     native_closed = {row["documentId"] for row in report["allEvents"] if row["type"] == "documentEventsClosed"}
     require(set(opens) <= native_closed, "A measured document event stream is still live.")
     registrations = [row for row in report["measuredEvents"] if row["type"] == "fontRegistrationStart"]
+    successes = [row for row in report["measuredEvents"] if row["type"] == "fontRegistered"]
+    failures = [row for row in report["measuredEvents"] if row["type"] == "fontRegistrationFailed"]
+    successful_faces = {row["face"] for row in successes}
     verdict = {"nativeOpenCounts": counts, "fontRegistrationCalls": len(registrations),
+               "successfulFontRegistrations": len(successes), "failedFontRegistrations": failures,
+               "distinctFiveFieldRequests": [list(key) for key in sorted(request_keys)],
+               "requestsWithoutObservedSuccessfulFaceRegistration": [list(key) for key in sorted(request_keys)
+                    if key[0] not in successful_faces],
+               "registrationScope": "Native registration records identify a face, not the manager query/context; absence is not a manager unresolved/failed result.",
                "backendFontReloads": sum(row["type"] == "backendFontReload" for row in report["measuredEvents"]),
                "misattributedEvents": len(misattributed), "parity": report["parity"]}
     if config["variant"] == "C" and config["route"] == "app":
-        require(not report["frameworkErrors"] and not report["frameCaptureErrors"] and not misattributed,
+        require(not report["frameworkErrors"] and not report["frameCaptureErrors"] and not misattributed and not failures,
                 "Candidate has framework/capture errors or wrong-document reports.")
         require({item["requestedFace"] for item in config["documents"] if item["requestedFace"]} <= reported_faces,
                 "A candidate fixture did not exercise its actual missing-font event.")
@@ -308,11 +362,15 @@ def validate_result(directory, report, config, owned_pid):
         if config["scenario"] in ("late-page", "late-text"):
             require(report["lateDiscoveryObserved"] is True, "The late-discovery fixture did not exercise a native event.")
         if config["scenario"] == "shared-fonts":
-            require(len(registrations) == 1, "Shared native font registration was duplicated.")
+            expected_faces = {face for page_map in resources.values() for faces in page_map.values() for face in faces}
+            require({row["face"] for row in registrations} == expected_faces
+                    and all(sum(row["face"] == face for row in registrations) == 1 for face in expected_faces)
+                    and {row["face"] for row in successes} == expected_faces and not failures,
+                    "Shared native font registration was duplicated, missing or failed.")
         for parity in report["parity"].values():
             require(all(parity[key] is True for key in (
                 "textEqual", "geometryEqual", "fullPageRasterEqual", "stableMeasuredDocument",
-                "referenceContainsExpectedWord", "referenceHasInk")), "Candidate text/raster/expected-glyph parity failed.")
+                "referenceContainsExpectedWord", "referenceContainsControlText", "referenceHasInk")), "Candidate text/raster/expected-glyph parity failed.")
             require(type(parity["firstGoodSampleUs"]) is int, "No actual matching viewer frame was captured.")
     return verdict
 
@@ -379,6 +437,9 @@ def main():
     require(sdk.get("frameworkRevision") == FRAMEWORK_SHA and sdk.get("engineRevision") == ENGINE_SHA
             and sdk.get("frameworkVersion") == "3.47.7" and sdk.get("dartSdkVersion", "").startswith("3.13.5"), "Different SDK.")
     fixtures = prepare(output / "fixtures")
+    for case in fixtures["cases"]:
+        for item in case["documents"]:
+            fixture_font_resources({**item, "absolutePath": str(output / "fixtures" / item["path"])})
     archives = output / "original-pub-archives"
     archives.mkdir()
     roots, builds, receipts = {}, {}, {}
@@ -389,7 +450,8 @@ def main():
               "sampling": "one fresh warmup per source/case; ABBA for A/B and B/C on the same host; each timed datum is one fresh process",
               "limitations": ["No timing claim before reviewing sampled frame and parity receipts.",
                               "Synthetic fixtures and host; no real-book or cross-platform performance claim.",
-                              "Observed non-reference ready frames disclose visible recovery before first good frame."]}
+                              "Observed non-reference ready frames disclose sampled layer-tree recovery, not OS presentation.",
+                              "Capture completion timestamps are upper bounds; a final painted-ready observation is explicitly labelled."]}
     save(output / "report.json", report)
     try:
         for name, commit in plan.items():

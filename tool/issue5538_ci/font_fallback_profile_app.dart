@@ -70,8 +70,9 @@ Future<void> main() async {
       }
     }
     Pdfrx.pdfiumModulePath = config['pdfium'] as String;
-    Pdfrx.cacheDirectoryPath =
-        (await Directory('${output.path}/native-cache').create()).path;
+    Pdfrx.cacheDirectoryPath = (await Directory(
+      '${output.path}/native-cache',
+    ).create()).path;
     Pdfrx.normalizeHebrewText = true;
     Pdfrx.decodeLegacyHebrewText = true;
     await pdfrxFlutterInitialize();
@@ -83,7 +84,10 @@ Future<void> main() async {
       'appSourcesSha256': _appSources,
       'mode': 'profile',
     });
-    await _until(() => File('${output.path}/start').existsSync(), 'host receipt');
+    await _until(
+      () => File('${output.path}/start').existsSync(),
+      'host receipt',
+    );
     final result = await _measure(config, output, documents);
     result['frameworkErrors'] = errors;
     await _save(File('${output.path}/result.json'), result);
@@ -110,10 +114,12 @@ Future<Map<String, Object?>> _measure(
   }
   final builtin = route == 'builtin';
   final builtinManager = builtin
-      ? PdfFontManager.platform(resolvers: [
-          const _BuiltinSystemFamilyResolver(),
-          const _BuiltinBundledFontResolver(),
-        ])
+      ? PdfFontManager.platform(
+          resolvers: [
+            const _BuiltinSystemFamilyResolver(),
+            const _BuiltinBundledFontResolver(),
+          ],
+        )
       : null;
   final original = PdfrxEntryFunctions.instance;
   final probe = _Observer(original);
@@ -129,7 +135,8 @@ Future<Map<String, Object?>> _measure(
   final referenceFrames = <String, String>{};
   final referenceFrameRows = <Map<String, Object?>>[];
   var lateDiscoveryObserved = false;
-  final gated = scenario == 'close-pending-font' ||
+  final gated =
+      scenario == 'close-pending-font' ||
       scenario == 'replace-pending-font' ||
       scenario == 'shared-fonts' ||
       scenario == 'different-fonts';
@@ -158,9 +165,11 @@ Future<Map<String, Object?>> _measure(
         probe.record('replaceRequested', {'inputId': replacement['id']});
       } else {
         await _until(
-          () => documents.every((input) => probe.documents.any(
-            (document) => document.sourceName == input['absolutePath'],
-          )),
+          () => documents.every(
+            (input) => probe.documents.any(
+              (document) => document.sourceName == input['absolutePath'],
+            ),
+          ),
           'every concurrent native open',
         );
       }
@@ -207,17 +216,17 @@ Future<Map<String, Object?>> _measure(
     for (final slot in slots.where((slot) => slot.visible)) {
       if (!slot.controller.isReady) continue;
       final document = slot.controller.document;
-      final proof = await _proof(
-        document,
-        slot.input['targetPage'] as int,
-      );
+      final proof = await _proof(document, slot.input['targetPage'] as int);
       finalProofs[slot.input['id'] as String] = {
         ...proof,
-        'stableDocument': slot.controller.isReady &&
+        'stableDocument':
+            slot.controller.isReady &&
             identical(slot.controller.document, document),
       };
     }
     await frames.stop();
+    await _settle(probe, slots);
+    await frames.captureReadySlots();
     final measuredEvents = probe.events.toList();
     final measuredFrames = frames.rows.toList();
     final measuredSkips = frames.skipped;
@@ -234,8 +243,12 @@ Future<Map<String, Object?>> _measure(
     probe.phase = 'reference';
 
     final activeIds = finalProofs.keys.toSet();
-    for (final input in documents.where((input) => activeIds.contains(input['id']))) {
-      final document = await PdfFontFallback.openFile(input['absolutePath'] as String);
+    for (final input in documents.where(
+      (input) => activeIds.contains(input['id']),
+    )) {
+      final document = await PdfFontFallback.openFile(
+        input['absolutePath'] as String,
+      );
       referenceProofs[input['id'] as String] = await _proof(
         document,
         input['targetPage'] as int,
@@ -253,7 +266,7 @@ Future<Map<String, Object?>> _measure(
         duration: Duration.zero,
       );
       await _settle(probe, slots);
-      final row = await frames.captureSlot(slot, phase: 'reference');
+      final row = await frames.capturePaintedReadySlot(slot, phase: 'reference');
       referenceFrameRows.add(row);
       referenceFrames[input['id'] as String] = row['rgbaSha256'] as String;
       slot.visible = false;
@@ -275,34 +288,59 @@ Future<Map<String, Object?>> _measure(
       final reference = referenceProofs[entry.key]! as Map;
       final input = documents.singleWhere((input) => input['id'] == entry.key);
       final word = input['expectedWord'] as String;
-      final samples = measuredFrames.where((frame) =>
-        frame['inputId'] == entry.key &&
-        frame['pageNumber'] == input['targetPage'] &&
-        frame['stableDocument'] == true,
-      ).toList();
-      final good = samples.where((frame) =>
-        frame['renderState'] == 'ready' &&
-        frame['rgbaSha256'] == referenceFrames[entry.key],
-      ).toList();
+      final samples = measuredFrames
+          .where(
+            (frame) =>
+                frame['inputId'] == entry.key &&
+                frame['pageNumber'] == input['targetPage'] &&
+                frame['stableDocument'] == true,
+          )
+          .toList();
+      final good = samples
+          .where(
+            (frame) =>
+                frame['renderState'] == 'ready' &&
+                frame['renderStateAfterCapture'] == 'ready' &&
+                frame['stableView'] == true &&
+                frame['rgbaSha256'] == referenceFrames[entry.key],
+          )
+          .toList();
       final firstGood = good.isEmpty ? null : good.first['elapsedUs'] as int;
       parity[entry.key] = {
         'textEqual': actual['textSha256'] == reference['textSha256'],
-        'geometryEqual': actual['geometrySha256'] == reference['geometrySha256'],
-        'fullPageRasterEqual': actual['rasterSha256'] == reference['rasterSha256'],
+        'geometryEqual':
+            actual['geometrySha256'] == reference['geometrySha256'],
+        'fullPageRasterEqual':
+            actual['rasterSha256'] == reference['rasterSha256'],
         'stableMeasuredDocument': actual['stableDocument'],
-        'referenceContainsExpectedWord': (reference['text'] as String).contains(word),
-        'referenceHasInk': word.isEmpty || (reference['inkPixels'] as int) > 100,
+        'referenceContainsExpectedWord': (reference['text'] as String).contains(
+          word,
+        ),
+        'referenceContainsControlText': (reference['text'] as String).contains(
+          input['expectedControlText'] as String,
+        ),
+        'referenceHasInk':
+            word.isEmpty || (reference['inkPixels'] as int) > 100,
         'firstGoodSampleUs': firstGood,
-        'sampledReadyFramesBeforeRecovery': samples.where((frame) =>
-          frame['renderState'] == 'ready' &&
-          (firstGood == null || (frame['elapsedUs'] as int) < firstGood) &&
-          frame['rgbaSha256'] != referenceFrames[entry.key],
-        ).length,
-        'sampledMismatchingReadyFrames': samples.where((frame) =>
-          frame['renderState'] == 'ready' &&
-          frame['rgbaSha256'] != referenceFrames[entry.key],
-        ).length,
-        'sampledPendingFrames': samples.where((frame) => frame['renderState'] == 'pending').length,
+        'sampledReadyFramesBeforeRecovery': samples
+            .where(
+              (frame) =>
+                  frame['renderState'] == 'ready' &&
+                  (firstGood == null ||
+                      (frame['elapsedUs'] as int) < firstGood) &&
+                  frame['rgbaSha256'] != referenceFrames[entry.key],
+            )
+            .length,
+        'sampledMismatchingReadyFrames': samples
+            .where(
+              (frame) =>
+                  frame['renderState'] == 'ready' &&
+                  frame['rgbaSha256'] != referenceFrames[entry.key],
+            )
+            .length,
+        'sampledPendingFrames': samples
+            .where((frame) => frame['renderState'] == 'pending')
+            .length,
         'samples': samples.length,
       };
     }
@@ -333,6 +371,7 @@ Future<Map<String, Object?>> _measure(
         'The real PdfFontFallback.documentRef and PdfViewer are used; no PdfDocument/PdfPage wrappers.',
         'Reference uses isolated fresh app open after the measured flow with unchanged resolver policy, not an independent PDF ground truth.',
         'First-good requires ready state and a matching sampled layer-tree readback, not a placeholder or OS scanout; captures can miss frames.',
+        'First-good is an upper bound at completed capture time; a final painted-ready sample can be later than the actual recovery.',
         'Only mismatching ready frames prove a completed page image differed; pending mismatches can be normal placeholders.',
         'Lifecycle/shared cases contain an explicit registration gate; do not claim natural speedups from those timings.',
         'late-text includes explicit target-page measurement; native event receipts delimit what was actually discovered.',
@@ -358,32 +397,48 @@ PdfDocumentRef _documentRef(Map<String, dynamic> input, bool builtin) => builtin
 Future<void> _settle(_Observer probe, List<_Slot> slots) async {
   final deadline = DateTime.now().add(const Duration(seconds: 45));
   await _until(
-    () => probe.pending == 0 && slots.where((slot) => slot.visible).every(
-      (slot) => slot.controller.isReady &&
-          slot.controller.visibleRenderState.value == PdfVisibleRenderState.ready,
-    ),
+    () =>
+        probe.pending == 0 &&
+        slots
+            .where((slot) => slot.visible)
+            .every(
+              (slot) =>
+                  slot.controller.isReady &&
+                  slot.controller.visibleRenderState.value ==
+                      PdfVisibleRenderState.ready,
+            ),
     'visible page images',
   );
   // Allow queued font completions/reloads to become visible before accepting
   // this state. This is a harness quiet window, never application policy.
   while (true) {
     if (DateTime.now().isAfter(deadline)) {
-      throw StateError('The measured viewer never reached a quiet ready state.');
+      throw StateError(
+        'The measured viewer never reached a quiet ready state.',
+      );
     }
     final revision = probe.events.length;
     await Future<void>.delayed(const Duration(milliseconds: 250));
-    if (revision == probe.events.length && probe.pending == 0 &&
-        slots.where((slot) => slot.visible).every((slot) =>
-          slot.controller.isReady &&
-          slot.controller.visibleRenderState.value == PdfVisibleRenderState.ready,
-        )) {
+    if (revision == probe.events.length &&
+        probe.pending == 0 &&
+        slots
+            .where((slot) => slot.visible)
+            .every(
+              (slot) =>
+                  slot.controller.isReady &&
+                  slot.controller.visibleRenderState.value ==
+                      PdfVisibleRenderState.ready,
+            )) {
       return;
     }
     await _until(() => probe.pending == 0, 'pending native/font operations');
   }
 }
 
-Future<Map<String, Object?>> _proof(PdfDocument document, int pageNumber) async {
+Future<Map<String, Object?>> _proof(
+  PdfDocument document,
+  int pageNumber,
+) async {
   if (!document.pages[pageNumber - 1].isLoaded) {
     await document.reloadPages(pageNumbersToReload: [pageNumber]);
   }
@@ -400,15 +455,25 @@ Future<Map<String, Object?>> _proof(PdfDocument document, int pageNumber) async 
   try {
     var ink = 0;
     for (var i = 0; i < image.pixels.length; i += 4) {
-      if (image.pixels[i] < 128 && image.pixels[i + 1] < 128 && image.pixels[i + 2] < 128) ink++;
+      if (image.pixels[i] < 128 &&
+          image.pixels[i + 1] < 128 &&
+          image.pixels[i + 2] < 128) {
+        ink++;
+      }
     }
     final fullText = text?.fullText ?? '';
-    final geometry = text?.charRects.map((rect) => [rect.left, rect.top, rect.right, rect.bottom]).toList() ?? [];
+    final geometry =
+        text?.charRects
+            .map((rect) => [rect.left, rect.top, rect.right, rect.bottom])
+            .toList() ??
+        [];
     return {
       'text': fullText,
       'textSha256': sha256.convert(utf8.encode(fullText)).toString(),
       'utf16CodeUnits': fullText.length,
-      'geometrySha256': sha256.convert(utf8.encode(jsonEncode(geometry))).toString(),
+      'geometrySha256': sha256
+          .convert(utf8.encode(jsonEncode(geometry)))
+          .toString(),
       'charRects': geometry.length,
       'rasterSha256': sha256.convert(image.pixels).toString(),
       'rasterWidth': image.width,
@@ -470,13 +535,15 @@ class _ProbeViewState extends State<_ProbeView> {
                             pageDropShadow: null,
                             horizontalCacheExtent: 0,
                             verticalCacheExtent: 0,
-                            behaviorControlParams: const PdfViewerBehaviorControlParams(
-                              loadPageDimensionsOnDemand: true,
-                            ),
-                            onDocumentChanged: (document) => widget.probe.record(
-                              'viewerDocument',
-                              {'inputId': slot.input['id'], 'documentId': widget.probe.id(document)},
-                            ),
+                            behaviorControlParams:
+                                const PdfViewerBehaviorControlParams(
+                                  loadPageDimensionsOnDemand: true,
+                                ),
+                            onDocumentChanged: (document) =>
+                                widget.probe.record('viewerDocument', {
+                                  'inputId': slot.input['id'],
+                                  'documentId': widget.probe.id(document),
+                                }),
                           ),
                         ),
                       )
@@ -530,29 +597,55 @@ class _Frames {
     }
   }
 
-  Future<Map<String, Object?>> captureSlot(_Slot slot, {required String phase}) async {
+  Future<Map<String, Object?>> captureSlot(
+    _Slot slot, {
+    required String phase,
+    String? sampleKind,
+  }) async {
     final inputId = slot.input['id'];
     final document = slot.controller.isReady ? slot.controller.document : null;
     final page = slot.controller.isReady ? slot.controller.pageNumber : null;
     final state = slot.controller.visibleRenderState.value.name;
-    final elapsed = probe.clock.elapsedMicroseconds;
-    final boundary = slot.boundary.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+    final started = probe.clock.elapsedMicroseconds;
+    final boundary =
+        slot.boundary.currentContext!.findRenderObject()!
+            as RenderRepaintBoundary;
     final image = await boundary.toImage(pixelRatio: 1);
     try {
-      final rgba = (await image.toByteData(format: ui.ImageByteFormat.rawRgba))!;
+      final rgba = (await image.toByteData(
+        format: ui.ImageByteFormat.rawRgba,
+      ))!;
       final png = (await image.toByteData(format: ui.ImageByteFormat.png))!;
       final path = 'frame-${serial++}.png';
-      await File('${output.path}/$path').writeAsBytes(png.buffer.asUint8List(), flush: true);
+      await File('${output.path}/$path')
+          .writeAsBytes(png.buffer.asUint8List(), flush: true);
+      final elapsed = probe.clock.elapsedMicroseconds;
+      final afterState = slot.controller.visibleRenderState.value.name;
+      final stableDocument =
+          slot.controller.isReady &&
+          identical(slot.controller.document, document);
       return {
         'phase': phase,
+        'sampleKind':
+            sampleKind ?? (phase == 'reference' ? 'reference' : 'periodic'),
         'inputId': inputId,
         'documentId': probe.id(document),
         'pageNumber': page,
         'renderState': state,
         'elapsedUs': elapsed,
-        'stableDocument': document != null && slot.controller.isReady &&
+        'captureStartedUs': started,
+        'renderStateAfterCapture': afterState,
+        'stableView':
+            stableDocument &&
+            slot.controller.pageNumber == page &&
+            slot.input['id'] == inputId &&
+            afterState == state,
+        'stableDocument':
+            document != null &&
+            slot.controller.isReady &&
             identical(slot.controller.document, document) &&
-            slot.controller.pageNumber == page && slot.input['id'] == inputId,
+            slot.controller.pageNumber == page &&
+            slot.input['id'] == inputId,
         'width': image.width,
         'height': image.height,
         'rgbaSha256': sha256.convert(rgba.buffer.asUint8List()).toString(),
@@ -561,6 +654,47 @@ class _Frames {
       };
     } finally {
       image.dispose();
+    }
+  }
+
+  Future<void> captureReadySlots() async {
+    for (final slot in slots.where((slot) => slot.visible)) {
+      await capturePaintedReadySlot(slot, phase: 'measurement');
+    }
+  }
+
+  Future<Map<String, Object?>> capturePaintedReadySlot(
+    _Slot slot, {
+    required String phase,
+  }) async {
+    final deadline = DateTime.now().add(const Duration(seconds: 45));
+    while (true) {
+      if (DateTime.now().isAfter(deadline)) {
+        throw StateError(
+          'No stable painted-ready sample for ${slot.input['id']}.',
+        );
+      }
+      await WidgetsBinding.instance.endOfFrame.timeout(
+        deadline.difference(DateTime.now()),
+      );
+      if (!slot.controller.isReady ||
+          slot.controller.pageNumber != slot.input['targetPage'] ||
+          slot.controller.visibleRenderState.value !=
+              PdfVisibleRenderState.ready) {
+        continue;
+      }
+      final row = await captureSlot(
+        slot,
+        phase: phase,
+        sampleKind: phase == 'reference'
+            ? 'reference-painted-ready'
+            : 'final-painted-ready',
+      ).timeout(deadline.difference(DateTime.now()));
+      if (phase == 'measurement') rows.add(row);
+      if (row['stableView'] == true &&
+          row['renderStateAfterCapture'] == 'ready') {
+        return row;
+      }
     }
   }
 
@@ -589,7 +723,12 @@ class _Observer implements PdfrxEntryFunctions {
   }
 
   void record(String type, Map<String, Object?> data) {
-    events.add({'type': type, 'phase': phase, 'elapsedUs': clock.elapsedMicroseconds, ...data});
+    events.add({
+      'type': type,
+      'phase': phase,
+      'elapsedUs': clock.elapsedMicroseconds,
+      ...data,
+    });
   }
 
   Future<void> disposeDocuments() async {
@@ -603,7 +742,11 @@ class _Observer implements PdfrxEntryFunctions {
       }
       final revision = events.length;
       await Future<void>.delayed(const Duration(milliseconds: 250));
-      if (pending == 0 && disposed == documents.length && revision == events.length) return;
+      if (pending == 0 &&
+          disposed == documents.length &&
+          revision == events.length) {
+        return;
+      }
       if (DateTime.now().isAfter(deadline)) {
         throw StateError('Native/font cleanup did not become quiet.');
       }
@@ -611,7 +754,8 @@ class _Observer implements PdfrxEntryFunctions {
   }
 
   @override
-  Future<PdfDocument> openFile(String path, {
+  Future<PdfDocument> openFile(
+    String path, {
     PdfPasswordProvider? passwordProvider,
     bool firstAttemptByEmptyPassword = true,
     bool useProgressiveLoading = false,
@@ -619,34 +763,49 @@ class _Observer implements PdfrxEntryFunctions {
     pending++;
     final start = clock.elapsedMicroseconds;
     try {
-      final document = await base.openFile(path,
+      final document = await base.openFile(
+        path,
         passwordProvider: passwordProvider,
         firstAttemptByEmptyPassword: firstAttemptByEmptyPassword,
         useProgressiveLoading: useProgressiveLoading,
       );
       final documentId = documents.length;
       documents.add(document);
-      record('nativeOpen', {'documentId': documentId, 'path': path, 'startedUs': start, 'pageCount': document.pages.length});
-      document.events.listen((event) {
-        if (event is! PdfDocumentMissingFontsEvent) return;
-        missingEvents++;
-        Object? byPage;
-        try {
-          // Optional public field added by the narrow engine backport. A is
-          // deliberately compiled against the old API without this field.
-          final dynamic withPages = event;
-          final map = withPages.missingFontsByPage as Map;
-          byPage = {for (final entry in map.entries) '${entry.key}': (entry.value as List).map((query) => _query(query as PdfFontQuery)).toList()};
-        } on NoSuchMethodError {
-          byPage = null;
-        }
-        record('missingFonts', {
-          'documentId': documentId,
-          'eventOwnsDocument': identical(event.document, document),
-          'queries': event.missingFonts.map(_query).toList(),
-          'byPage': byPage,
-        });
-      }, onDone: () => record('documentEventsClosed', {'documentId': documentId}));
+      record('nativeOpen', {
+        'documentId': documentId,
+        'path': path,
+        'startedUs': start,
+        'pageCount': document.pages.length,
+      });
+      document.events.listen(
+        (event) {
+          if (event is! PdfDocumentMissingFontsEvent) return;
+          missingEvents++;
+          Object? byPage;
+          try {
+            // Optional public field added by the narrow engine backport. A is
+            // deliberately compiled against the old API without this field.
+            final dynamic withPages = event;
+            final map = withPages.missingFontsByPage as Map;
+            byPage = {
+              for (final entry in map.entries)
+                '${entry.key}': (entry.value as List)
+                    .map((query) => _query(query as PdfFontQuery))
+                    .toList(),
+            };
+          } on NoSuchMethodError {
+            byPage = null;
+          }
+          record('missingFonts', {
+            'documentId': documentId,
+            'eventOwnsDocument': identical(event.document, document),
+            'queries': event.missingFonts.map(_query).toList(),
+            'byPage': byPage,
+          });
+        },
+        onDone: () =>
+            record('documentEventsClosed', {'documentId': documentId}),
+      );
       return document;
     } finally {
       pending--;
@@ -654,32 +813,78 @@ class _Observer implements PdfrxEntryFunctions {
   }
 
   static Map<String, Object?> _query(PdfFontQuery query) => {
-    'face': query.face, 'weight': query.weight, 'italic': query.isItalic,
-    'charset': query.charset.pdfiumCharsetId, 'pitchFamily': query.pitchFamily,
+    'face': query.face,
+    'weight': query.weight,
+    'italic': query.isItalic,
+    'charset': query.charset.pdfiumCharsetId,
+    'pitchFamily': query.pitchFamily,
   };
 
   @override
-  Future<void> addFontData({required String face, required Uint8List data, String? resolvedFace}) async {
+  Future<void> addFontData({
+    required String face,
+    required Uint8List data,
+    String? resolvedFace,
+  }) async {
     pending++;
     fontStarts++;
-    record('fontRegistrationStart', {'face': face, 'resolvedFace': resolvedFace, 'bytes': data.length, 'fontSha256': sha256.convert(data).toString(), 'kind': 'data'});
+    record('fontRegistrationStart', {
+      'face': face,
+      'resolvedFace': resolvedFace,
+      'bytes': data.length,
+      'fontSha256': sha256.convert(data).toString(),
+      'kind': 'data',
+    });
     try {
       await registrationGate?.future;
-      await base.addFontData(face: face, data: data, resolvedFace: resolvedFace);
+      await base.addFontData(
+        face: face,
+        data: data,
+        resolvedFace: resolvedFace,
+      );
       record('fontRegistered', {'face': face});
-    } finally { pending--; }
+    } catch (error) {
+      record('fontRegistrationFailed', {
+        'face': face,
+        'error': error.toString(),
+      });
+      rethrow;
+    } finally {
+      pending--;
+    }
   }
 
   @override
-  Future<void> addFontFile({required String face, required String filePath, String? resolvedFace}) async {
+  Future<void> addFontFile({
+    required String face,
+    required String filePath,
+    String? resolvedFace,
+  }) async {
     pending++;
     fontStarts++;
     try {
-      record('fontRegistrationStart', {'face': face, 'resolvedFace': resolvedFace, 'fontSha256': await _fileHash(File(filePath)), 'kind': 'file'});
+      record('fontRegistrationStart', {
+        'face': face,
+        'resolvedFace': resolvedFace,
+        'fontSha256': await _fileHash(File(filePath)),
+        'kind': 'file',
+      });
       await registrationGate?.future;
-      await base.addFontFile(face: face, filePath: filePath, resolvedFace: resolvedFace);
+      await base.addFontFile(
+        face: face,
+        filePath: filePath,
+        resolvedFace: resolvedFace,
+      );
       record('fontRegistered', {'face': face});
-    } finally { pending--; }
+    } catch (error) {
+      record('fontRegistrationFailed', {
+        'face': face,
+        'error': error.toString(),
+      });
+      rethrow;
+    } finally {
+      pending--;
+    }
   }
 
   @override
@@ -688,33 +893,120 @@ class _Observer implements PdfrxEntryFunctions {
     try {
       await base.reloadFonts();
       record('backendFontReload', {});
-    } finally { pending--; }
+    } finally {
+      pending--;
+    }
   }
 
   @override
   Future<void> init() => base.init();
   @override
-  Future<T> suspendPdfiumWorkerDuringAction<T>(FutureOr<T> Function() action) => base.suspendPdfiumWorkerDuringAction(action);
+  Future<T> suspendPdfiumWorkerDuringAction<T>(FutureOr<T> Function() action) =>
+      base.suspendPdfiumWorkerDuringAction(action);
   @override
-  Future<R> compute<M, R>(FutureOr<R> Function(M) callback, M message) => base.compute(callback, message);
+  Future<R> compute<M, R>(FutureOr<R> Function(M) callback, M message) =>
+      base.compute(callback, message);
   @override
   Future<void> stopBackgroundWorker() => base.stopBackgroundWorker();
   @override
   PdfrxBackendType get backendType => base.backendType;
   @override
-  Future<PdfDocument> openAsset(String name, {PdfPasswordProvider? passwordProvider, bool firstAttemptByEmptyPassword = true, bool useProgressiveLoading = false}) => base.openAsset(name, passwordProvider: passwordProvider, firstAttemptByEmptyPassword: firstAttemptByEmptyPassword, useProgressiveLoading: useProgressiveLoading);
+  Future<PdfDocument> openAsset(
+    String name, {
+    PdfPasswordProvider? passwordProvider,
+    bool firstAttemptByEmptyPassword = true,
+    bool useProgressiveLoading = false,
+  }) => base.openAsset(
+    name,
+    passwordProvider: passwordProvider,
+    firstAttemptByEmptyPassword: firstAttemptByEmptyPassword,
+    useProgressiveLoading: useProgressiveLoading,
+  );
   @override
-  Future<PdfDocument> openData(Uint8List data, {PdfPasswordProvider? passwordProvider, bool firstAttemptByEmptyPassword = true, String? sourceName, bool allowDataOwnershipTransfer = false, bool useProgressiveLoading = false, int? maxSizeToCacheOnMemory, void Function()? onDispose}) => base.openData(data, passwordProvider: passwordProvider, firstAttemptByEmptyPassword: firstAttemptByEmptyPassword, sourceName: sourceName, allowDataOwnershipTransfer: allowDataOwnershipTransfer, useProgressiveLoading: useProgressiveLoading, maxSizeToCacheOnMemory: maxSizeToCacheOnMemory, onDispose: onDispose);
+  Future<PdfDocument> openData(
+    Uint8List data, {
+    PdfPasswordProvider? passwordProvider,
+    bool firstAttemptByEmptyPassword = true,
+    String? sourceName,
+    bool allowDataOwnershipTransfer = false,
+    bool useProgressiveLoading = false,
+    int? maxSizeToCacheOnMemory,
+    void Function()? onDispose,
+  }) => base.openData(
+    data,
+    passwordProvider: passwordProvider,
+    firstAttemptByEmptyPassword: firstAttemptByEmptyPassword,
+    sourceName: sourceName,
+    allowDataOwnershipTransfer: allowDataOwnershipTransfer,
+    useProgressiveLoading: useProgressiveLoading,
+    maxSizeToCacheOnMemory: maxSizeToCacheOnMemory,
+    onDispose: onDispose,
+  );
   @override
-  Future<PdfDocument> openCustom({required FutureOr<int> Function(Uint8List, int, int) read, required int fileSize, required String sourceName, PdfPasswordProvider? passwordProvider, bool firstAttemptByEmptyPassword = true, bool useProgressiveLoading = false, int? maxSizeToCacheOnMemory, void Function()? onDispose}) => base.openCustom(read: read, fileSize: fileSize, sourceName: sourceName, passwordProvider: passwordProvider, firstAttemptByEmptyPassword: firstAttemptByEmptyPassword, useProgressiveLoading: useProgressiveLoading, maxSizeToCacheOnMemory: maxSizeToCacheOnMemory, onDispose: onDispose);
+  Future<PdfDocument> openCustom({
+    required FutureOr<int> Function(Uint8List, int, int) read,
+    required int fileSize,
+    required String sourceName,
+    PdfPasswordProvider? passwordProvider,
+    bool firstAttemptByEmptyPassword = true,
+    bool useProgressiveLoading = false,
+    int? maxSizeToCacheOnMemory,
+    void Function()? onDispose,
+  }) => base.openCustom(
+    read: read,
+    fileSize: fileSize,
+    sourceName: sourceName,
+    passwordProvider: passwordProvider,
+    firstAttemptByEmptyPassword: firstAttemptByEmptyPassword,
+    useProgressiveLoading: useProgressiveLoading,
+    maxSizeToCacheOnMemory: maxSizeToCacheOnMemory,
+    onDispose: onDispose,
+  );
   @override
-  Future<PdfDocument> openUri(Uri uri, {PdfPasswordProvider? passwordProvider, bool firstAttemptByEmptyPassword = true, bool useProgressiveLoading = false, PdfDownloadProgressCallback? progressCallback, bool preferRangeAccess = false, Map<String, String>? headers, bool withCredentials = false, Duration? timeout}) => base.openUri(uri, passwordProvider: passwordProvider, firstAttemptByEmptyPassword: firstAttemptByEmptyPassword, useProgressiveLoading: useProgressiveLoading, progressCallback: progressCallback, preferRangeAccess: preferRangeAccess, headers: headers, withCredentials: withCredentials, timeout: timeout);
+  Future<PdfDocument> openUri(
+    Uri uri, {
+    PdfPasswordProvider? passwordProvider,
+    bool firstAttemptByEmptyPassword = true,
+    bool useProgressiveLoading = false,
+    PdfDownloadProgressCallback? progressCallback,
+    bool preferRangeAccess = false,
+    Map<String, String>? headers,
+    bool withCredentials = false,
+    Duration? timeout,
+  }) => base.openUri(
+    uri,
+    passwordProvider: passwordProvider,
+    firstAttemptByEmptyPassword: firstAttemptByEmptyPassword,
+    useProgressiveLoading: useProgressiveLoading,
+    progressCallback: progressCallback,
+    preferRangeAccess: preferRangeAccess,
+    headers: headers,
+    withCredentials: withCredentials,
+    timeout: timeout,
+  );
   @override
-  Future<PdfDocument> createNew({required String sourceName}) => base.createNew(sourceName: sourceName);
+  Future<PdfDocument> createNew({required String sourceName}) =>
+      base.createNew(sourceName: sourceName);
   @override
-  Future<PdfDocument> createFromJpegData(Uint8List jpegData, {required double width, required double height, required String sourceName}) => base.createFromJpegData(jpegData, width: width, height: height, sourceName: sourceName);
+  Future<PdfDocument> createFromJpegData(
+    Uint8List jpegData, {
+    required double width,
+    required double height,
+    required String sourceName,
+  }) => base.createFromJpegData(
+    jpegData,
+    width: width,
+    height: height,
+    sourceName: sourceName,
+  );
   @override
-  Future<void> configureFontEnvironment({String? fontCachePath, List<String> fontPaths = const []}) => base.configureFontEnvironment(fontCachePath: fontCachePath, fontPaths: fontPaths);
+  Future<void> configureFontEnvironment({
+    String? fontCachePath,
+    List<String> fontPaths = const [],
+  }) => base.configureFontEnvironment(
+    fontCachePath: fontCachePath,
+    fontPaths: fontPaths,
+  );
   @override
   Future<void> clearAllFontData() => base.clearAllFontData();
 }
