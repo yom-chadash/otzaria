@@ -461,6 +461,7 @@ jobs:
     runs-on: macos-15-intel
     timeout-minutes: 60
     env:
+      DEVELOPER_DIR: /Applications/Xcode_26.1.1.app/Contents/Developer
       CI: 'true'
       BOT: 'true'
       FLUTTER_SUPPRESS_ANALYTICS: 'true'
@@ -472,6 +473,17 @@ jobs:
     - uses: actions/checkout@v7.0.1
       with:
         persist-credentials: 'false'
+    - name: Require the Xcode SDK declared by locked device_info_plus
+      shell: bash
+      run: |
+        set -euo pipefail
+        test -d "$DEVELOPER_DIR"
+        xcodebuild -version
+        test "$(xcodebuild -version | sed -n '1p')" = 'Xcode 26.1.1'
+        sdk_version="$(xcrun --sdk iphonesimulator --show-sdk-version)"
+        printf 'iOS Simulator SDK: %s\n' "$sdk_version"
+        test "$sdk_version" = '26.1'
+        xcrun --sdk iphonesimulator --show-sdk-path
     - uses: subosito/flutter-action@v2
       with:
         channel: stable
