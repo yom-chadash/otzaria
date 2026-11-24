@@ -78,6 +78,53 @@ class HostContracts(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'escapes or aliases'):
                     host.documents(manifest, output)
 
+    def _package_inputs(self):
+        project = self.root / 'project'
+        official = project / '.dart_tool'
+        private = self.root / 'overlay'
+        official.mkdir(parents=True)
+        private.mkdir()
+        config = official / 'package_config.json'
+        copied_config = private / 'packages.json'
+        host.save(config, {'configVersion': 2, 'packages': []})
+        copied_config.write_bytes(config.read_bytes())
+        graph = official / 'package_graph.json'
+        graph.write_bytes(b'{ "roots": ["app"], "packages": [], "configVersion": 1 }\n')
+        return project, config, copied_config, graph
+
+    def test_official_graph_is_copied_verbatim_next_to_private_packages(self):
+        project, config, private, graph = self._package_inputs()
+        before = graph.read_bytes()
+        receipt = host.copy_package_graph(config, private)
+        copied = private.with_name('package_graph.json')
+        self.assertEqual(copied.read_bytes(), before)
+        self.assertEqual(graph.read_bytes(), before)
+        self.assertEqual(receipt['originalPackageGraphPath'], str(graph))
+        self.assertEqual(receipt['overlayPackageGraphPath'], str(copied))
+        self.assertEqual(receipt['originalPackageGraphSha256'], hashlib.sha256(before).hexdigest())
+        self.assertEqual(receipt['overlayPackageGraphSha256'], receipt['originalPackageGraphSha256'])
+
+    def test_missing_official_graph_is_not_synthesized(self):
+        _, config, private, graph = self._package_inputs()
+        graph.unlink()
+        with self.assertRaisesRegex(ValueError, 'Official pub package graph'):
+            host.copy_package_graph(config, private)
+        self.assertFalse(private.with_name('package_graph.json').exists())
+
+    def test_both_original_and_private_graph_drift_are_rejected(self):
+        project, config, private, graph = self._package_inputs()
+        receipt = {**host.copy_package_graph(config, private),
+                   'originalPackageConfigSha256': host.digest(config),
+                   'overlayPackageConfigSha256': host.digest(private)}
+        host.verify_package_inputs(project, private, receipt)
+        for path in (graph, private.with_name('package_graph.json')):
+            before = path.read_bytes()
+            path.write_bytes(before + b' ')
+            with self.subTest(path=path), self.assertRaisesRegex(ValueError, 'package graph changed'):
+                host.verify_package_inputs(project, private, receipt)
+            path.write_bytes(before)
+        host.verify_package_inputs(project, private, receipt)
+
     @unittest.skipUnless(sys.platform == 'linux', 'Linux waitid ownership contract')
     def test_exited_leader_stays_waitable_until_group_cleanup(self):
         child = subprocess.Popen([sys.executable, '-c', 'pass'], start_new_session=True)

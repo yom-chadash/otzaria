@@ -153,6 +153,32 @@ def dependency_receipt(config):
     return result
 
 
+def copy_package_graph(original_config, overlay_config):
+    original = original_config.with_name('package_graph.json')
+    copied = overlay_config.with_name('package_graph.json')
+    require(original.is_file() and not original.is_symlink(), 'Official pub package graph is missing or aliased.')
+    require(not copied.exists(), 'Private package graph must be new.')
+    checksum = digest(original)
+    shutil.copyfile(original, copied)
+    require(digest(copied) == checksum == digest(original), 'Package graph changed while copying.')
+    return {'originalPackageGraphPath': str(original), 'originalPackageGraphSha256': checksum,
+            'overlayPackageGraphPath': str(copied), 'overlayPackageGraphSha256': checksum,
+            'packageGraphSource': 'Byte-for-byte copy of the official flutter pub get --enforce-lockfile output; no resolution edits.'}
+
+
+def verify_package_inputs(root, packages, receipt):
+    require(digest(packages) == receipt['overlayPackageConfigSha256']
+            and digest(root / '.dart_tool/package_config.json') == receipt['originalPackageConfigSha256'],
+            'Original/private package mapping changed.')
+    original_graph = root / '.dart_tool/package_graph.json'
+    overlay_graph = packages.with_name('package_graph.json')
+    require(str(original_graph) == receipt['originalPackageGraphPath']
+            and str(overlay_graph) == receipt['overlayPackageGraphPath']
+            and digest(original_graph) == receipt['originalPackageGraphSha256']
+            and digest(overlay_graph) == receipt['overlayPackageGraphSha256'],
+            'Original/private package graph changed.')
+
+
 def prepare_overlay(root, variant, output, metrics_uri):
     original_path = (root / ".dart_tool/package_config.json").resolve(strict=True)
     config = read_packages(original_path)
@@ -184,7 +210,9 @@ def prepare_overlay(root, variant, output, metrics_uri):
     next(package for package in overlay["packages"] if package["name"] == "pdfrx")["rootUri"] = copied.as_uri() + "/"
     config_path = output / "packages.json"
     save(config_path, overlay)
+    graph_receipt = copy_package_graph(original_path, config_path)
     receipt = {"originalPackageConfigSha256": digest(original_path), "overlayPackageConfigSha256": digest(config_path),
+               **graph_receipt,
                "originalIndexSha256": hashlib.sha256(before.encode()).hexdigest(),
                "instrumentedIndexSha256": hashlib.sha256(after.encode()).hexdigest(),
                "observerPatchSha256": digest(output / "observer.patch"), "packages": package_receipts,
@@ -238,7 +266,8 @@ def native_identity(pid, group, sdk, packages, pdfium):
     require(matches and digest(pdfium) == PDFIUM, "The native process did not map the pinned PDFium.")
     return {"pid": pid, "processGroup": group, "flutterTester": str(executable), "flutterTesterSha256": digest(executable),
             "kernel": str(kernels[0]), "kernelSha256": digest(kernels[0]), "kernelBytes": kernels[0].stat().st_size,
-            "packageConfigSha256": digest(packages), "pdfiumSha256": PDFIUM, "pdfiumMappings": matches,
+            "packageConfigSha256": digest(packages), "packageGraphSha256": digest(packages.with_name('package_graph.json')),
+            "pdfiumSha256": PDFIUM, "pdfiumMappings": matches,
             "command": command, "procStartTimeTicks": (proc / "stat").read_text().split(") ", 1)[1].split()[19]}
 
 
@@ -321,7 +350,8 @@ def launch(flutter, sdk, root, packages, target, config, directory):
                     and ready["candidate"] is config["candidate"]
                     and ready["packageConfig"] == packages.as_uri(), "Native handshake source/packages differ.")
             identity = native_identity(ready["pid"], process.pid, sdk, packages, Path(config["pdfium"]))
-            require(identity['packageConfigSha256'] == config['packageConfigSha256'], "Compiled package mapping changed.")
+            require(identity['packageConfigSha256'] == config['packageConfigSha256']
+                    and identity['packageGraphSha256'] == config['packageGraphSha256'], "Compiled package mapping/graph changed.")
             save(directory / "native-identity.json", identity)
             (directory / "start").write_text("verified\n")
             deadline = time.monotonic() + 1800
@@ -421,11 +451,10 @@ def main():
         for index, name in enumerate(report["runOrder"]):
             require(source(roots[name]) == receipts[name], "Source changed before test launch.")
             require(dependency_receipt(overlays[name][1]) == dependencies[name], "Dependency bytes changed before test launch.")
-            require(digest(overlays[name][0]) == overlays[name][2]['overlayPackageConfigSha256']
-                    and digest(roots[name] / '.dart_tool/package_config.json') == overlays[name][2]['originalPackageConfigSha256'],
-                    "Original/private package mapping changed.")
+            verify_package_inputs(roots[name], overlays[name][0], overlays[name][2])
             config = {"source": plan[name], "candidate": name == "candidate", "pdfium": str(pdfium), "documents": inputs,
                       "packageConfigSha256": overlays[name][2]['overlayPackageConfigSha256'],
+                      "packageGraphSha256": overlays[name][2]['overlayPackageGraphSha256'],
                       "appHash": hashlib.sha256(json.dumps({key: receipts[name]['files'][key] for key in APP}, sort_keys=True).encode()).hexdigest()}
             require({path.name: digest(path) for path in shared.iterdir()} == observer_hashes, "Shared observer bytes changed.")
             row = launch(flutter, sdk, roots[name], overlays[name][0], shared / Path(TARGET).name, config, output / f"run-{index}-{name}")
@@ -433,9 +462,7 @@ def main():
             report["rows"].append(row)
             save(output / "report.json", report)
             require(source(roots[name]) == receipts[name] and dependency_receipt(overlays[name][1]) == dependencies[name], "Source/dependencies drifted during native test.")
-            require(digest(overlays[name][0]) == config['packageConfigSha256']
-                    and digest(roots[name] / '.dart_tool/package_config.json') == overlays[name][2]['originalPackageConfigSha256'],
-                    "Package mapping drifted during native test.")
+            verify_package_inputs(roots[name], overlays[name][0], overlays[name][2])
         parities = [row['result']['parity'] for row in report['rows']]
         require(all(parity == parities[0] for parity in parities), "Native layout/text/geometry/raster/mutable-behavior parity differs across ABBA.")
         require(len({row['nativeIdentity']['flutterTesterSha256'] for row in report['rows']}) == 1 and digest(pdfium) == PDFIUM,
