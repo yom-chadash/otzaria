@@ -1,0 +1,10 @@
+Birkon 3.0 for the Open Siddur Project
+Aharon Varady, 2012 / Open Siddur Project
+
+Unmodified original PDF, redistributed under Creative Commons Attribution-ShareAlike 3.0 Unported.
+License: https://creativecommons.org/licenses/by-sa/3.0/
+Original source: https://opensiddur.org/wp-content/uploads/2011/06/Birkon-3.0-for-the-Open-Siddur-Project.pdf
+SHA-256: 7e9d3f6af17b68da9400d575cd8b62913344a862490c75133b2c9b72b7783436
+Bytes: 1611139; pages: 2.
+The author's attribution inside the PDF is retained. No changes were made.
+This public fixture is kept only in the measurement fork, outside Otzaria's application PRs.
