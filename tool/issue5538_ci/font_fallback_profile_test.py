@@ -130,6 +130,43 @@ class EvidenceTests(unittest.TestCase):
         (bundle / "lib/libapp.so").write_bytes(b"changed app code")
         self.assertNotEqual(before, runner.bundle_receipt(bundle))
 
+    def test_orchestrator_must_match_every_frozen_harness_file(self):
+        files = {name: runner.digest(runner.ROOT / name) for name in runner.HARNESS}
+        orchestrator = {"files": files}
+        receipts = {name: {"files": dict(files)} for name in ("A", "B", "C")}
+        runner.validate_orchestrator(orchestrator, receipts)
+        receipts["C"]["files"]["tool/perf_probe/run_perf_probe_posix.py"] = "0" * 64
+        with self.assertRaisesRegex(ValueError, "Orchestrator harness differs"):
+            runner.validate_orchestrator(orchestrator, receipts)
+
+    def _framework_builds(self, changed=None):
+        builds = {}
+        for name in ("A", "B", "C"):
+            bundle = self.root / name
+            (bundle / "lib").mkdir(parents=True)
+            executable = bundle / "otzaria"
+            executable.write_bytes(b"application")
+            (bundle / "lib/libflutter_linux_gtk.so").write_bytes(
+                b"different framework" if name == changed else b"same framework")
+            builds[name] = {"engine": runner.BundledFlutterEngine(executable, "linux", "profile")}
+        return builds
+
+    def test_common_framework_uses_actual_producer_schema(self):
+        identities = runner.validate_common_framework(self._framework_builds())
+        self.assertEqual(set(identities), {"A", "B", "C"})
+        expected = hashlib.sha256(b"same framework").hexdigest()
+        self.assertTrue(all(identity["bundleSha256"] == expected for identity in identities.values()))
+
+    def test_different_framework_is_rejected_before_launch(self):
+        with self.assertRaisesRegex(ValueError, "Framework binary differs"):
+            runner.validate_common_framework(self._framework_builds(changed="C"))
+
+    def test_missing_framework_hash_cannot_bypass_comparison(self):
+        builds = self._framework_builds()
+        del builds["B"]["engine"].identity["bundleSha256"]
+        with self.assertRaisesRegex(ValueError, "missing its bundled binary SHA256"):
+            runner.validate_common_framework(builds)
+
     def test_fixtures_are_unembedded_and_repeatable(self):
         first = fixtures.prepare(self.root / "first")
         second = fixtures.prepare(self.root / "second")

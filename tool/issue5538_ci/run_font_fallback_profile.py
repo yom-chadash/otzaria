@@ -35,7 +35,8 @@ TARGET = "tool/issue5538_ci/font_fallback_profile_app.dart"
 HARNESS = (TARGET, "tool/issue5538_ci/font_fallback_fixtures.py",
            "tool/issue5538_ci/run_font_fallback_profile.py",
            "tool/issue5538_ci/run_copy_profile.py", "tool/issue5538_ci/run_export_profile.py",
-           "tool/perf_probe/posix_engine.py", "tool/perf_probe/run_perf_probe_posix.py")
+           "tool/perf_probe/posix_engine.py", "tool/perf_probe/run_perf_probe_posix.py",
+           "tool/perf_probe/build_receipt.py")
 APP = ("lib/pdf_book/utils/pdf_font_fallback.dart",
        "lib/pdf_book/utils/pdf_document_font_recovery.dart",
        "lib/indexing/repository/indexing_repository.dart",
@@ -58,6 +59,23 @@ def require(condition, message):
 
 def json_hash(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def validate_common_framework(builds):
+    identities = {name: build["engine"].identity for name, build in builds.items()}
+    require(set(identities) == {"A", "B", "C"}, "Framework evidence needs all three sources.")
+    hashes = [identity.get("bundleSha256") for identity in identities.values()]
+    require(all(isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) for value in hashes),
+            "Framework evidence is missing its bundled binary SHA256.")
+    require(len(set(hashes)) == 1, "Framework binary differs across A/B/C.")
+    return identities
+
+
+def validate_orchestrator(orchestrator, receipts):
+    common = {name: orchestrator["files"][name] for name in HARNESS}
+    require(all(common.values()) and all(
+        {name: receipt["files"][name] for name in HARNESS} == common
+        for receipt in receipts.values()), "Orchestrator harness differs from measured sources.")
 
 
 def source(repo):
@@ -379,6 +397,8 @@ def main():
             capture(["git", "worktree", "add", "--detach", str(root), commit], cwd=ROOT)
             roots[name] = root
             receipts[name] = source(root)
+        report["orchestrator"] = source(ROOT)
+        validate_orchestrator(report["orchestrator"], receipts)
         report["causalPlan"] = validate_sources(receipts, roots)
         report["sources"] = receipts
         for name, root in roots.items():
@@ -400,8 +420,7 @@ def main():
             require(source(root) == receipts[name], "Build changed source.")
             builds[name] = {"root": root, "executable": executable, "engine": BundledFlutterEngine(executable, "linux", "profile"),
                             "compiler": compiler, "bundle": bundle, "appHash": app_hash, "pdfSources": pdf_sources}
-        require(len({build["engine"].identity["sha256"] for build in builds.values()}) == 1,
-                "Framework binary differs across A/B/C.")
+        report["frameworkBinaries"] = validate_common_framework(builds)
         for case in fixtures["cases"]:
             if case["id"] not in args.scenarios:
                 continue
