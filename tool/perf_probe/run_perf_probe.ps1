@@ -9,6 +9,10 @@ param(
   [ValidateSet('integration', 'framework')][string]$BindingMode = 'integration',
   [string]$PdfCase = '',
   [string]$ExpectedEngineSha256 = '',
+  [ValidateSet('none', 'create', 'reuse')][string]$BuildPolicy = 'none',
+  [string]$BuildReceipt = '',
+  [string]$BuildReceiptSha256 = '',
+  [string]$BuildReceiptPython = '',
   [ValidateRange(0, 10)][int]$Warmup = 1,
   [ValidateRange(1, 100)][int]$Repetitions = 5,
   [ValidateRange(1, 30)][int]$Launches = 3,
@@ -23,6 +27,7 @@ $ErrorActionPreference = "Stop"
 if ($Target -eq 'integration_test/perf_resource_probe_test.dart') {
   & (Join-Path $PSScriptRoot 'runner.ps1') -Mode $Mode -CacheState $CacheState `
     -ScenarioSet $ScenarioSet -BindingMode $BindingMode -PdfCase $PdfCase -ExpectedEngineSha256 $ExpectedEngineSha256 -Warmup $Warmup -Repetitions $Repetitions -Launches $Launches `
+    -BuildPolicy $BuildPolicy -BuildReceipt $BuildReceipt -BuildReceiptSha256 $BuildReceiptSha256 -BuildReceiptPython $BuildReceiptPython `
     -OutputDirectory $OutputDirectory -Baseline $Baseline -HardwareId $HardwareId `
     -TimeoutSeconds $TimeoutSeconds
   exit $LASTEXITCODE
@@ -31,6 +36,9 @@ if ($BindingMode -ne 'integration') { throw 'BindingMode is supported only by th
 if ($ScenarioSet -ne 'all') { throw 'ScenarioSet is supported only by the isolated default target.' }
 if ($PdfCase) { throw 'PdfCase is supported only by the isolated default target.' }
 if ($ExpectedEngineSha256) { throw 'ExpectedEngineSha256 is supported only by the isolated default target.' }
+if ($BuildPolicy -ne 'none' -or $BuildReceipt -or $BuildReceiptSha256 -or $BuildReceiptPython) {
+  throw 'Build receipts are supported only by the isolated native PDF target.'
+}
 if ($Mode -eq 'release') { throw 'Legacy flutter drive targets require profile or debug.' }
 Write-Warning 'Legacy target: uses the installed library; the Hive backup is partial. It is not a comparable benchmark.'
 
