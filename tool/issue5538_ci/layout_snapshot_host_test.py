@@ -86,8 +86,22 @@ class HostContracts(unittest.TestCase):
         private.mkdir()
         config = official / 'package_config.json'
         copied_config = private / 'packages.json'
-        host.save(config, {'configVersion': 2, 'packages': []})
-        copied_config.write_bytes(config.read_bytes())
+        original_viewer = self.root / 'official-viewer'
+        original_viewer.mkdir()
+        private_viewer = private / 'viewer'
+        private_viewer.mkdir()
+        other = self.root / 'other-package'
+        other.mkdir()
+        (project / 'pubspec.yaml').write_text('name: app\n')
+        (project / 'pubspec.lock').write_text('unchanged official lock\n')
+        host.save(config, {'configVersion': 2, 'packages': [
+            {'name': 'app', 'rootUri': '../', 'packageUri': 'lib/', 'languageVersion': '3.9'},
+            {'name': 'pdfrx', 'rootUri': '../../official-viewer', 'packageUri': 'lib/', 'languageVersion': '3.9'},
+            {'name': 'other', 'rootUri': '../../other-package', 'packageUri': 'lib/', 'languageVersion': '3.9'},
+        ]})
+        overlay = host.read_packages(config)
+        next(row for row in overlay['packages'] if row['name'] == 'pdfrx')['rootUri'] = private_viewer.as_uri() + '/'
+        host.save(copied_config, overlay)
         graph = official / 'package_graph.json'
         graph.write_bytes(b'{ "roots": ["app"], "packages": [], "configVersion": 1 }\n')
         return project, config, copied_config, graph
@@ -114,16 +128,84 @@ class HostContracts(unittest.TestCase):
     def test_both_original_and_private_graph_drift_are_rejected(self):
         project, config, private, graph = self._package_inputs()
         receipt = {**host.copy_package_graph(config, private),
-                   'originalPackageConfigSha256': host.digest(config),
-                   'overlayPackageConfigSha256': host.digest(private)}
-        host.verify_package_inputs(project, private, receipt)
+                   **host.install_project_overlay(project, private.parent / 'viewer', private)}
+        host.verify_package_inputs(project, config, receipt)
         for path in (graph, private.with_name('package_graph.json')):
             before = path.read_bytes()
             path.write_bytes(before + b' ')
             with self.subTest(path=path), self.assertRaisesRegex(ValueError, 'package graph changed'):
-                host.verify_package_inputs(project, private, receipt)
+                host.verify_package_inputs(project, config, receipt)
             path.write_bytes(before)
-        host.verify_package_inputs(project, private, receipt)
+        host.verify_package_inputs(project, config, receipt)
+
+    def test_installed_overlay_preserves_official_bytes_and_only_changes_viewer_root(self):
+        project, config, private, graph = self._package_inputs()
+        original_config, original_graph = config.read_bytes(), graph.read_bytes()
+        source_files = {name: (project / name).read_bytes() for name in ('pubspec.yaml', 'pubspec.lock')}
+        receipt = {**host.copy_package_graph(config, private),
+                   **host.install_project_overlay(project, private.parent / 'viewer', private)}
+        self.assertEqual(config.read_bytes(), private.read_bytes())
+        self.assertEqual(graph.read_bytes(), original_graph)
+        self.assertEqual(Path(receipt['originalPackageConfigBackupPath']).read_bytes(), original_config)
+        self.assertEqual(Path(receipt['originalPackageGraphBackupPath']).read_bytes(), original_graph)
+        self.assertEqual({name: (project / name).read_bytes() for name in source_files}, source_files)
+        self.assertEqual(receipt['changedPackageRoots'], ['pdfrx'])
+        self.assertEqual(receipt['installedPackageConfigPath'], str(config))
+        installed = host.read_packages(config)
+        self.assertEqual(host.package_root(installed, 'app'), project)
+        self.assertEqual(host.package_root(installed, 'other'), self.root / 'other-package')
+        self.assertEqual(host.package_root(installed, 'pdfrx'), private.parent / 'viewer')
+        host.verify_package_inputs(project, config, receipt)
+
+    def test_overlay_cannot_change_another_root_or_language_version(self):
+        project, config, private, _ = self._package_inputs()
+        original = config.read_bytes()
+        initial_overlay = private.read_bytes()
+        for name, field, value in [('app', 'rootUri', (self.root / 'other-package').as_uri() + '/'),
+                                   ('pdfrx', 'languageVersion', '3.0')]:
+            overlay = json.loads(initial_overlay)
+            next(row for row in overlay['packages'] if row['name'] == name)[field] = value
+            host.save(private, overlay)
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError, 'more than the declared viewer root'):
+                host.install_project_overlay(project, private.parent / 'viewer', private)
+            self.assertEqual(config.read_bytes(), original)
+            self.assertFalse((private.parent / 'official-package-config.json').exists())
+        private.write_bytes(initial_overlay)
+
+    def test_official_backups_private_mapping_and_installed_mapping_are_immutable(self):
+        project, config, private, _ = self._package_inputs()
+        receipt = {**host.copy_package_graph(config, private),
+                   **host.install_project_overlay(project, private.parent / 'viewer', private)}
+        for path in [config, private, Path(receipt['originalPackageConfigBackupPath']),
+                     Path(receipt['originalPackageGraphBackupPath'])]:
+            before = path.read_bytes()
+            path.write_bytes(before + b' ')
+            with self.subTest(path=path), self.assertRaisesRegex(ValueError, 'package mapping changed'):
+                host.verify_package_inputs(project, config, receipt)
+            path.write_bytes(before)
+        host.verify_package_inputs(project, config, receipt)
+
+    def test_official_backups_cannot_be_overwritten_by_a_second_install(self):
+        project, config, private, _ = self._package_inputs()
+        host.copy_package_graph(config, private)
+        receipt = host.install_project_overlay(project, private.parent / 'viewer', private)
+        backup = Path(receipt['originalPackageConfigBackupPath'])
+        original = backup.read_bytes()
+        with self.assertRaisesRegex(ValueError, 'backups must be new'):
+            host.install_project_overlay(project, private.parent / 'viewer', private)
+        self.assertEqual(backup.read_bytes(), original)
+
+    def test_external_packages_file_is_rejected_before_any_flutter_process(self):
+        project, config, private, _ = self._package_inputs()
+        receipt = {**host.copy_package_graph(config, private),
+                   **host.install_project_overlay(project, private.parent / 'viewer', private)}
+        with self.assertRaisesRegex(ValueError, 'project-local package configuration'):
+            host.verify_package_inputs(project, private, receipt)
+        with patch.object(host.subprocess, 'Popen') as spawn:
+            with self.assertRaisesRegex(ValueError, 'project-local package configuration'):
+                host.launch(Path('/flutter'), Path('/sdk'), project, private,
+                            Path('/shared/target.dart'), {}, self.root / 'launch')
+            spawn.assert_not_called()
 
     @unittest.skipUnless(sys.platform == 'linux', 'Linux waitid ownership contract')
     def test_exited_leader_stays_waitable_until_group_cleanup(self):
