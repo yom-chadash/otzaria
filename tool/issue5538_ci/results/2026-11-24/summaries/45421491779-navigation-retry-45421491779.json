@@ -1,0 +1,1301 @@
+{
+  "schemaVersion": 1,
+  "classification": "reproduced-product-correctness-failure",
+  "diagnosticOnly": true,
+  "performanceComparable": false,
+  "run": 45421491779,
+  "job": 138541914708,
+  "artifact": 14934443856,
+  "artifactZipSha256": "35cd2f64b906c372d9fe9c536c0d89759512edfbc896dda5237295531f2d1cef",
+  "artifactZipBytes": 2953150,
+  "sourceCommit": "69e2a1542ee4beb066d6e37a560c12ec8266df24",
+  "orchestratorCommit": "a07819cbb0adb4421ecef8b749e48ae3c260d89d",
+  "nativeBuildReceiptSha256": "bc996b1f195fac497563002257fd06abd7673ae71a9102d856480d84dbd742ad",
+  "platform": "Windows",
+  "buildMode": "profile",
+  "scenario": "pdf-book-view",
+  "cacheState": "cold",
+  "independentProcesses": 3,
+  "processesWithObservedFailure": 3,
+  "observedIterations": 6,
+  "iterationsWithObservedFailure": 3,
+  "iterationsWithSuccessfulJumpBeforeNextLayout": 3,
+  "finding": "A same-document page-geometry relayout invokes Legacy.onLayoutUpdate/goToPosition(Duration.zero) while the application's goTo(280, 200ms) is active. The reanchor resets its AnimationController, cancels its TickerFuture and preserves the intermediate page. The original goTo Future remains pending. The app returns after its separate 3-second timeout, then the 45-second live-image observer fails because page 280 is not visible.",
+  "responsibleComponent": "pdfrx 2.13.1 viewer animation/layout coordination; app timeout masks unresolved navigation but does not recover its destination",
+  "sourceMechanism": [
+    {
+      "path": "pdfrx/lib/src/widgets/pdf_viewer.dart",
+      "symbols": [
+        "_goTo",
+        "_updateLayout"
+      ],
+      "detail": "_goTo resets the shared animation controller and awaits animateTo without orCancel. _updateLayout invokes the size delegate on page geometry change."
+    },
+    {
+      "path": "pdfrx/lib/src/widgets/sizing/pdf_viewer_size_delegate_legacy.dart",
+      "symbols": [
+        "onLayoutUpdate"
+      ],
+      "detail": "Maps the current/intermediate visible rectangle into the new layout, then invokes goToPosition with zero duration."
+    },
+    {
+      "path": "lib/pdf_book/view/pdf_book_screen.dart",
+      "symbols": [
+        "_goToPageWithSpreadLock",
+        "_jumpFromNavPane"
+      ],
+      "detail": "Awaits goTo through a 3-second timeout with an empty onTimeout; the subsequent diagnostic observer has a separate 45-second deadline."
+    }
+  ],
+  "attemptFailures": [
+    {
+      "index": 1,
+      "exitCode": 1,
+      "buildPolicy": "create",
+      "failedPhases": [
+        {
+          "name": "pdf.book_view.jump_forward",
+          "warmup": false,
+          "iteration": 1,
+          "durationMs": 48012.003,
+          "error": "TimeoutException after 0:00:45.000000: Waiting for live book image of PDF page 280 after page-turn layers clear; last observation: {visible: true, bookView: true, layoutReady: true, viewerState: ready, visiblePages: [4, 5], hasTransitionOverlay: false, pageTurnActive: false, animationRunning: false, queuedTurns: 0, readinessEndpoint: liveViewerAfterTransitionLayersRemoved, gpuPresentation: notMeasured}"
+        }
+      ],
+      "status": "failed",
+      "error": "TimeoutException after 0:00:45.000000: Waiting for live book image of PDF page 280 after page-turn layers clear; last observation: {visible: true, bookView: true, layoutReady: true, viewerState: ready, visiblePages: [4, 5], hasTransitionOverlay: false, pageTurnActive: false, animationRunning: false, queuedTurns: 0, readinessEndpoint: liveViewerAfterTransitionLayersRemoved, gpuPresentation: notMeasured}",
+      "receiptSha256": "bc996b1f195fac497563002257fd06abd7673ae71a9102d856480d84dbd742ad",
+      "traceFiles": [
+        "attempt-1\\launch-000\\navigation-measured-0.json",
+        "attempt-1\\launch-000\\navigation-measured-1.json",
+        "attempt-1\\launch-000\\navigation-warmup-0.json"
+      ]
+    },
+    {
+      "index": 2,
+      "exitCode": 1,
+      "buildPolicy": "reuse",
+      "failedPhases": [
+        {
+          "name": "pdf.book_view.jump_forward",
+          "warmup": true,
+          "iteration": 0,
+          "durationMs": 48012.396,
+          "error": "TimeoutException after 0:00:45.000000: Waiting for live book image of PDF page 280 after page-turn layers clear; last observation: {visible: true, bookView: true, layoutReady: true, viewerState: ready, visiblePages: [1], hasTransitionOverlay: false, pageTurnActive: false, animationRunning: false, queuedTurns: 0, readinessEndpoint: liveViewerAfterTransitionLayersRemoved, gpuPresentation: notMeasured}"
+        }
+      ],
+      "status": "failed",
+      "error": "TimeoutException after 0:00:45.000000: Waiting for live book image of PDF page 280 after page-turn layers clear; last observation: {visible: true, bookView: true, layoutReady: true, viewerState: ready, visiblePages: [1], hasTransitionOverlay: false, pageTurnActive: false, animationRunning: false, queuedTurns: 0, readinessEndpoint: liveViewerAfterTransitionLayersRemoved, gpuPresentation: notMeasured}",
+      "receiptSha256": "bc996b1f195fac497563002257fd06abd7673ae71a9102d856480d84dbd742ad",
+      "traceFiles": [
+        "attempt-2\\launch-000\\navigation-warmup-0.json"
+      ]
+    },
+    {
+      "index": 3,
+      "exitCode": 1,
+      "buildPolicy": "reuse",
+      "failedPhases": [
+        {
+          "name": "pdf.book_view.jump_forward",
+          "warmup": false,
+          "iteration": 0,
+          "durationMs": 48013.598,
+          "error": "TimeoutException after 0:00:45.000000: Waiting for live book image of PDF page 280 after page-turn layers clear; last observation: {visible: true, bookView: true, layoutReady: true, viewerState: ready, visiblePages: [4, 5], hasTransitionOverlay: false, pageTurnActive: false, animationRunning: false, queuedTurns: 0, readinessEndpoint: liveViewerAfterTransitionLayersRemoved, gpuPresentation: notMeasured}"
+        }
+      ],
+      "status": "failed",
+      "error": "TimeoutException after 0:00:45.000000: Waiting for live book image of PDF page 280 after page-turn layers clear; last observation: {visible: true, bookView: true, layoutReady: true, viewerState: ready, visiblePages: [4, 5], hasTransitionOverlay: false, pageTurnActive: false, animationRunning: false, queuedTurns: 0, readinessEndpoint: liveViewerAfterTransitionLayersRemoved, gpuPresentation: notMeasured}",
+      "receiptSha256": "bc996b1f195fac497563002257fd06abd7673ae71a9102d856480d84dbd742ad",
+      "traceFiles": [
+        "attempt-3\\launch-000\\navigation-measured-0.json",
+        "attempt-3\\launch-000\\navigation-warmup-0.json"
+      ]
+    }
+  ],
+  "iterations": [
+    {
+      "path": "attempt-1/launch-000/navigation-measured-0.json",
+      "sha256": "c601ddbeb7927205a47a7c6d19ee57a8033835726d6fd580a9526b1657dc1cb1",
+      "classification": "layout-after-navigation-completed",
+      "ownerAndDocumentStableThroughReturn": true,
+      "request": {
+        "sequence": 20,
+        "elapsedUs": 2418724,
+        "event": "application.navigation.request",
+        "callId": null,
+        "method": null,
+        "pendingCallIds": [],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 584468340,
+        "documentEpoch": 1,
+        "layoutIdentity": 525750646,
+        "loadedPageCount": 224,
+        "controllerPageNumber": 1,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [
+            1
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "navigation": {
+        "sequence": 21,
+        "elapsedUs": 2421149,
+        "event": "navigation.call",
+        "callId": 6,
+        "method": "goTo",
+        "pendingCallIds": [
+          6
+        ],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 584468340,
+        "documentEpoch": 1,
+        "layoutIdentity": 525750646,
+        "loadedPageCount": 224,
+        "controllerPageNumber": 1,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "firstLayoutReanchor": {
+        "sequence": 41,
+        "elapsedUs": 2672538,
+        "event": "navigation.call",
+        "callId": 7,
+        "method": "goToPosition",
+        "pendingCallIds": [
+          7
+        ],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 584468340,
+        "documentEpoch": 1,
+        "layoutIdentity": 343807599,
+        "loadedPageCount": 335,
+        "controllerPageNumber": 280,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "pending",
+          "visiblePages": [],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "firstLayoutReanchorAfterGoToMs": 251.389,
+      "navigationCompleted": {
+        "sequence": 38,
+        "elapsedUs": 2645169,
+        "event": "navigation.completed",
+        "callId": 6,
+        "method": "goTo",
+        "pendingCallIds": [],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 584468340,
+        "documentEpoch": 1,
+        "layoutIdentity": 525750646,
+        "loadedPageCount": 224,
+        "controllerPageNumber": 278,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "pending",
+          "visiblePages": [
+            280,
+            281
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "applicationReturned": {
+        "sequence": 39,
+        "elapsedUs": 2647697,
+        "event": "application.navigation.returned",
+        "callId": null,
+        "method": null,
+        "pendingCallIds": [],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 584468340,
+        "documentEpoch": 1,
+        "layoutIdentity": 525750646,
+        "loadedPageCount": 224,
+        "controllerPageNumber": 278,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "pending",
+          "visiblePages": [
+            280,
+            281
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "applicationNavigationAwaitMs": 229.494,
+      "traceClosed": {
+        "sequence": 120,
+        "elapsedUs": 9023734,
+        "event": "trace.closed",
+        "callId": null,
+        "method": null,
+        "pendingCallIds": [],
+        "tabIsCurrent": false,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": null,
+        "documentEpoch": null,
+        "layoutIdentity": null,
+        "loadedPageCount": null,
+        "controllerPageNumber": null,
+        "viewSize": null,
+        "bookObservation": null
+      },
+      "pendingCallsAtClose": {}
+    },
+    {
+      "path": "attempt-1/launch-000/navigation-measured-1.json",
+      "sha256": "9225c405649a9ce49a707f2a12c09a6fb4134c5179c00e624b0b84f9e2887a3b",
+      "classification": "layout-canceled-active-navigation",
+      "ownerAndDocumentStableThroughReturn": true,
+      "request": {
+        "sequence": 20,
+        "elapsedUs": 2387332,
+        "event": "application.navigation.request",
+        "callId": null,
+        "method": null,
+        "pendingCallIds": [],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 1059081208,
+        "documentEpoch": 1,
+        "layoutIdentity": 607801222,
+        "loadedPageCount": 199,
+        "controllerPageNumber": 1,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [
+            1
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "navigation": {
+        "sequence": 21,
+        "elapsedUs": 2389236,
+        "event": "navigation.call",
+        "callId": 6,
+        "method": "goTo",
+        "pendingCallIds": [
+          6
+        ],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 1059081208,
+        "documentEpoch": 1,
+        "layoutIdentity": 607801222,
+        "loadedPageCount": 199,
+        "controllerPageNumber": 1,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "firstLayoutReanchor": {
+        "sequence": 25,
+        "elapsedUs": 2425566,
+        "event": "navigation.call",
+        "callId": 7,
+        "method": "goToPosition",
+        "pendingCallIds": [
+          6,
+          7
+        ],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 1059081208,
+        "documentEpoch": 1,
+        "layoutIdentity": 327307540,
+        "loadedPageCount": 319,
+        "controllerPageNumber": 1,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "pending",
+          "visiblePages": [],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "firstLayoutReanchorAfterGoToMs": 36.33,
+      "navigationCompleted": null,
+      "applicationReturned": {
+        "sequence": 40,
+        "elapsedUs": 5394339,
+        "event": "application.navigation.returned",
+        "callId": null,
+        "method": null,
+        "pendingCallIds": [
+          6
+        ],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 1059081208,
+        "documentEpoch": 1,
+        "layoutIdentity": 578682143,
+        "loadedPageCount": 374,
+        "controllerPageNumber": 4,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [
+            4,
+            5
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "applicationNavigationAwaitMs": 3008.36,
+      "traceClosed": {
+        "sequence": 42,
+        "elapsedUs": 50661638,
+        "event": "trace.closed",
+        "callId": null,
+        "method": null,
+        "pendingCallIds": [
+          6
+        ],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 1059081208,
+        "documentEpoch": 1,
+        "layoutIdentity": 578682143,
+        "loadedPageCount": 374,
+        "controllerPageNumber": 4,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [
+            4,
+            5
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "pendingCallsAtClose": {
+        "6": "goTo"
+      }
+    },
+    {
+      "path": "attempt-1/launch-000/navigation-warmup-0.json",
+      "sha256": "fc06067c3249b573a0422ea07ae9686030405079e4416f4eecd70640d6ff820d",
+      "classification": "layout-after-navigation-completed",
+      "ownerAndDocumentStableThroughReturn": true,
+      "request": {
+        "sequence": 23,
+        "elapsedUs": 2605316,
+        "event": "application.navigation.request",
+        "callId": null,
+        "method": null,
+        "pendingCallIds": [],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 209392168,
+        "documentEpoch": 1,
+        "layoutIdentity": 672315353,
+        "loadedPageCount": 322,
+        "controllerPageNumber": 1,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [
+            1
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "navigation": {
+        "sequence": 24,
+        "elapsedUs": 2607077,
+        "event": "navigation.call",
+        "callId": 7,
+        "method": "goTo",
+        "pendingCallIds": [
+          7
+        ],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 209392168,
+        "documentEpoch": 1,
+        "layoutIdentity": 672315353,
+        "loadedPageCount": 322,
+        "controllerPageNumber": 1,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "firstLayoutReanchor": {
+        "sequence": 42,
+        "elapsedUs": 3221777,
+        "event": "navigation.call",
+        "callId": 8,
+        "method": "goToPosition",
+        "pendingCallIds": [
+          8
+        ],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 209392168,
+        "documentEpoch": 1,
+        "layoutIdentity": 1040563082,
+        "loadedPageCount": 363,
+        "controllerPageNumber": 280,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [
+            280,
+            281
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "firstLayoutReanchorAfterGoToMs": 614.7,
+      "navigationCompleted": {
+        "sequence": 38,
+        "elapsedUs": 2831640,
+        "event": "navigation.completed",
+        "callId": 7,
+        "method": "goTo",
+        "pendingCallIds": [],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 209392168,
+        "documentEpoch": 1,
+        "layoutIdentity": 672315353,
+        "loadedPageCount": 322,
+        "controllerPageNumber": 278,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "pending",
+          "visiblePages": [
+            280,
+            281
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "applicationReturned": {
+        "sequence": 39,
+        "elapsedUs": 2836809,
+        "event": "application.navigation.returned",
+        "callId": null,
+        "method": null,
+        "pendingCallIds": [],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 209392168,
+        "documentEpoch": 1,
+        "layoutIdentity": 672315353,
+        "loadedPageCount": 322,
+        "controllerPageNumber": 278,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "pending",
+          "visiblePages": [
+            280,
+            281
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "applicationNavigationAwaitMs": 229.505,
+      "traceClosed": {
+        "sequence": 117,
+        "elapsedUs": 9295298,
+        "event": "trace.closed",
+        "callId": null,
+        "method": null,
+        "pendingCallIds": [],
+        "tabIsCurrent": false,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": null,
+        "documentEpoch": null,
+        "layoutIdentity": null,
+        "loadedPageCount": null,
+        "controllerPageNumber": null,
+        "viewSize": null,
+        "bookObservation": null
+      },
+      "pendingCallsAtClose": {}
+    },
+    {
+      "path": "attempt-2/launch-000/navigation-warmup-0.json",
+      "sha256": "214fc7ea999395ae86e320331dbb059d461c6233ac0a1dd48109d0b7e2112f43",
+      "classification": "layout-canceled-active-navigation",
+      "ownerAndDocumentStableThroughReturn": true,
+      "request": {
+        "sequence": 21,
+        "elapsedUs": 2501782,
+        "event": "application.navigation.request",
+        "callId": null,
+        "method": null,
+        "pendingCallIds": [],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 791150147,
+        "documentEpoch": 1,
+        "layoutIdentity": 902905333,
+        "loadedPageCount": 321,
+        "controllerPageNumber": 1,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [
+            1
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "navigation": {
+        "sequence": 22,
+        "elapsedUs": 2505251,
+        "event": "navigation.call",
+        "callId": 6,
+        "method": "goTo",
+        "pendingCallIds": [
+          6
+        ],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 791150147,
+        "documentEpoch": 1,
+        "layoutIdentity": 902905333,
+        "loadedPageCount": 321,
+        "controllerPageNumber": 1,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "firstLayoutReanchor": {
+        "sequence": 23,
+        "elapsedUs": 2520452,
+        "event": "navigation.call",
+        "callId": 7,
+        "method": "goToPosition",
+        "pendingCallIds": [
+          6,
+          7
+        ],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 791150147,
+        "documentEpoch": 1,
+        "layoutIdentity": 845029447,
+        "loadedPageCount": 321,
+        "controllerPageNumber": 1,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "firstLayoutReanchorAfterGoToMs": 15.201,
+      "navigationCompleted": null,
+      "applicationReturned": {
+        "sequence": 30,
+        "elapsedUs": 5510416,
+        "event": "application.navigation.returned",
+        "callId": null,
+        "method": null,
+        "pendingCallIds": [
+          6
+        ],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 791150147,
+        "documentEpoch": 1,
+        "layoutIdentity": 565789759,
+        "loadedPageCount": 374,
+        "controllerPageNumber": 1,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [
+            1
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "applicationNavigationAwaitMs": 3008.176,
+      "traceClosed": {
+        "sequence": 32,
+        "elapsedUs": 50776935,
+        "event": "trace.closed",
+        "callId": null,
+        "method": null,
+        "pendingCallIds": [
+          6
+        ],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 791150147,
+        "documentEpoch": 1,
+        "layoutIdentity": 565789759,
+        "loadedPageCount": 374,
+        "controllerPageNumber": 1,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [
+            1
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "pendingCallsAtClose": {
+        "6": "goTo"
+      }
+    },
+    {
+      "path": "attempt-3/launch-000/navigation-measured-0.json",
+      "sha256": "969747cf153b471c3c258bd98ea308cb7e4702df08b351956bcc824cc14507bc",
+      "classification": "layout-canceled-active-navigation",
+      "ownerAndDocumentStableThroughReturn": true,
+      "request": {
+        "sequence": 20,
+        "elapsedUs": 2454805,
+        "event": "application.navigation.request",
+        "callId": null,
+        "method": null,
+        "pendingCallIds": [],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 541608103,
+        "documentEpoch": 1,
+        "layoutIdentity": 1064958826,
+        "loadedPageCount": 213,
+        "controllerPageNumber": 1,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [
+            1
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "navigation": {
+        "sequence": 21,
+        "elapsedUs": 2457893,
+        "event": "navigation.call",
+        "callId": 6,
+        "method": "goTo",
+        "pendingCallIds": [
+          6
+        ],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 541608103,
+        "documentEpoch": 1,
+        "layoutIdentity": 1064958826,
+        "loadedPageCount": 213,
+        "controllerPageNumber": 1,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "firstLayoutReanchor": {
+        "sequence": 25,
+        "elapsedUs": 2492858,
+        "event": "navigation.call",
+        "callId": 7,
+        "method": "goToPosition",
+        "pendingCallIds": [
+          6,
+          7
+        ],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 541608103,
+        "documentEpoch": 1,
+        "layoutIdentity": 830045481,
+        "loadedPageCount": 330,
+        "controllerPageNumber": 1,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "pending",
+          "visiblePages": [],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "firstLayoutReanchorAfterGoToMs": 34.965,
+      "navigationCompleted": null,
+      "applicationReturned": {
+        "sequence": 37,
+        "elapsedUs": 5463259,
+        "event": "application.navigation.returned",
+        "callId": null,
+        "method": null,
+        "pendingCallIds": [
+          6
+        ],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 541608103,
+        "documentEpoch": 1,
+        "layoutIdentity": 162921655,
+        "loadedPageCount": 374,
+        "controllerPageNumber": 4,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [
+            4,
+            5
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "applicationNavigationAwaitMs": 3009.274,
+      "traceClosed": {
+        "sequence": 39,
+        "elapsedUs": 50731743,
+        "event": "trace.closed",
+        "callId": null,
+        "method": null,
+        "pendingCallIds": [
+          6
+        ],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 541608103,
+        "documentEpoch": 1,
+        "layoutIdentity": 162921655,
+        "loadedPageCount": 374,
+        "controllerPageNumber": 4,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [
+            4,
+            5
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "pendingCallsAtClose": {
+        "6": "goTo"
+      }
+    },
+    {
+      "path": "attempt-3/launch-000/navigation-warmup-0.json",
+      "sha256": "afbebf4ca16b7b37e2ed25517961a0cae962267d8730280ece017dade054bdd5",
+      "classification": "layout-after-navigation-completed",
+      "ownerAndDocumentStableThroughReturn": true,
+      "request": {
+        "sequence": 20,
+        "elapsedUs": 2476261,
+        "event": "application.navigation.request",
+        "callId": null,
+        "method": null,
+        "pendingCallIds": [],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 383955538,
+        "documentEpoch": 1,
+        "layoutIdentity": 830284302,
+        "loadedPageCount": 190,
+        "controllerPageNumber": 1,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [
+            1
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "navigation": {
+        "sequence": 21,
+        "elapsedUs": 2478733,
+        "event": "navigation.call",
+        "callId": 6,
+        "method": "goTo",
+        "pendingCallIds": [
+          6
+        ],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 383955538,
+        "documentEpoch": 1,
+        "layoutIdentity": 830284302,
+        "loadedPageCount": 190,
+        "controllerPageNumber": 1,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "ready",
+          "visiblePages": [],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "firstLayoutReanchor": {
+        "sequence": 40,
+        "elapsedUs": 3161585,
+        "event": "navigation.call",
+        "callId": 7,
+        "method": "goToPosition",
+        "pendingCallIds": [
+          7
+        ],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 383955538,
+        "documentEpoch": 1,
+        "layoutIdentity": 490419737,
+        "loadedPageCount": 306,
+        "controllerPageNumber": 280,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "pending",
+          "visiblePages": [],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "firstLayoutReanchorAfterGoToMs": 682.852,
+      "navigationCompleted": {
+        "sequence": 37,
+        "elapsedUs": 2734634,
+        "event": "navigation.completed",
+        "callId": 6,
+        "method": "goTo",
+        "pendingCallIds": [],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 383955538,
+        "documentEpoch": 1,
+        "layoutIdentity": 830284302,
+        "loadedPageCount": 190,
+        "controllerPageNumber": 278,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "pending",
+          "visiblePages": [
+            280,
+            281
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "applicationReturned": {
+        "sequence": 38,
+        "elapsedUs": 2739614,
+        "event": "application.navigation.returned",
+        "callId": null,
+        "method": null,
+        "pendingCallIds": [],
+        "tabIsCurrent": true,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": 383955538,
+        "documentEpoch": 1,
+        "layoutIdentity": 830284302,
+        "loadedPageCount": 190,
+        "controllerPageNumber": 278,
+        "viewSize": [
+          937.0,
+          615.0
+        ],
+        "bookObservation": {
+          "visible": true,
+          "bookView": true,
+          "layoutReady": true,
+          "viewerState": "pending",
+          "visiblePages": [
+            280,
+            281
+          ],
+          "hasTransitionOverlay": false,
+          "pageTurnActive": false,
+          "animationRunning": false,
+          "queuedTurns": 0,
+          "readinessEndpoint": "liveViewerAfterTransitionLayersRemoved",
+          "gpuPresentation": "notMeasured"
+        }
+      },
+      "applicationNavigationAwaitMs": 261.519,
+      "traceClosed": {
+        "sequence": 120,
+        "elapsedUs": 9572396,
+        "event": "trace.closed",
+        "callId": null,
+        "method": null,
+        "pendingCallIds": [],
+        "tabIsCurrent": false,
+        "controllerOwnerIsCurrent": true,
+        "documentIdentity": null,
+        "documentEpoch": null,
+        "layoutIdentity": null,
+        "loadedPageCount": null,
+        "controllerPageNumber": null,
+        "viewSize": null,
+        "bookObservation": null
+      },
+      "pendingCallsAtClose": {}
+    }
+  ],
+  "sources": [
+    {
+      "path": "artifact-receipt.json",
+      "sha256": "6c11b0ace0f514c1f0e8b9c6b0caace1fc0b6b79f320d1c01c9ac2ad2063e82c"
+    },
+    {
+      "path": "diagnostic-summary.json",
+      "sha256": "d7037fe50f43b8a48dfcfded50b196556813c3c01c479865186a4f33924b2584"
+    },
+    {
+      "path": "native-build.json",
+      "sha256": "bc996b1f195fac497563002257fd06abd7673ae71a9102d856480d84dbd742ad"
+    }
+  ],
+  "analysisScriptSha256": "1e67cc90b937bcf2f0a2a5b4902923bbc73da8d4e6d767aac53912a5c9d680d6",
+  "limitations": [
+    "The public-controller trace observes the real override calls and their Futures. Cancellation inside AnimationController is established by the locked source implementation, not an extra private cancellation counter.",
+    "Diagnostic observers and stack capture add overhead; no timings are performance-comparable and three launches do not estimate the user failure rate.",
+    "Iteration counts within a process are dependent. Each of the three processes eventually failed; three earlier iterations succeeded.",
+    "The 3-second application await cap and subsequent 45-second final-image deadline are distinct. The elapsed phase includes both and is not a 48-second render measurement.",
+    "Visible-render state verifies viewer image ownership/readiness, not physical GPU presentation."
+  ]
+}

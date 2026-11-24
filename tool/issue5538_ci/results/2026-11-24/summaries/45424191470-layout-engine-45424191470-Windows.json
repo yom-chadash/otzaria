@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "independent post-download verification; original members unchanged",
+  "runId": 45424191470,
+  "jobId": 138551564634,
+  "artifactId": 14936338574,
+  "sourceCommit": "663a45b915280da696d47e0a91cd982bf31e15bd",
+  "artifactZipSha256": "cc30da876d32c0b0ca950f23a386ab1b3f63104379543dc8cac0f58ef4e58852",
+  "artifactZipBytes": 32985,
+  "verifiedOriginalMembers": 9,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45424191470/job/138551564634",
+  "classification": "completed-product-regression-checks",
+  "declaredScopeComplete": true,
+  "jobConclusion": "success",
+  "testedSourceCommit": "cdea38083d06b445b4ec67d8345109a0457924af",
+  "scope": "Compatible S02 engine and M02 immutable-layout viewer, including the corrected preparation spy",
+  "platform": "Windows",
+  "sdk": {
+    "frameworkVersion": "3.47.7",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "engineCommitDate": "2026-10-07 17:09:12.000Z",
+    "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+    "engineBuildDate": "2026-10-07 17:51:44.552",
+    "dartSdkVersion": "3.13.5",
+    "devToolsVersion": "2.60.0",
+    "flutterVersion": "3.47.7",
+    "flutterRoot": "C:\\hostedtoolcache\\windows\\flutter\\stable-3.47.7-x64\\flutter"
+  },
+  "staticAnalysis": "passed",
+  "engineTests": {
+    "passed": 118,
+    "failed": 0,
+    "skipped": 0,
+    "eventRows": 317,
+    "hiddenLifecycleEvents": 2,
+    "nonJsonBuildHookDiagnosticsPreserved": []
+  },
+  "viewerTests": {
+    "passed": 112,
+    "failed": 0,
+    "skipped": 0,
+    "eventRows": 441,
+    "hiddenLifecycleEvents": 3,
+    "nonJsonBuildHookDiagnosticsPreserved": []
+  },
+  "performanceMeasurement": false,
+  "productPerformanceClaim": false,
+  "limitations": [
+    "These gates prove hosted static-analysis and regression-test outcomes on the exact source; they are not performance measurements.",
+    "The 118 engine and 112 viewer tests all completed without failures or skips on each platform.",
+    "The macOS lane ran on hosted Intel hardware; this does not establish ARM64 or physical mobile coverage.",
+    "The previous test-spy failures remain separate immutable evidence; they have not been rewritten as successes."
+  ]
+}

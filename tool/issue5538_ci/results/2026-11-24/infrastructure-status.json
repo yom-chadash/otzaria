@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "scope": "GitHub infrastructure outcomes only; not a measurement artifact",
+  "capturedAtUtc": "2026-11-24 15:49:43 UTC",
+  "cases": [
+    {
+      "runId": 45415106956,
+      "jobId": 138519070798,
+      "check": {
+        "id": 138519070798,
+        "name": "Same binary ABBA then separate native thread samples",
+        "head_sha": "5df0e3de6b28ff7c90c738535941118742aa9097",
+        "status": "completed",
+        "conclusion": "failure",
+        "started_at": "2026-11-24T14:34:42Z",
+        "completed_at": "2026-11-24T15:27:45Z",
+        "html_url": "https://github.com/yom-chadash/otzaria/actions/runs/45415106956/job/138519070798",
+        "output": {
+          "title": null,
+          "summary": null,
+          "text": null,
+          "annotations_count": 1,
+          "annotations_url": "https://api.github.com/repos/yom-chadash/otzaria/check-runs/138519070798/annotations"
+        }
+      },
+      "classification": "hosted-runner-disconnection-no-recoverable-artifact",
+      "annotation": {
+        "observer": "audit_scope through the visible GitHub job annotations panel",
+        "text": "The hosted runner lost communication with the server. Anything in your workflow that terminates the runner process, starves it for CPU/Memory, or blocks its network access can cause this error."
+      },
+      "artifactApiCount": 0,
+      "jobLogApiResult": "404 BlobNotFound",
+      "measurementResults": [],
+      "completedWorkloadCount": null,
+      "limitations": [
+        "The job ended while its measurement step remained marked in progress; its artifact-upload step never ran.",
+        "No recoverable artifact proves how many ABBA processes or thread traces ran before communication was lost.",
+        "The annotation lists possible causes; it does not establish CPU, memory, or network as the specific cause."
+      ]
+    },
+    {
+      "runId": 45419791368,
+      "jobId": 138536736843,
+      "check": {
+        "id": 138536736843,
+        "name": "macos arm64 / profile / continuous reader / frozen AOT corpus",
+        "head_sha": "271486301544c18376214823f8904be88f8ffd0a",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "started_at": "2026-11-24T14:58:15Z",
+        "completed_at": "2026-11-24T15:13:16Z",
+        "html_url": "https://github.com/yom-chadash/otzaria/actions/runs/45419791368/job/138536736843",
+        "output": {
+          "title": null,
+          "summary": null,
+          "text": null,
+          "annotations_count": 4,
+          "annotations_url": "https://api.github.com/repos/yom-chadash/otzaria/check-runs/138536736843/annotations"
+        }
+      },
+      "classification": "hosted-arm64-runner-not-acquired",
+      "annotation": {
+        "observer": "root agent through the visible GitHub job annotations panel; shared with audit_scope",
+        "error": "The job was not acquired by Runner of type hosted even after multiple attempts",
+        "notices": [
+          {
+            "count": 3,
+            "text": "Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times."
+          }
+        ]
+      },
+      "measurementResults": [],
+      "completedWorkloadCount": 0,
+      "subsequentRetryRunId": 45425597093,
+      "limitations": [
+        "The job did not acquire a runner; it supplies no ARM64 native measurement or correctness result.",
+        "The retry is recorded only as a separate run identifier; its outcome is not inferred here."
+      ]
+    }
+  ]
+}

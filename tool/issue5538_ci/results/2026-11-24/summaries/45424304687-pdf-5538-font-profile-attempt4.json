@@ -1,0 +1,903 @@
+{
+  "schemaVersion": 1,
+  "runId": 45424304687,
+  "jobId": 138551979170,
+  "sourceCommit": "c06c1b600fc93abea7746eebdd2e90d4b75278b0",
+  "artifactId": 14936603528,
+  "artifactZipSha256": "82b82844d9b9a84b300357991edb68f9fe30e21aaabaf4b2e125ae2161f76af5",
+  "artifactZipBytes": 1822083,
+  "jobLogSha256": "4bf6de1baeb96e7258d378ad5c3a29eb841400e1dfa0c9b29fecd73e6ae8b25a",
+  "jobLogProvenance": "Decoded connector fetch_workflow_job_logs text, written with its existing final LF; not a ZIP member.",
+  "status": "partial-harness-gate-failure",
+  "completedValidatedLaunches": 23,
+  "completedScenarios": [
+    "initial-hebrew",
+    "initial-latin"
+  ],
+  "failedScenario": "shared-fonts",
+  "failedLaunch": "00-A warmup",
+  "cause": "Harness gate compared document.sourceName to a bare file path; locked engine prefixes sourceName with file%. Successful nativeOpen path receipts are the correct source identity.",
+  "candidateInitialParity": "All candidate initial Hebrew/Latin text, char geometry, full raster, literal word, Standard14 control and actual sampled-ready reference checks passed.",
+  "limitations": [
+    "Two of eight scenarios completed; no conclusion for shared/different/late/close/replace yet.",
+    "First-good is a completed-capture upper bound, often from final-painted-ready after the quiet window; no natural latency improvement claim.",
+    "Zero mismatching-ready samples does not prove no fallback frame was presented; periodic capture can skip busy frames.",
+    "Fixture Hebrew content does not imply native charset177; actual callback charset is retained in raw events."
+  ],
+  "results": [
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/00-A/result.json",
+      "sha256": "8970528ba8f72fa4de5fb429048fe7445a2057aaa44196c7609e9ab844556939",
+      "variant": "A",
+      "scenario": "initial-hebrew",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1579051,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1225985,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 4
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/01-B/result.json",
+      "sha256": "c4f365c0256e75015a98bbfdb7b4f459128c5c4dacf3cfda43eb6bbc0a0abc49",
+      "variant": "B",
+      "scenario": "initial-hebrew",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1104361,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 665810,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 5
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/02-C/result.json",
+      "sha256": "5a7c9ee5851b9e829dfbe48f66540073c226e01643f9e7e6afadc818f5e1dffb",
+      "variant": "C",
+      "scenario": "initial-hebrew",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1073696,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 643125,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 4
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/03-A/result.json",
+      "sha256": "d4f294217d333373b91ed8149f58f051867365fad4b376dd4fa774398072f003",
+      "variant": "A",
+      "scenario": "initial-hebrew",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1001723,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 643866,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 5
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/04-B/result.json",
+      "sha256": "a7b4430c184785201ed69060843ab2024a915e630fca37d214df1faf7844766f",
+      "variant": "B",
+      "scenario": "initial-hebrew",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1108140,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 672987,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 5
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/05-B/result.json",
+      "sha256": "bad9881695f65c14be285cc6bcfba85463cd0fb2fa49f9bf40917c6aebbc6575",
+      "variant": "B",
+      "scenario": "initial-hebrew",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1004258,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 628438,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 5
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/06-A/result.json",
+      "sha256": "3222ca77db4c9aa864b8cfabace57f0a90552352a9749c1b5d4155760161e569",
+      "variant": "A",
+      "scenario": "initial-hebrew",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 983314,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 616509,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 5
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/07-B/result.json",
+      "sha256": "c6c7cefea914c5655ec72d8b361dcbb504eb703f7591582cedf19483c4a3607b",
+      "variant": "B",
+      "scenario": "initial-hebrew",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1034687,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 669160,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 5
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/08-C/result.json",
+      "sha256": "9c57c8ed42828606a1329fef8321bb78f0e313bce3b79b1ddac7f27f44040066",
+      "variant": "C",
+      "scenario": "initial-hebrew",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1050156,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 627083,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 4
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/09-C/result.json",
+      "sha256": "b3834ecd3aae308d566b70982532b099bd7be1cd60738e4c38663d64cd200908",
+      "variant": "C",
+      "scenario": "initial-hebrew",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1073539,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 643092,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 4
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/10-B/result.json",
+      "sha256": "b683bf5846e1064297ad8608157229c1cac28e9409d9f1dd77c55eafe398152b",
+      "variant": "B",
+      "scenario": "initial-hebrew",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 988395,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 631707,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 5
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/11-B/result.json",
+      "sha256": "0cbb7e3da5f026b9964ff08589e69fe8045ba4c463f151dc7d21def81309fb61",
+      "variant": "B",
+      "scenario": "initial-hebrew",
+      "route": "builtin",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1070466,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 643204,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 4
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-latin/00-A/result.json",
+      "sha256": "f16103acfaf92a98d0fe02dabc8f931f5e50c87a4b42113c1755fcdfd05dddd8",
+      "variant": "A",
+      "scenario": "initial-latin",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1005574,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 639010,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 5
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-latin/01-B/result.json",
+      "sha256": "523b3c5e722712c662bef5551d88fb7ec6128bc08f34af7bb0664d079ea79e6f",
+      "variant": "B",
+      "scenario": "initial-latin",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1008779,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 652985,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 5
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-latin/02-C/result.json",
+      "sha256": "db9557fcd44bc39570d41f00c597573809432095bcba4c111a1629fd014713e5",
+      "variant": "C",
+      "scenario": "initial-latin",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1071839,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 639296,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 4
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-latin/03-A/result.json",
+      "sha256": "dbb76b06047e68afd06b737ab23b396e63041991093c793e6a8f6d5390d7992f",
+      "variant": "A",
+      "scenario": "initial-latin",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 978182,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 620454,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 5
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-latin/04-B/result.json",
+      "sha256": "559a1d3944d265f2ae8e097a8a836133b1f69511a032d27f2f409a1869035af0",
+      "variant": "B",
+      "scenario": "initial-latin",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1009127,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 649986,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 5
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-latin/05-B/result.json",
+      "sha256": "ed14751465567135f8e4e72a50ed38a0977f4f35fb864edcd1ba2ca933e0acd4",
+      "variant": "B",
+      "scenario": "initial-latin",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1003812,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 636356,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 5
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-latin/06-A/result.json",
+      "sha256": "8f64305d2abae9aecde5a58c41bd7e524d7f27e66c11b43fc2d8e632253ab439",
+      "variant": "A",
+      "scenario": "initial-latin",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1005299,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 646469,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 5
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-latin/07-B/result.json",
+      "sha256": "ecc171cd1304f0624c41d63cd6dd89e650a3bf955e87c60dd2c3a0165d780760",
+      "variant": "B",
+      "scenario": "initial-latin",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1007294,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 570744,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 4
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-latin/08-C/result.json",
+      "sha256": "6449e47aa4d077658f4522c8463f7dd230378b1e4d0f16626ebe9eaa94f7cd13",
+      "variant": "C",
+      "scenario": "initial-latin",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1070858,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 641723,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 4
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-latin/09-C/result.json",
+      "sha256": "1fc672cfeac795310ae250288aac8760175fae202c076fcfdf6fda455c18558d",
+      "variant": "C",
+      "scenario": "initial-latin",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 1081585,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 643679,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 4
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-latin/10-B/result.json",
+      "sha256": "7d0755ae3006f13a9bdbbb6c48729b8bf776a5f09f71ac95564d6d97e32aa6fa",
+      "variant": "B",
+      "scenario": "initial-latin",
+      "route": "app",
+      "parity": {
+        "source-0": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 977782,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 1
+        },
+        "unrelated": {
+          "textEqual": true,
+          "geometryEqual": true,
+          "fullPageRasterEqual": true,
+          "stableMeasuredDocument": true,
+          "referenceContainsExpectedWord": true,
+          "referenceContainsControlText": true,
+          "referenceHasInk": true,
+          "firstGoodSampleUs": 621965,
+          "sampledReadyFramesBeforeRecovery": 0,
+          "sampledMismatchingReadyFrames": 0,
+          "sampledPendingFrames": 0,
+          "samples": 2
+        }
+      },
+      "captureBusyFramesSkipped": 5
+    }
+  ]
+}

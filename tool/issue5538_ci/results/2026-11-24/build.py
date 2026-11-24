@@ -65,6 +65,22 @@ def validate_font_fixture(path, payload):
     assert not SIGNED.search(payload), 'Unexpected credential-like text in generated fixture'
 
 
+def validate_frame_png(path, payload, *, incomplete_launch=False):
+    assert payload.startswith(b'\x89PNG\r\n\x1a\n') and payload[12:16] == b'IHDR', 'Invalid frame PNG'
+    dimensions = (int.from_bytes(payload[16:20], 'big'), int.from_bytes(payload[20:24], 'big'))
+    assert len(payload) <= 32 * 1024 * 1024 and all(0 < size <= 8192 for size in dimensions), 'Unexpected frame bounds'
+    receipt = path.parent / 'frame-receipts.json'
+    sidecar = read_json(receipt) if receipt.is_file() else {'measured': [], 'reference': []}
+    rows = [row for row in sidecar['measured'] + sidecar['reference'] if row['pngPath'] == path.name]
+    if rows:
+        assert all(row['pngSha256'] == sha(payload) for row in rows), 'Changed frame PNG'
+        assert all(dimensions == (row['width'], row['height']) for row in rows), 'Frame PNG dimensions changed'
+        return {'status': 'listed-in-original-frame-receipts', 'width': dimensions[0], 'height': dimensions[1]}
+    assert incomplete_launch and not (path.parent / 'result.json').exists(), 'Unreferenced frame PNG'
+    return {'status': 'unvalidated-capture-from-incomplete-launch', 'width': dimensions[0], 'height': dimensions[1],
+            'completedFrameReceipt': False, 'firstGoodOrReferenceEvidence': False}
+
+
 def group(source_root, relative, run, job, artifact, commit, classification, expected_sha=None, summary=None, supplementary=None, artifact_name=None, job_log=None, job_log_sha256=None, job_log_newline_normalization=None):
     root = WORKSPACE / source_root / relative
     name = Path(relative).name
@@ -204,15 +220,13 @@ def archive_group(g, destination, immutable_sources):
                 omitted.append({'path': relative.as_posix(), 'bytes': path.stat().st_size, 'reason': reason})
                 continue
             payload = path.read_bytes()
+            frame_evidence = None
             if path.suffix == '.pdf':
                 validate_font_fixture(path, payload)
             elif path.suffix == '.png':
-                assert payload.startswith(b'\x89PNG\r\n\x1a\n') and payload[12:16] == b'IHDR', 'Invalid frame PNG'
-                sidecar = read_json(path.parent / 'frame-receipts.json')
-                rows = [row for row in sidecar['measured'] + sidecar['reference'] if row['pngPath'] == path.name]
-                assert rows and all(row['pngSha256'] == sha(payload) for row in rows), 'Unreferenced or changed frame PNG'
-                dimensions = (int.from_bytes(payload[16:20], 'big'), int.from_bytes(payload[20:24], 'big'))
-                assert all(dimensions == (row['width'], row['height']) for row in rows), 'Frame PNG dimensions changed'
+                incomplete_launch = (g['classification'] == 'partial-harness-gate-failure' and original is not None
+                    and len(relative.parts) == 4 and relative.parts[0] == 'pdf-5538-font-profile')
+                frame_evidence = validate_frame_png(path, payload, incomplete_launch=incomplete_launch)
             else:
                 payload.decode('utf-8')
                 assert not SIGNED.search(payload), ('signed URL or token candidate', path)
@@ -229,6 +243,8 @@ def archive_group(g, destination, immutable_sources):
             else:
                 assert path.name in {'analysis-summary.json', 'download-receipt.json', 'artifact-receipt.json'}, ('unexplained local file', path)
             item = {'path': name, 'bytes': len(payload), 'sha256': digest, 'origin': origin}
+            if frame_evidence is not None:
+                item['frameEvidence'] = frame_evidence
             if path.suffix == '.jsonl':
                 records = 0
                 other_lines = []

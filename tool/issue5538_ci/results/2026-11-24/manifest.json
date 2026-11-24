@@ -14,7 +14,7 @@
     "completed-app-correctness": 14,
     "completed-app-correctness-partial-artifact": 2,
     "completed-measurement": 15,
-    "completed-product-regression-checks": 8,
+    "completed-product-regression-checks": 11,
     "completed-upstream-correctness": 9,
     "environment-preflight": 1,
     "failed-upstream-correctness": 2,
@@ -24,10 +24,12 @@
     "partial-campaign-cancelled": 5,
     "partial-campaign-with-observed-product-navigation-failure-cause-not-yet-isolated": 1,
     "partial-correctness-failed-measurement": 1,
+    "partial-harness-gate-failure": 1,
     "partial-job-completed-upstream-correctness": 1,
     "partial-measurement-workload-timeout": 1,
     "partial-product-checks-failed-job": 2,
-    "partial-upstream-correctness-failed": 1
+    "partial-upstream-correctness-failed": 1,
+    "reproduced-product-correctness-failure": 1
   },
   "interpretationCaveats": [
     "Completion applies to the declared producer/job scope; an independent failure elsewhere in the workflow is not a failure of this measurement.",
@@ -111,8 +113,8 @@
   "tools": [
     {
       "path": "build.py",
-      "sha256": "d98cd26fe4412d6f74e8f884ae090a0f5d864e0cfdac51b31471298c9da50576",
-      "bytes": 31323
+      "sha256": "0c46f937b6948684f8eef1134470ca9dbe776d64f336ed799316eda599b97473",
+      "bytes": 32383
     },
     {
       "path": "restore.py",
@@ -79724,6 +79726,797 @@
       ]
     },
     {
+      "id": "45421491779-navigation-retry-45421491779",
+      "classification": "reproduced-product-correctness-failure",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45421491779,
+        "jobId": 138541914708,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45421491779/job/138541914708",
+        "sourceCommit": "a07819cbb0adb4421ecef8b749e48ae3c260d89d",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/a07819cbb0adb4421ecef8b749e48ae3c260d89d",
+        "artifact": {
+          "id": 14934443856,
+          "name": "pdf-5538-navigation-windows-profile",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45421491779/artifacts/14934443856",
+          "zipSha256": "35cd2f64b906c372d9fe9c536c0d89759512edfbc896dda5237295531f2d1cef",
+          "zipBytes": 2953150,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "originalLocation": "pdf-5538-ci-evidence/navigation-retry-45421491779",
+      "summary": {
+        "path": "summaries/45421491779-navigation-retry-45421491779.json",
+        "sha256": "e2abeac1a23770000c8ae32f984ee31afa42d74a2f6e63a090cd39d425704fc9",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawArchive": {
+        "format": "tar+gzip",
+        "sha256": "df4bb0721ee58015df596e44a655f84dc69ee9c6e53775c1850d7d1c3c9cc0e3",
+        "bytes": 2950893,
+        "partsInConcatenationOrder": [
+          {
+            "path": "raw/45421491779-navigation-retry-45421491779.tar.gz.part-001",
+            "bytes": 1500000,
+            "sha256": "6964fa6a19df1ee20bbdce10e2e98031f88e2329d483f98439a39b022d67b133"
+          },
+          {
+            "path": "raw/45421491779-navigation-retry-45421491779.tar.gz.part-002",
+            "bytes": 1450893,
+            "sha256": "7aba5a365c8ceec4202cd5b683a497071ec9f4ce46aa9d36398f9760647e2124"
+          }
+        ],
+        "files": [
+          {
+            "path": "analysis-summary.json",
+            "bytes": 42105,
+            "sha256": "e2abeac1a23770000c8ae32f984ee31afa42d74a2f6e63a090cd39d425704fc9",
+            "origin": "post-download-analysis-or-receipt"
+          },
+          {
+            "path": "artifact-receipt.json",
+            "bytes": 380,
+            "sha256": "6c11b0ace0f514c1f0e8b9c6b0caace1fc0b6b79f320d1c01c9ac2ad2063e82c",
+            "origin": "post-download-analysis-or-receipt"
+          },
+          {
+            "path": "attempt-1/build-inputs-before.json",
+            "bytes": 6067,
+            "sha256": "7a9d9c6f8530273444f047aa31a4e9e3cd5aaf2f614e619c9366e5e34a148824",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/build-proof-created.json",
+            "bytes": 624,
+            "sha256": "9c56e710beb5fd1e326c78631e57a9f80ca9f9e2a03b5c88c2907b486edaaa8f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/build-proof-diagnostic-after-process.json",
+            "bytes": 624,
+            "sha256": "9c56e710beb5fd1e326c78631e57a9f80ca9f9e2a03b5c88c2907b486edaaa8f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/build-proof-ready.json",
+            "bytes": 624,
+            "sha256": "9c56e710beb5fd1e326c78631e57a9f80ca9f9e2a03b5c88c2907b486edaaa8f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/build-receipt.snapshot.json",
+            "bytes": 3553782,
+            "sha256": "bc996b1f195fac497563002257fd06abd7673ae71a9102d856480d84dbd742ad",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/build.log",
+            "bytes": 1158,
+            "sha256": "6412294234fbb98ec81dfd000e6d4e51d4022723a0d8f81dbb470c0288c14239",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/data/cold-0/app-data/dictionaries/dictionary.json",
+            "bytes": 776651,
+            "sha256": "f283a6838f87a553601bee07c01195ab4e12fc8e7732ecf90b9c30078f753161",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/data/cold-0/app-data/dictionaries/search_acronyms.json",
+            "bytes": 908263,
+            "sha256": "bea6b34a6dce8fef7cbfa00509a75bbd4557b8b33af8b82890c4bfe007db1633",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/data/cold-0/app-data/logs/last_context.json",
+            "bytes": 649,
+            "sha256": "6a197931f927a4e4e10938e1db81b552839e7c82e9d36d4d7771a3f9a379fe82",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/data/cold-0/app-data/otzaria_capabilities.json",
+            "bytes": 602,
+            "sha256": "1e000006a6f9c1b126ab70183a9c3157408a46796a78971f6a3a18dcf8850722",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/data/cold-0/index/meta.json",
+            "bytes": 4584,
+            "sha256": "e1bd995a26c34de1ea80a5df192b8bc6dc4bf7532aa9500c9338e77797edeefe",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/data/cold-0/index/otzaria_book_order.json",
+            "bytes": 204,
+            "sha256": "72d0ee4ca85ce180789aaa7562d216bc87c8ed318b3e87c729fc0fdff00b6f72",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/data/cold-0/index/otzaria_index_meta.json",
+            "bytes": 270,
+            "sha256": "b00fefc416c7d59648c2830910b26b330e817ff51d670ab17f31715049df694f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/launch-000/build-proof-before.json",
+            "bytes": 624,
+            "sha256": "9c56e710beb5fd1e326c78631e57a9f80ca9f9e2a03b5c88c2907b486edaaa8f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/launch-000/completion.json",
+            "bytes": 766,
+            "sha256": "659d5efbb242fd50b196eee69c581291ccfd8ad1b62fbc83982b6c33cf929fcc",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/launch-000/launch.json",
+            "bytes": 130,
+            "sha256": "56dd0946d993ecf98037fe3d7e6ba0332c07e0b0438a30e442665de4bbedd291",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/launch-000/navigation-measured-0.json",
+            "bytes": 202088,
+            "sha256": "c601ddbeb7927205a47a7c6d19ee57a8033835726d6fd580a9526b1657dc1cb1",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/launch-000/navigation-measured-1.json",
+            "bytes": 87559,
+            "sha256": "9225c405649a9ce49a707f2a12c09a6fb4134c5179c00e624b0b84f9e2887a3b",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/launch-000/navigation-warmup-0.json",
+            "bytes": 198271,
+            "sha256": "fc06067c3249b573a0422ea07ae9686030405079e4416f4eecd70640d6ff820d",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/launch-000/phases.jsonl",
+            "bytes": 57048,
+            "sha256": "c9dd50da679d8c423299f477f5e12a4609f717a965e8f984a52f3a41e4b97fcc",
+            "origin": "original-github-artifact-member",
+            "jsonlRows": 28
+          },
+          {
+            "path": "attempt-1/launch-000/samples.csv",
+            "bytes": 16231,
+            "sha256": "9d3f6626a2b549cb8b516b085fd5f838c4afd7c746470b489ac91795a775a3bb",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/launch-000/samples.csv.status.json",
+            "bytes": 106,
+            "sha256": "3f590e4a01edf9a6e06e994a48a9660e2cf776209c6c31c968812c6ded20ef9f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/launch-000/stderr.log",
+            "bytes": 1824,
+            "sha256": "e600d35874824dc4768ab705b7571cb9431dde4237c49aac529c028c05effcd1",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/launch-000/stdout.log",
+            "bytes": 6996,
+            "sha256": "23a1e792e736179654bb508b6e9f5e04749ff01abaf061f610d3636e68e40291",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/manifest.json",
+            "bytes": 2891,
+            "sha256": "8c33d9d2dab297a2a208099b20d2ee7390c21c38af04e3bfa729bea7770a2a22",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/pdf-case.json",
+            "bytes": 299,
+            "sha256": "481bf3a9702b9fecb7529688f7b0fa6ac6f399fd1bcb54400e97588c1e5cce25",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/phases.jsonl",
+            "bytes": 57076,
+            "sha256": "d4f52fd4e5c48879d06424f674eaf6db78389865bb5cda354c5661c2c3336d35",
+            "origin": "original-github-artifact-member",
+            "jsonlRows": 28
+          },
+          {
+            "path": "attempt-1/prepare-data-0/build-proof-after.json",
+            "bytes": 624,
+            "sha256": "9c56e710beb5fd1e326c78631e57a9f80ca9f9e2a03b5c88c2907b486edaaa8f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/prepare-data-0/build-proof-before.json",
+            "bytes": 624,
+            "sha256": "9c56e710beb5fd1e326c78631e57a9f80ca9f9e2a03b5c88c2907b486edaaa8f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/prepare-data-0/completion.json",
+            "bytes": 362,
+            "sha256": "ae9fff75a8ddc79efc8fdead273eb6b47e17a0dc97e47340ee7f19c299d7d04e",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/prepare-data-0/launch.json",
+            "bytes": 131,
+            "sha256": "4d33ddb4da4726aa61a99666083e225be24260db9144881612ae59cb623104d5",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/prepare-data-0/phases.jsonl",
+            "bytes": 1952,
+            "sha256": "77fa1cdbd44aeac5101611ec3e7fca5cf07d5c5ae6f34978f6a5eaca881a7782",
+            "origin": "original-github-artifact-member",
+            "jsonlRows": 2
+          },
+          {
+            "path": "attempt-1/prepare-data-0/stderr.log",
+            "bytes": 10,
+            "sha256": "92a19969583cef404789053f0712b32f2103453b19f4a283d3c409241d9fd1b5",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/prepare-data-0/stdout.log",
+            "bytes": 74,
+            "sha256": "da9a6df55a9f84d2c42ab161b700995e1fe07bb89f90ebd2894f4551d2369ff3",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/report.json",
+            "bytes": 157113,
+            "sha256": "5554edc51d12173d389c7c9ac768249decb77479f500a00a725424efb52280c1",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/samples.csv",
+            "bytes": 16231,
+            "sha256": "9d3f6626a2b549cb8b516b085fd5f838c4afd7c746470b489ac91795a775a3bb",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-1/samples.csv.errors.jsonl",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "origin": "original-github-artifact-member",
+            "jsonlRows": 0
+          },
+          {
+            "path": "attempt-2/build-proof-before-case.json",
+            "bytes": 624,
+            "sha256": "9c56e710beb5fd1e326c78631e57a9f80ca9f9e2a03b5c88c2907b486edaaa8f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/build-proof-diagnostic-after-process.json",
+            "bytes": 624,
+            "sha256": "9c56e710beb5fd1e326c78631e57a9f80ca9f9e2a03b5c88c2907b486edaaa8f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/build-proof-ready.json",
+            "bytes": 624,
+            "sha256": "9c56e710beb5fd1e326c78631e57a9f80ca9f9e2a03b5c88c2907b486edaaa8f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/build-receipt.snapshot.json",
+            "bytes": 3553782,
+            "sha256": "bc996b1f195fac497563002257fd06abd7673ae71a9102d856480d84dbd742ad",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/build-reuse.json",
+            "bytes": 170,
+            "sha256": "73dad7ce099903400ced95fa58fbb4df5b143ab2ab64d0c14430cd2bc30afc5b",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/data/cold-0/app-data/dictionaries/dictionary.json",
+            "bytes": 776651,
+            "sha256": "f283a6838f87a553601bee07c01195ab4e12fc8e7732ecf90b9c30078f753161",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/data/cold-0/app-data/dictionaries/search_acronyms.json",
+            "bytes": 908263,
+            "sha256": "bea6b34a6dce8fef7cbfa00509a75bbd4557b8b33af8b82890c4bfe007db1633",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/data/cold-0/app-data/logs/last_context.json",
+            "bytes": 649,
+            "sha256": "62dd42cfa1192ace13cd6b2473dad9fc57e699dcdc6b85d7c64af7fad5329c45",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/data/cold-0/app-data/otzaria_capabilities.json",
+            "bytes": 602,
+            "sha256": "7f5a0e9653fa75a5fde21ecae3116c9b155f81c80f2575ac01207343c557bb30",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/data/cold-0/index/meta.json",
+            "bytes": 4584,
+            "sha256": "e1bd995a26c34de1ea80a5df192b8bc6dc4bf7532aa9500c9338e77797edeefe",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/data/cold-0/index/otzaria_book_order.json",
+            "bytes": 204,
+            "sha256": "72d0ee4ca85ce180789aaa7562d216bc87c8ed318b3e87c729fc0fdff00b6f72",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/data/cold-0/index/otzaria_index_meta.json",
+            "bytes": 270,
+            "sha256": "7eb0e7edc35adfcfdb69382e49dc18210bf0ae5a1cda38d025ec3b7f84bd863f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/launch-000/build-proof-before.json",
+            "bytes": 624,
+            "sha256": "9c56e710beb5fd1e326c78631e57a9f80ca9f9e2a03b5c88c2907b486edaaa8f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/launch-000/completion.json",
+            "bytes": 763,
+            "sha256": "c1b34abe8b165e53a6cb013fa044b2793eb6bfb6d260449803ded992239baa85",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/launch-000/launch.json",
+            "bytes": 130,
+            "sha256": "357178490e48fcec6b235a247f44c01443c9af218cfea0636d50da50acea5ca4",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/launch-000/navigation-warmup-0.json",
+            "bytes": 67433,
+            "sha256": "214fc7ea999395ae86e320331dbb059d461c6233ac0a1dd48109d0b7e2112f43",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/launch-000/phases.jsonl",
+            "bytes": 14370,
+            "sha256": "5aa719debb3e4228837178aecd27314adafdebd9f999b26afc41848aa634f425",
+            "origin": "original-github-artifact-member",
+            "jsonlRows": 10
+          },
+          {
+            "path": "attempt-2/launch-000/samples.csv",
+            "bytes": 10936,
+            "sha256": "f4c9f3fbbf1fd7edf669cc82dadadff9117bab11d1f6fec8b387c8184bbbd364",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/launch-000/samples.csv.status.json",
+            "bytes": 106,
+            "sha256": "f30d15df3e41ff81f9c4d4eb19e9cb3d6bece0edefdc84a6869d4a7edd4a62a8",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/launch-000/stderr.log",
+            "bytes": 1821,
+            "sha256": "2c2e1ecb728ec44e4489e4fdc26a3e15f461063ae077586235c5d783505912ce",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/launch-000/stdout.log",
+            "bytes": 3410,
+            "sha256": "cb8ea20bd608e7c05720e750b8b232b8b7148a0122331750a449db684fe0da63",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/manifest.json",
+            "bytes": 2890,
+            "sha256": "7a2f7fe6fdebf5c7052421022d6abfc743fec4cfb284eb5017d61842228e87e0",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/pdf-case.json",
+            "bytes": 299,
+            "sha256": "481bf3a9702b9fecb7529688f7b0fa6ac6f399fd1bcb54400e97588c1e5cce25",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/phases.jsonl",
+            "bytes": 14380,
+            "sha256": "977e107e84126a1fd0151556a96cf4f139e86b3d2e88181c1dd2f61f21558fbe",
+            "origin": "original-github-artifact-member",
+            "jsonlRows": 10
+          },
+          {
+            "path": "attempt-2/prepare-data-0/build-proof-after.json",
+            "bytes": 624,
+            "sha256": "9c56e710beb5fd1e326c78631e57a9f80ca9f9e2a03b5c88c2907b486edaaa8f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/prepare-data-0/build-proof-before.json",
+            "bytes": 624,
+            "sha256": "9c56e710beb5fd1e326c78631e57a9f80ca9f9e2a03b5c88c2907b486edaaa8f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/prepare-data-0/completion.json",
+            "bytes": 362,
+            "sha256": "ae9fff75a8ddc79efc8fdead273eb6b47e17a0dc97e47340ee7f19c299d7d04e",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/prepare-data-0/launch.json",
+            "bytes": 131,
+            "sha256": "224bce5ae09020705efc8f6d584d0e1b41fda9d95206cbd7fcb7297895de6a2b",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/prepare-data-0/phases.jsonl",
+            "bytes": 1952,
+            "sha256": "22eae15ed3d2e0ad119f80c234e5a79f643198b645756803dccba7e9a350f4ec",
+            "origin": "original-github-artifact-member",
+            "jsonlRows": 2
+          },
+          {
+            "path": "attempt-2/prepare-data-0/stderr.log",
+            "bytes": 10,
+            "sha256": "92a19969583cef404789053f0712b32f2103453b19f4a283d3c409241d9fd1b5",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/prepare-data-0/stdout.log",
+            "bytes": 74,
+            "sha256": "a7214b76c534644ecc7ab5ce04c8e3dd204b966a56a272d23a4035dde77fad23",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/report.json",
+            "bytes": 39119,
+            "sha256": "2ced6def9b0f48a683a4357550dd0f7c28a201bfd56fff2940e18584a8d12be4",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/samples.csv",
+            "bytes": 10936,
+            "sha256": "f4c9f3fbbf1fd7edf669cc82dadadff9117bab11d1f6fec8b387c8184bbbd364",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-2/samples.csv.errors.jsonl",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "origin": "original-github-artifact-member",
+            "jsonlRows": 0
+          },
+          {
+            "path": "attempt-3/build-proof-before-case.json",
+            "bytes": 624,
+            "sha256": "9c56e710beb5fd1e326c78631e57a9f80ca9f9e2a03b5c88c2907b486edaaa8f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/build-proof-diagnostic-after-process.json",
+            "bytes": 624,
+            "sha256": "9c56e710beb5fd1e326c78631e57a9f80ca9f9e2a03b5c88c2907b486edaaa8f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/build-proof-ready.json",
+            "bytes": 624,
+            "sha256": "9c56e710beb5fd1e326c78631e57a9f80ca9f9e2a03b5c88c2907b486edaaa8f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/build-receipt.snapshot.json",
+            "bytes": 3553782,
+            "sha256": "bc996b1f195fac497563002257fd06abd7673ae71a9102d856480d84dbd742ad",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/build-reuse.json",
+            "bytes": 170,
+            "sha256": "4be2d77744387fd99e9a3a317432396e816e45243d051c88375d00a8f6ca222f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/data/cold-0/app-data/dictionaries/dictionary.json",
+            "bytes": 776651,
+            "sha256": "f283a6838f87a553601bee07c01195ab4e12fc8e7732ecf90b9c30078f753161",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/data/cold-0/app-data/dictionaries/search_acronyms.json",
+            "bytes": 908263,
+            "sha256": "bea6b34a6dce8fef7cbfa00509a75bbd4557b8b33af8b82890c4bfe007db1633",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/data/cold-0/app-data/logs/last_context.json",
+            "bytes": 649,
+            "sha256": "0b0b751bf4e30713cbd42ed37407b19857d90d6740dadc594b15dae5511819ed",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/data/cold-0/app-data/otzaria_capabilities.json",
+            "bytes": 602,
+            "sha256": "4f6051a4cae7a167eecfe42f74a3cdac60b11250772c2c38474967bd56097362",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/data/cold-0/index/meta.json",
+            "bytes": 4584,
+            "sha256": "e1bd995a26c34de1ea80a5df192b8bc6dc4bf7532aa9500c9338e77797edeefe",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/data/cold-0/index/otzaria_book_order.json",
+            "bytes": 204,
+            "sha256": "72d0ee4ca85ce180789aaa7562d216bc87c8ed318b3e87c729fc0fdff00b6f72",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/data/cold-0/index/otzaria_index_meta.json",
+            "bytes": 270,
+            "sha256": "b93a6f50bb151bd0bf73644e57b158cd2ca4a3b2f5629c1c3746a47cd0e3c732",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/launch-000/build-proof-before.json",
+            "bytes": 624,
+            "sha256": "9c56e710beb5fd1e326c78631e57a9f80ca9f9e2a03b5c88c2907b486edaaa8f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/launch-000/completion.json",
+            "bytes": 766,
+            "sha256": "659d5efbb242fd50b196eee69c581291ccfd8ad1b62fbc83982b6c33cf929fcc",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/launch-000/launch.json",
+            "bytes": 130,
+            "sha256": "52d8a83386d77d190eab4d2b3340800cb0db77b406cf3ee2680abb7281ca5561",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/launch-000/navigation-measured-0.json",
+            "bytes": 80399,
+            "sha256": "969747cf153b471c3c258bd98ea308cb7e4702df08b351956bcc824cc14507bc",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/launch-000/navigation-warmup-0.json",
+            "bytes": 202126,
+            "sha256": "afbebf4ca16b7b37e2ed25517961a0cae962267d8730280ece017dade054bdd5",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/launch-000/phases.jsonl",
+            "bytes": 35581,
+            "sha256": "49bc19c58dc5baef0b20924ef34dc6edc8b2eee83bafb319196423860c7723f7",
+            "origin": "original-github-artifact-member",
+            "jsonlRows": 19
+          },
+          {
+            "path": "attempt-3/launch-000/samples.csv",
+            "bytes": 13634,
+            "sha256": "f9814bc70e016af55661299ef14af99d9e1921a1f55304c6989848772faa107f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/launch-000/samples.csv.status.json",
+            "bytes": 106,
+            "sha256": "762e3a9d14465467ee35c163322e5be7ade6534c7f5df66ae5770ee8b42a4778",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/launch-000/stderr.log",
+            "bytes": 1824,
+            "sha256": "e600d35874824dc4768ab705b7571cb9431dde4237c49aac529c028c05effcd1",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/launch-000/stdout.log",
+            "bytes": 5234,
+            "sha256": "20f364d15a428ca75490fcb62fe297d05a6419aaeda430ba891c3252671f0e16",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/manifest.json",
+            "bytes": 2890,
+            "sha256": "e5dd82708ae6094e25cf750175165e01539e7a198b731529da709ee11d084d8e",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/pdf-case.json",
+            "bytes": 299,
+            "sha256": "481bf3a9702b9fecb7529688f7b0fa6ac6f399fd1bcb54400e97588c1e5cce25",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/phases.jsonl",
+            "bytes": 35600,
+            "sha256": "a839fc8db9765eacbb4f7e51c85e811296a1e106d4eb8ecd4c6b6ab96a10fa57",
+            "origin": "original-github-artifact-member",
+            "jsonlRows": 19
+          },
+          {
+            "path": "attempt-3/prepare-data-0/build-proof-after.json",
+            "bytes": 624,
+            "sha256": "9c56e710beb5fd1e326c78631e57a9f80ca9f9e2a03b5c88c2907b486edaaa8f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/prepare-data-0/build-proof-before.json",
+            "bytes": 624,
+            "sha256": "9c56e710beb5fd1e326c78631e57a9f80ca9f9e2a03b5c88c2907b486edaaa8f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/prepare-data-0/completion.json",
+            "bytes": 362,
+            "sha256": "ae9fff75a8ddc79efc8fdead273eb6b47e17a0dc97e47340ee7f19c299d7d04e",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/prepare-data-0/launch.json",
+            "bytes": 131,
+            "sha256": "55e60e1f2dc111b0902cec4a46ed2d61b551e156ed1bf8d85417e9ea8c37e01d",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/prepare-data-0/phases.jsonl",
+            "bytes": 1952,
+            "sha256": "fee6792bc3ccce099b8da8ba9be60d032a551c5b53e1d2c4a3f2a22ca9ea0cf1",
+            "origin": "original-github-artifact-member",
+            "jsonlRows": 2
+          },
+          {
+            "path": "attempt-3/prepare-data-0/stderr.log",
+            "bytes": 10,
+            "sha256": "92a19969583cef404789053f0712b32f2103453b19f4a283d3c409241d9fd1b5",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/prepare-data-0/stdout.log",
+            "bytes": 74,
+            "sha256": "d3b3140f3fd911908ec0a2be2dffbea757bb583e25152910280b61c0130699a6",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/report.json",
+            "bytes": 93290,
+            "sha256": "33e5a8e9f81e68024f342a03aa3b8b0c20b39dfb59a4015942dd987c089a1219",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/samples.csv",
+            "bytes": 13634,
+            "sha256": "f9814bc70e016af55661299ef14af99d9e1921a1f55304c6989848772faa107f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "attempt-3/samples.csv.errors.jsonl",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "origin": "original-github-artifact-member",
+            "jsonlRows": 0
+          },
+          {
+            "path": "diagnostic-summary.json",
+            "bytes": 6529,
+            "sha256": "d7037fe50f43b8a48dfcfded50b196556813c3c01c479865186a4f33924b2584",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "logs/analyze.log",
+            "bytes": 97,
+            "sha256": "7aede71dd76f470535d7112b59c3e6a9498e820dfb9d8d720609322fff55ea99",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "logs/attempt-1.log",
+            "bytes": 25162,
+            "sha256": "1bf614bac31ebaf65d627de598ad9ef0c904895af1579fd5229ecf7c03c3a729",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "logs/attempt-2.log",
+            "bytes": 10825,
+            "sha256": "1b3cd97ee91ce0ebaaa19d0317ee0576f66b002d3c9d30c1604004f5a94cfc0b",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "logs/attempt-3.log",
+            "bytes": 14756,
+            "sha256": "5e480abb9cec8e733463240ac0d1a177fc3bd3714b6d8212909a08a71e9c5869",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "logs/diagnostic-contracts.log",
+            "bytes": 752,
+            "sha256": "3c52c664420110a539448d422683762ff58a2577ba7e481fdc00a02a7fdb9296",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "logs/prepare-pdf-case.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "logs/resolve.log",
+            "bytes": 6010,
+            "sha256": "678306c53d1ee2ebfebfc5a87dd793fee72b1e681b8dacc2af3b2c17c090f14a",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "logs/sdk-bootstrap.log",
+            "bytes": 440,
+            "sha256": "cf15d43732535fdadc89427cc829528039a9d794652a99342b9a27bee061d500",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "native-build.json",
+            "bytes": 3553782,
+            "sha256": "bc996b1f195fac497563002257fd06abd7673ae71a9102d856480d84dbd742ad",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "post-download-analysis/analyze_navigation_trace.py",
+            "bytes": 9437,
+            "sha256": "1e67cc90b937bcf2f0a2a5b4902923bbc73da8d4e6d767aac53912a5c9d680d6",
+            "origin": "post-download-analysis-code",
+            "originalLocation": "pdf-5538-analysis-tools/analyze_navigation_trace.py"
+          }
+        ],
+        "fileCount": 119,
+        "uncompressedBytes": 20888409,
+        "fileTypes": {
+          ".csv": 6,
+          ".json": 79,
+          ".jsonl": 12,
+          ".log": 21,
+          ".py": 1
+        },
+        "jsonlRows": 120
+      },
+      "omitted": [
+        {
+          "path": "artifact.zip",
+          "bytes": 2953150,
+          "reason": "original-container-or-dependency-archive; container identity retained"
+        }
+      ]
+    },
+    {
       "id": "45421880237-layout-spy-failure-45421880237-Linux",
       "classification": "failed-viewer-test-spy",
       "declaredScopeComplete": false,
@@ -80148,6 +80941,3472 @@
           "reason": "original-container-or-dependency-archive; container identity retained"
         }
       ]
+    },
+    {
+      "id": "45424191470-layout-engine-45424191470-Linux",
+      "classification": "completed-product-regression-checks",
+      "declaredScopeComplete": true,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45424191470,
+        "jobId": 138551564377,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45424191470/job/138551564377",
+        "sourceCommit": "663a45b915280da696d47e0a91cd982bf31e15bd",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/663a45b915280da696d47e0a91cd982bf31e15bd",
+        "artifact": {
+          "id": 14936766052,
+          "name": "pdf-5538-layout-engine-Linux",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45424191470/artifacts/14936766052",
+          "zipSha256": "534c53cbd19e750a909a189d7329b3a2ab2b65421aa5bd30a28dd21813fbbd71",
+          "zipBytes": 32795,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "originalLocation": "pdf-5538-ci-evidence/layout-engine-45424191470-Linux",
+      "summary": {
+        "path": "summaries/45424191470-layout-engine-45424191470-Linux.json",
+        "sha256": "217754d1bd3959e1cf2baecf34a9b71b71db92be07e642e2a3a886bfbb28b5d9",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawArchive": {
+        "format": "tar+gzip",
+        "sha256": "adfb7eaf668564a34c533f5c9f06c19f7f31abae4befb4a4adba05ec6fff53c9",
+        "bytes": 38382,
+        "partsInConcatenationOrder": [
+          {
+            "path": "raw/45424191470-layout-engine-45424191470-Linux.tar.gz",
+            "bytes": 38382,
+            "sha256": "adfb7eaf668564a34c533f5c9f06c19f7f31abae4befb4a4adba05ec6fff53c9"
+          }
+        ],
+        "files": [
+          {
+            "path": "analysis-summary.json",
+            "bytes": 2444,
+            "sha256": "217754d1bd3959e1cf2baecf34a9b71b71db92be07e642e2a3a886bfbb28b5d9",
+            "origin": "post-download-analysis-or-receipt"
+          },
+          {
+            "path": "artifact-receipt.json",
+            "bytes": 372,
+            "sha256": "0e6f48d8263fe7abbc57befabe27ecd04e01e8783ddd7cf10eec173d068bf58f",
+            "origin": "post-download-analysis-or-receipt"
+          },
+          {
+            "path": "pdf-layout-engine-analyze.log",
+            "bytes": 50,
+            "sha256": "8153cb0e786d1fc221b95a3888372662ad3117efe65e43c969286701be2110a1",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-layout-engine-package-config.json",
+            "bytes": 26301,
+            "sha256": "164df8750ddae0a4c56d4a1e53b8aefe1fd31c006f1bacf656b0b61e8e890f2d",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-layout-engine-pubspec.lock",
+            "bytes": 29900,
+            "sha256": "a6de60245621d50431f2bd5a32d1bb89af505ac119deefbae7ddb06fee4e2234",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-layout-engine-sdk.json",
+            "bytes": 635,
+            "sha256": "4322aeb138356aa1d65d10275d629e648d0381daa1c445b7e2439e7f9b4b9acf",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-layout-engine-source.txt",
+            "bytes": 41,
+            "sha256": "e0e6a40aea4e38d93ef8f29ed1a9b1b0d423ccd8322c3c0557a19aa7ad0e535e",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-layout-engine-tests.jsonl",
+            "bytes": 66522,
+            "sha256": "0ef64340840151afd26d9dcf4090b138d54569f93a4f35f26e80a1de75c79720",
+            "origin": "original-github-artifact-member",
+            "jsonlRows": 317
+          },
+          {
+            "path": "pdf-layout-engine-tests.log",
+            "bytes": 18210,
+            "sha256": "845c3f9e679eeea559bbc899e8fe0af896edc61000b94ae9a42435658fb33f8b",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-layout-engine-viewer-tests.jsonl",
+            "bytes": 84799,
+            "sha256": "67d85d4d4bc16b391c32eb8177f5283de4dc353f1ac84a8e2feaa6185f85eeba",
+            "origin": "original-github-artifact-member",
+            "jsonlRows": 441
+          },
+          {
+            "path": "pdf-layout-engine-viewer-tests.log",
+            "bytes": 30160,
+            "sha256": "1ba2bebfdfb6310d2115a17eff475a28b73d365de68ff6d9fc188ffbc21cf80a",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "post-download-analysis/analyze_layout_engine_gate.py",
+            "bytes": 2831,
+            "sha256": "824d83f7e51e919d816874592eee6b395d8446987574bc8bbab66022a32f6075",
+            "origin": "post-download-analysis-code",
+            "originalLocation": "pdf-5538-analysis-tools/analyze_layout_engine_gate.py"
+          },
+          {
+            "path": "post-download-analysis/analyze_post_implementation.py",
+            "bytes": 17385,
+            "sha256": "1ed24209753ba035d4aea91d6a6007b70217ef1d6a0373991c30b95cf38e27df",
+            "origin": "post-download-analysis-code",
+            "originalLocation": "pdf-5538-analysis-tools/analyze_post_implementation.py"
+          }
+        ],
+        "fileCount": 13,
+        "uncompressedBytes": 279650,
+        "fileTypes": {
+          ".json": 4,
+          ".jsonl": 2,
+          ".lock": 1,
+          ".log": 3,
+          ".py": 2,
+          ".txt": 1
+        },
+        "jsonlRows": 758
+      },
+      "omitted": [
+        {
+          "path": "artifact.zip",
+          "bytes": 32795,
+          "reason": "original-container-or-dependency-archive; container identity retained"
+        }
+      ]
+    },
+    {
+      "id": "45424191470-layout-engine-45424191470-Windows",
+      "classification": "completed-product-regression-checks",
+      "declaredScopeComplete": true,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45424191470,
+        "jobId": 138551564634,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45424191470/job/138551564634",
+        "sourceCommit": "663a45b915280da696d47e0a91cd982bf31e15bd",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/663a45b915280da696d47e0a91cd982bf31e15bd",
+        "artifact": {
+          "id": 14936338574,
+          "name": "pdf-5538-layout-engine-Windows",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45424191470/artifacts/14936338574",
+          "zipSha256": "cc30da876d32c0b0ca950f23a386ab1b3f63104379543dc8cac0f58ef4e58852",
+          "zipBytes": 32985,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "originalLocation": "pdf-5538-ci-evidence/layout-engine-45424191470-Windows",
+      "summary": {
+        "path": "summaries/45424191470-layout-engine-45424191470-Windows.json",
+        "sha256": "f3791a42a86c4a66a097b85d3ff0886d81d75a258a32d9f44ff209f6ff4ba6f6",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawArchive": {
+        "format": "tar+gzip",
+        "sha256": "161901141656b4823c597a003a454508ea470b6f687c10641687dab6a5a0c420",
+        "bytes": 38619,
+        "partsInConcatenationOrder": [
+          {
+            "path": "raw/45424191470-layout-engine-45424191470-Windows.tar.gz",
+            "bytes": 38619,
+            "sha256": "161901141656b4823c597a003a454508ea470b6f687c10641687dab6a5a0c420"
+          }
+        ],
+        "files": [
+          {
+            "path": "analysis-summary.json",
+            "bytes": 2457,
+            "sha256": "f3791a42a86c4a66a097b85d3ff0886d81d75a258a32d9f44ff209f6ff4ba6f6",
+            "origin": "post-download-analysis-or-receipt"
+          },
+          {
+            "path": "artifact-receipt.json",
+            "bytes": 376,
+            "sha256": "15a82faa9c16bd770573b1532da01a2db8dc61b51e0982383f958fef6d2c4114",
+            "origin": "post-download-analysis-or-receipt"
+          },
+          {
+            "path": "pdf-layout-engine-analyze.log",
+            "bytes": 50,
+            "sha256": "8153cb0e786d1fc221b95a3888372662ad3117efe65e43c969286701be2110a1",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-layout-engine-package-config.json",
+            "bytes": 29092,
+            "sha256": "0301655074296cdf3ba883cdb85cd5ddb5f3a01e78a5ad32a048729cf0bceb57",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-layout-engine-pubspec.lock",
+            "bytes": 29900,
+            "sha256": "a6de60245621d50431f2bd5a32d1bb89af505ac119deefbae7ddb06fee4e2234",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-layout-engine-sdk.json",
+            "bytes": 646,
+            "sha256": "bc323debabb52b574e6dbb72d1d103042157dd1da87177edd20788cb886735dd",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-layout-engine-source.txt",
+            "bytes": 41,
+            "sha256": "e0e6a40aea4e38d93ef8f29ed1a9b1b0d423ccd8322c3c0557a19aa7ad0e535e",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-layout-engine-tests.jsonl",
+            "bytes": 64830,
+            "sha256": "6c2acdf6dff3e7b87bbcd8ec55d9ac8659fc76a86f17aa8dabbd740bb199fbc5",
+            "origin": "original-github-artifact-member",
+            "jsonlRows": 317
+          },
+          {
+            "path": "pdf-layout-engine-tests.log",
+            "bytes": 18498,
+            "sha256": "f26429faff0d523b5ca6ee18b7a7b415f914b26b1fa4e8eb58875e6072da15f8",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-layout-engine-viewer-tests.jsonl",
+            "bytes": 83365,
+            "sha256": "15d870e41b506330082831d53dbe91c0b546b912fcc86d71841bc46cc7d9ce5a",
+            "origin": "original-github-artifact-member",
+            "jsonlRows": 441
+          },
+          {
+            "path": "pdf-layout-engine-viewer-tests.log",
+            "bytes": 28929,
+            "sha256": "3d43e631b19b5138190a2724c8975d56c0a3411b0903f2dfd94f0b3c7b5eaacc",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "post-download-analysis/analyze_layout_engine_gate.py",
+            "bytes": 2831,
+            "sha256": "824d83f7e51e919d816874592eee6b395d8446987574bc8bbab66022a32f6075",
+            "origin": "post-download-analysis-code",
+            "originalLocation": "pdf-5538-analysis-tools/analyze_layout_engine_gate.py"
+          },
+          {
+            "path": "post-download-analysis/analyze_post_implementation.py",
+            "bytes": 17385,
+            "sha256": "1ed24209753ba035d4aea91d6a6007b70217ef1d6a0373991c30b95cf38e27df",
+            "origin": "post-download-analysis-code",
+            "originalLocation": "pdf-5538-analysis-tools/analyze_post_implementation.py"
+          }
+        ],
+        "fileCount": 13,
+        "uncompressedBytes": 278400,
+        "fileTypes": {
+          ".json": 4,
+          ".jsonl": 2,
+          ".lock": 1,
+          ".log": 3,
+          ".py": 2,
+          ".txt": 1
+        },
+        "jsonlRows": 758
+      },
+      "omitted": [
+        {
+          "path": "artifact.zip",
+          "bytes": 32985,
+          "reason": "original-container-or-dependency-archive; container identity retained"
+        }
+      ]
+    },
+    {
+      "id": "45424191470-layout-engine-45424191470-macOS",
+      "classification": "completed-product-regression-checks",
+      "declaredScopeComplete": true,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45424191470,
+        "jobId": 138551563962,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45424191470/job/138551563962",
+        "sourceCommit": "663a45b915280da696d47e0a91cd982bf31e15bd",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/663a45b915280da696d47e0a91cd982bf31e15bd",
+        "artifact": {
+          "id": 14934318654,
+          "name": "pdf-5538-layout-engine-macOS",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45424191470/artifacts/14934318654",
+          "zipSha256": "9b53db0550062aa21e4e1fde9fa4c54d2f8cc809d6a3c32b735b1e37a6900253",
+          "zipBytes": 33076,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "originalLocation": "pdf-5538-ci-evidence/layout-engine-45424191470-macOS",
+      "summary": {
+        "path": "summaries/45424191470-layout-engine-45424191470-macOS.json",
+        "sha256": "3d81bf337193325328883b166f2c5fa46c7c9eaf968d424618823c12f122a841",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawArchive": {
+        "format": "tar+gzip",
+        "sha256": "2d21effdff6b46d5f48edbd026ea433f42bafa024df98774e896eddada308984",
+        "bytes": 38625,
+        "partsInConcatenationOrder": [
+          {
+            "path": "raw/45424191470-layout-engine-45424191470-macOS.tar.gz",
+            "bytes": 38625,
+            "sha256": "2d21effdff6b46d5f48edbd026ea433f42bafa024df98774e896eddada308984"
+          }
+        ],
+        "files": [
+          {
+            "path": "analysis-summary.json",
+            "bytes": 2453,
+            "sha256": "3d81bf337193325328883b166f2c5fa46c7c9eaf968d424618823c12f122a841",
+            "origin": "post-download-analysis-or-receipt"
+          },
+          {
+            "path": "artifact-receipt.json",
+            "bytes": 372,
+            "sha256": "e75a7c5b4fcefc3ca9144e4c001cfdf0f45095c7f7d1360fc2c661753794a3de",
+            "origin": "post-download-analysis-or-receipt"
+          },
+          {
+            "path": "pdf-layout-engine-analyze.log",
+            "bytes": 50,
+            "sha256": "8153cb0e786d1fc221b95a3888372662ad3117efe65e43c969286701be2110a1",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-layout-engine-package-config.json",
+            "bytes": 26506,
+            "sha256": "2eb865c37d59c6ecac0767277992ded2ae48d82f7a08ccf743f4e4f8fd5b4f08",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-layout-engine-pubspec.lock",
+            "bytes": 29900,
+            "sha256": "a6de60245621d50431f2bd5a32d1bb89af505ac119deefbae7ddb06fee4e2234",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-layout-engine-sdk.json",
+            "bytes": 644,
+            "sha256": "52fe5e85f6c20f96b68de54575b883c72d06d0a614878c398ae6f12e9c716fad",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-layout-engine-source.txt",
+            "bytes": 41,
+            "sha256": "e0e6a40aea4e38d93ef8f29ed1a9b1b0d423ccd8322c3c0557a19aa7ad0e535e",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-layout-engine-tests.jsonl",
+            "bytes": 66720,
+            "sha256": "39e9196d51b63e91b4367d23e528ade88a37016b4186a0c413d12b66ae5a6233",
+            "origin": "original-github-artifact-member",
+            "jsonlRows": 317
+          },
+          {
+            "path": "pdf-layout-engine-tests.log",
+            "bytes": 18093,
+            "sha256": "45b76b2381615f45e53d8e1f534b326eb74ab5353412739147ea58695581201b",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-layout-engine-viewer-tests.jsonl",
+            "bytes": 85066,
+            "sha256": "05f6a2afa62064cf8bf8e331d84f26bc6fb475d93a0cf7450329bd59f8c6cee4",
+            "origin": "original-github-artifact-member",
+            "jsonlRows": 441
+          },
+          {
+            "path": "pdf-layout-engine-viewer-tests.log",
+            "bytes": 30277,
+            "sha256": "4ebf1ce9c5b5e0b9c13af5a9f86f87c44a29040d849c4902430014cc56eae16d",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "post-download-analysis/analyze_layout_engine_gate.py",
+            "bytes": 2831,
+            "sha256": "824d83f7e51e919d816874592eee6b395d8446987574bc8bbab66022a32f6075",
+            "origin": "post-download-analysis-code",
+            "originalLocation": "pdf-5538-analysis-tools/analyze_layout_engine_gate.py"
+          },
+          {
+            "path": "post-download-analysis/analyze_post_implementation.py",
+            "bytes": 17385,
+            "sha256": "1ed24209753ba035d4aea91d6a6007b70217ef1d6a0373991c30b95cf38e27df",
+            "origin": "post-download-analysis-code",
+            "originalLocation": "pdf-5538-analysis-tools/analyze_post_implementation.py"
+          }
+        ],
+        "fileCount": 13,
+        "uncompressedBytes": 280338,
+        "fileTypes": {
+          ".json": 4,
+          ".jsonl": 2,
+          ".lock": 1,
+          ".log": 3,
+          ".py": 2,
+          ".txt": 1
+        },
+        "jsonlRows": 758
+      },
+      "omitted": [
+        {
+          "path": "artifact.zip",
+          "bytes": 33076,
+          "reason": "original-container-or-dependency-archive; container identity retained"
+        }
+      ]
+    },
+    {
+      "id": "45424304687-pdf-5538-font-profile-attempt4",
+      "classification": "partial-harness-gate-failure",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45424304687,
+        "jobId": 138551979170,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45424304687/job/138551979170",
+        "sourceCommit": "c06c1b600fc93abea7746eebdd2e90d4b75278b0",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/c06c1b600fc93abea7746eebdd2e90d4b75278b0",
+        "artifact": {
+          "id": 14936603528,
+          "name": "pdf-5538-font-profile",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45424304687/artifacts/14936603528",
+          "zipSha256": "82b82844d9b9a84b300357991edb68f9fe30e21aaabaf4b2e125ae2161f76af5",
+          "zipBytes": 1822083,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        },
+        "jobLog": {
+          "path": "workflow-job.log",
+          "sha256": "4bf6de1baeb96e7258d378ad5c3a29eb841400e1dfa0c9b29fecd73e6ae8b25a",
+          "bytes": 514024,
+          "origin": "GitHub connector decoded job log",
+          "newlineNormalization": "none; connector text already LF",
+          "originalActionsLogZip": false,
+          "expectedDigestVerified": true,
+          "artifactWasCreated": true
+        }
+      },
+      "originalLocation": "pdf-5538-ci-evidence/pdf-5538-font-profile-attempt4",
+      "summary": {
+        "path": "summaries/45424304687-pdf-5538-font-profile-attempt4.json",
+        "sha256": "d213bbce990a70de196d534189a366970302a12f91a0168fc9fbdfbaae587e2d",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawArchive": {
+        "format": "tar+gzip",
+        "sha256": "773f44de7ba64004e7c9c9a1ac5134f77e2c375ab2469d91dca8b992e0a97f63",
+        "bytes": 1765411,
+        "partsInConcatenationOrder": [
+          {
+            "path": "raw/45424304687-pdf-5538-font-profile-attempt4.tar.gz.part-001",
+            "bytes": 1500000,
+            "sha256": "2e6f8ae047a841a160af9a5c924217fb411b2c0bdf4c45a9d62a9dd0bab74da0"
+          },
+          {
+            "path": "raw/45424304687-pdf-5538-font-profile-attempt4.tar.gz.part-002",
+            "bytes": 265411,
+            "sha256": "8f75120d7e99074f9632a5e37c3eccb411276a12e66b167c65970a760c47fc7e"
+          }
+        ],
+        "files": [
+          {
+            "path": "analysis-summary.json",
+            "bytes": 31873,
+            "sha256": "d213bbce990a70de196d534189a366970302a12f91a0168fc9fbdfbaae587e2d",
+            "origin": "post-download-analysis-or-receipt"
+          },
+          {
+            "path": "artifact-receipt.json",
+            "bytes": 441,
+            "sha256": "98b27a0ef9872399ee13339c8bc276391399fc08e4ca6035358a2fb51d477e51",
+            "origin": "post-download-analysis-or-receipt"
+          },
+          {
+            "path": "pdf-5538-font-profile/build-A/build.log",
+            "bytes": 745,
+            "sha256": "6ca300c10b26aa52dbfb9ce7b6eb07beeaec4c89eecc811d6e0823e77331b1f3",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/build-A/bundle.json",
+            "bytes": 26852,
+            "sha256": "aaaaad98dadb1f3161039c926eeac28f2b860ff488246b3eacbcb0f4da13b7be",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/build-A/compiler-inputs.json",
+            "bytes": 693641,
+            "sha256": "2fa70856e2867fbba23d88f387bfc8bb4aff44fce5dd1d467dbe2328440edb99",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/build-A/pdf-source-identity.json",
+            "bytes": 9425,
+            "sha256": "bd5ccb30dff9006eb9efb4d0551a0e983dac7914069f88f0251d6d89db03702c",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/build-A/resolve.log",
+            "bytes": 6010,
+            "sha256": "baa9ace7fea210f3911f83709280886730b6b7d9673e8f6fe6ebfb41601d8899",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/build-B/build.log",
+            "bytes": 745,
+            "sha256": "601699dafaa64a5de33705cdbecc5e0685ec200157fb9caa4d5cdff7c08a808a",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/build-B/bundle.json",
+            "bytes": 26852,
+            "sha256": "4a3af35b071fde41281372dfd649fc176ee7ed6adb0e4440b2da62ed21e3c832",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/build-B/compiler-inputs.json",
+            "bytes": 696736,
+            "sha256": "58ebd55c89c066705e45fb3f76fc67bcb45005f14ae73419bf47e928bea9b9cb",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/build-B/pdf-source-identity.json",
+            "bytes": 9543,
+            "sha256": "13347623ae70651257299e548cdde6046956593964fdffea8eed85d7e66b51ea",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/build-B/resolve.log",
+            "bytes": 6163,
+            "sha256": "c9568df20140009f4badee13b3574f4ea80084c2d710994006a109f8eea302d7",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/build-C/build.log",
+            "bytes": 745,
+            "sha256": "7451332a5ad3164b26624bc254ca31bc7669224a3b7fc3dac7609f390a8560c6",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/build-C/bundle.json",
+            "bytes": 26852,
+            "sha256": "c0e70e33618445ba7fadfceba659a7dee26bf17c154bafddd16c3d47310347a1",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/build-C/compiler-inputs.json",
+            "bytes": 1294127,
+            "sha256": "ebd0299ef0579cad22360837c8d525ea5e4a22e730635a845e0845d1df15045b",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/build-C/pdf-source-identity.json",
+            "bytes": 9543,
+            "sha256": "13347623ae70651257299e548cdde6046956593964fdffea8eed85d7e66b51ea",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/build-C/resolve.log",
+            "bytes": 6163,
+            "sha256": "c9568df20140009f4badee13b3574f4ea80084c2d710994006a109f8eea302d7",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/close-pending-font/source-0.pdf",
+            "bytes": 2428,
+            "sha256": "603de455c43f2765564ca30d0ab03b9adbc3ef810bbcf5ca92a7d3ef9faf524e",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/close-pending-font/unrelated.pdf",
+            "bytes": 431,
+            "sha256": "89470c65cf92bea01b573264c535f2d0c4fd58d9075a69c27e80c18869cce5bd",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/different-fonts/source-0.pdf",
+            "bytes": 2424,
+            "sha256": "557066764782fb9e0a11236d63bb8bdec6c489ebf9f02f008dbe36b82c94a9a5",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/different-fonts/source-1.pdf",
+            "bytes": 2424,
+            "sha256": "663fc72376f9e2a087bb0f64c9fca9ac380c0c2b32887fc6e4c6a7d6ff7f5f9f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/different-fonts/unrelated.pdf",
+            "bytes": 431,
+            "sha256": "89470c65cf92bea01b573264c535f2d0c4fd58d9075a69c27e80c18869cce5bd",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/initial-hebrew/source-0.pdf",
+            "bytes": 2422,
+            "sha256": "c7e295d138e4aebfbb4dd4398a548a969d11d9ec920df41ede4ce0896875af5f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/initial-hebrew/unrelated.pdf",
+            "bytes": 431,
+            "sha256": "89470c65cf92bea01b573264c535f2d0c4fd58d9075a69c27e80c18869cce5bd",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/initial-latin/source-0.pdf",
+            "bytes": 2112,
+            "sha256": "3d6c8d3a9a9412d5fa0a4174cf8a6fb4332ba4526924f290fd99c0fb1b3d0beb",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/initial-latin/unrelated.pdf",
+            "bytes": 431,
+            "sha256": "89470c65cf92bea01b573264c535f2d0c4fd58d9075a69c27e80c18869cce5bd",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/late-page/source-0.pdf",
+            "bytes": 2816,
+            "sha256": "6b9cc04503b984189f54906c90fd02a2c2e5a645c624d1d3dd1701491d0418c1",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/late-page/unrelated.pdf",
+            "bytes": 431,
+            "sha256": "89470c65cf92bea01b573264c535f2d0c4fd58d9075a69c27e80c18869cce5bd",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/late-text/source-0.pdf",
+            "bytes": 2816,
+            "sha256": "da706bb083da5d69a54d75ffdc499574a7f30c8defd5c13c00e0ea2d762cfdd1",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/late-text/unrelated.pdf",
+            "bytes": 431,
+            "sha256": "89470c65cf92bea01b573264c535f2d0c4fd58d9075a69c27e80c18869cce5bd",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/manifest.json",
+            "bytes": 9844,
+            "sha256": "6b18064d619fcb37ef3a00cfafbf46c0948e5d6173be53ba56cd6c4c587fce30",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/replace-pending-font/source-0.pdf",
+            "bytes": 2432,
+            "sha256": "c049402cfe130554e4d85c0f0b8e029483ccab7937252f2ce1ba00db5d33e8ab",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/replace-pending-font/unrelated.pdf",
+            "bytes": 431,
+            "sha256": "89470c65cf92bea01b573264c535f2d0c4fd58d9075a69c27e80c18869cce5bd",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/shared-fonts/source-0.pdf",
+            "bytes": 2428,
+            "sha256": "0f8a4e2000dedaee90cd25d856a6e897b04e968ca831e26503c16fadad62d100",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/shared-fonts/source-1.pdf",
+            "bytes": 2428,
+            "sha256": "0f8a4e2000dedaee90cd25d856a6e897b04e968ca831e26503c16fadad62d100",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/fixtures/shared-fonts/unrelated.pdf",
+            "bytes": 431,
+            "sha256": "89470c65cf92bea01b573264c535f2d0c4fd58d9075a69c27e80c18869cce5bd",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/00-A/app.log",
+            "bytes": 845,
+            "sha256": "3d9605785ad52fe0b18b86ed37089d9bd5c3f6cee90683e4e956939e993b7c5f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/00-A/config.json",
+            "bytes": 1507,
+            "sha256": "ccc1a45fedf0a2ed274c65d559ebfba5176510635ae85cd3c03ee36ca9ef5472",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/00-A/engine-mappings.json",
+            "bytes": 144486,
+            "sha256": "115a2351843e55a7b822967c0265fe29f12c8a1a2a4631816dadd01b901461a6",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/00-A/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/00-A/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/00-A/frame-2.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/00-A/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/00-A/frame-4.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/00-A/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/00-A/frame-receipts.json",
+            "bytes": 2786,
+            "sha256": "c838f143291e251787f03be6483a5178a089789e71e13421f92d8c0fbcd1348f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/00-A/native-identity.json",
+            "bytes": 145731,
+            "sha256": "39b37af313919d1aa0f3971fa91371e43cbad6ba1b7b7d5434282cce09ec71ac",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/00-A/ready.json",
+            "bytes": 175,
+            "sha256": "6132bb2a47c002e233f6007d45c00069faae4a2a1b844e72ee9f098264401f7c",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/00-A/result.json",
+            "bytes": 11159,
+            "sha256": "8970528ba8f72fa4de5fb429048fe7445a2057aaa44196c7609e9ab844556939",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/00-A/validated.json",
+            "bytes": 1552,
+            "sha256": "572b136c91072912b4d50c2ce199c8f6616aff165b99428f9a083cd6912310b2",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/01-B/app.log",
+            "bytes": 845,
+            "sha256": "a2010b616248007de53ce98558e1f7c9ad661f66cfe6e5290ba4d73a4f12295f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/01-B/config.json",
+            "bytes": 1507,
+            "sha256": "ed10a8a4989f19adfcf5608e1f115562f086f7778b2263c80d3290b276619090",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/01-B/engine-mappings.json",
+            "bytes": 144444,
+            "sha256": "6d980efa23578840aa889fd89f6fe33111c7a33b23a1af77e8c909d881a5c469",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/01-B/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/01-B/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/01-B/frame-2.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/01-B/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/01-B/frame-4.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/01-B/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/01-B/frame-receipts.json",
+            "bytes": 2787,
+            "sha256": "24f1f5b1591295cc711fac5fc7a030312ee976ebc0b3fd44b66795522c6237de",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/01-B/native-identity.json",
+            "bytes": 145689,
+            "sha256": "c24be8a55ab9409460dca9b5acc7ed5f6f4b3e835abf0c121b3917c35bd31598",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/01-B/ready.json",
+            "bytes": 175,
+            "sha256": "29a771c78465d669181c8e841b6f486731dfc9cfed2e52a6344621d53fe9bdc8",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/01-B/result.json",
+            "bytes": 11511,
+            "sha256": "c4f365c0256e75015a98bbfdb7b4f459128c5c4dacf3cfda43eb6bbc0a0abc49",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/01-B/validated.json",
+            "bytes": 1551,
+            "sha256": "5e534fc90d5fbd5081905ed9c629a85cb42196a195e00b834f4e70047f579d28",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/02-C/app.log",
+            "bytes": 966,
+            "sha256": "f0a8749f35c9d31ae089b7901fa6542e2db8bbfa440fff7053a4a8eb4d8bb353",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/02-C/config.json",
+            "bytes": 1507,
+            "sha256": "63d6c44e5283f9aa893b3aae491b1d2c8fc4bd7a52c92925087e76072542d341",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/02-C/engine-mappings.json",
+            "bytes": 144868,
+            "sha256": "d731283a1056676ffd731ccc7416e5c1fbf219e8a9e77eedfc215218594d2af5",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/02-C/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/02-C/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/02-C/frame-2.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/02-C/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/02-C/frame-4.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/02-C/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/02-C/frame-receipts.json",
+            "bytes": 2784,
+            "sha256": "d1723390dba11c5bc6d0b7ccddbfcdf1b2ba347eb5a34fba64acb3ab318d7181",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/02-C/native-identity.json",
+            "bytes": 146113,
+            "sha256": "e5bfb4789b3e884ecee9e369b06f1d5e5a5f9b80aa2e6bc6d0344226b000d8c9",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/02-C/ready.json",
+            "bytes": 175,
+            "sha256": "1231dde76b1e368248da386820d86b4032b1da06fda222ddee3f218de03fe404",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/02-C/result.json",
+            "bytes": 12284,
+            "sha256": "5a7c9ee5851b9e829dfbe48f66540073c226e01643f9e7e6afadc818f5e1dffb",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/02-C/validated.json",
+            "bytes": 1551,
+            "sha256": "bee04d998628115208ce2ab7162cae449a396e2b25fd90341a975ac3980f591a",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/03-A/app.log",
+            "bytes": 845,
+            "sha256": "f07869f19a293dd09e1da54e0ccfb2224c665f9861bdbbe68c2e26585fccc006",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/03-A/config.json",
+            "bytes": 1507,
+            "sha256": "b1ab4f3995eb8a6e390cc32bf81db60a61cd7efdd9d6c14db5d41f4b26948fd5",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/03-A/engine-mappings.json",
+            "bytes": 144536,
+            "sha256": "f15b1cef2d08516e4e2e8b952d1208ffca6bc3b2806ed9f6845a13a318123e43",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/03-A/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/03-A/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/03-A/frame-2.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/03-A/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/03-A/frame-4.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/03-A/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/03-A/frame-receipts.json",
+            "bytes": 2784,
+            "sha256": "1bed9bd04628eb92bf0bf41bef5a5cf844ecbb8c151c33c0ccd329d88c7945ab",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/03-A/native-identity.json",
+            "bytes": 145781,
+            "sha256": "823331067c0b8ac081e2174a445cb6c2fdfa9bba9782ec8d1b6e50efbfe399f2",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/03-A/ready.json",
+            "bytes": 175,
+            "sha256": "acf6c673f91fc9c46f4cdc4d7a72939a53289bb4ba5f077948b0408e75a78670",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/03-A/result.json",
+            "bytes": 11156,
+            "sha256": "d4f294217d333373b91ed8149f58f051867365fad4b376dd4fa774398072f003",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/03-A/validated.json",
+            "bytes": 1551,
+            "sha256": "001cea39857b816c35245e961e45bb31d1b293dd02ebfface1c34a493edb0020",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/04-B/app.log",
+            "bytes": 845,
+            "sha256": "f264f4dfce80622cc51b5affedae842362d84d46376fdf70b0ae05379baf8ce0",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/04-B/config.json",
+            "bytes": 1507,
+            "sha256": "b9988537c28a1412a646bc74a815fec7ccca5e2a8084bb56e27c5d2be7dc7658",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/04-B/engine-mappings.json",
+            "bytes": 144494,
+            "sha256": "83373cb90f263113a054674c7f3c20e9718ea3f18e1912cf6adeb341ca17d8f0",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/04-B/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/04-B/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/04-B/frame-2.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/04-B/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/04-B/frame-4.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/04-B/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/04-B/frame-receipts.json",
+            "bytes": 2787,
+            "sha256": "c0cacbade5767ae36a0b086b1816f4b62ac02365658f0967df10fb575a13cad2",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/04-B/native-identity.json",
+            "bytes": 145739,
+            "sha256": "48445ef2e556048a83e028bcf207f56a4f81ecf33b6b11b8c2c97adf3190f1eb",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/04-B/ready.json",
+            "bytes": 175,
+            "sha256": "e63c8e54f03b8bd0aceb70c37d0afd7d1d60545f14c40eb99c1911ba363edfe6",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/04-B/result.json",
+            "bytes": 11511,
+            "sha256": "a7b4430c184785201ed69060843ab2024a915e630fca37d214df1faf7844766f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/04-B/validated.json",
+            "bytes": 1551,
+            "sha256": "b194dffc12697bc6b1189f1552b9adc1fc50c7833adbe3dbce02aaa8900724aa",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/05-B/app.log",
+            "bytes": 845,
+            "sha256": "d9c572f498725a613889126b854f200bf8bf039ea69fb2da37d52f761309cae8",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/05-B/config.json",
+            "bytes": 1507,
+            "sha256": "39a5394b99750db4987d3b0da2bfd1a92f3ef8913506a6dc1ebaff3688e660a6",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/05-B/engine-mappings.json",
+            "bytes": 144526,
+            "sha256": "0d93de48e9791cf79af2f7a2835bc1a4cf4d775ba3a4724841b10268e76c9023",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/05-B/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/05-B/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/05-B/frame-2.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/05-B/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/05-B/frame-4.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/05-B/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/05-B/frame-receipts.json",
+            "bytes": 2784,
+            "sha256": "2b5670e7d2f3727c89a2eac2f051c13eab0663c9e33ed76b55543db10165a815",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/05-B/native-identity.json",
+            "bytes": 145771,
+            "sha256": "ec16d9ff8e75aa347e122526aef6434ed6788d05e608297bc78a5a83ec3a2bb5",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/05-B/ready.json",
+            "bytes": 175,
+            "sha256": "50ba3fd6e7518cb2506d74de0610af5010de074f6569c8d6b8aa3cf200c6b93c",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/05-B/result.json",
+            "bytes": 11508,
+            "sha256": "bad9881695f65c14be285cc6bcfba85463cd0fb2fa49f9bf40917c6aebbc6575",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/05-B/validated.json",
+            "bytes": 1551,
+            "sha256": "fc53f8598dd9193b541096fb2c3ca8cbdb09d21a4650b24aa5113f420c87c63b",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/06-A/app.log",
+            "bytes": 845,
+            "sha256": "4a52e8ef28b5dd193ebc1ffee11ea41b37bfe997348ed2aee1a83f2994aeca88",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/06-A/config.json",
+            "bytes": 1507,
+            "sha256": "a7d0112c8f29ab0267c8a540882347a38f9ecc5e1c26fd132c3f57ea32239264",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/06-A/engine-mappings.json",
+            "bytes": 144404,
+            "sha256": "be04e330ad84aa76c2a784ced9e54369d1ae17de8f9b859a8f696e08dc8d9c74",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/06-A/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/06-A/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/06-A/frame-2.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/06-A/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/06-A/frame-4.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/06-A/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/06-A/frame-receipts.json",
+            "bytes": 2782,
+            "sha256": "9bbc612e1cf65360c3214cb67ecbb3df682d569e3883f81e61f29e97b8f723b8",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/06-A/native-identity.json",
+            "bytes": 145649,
+            "sha256": "61268affe7aceff70258ac4bdbd5f3be8932509248cd72478b583ab22474498c",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/06-A/ready.json",
+            "bytes": 175,
+            "sha256": "c11816df391aac87e047cfaeb088b5caf98ded5a3865763671175b21f50bfa44",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/06-A/result.json",
+            "bytes": 11153,
+            "sha256": "3222ca77db4c9aa864b8cfabace57f0a90552352a9749c1b5d4155760161e569",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/06-A/validated.json",
+            "bytes": 1550,
+            "sha256": "6d06d88e7753174fcef2865865f39eedb0f68df2288cfa7bc734ab60b8e6b7f3",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/07-B/app.log",
+            "bytes": 845,
+            "sha256": "b8bc7e4285094ff442631722b6268781ade1a99671c4fa0447dfc3c30bd9c2c3",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/07-B/config.json",
+            "bytes": 1507,
+            "sha256": "df40601ba804bed48eb40d139542b687cde242263446b0310be9fa0520be4269",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/07-B/engine-mappings.json",
+            "bytes": 144526,
+            "sha256": "2aea0556cbd0aa9da4d64aaebd33b567e76bcb80279350835ddb2c64c0ef5115",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/07-B/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/07-B/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/07-B/frame-2.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/07-B/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/07-B/frame-4.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/07-B/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/07-B/frame-receipts.json",
+            "bytes": 2784,
+            "sha256": "02eca9ad353bb86e711ade01aa9914aa5401f80be5c2f75eaabb63b1b2c8089f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/07-B/native-identity.json",
+            "bytes": 145771,
+            "sha256": "f5da5f2c1901364294c9ea7b06a7f7aa9a8ab3d2a226a1f45d4a2fd96df5f307",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/07-B/ready.json",
+            "bytes": 175,
+            "sha256": "d705c771e2a20ad4ffa470f5e76b3dfa510218fe82fd9451a06b466f2067b9d9",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/07-B/result.json",
+            "bytes": 11508,
+            "sha256": "c6c7cefea914c5655ec72d8b361dcbb504eb703f7591582cedf19483c4a3607b",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/07-B/validated.json",
+            "bytes": 1551,
+            "sha256": "2b6f382d3141b16f7b9ff46e90b6fb70d9d7d4f454592bc83e923628c65af621",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/08-C/app.log",
+            "bytes": 966,
+            "sha256": "a365f7f3d218bc74c114fa2de13ef9f4f744a6bdeca1768a1c509193b35c6475",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/08-C/config.json",
+            "bytes": 1507,
+            "sha256": "6b91e71a7910def629acbbdbf535a2aafd4273d90270119067855ad6ff3c61f4",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/08-C/engine-mappings.json",
+            "bytes": 144686,
+            "sha256": "0bd493e763f27fc8fb3434d74f33744b7a075b7b43bda7958f4e1bbe8f6de913",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/08-C/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/08-C/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/08-C/frame-2.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/08-C/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/08-C/frame-4.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/08-C/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/08-C/frame-receipts.json",
+            "bytes": 2784,
+            "sha256": "f7c286c04bb08a1a957319614d90643da5425cbf0fa0a0574cda8af35f073a88",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/08-C/native-identity.json",
+            "bytes": 145931,
+            "sha256": "40f227fc90f6fb42fbfc1617ba8972e50903c0f217c5db3544938a9bfd8262a5",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/08-C/ready.json",
+            "bytes": 175,
+            "sha256": "03e4e4371e0cf8f013df41b0e6546848e0ce549b981e35e0d809295fd8fdff7e",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/08-C/result.json",
+            "bytes": 12284,
+            "sha256": "9c57c8ed42828606a1329fef8321bb78f0e313bce3b79b1ddac7f27f44040066",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/08-C/validated.json",
+            "bytes": 1551,
+            "sha256": "262db50af5e31e1d0f4f4b52b3165d59c8c4b2b36bc81ae7f228351ca6ecf56f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/09-C/app.log",
+            "bytes": 966,
+            "sha256": "aa4a2de7224b26a48788a0d46788f15d54b94868fc47c5e0caf7230fec23fe5f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/09-C/config.json",
+            "bytes": 1507,
+            "sha256": "0941d52f528d685db85c9cdaf18d889b3c4288bf4a94611913c25d843cbfcea4",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/09-C/engine-mappings.json",
+            "bytes": 144495,
+            "sha256": "7946dddbf3b7f61386e8506f93cb0ad1323ac03c36a4f1a3a273b3d5ede478f1",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/09-C/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/09-C/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/09-C/frame-2.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/09-C/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/09-C/frame-4.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/09-C/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/09-C/frame-receipts.json",
+            "bytes": 2784,
+            "sha256": "3c128f70aff0e662e4a365af5ce35378bcf483ae0853e2f0db44f5dc9a90d87a",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/09-C/native-identity.json",
+            "bytes": 145740,
+            "sha256": "d7cf71e6ae57acbf09d0576ec76045af3e49a4c0d658861af09aa5a360d72eca",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/09-C/ready.json",
+            "bytes": 175,
+            "sha256": "2d85f04f4662962c25b6d5e44e98ab9ee31c342d46694adc37e7915e666f96d1",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/09-C/result.json",
+            "bytes": 12284,
+            "sha256": "b3834ecd3aae308d566b70982532b099bd7be1cd60738e4c38663d64cd200908",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/09-C/validated.json",
+            "bytes": 1551,
+            "sha256": "a5b8713919289a84d76b74211672a6fba8ce8e4784a0ed85832a937422677ab3",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/10-B/app.log",
+            "bytes": 845,
+            "sha256": "fbe1f5189d4e8af0bfb3a2cef74135d8a56f759e2084b1a913be08a4fd6e3333",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/10-B/config.json",
+            "bytes": 1507,
+            "sha256": "80e66773d734b31d83309ca7053942cf7b314a381fd9258fdf8bfb9d17a93680",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/10-B/engine-mappings.json",
+            "bytes": 144535,
+            "sha256": "f1ac9882327c6f79b4729d6f359a544f1094190f393a90e7045d8c64a1bdd36e",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/10-B/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/10-B/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/10-B/frame-2.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/10-B/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/10-B/frame-4.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/10-B/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/10-B/frame-receipts.json",
+            "bytes": 2782,
+            "sha256": "92c79fb85d66696e4f8d76315a16f839a0a2adeca150f9e793446dec2b00908b",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/10-B/native-identity.json",
+            "bytes": 145780,
+            "sha256": "3ba1e746e14b43fc692034151bf96b47d746357c94a7e7a5a489cb35e6173320",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/10-B/ready.json",
+            "bytes": 175,
+            "sha256": "e9dfb21a3490cb32732c1a319c1c2c35f15c1ebb539dae01f858f4bc35f26650",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/10-B/result.json",
+            "bytes": 11507,
+            "sha256": "b683bf5846e1064297ad8608157229c1cac28e9409d9f1dd77c55eafe398152b",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/10-B/validated.json",
+            "bytes": 1550,
+            "sha256": "480a70efc3a61417e67e21b675af3ef0fa5d031b57821249f4390f5c3182087c",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/11-B/app.log",
+            "bytes": 966,
+            "sha256": "aa797392b03063ac9f9ed962833d711cf8872a0d431b7f9ff6c5c692c9ab3249",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/11-B/config.json",
+            "bytes": 1511,
+            "sha256": "680276ab408f6d3d94fabc8b0624746e357467fb56d3c2d6c745fd0f194fc957",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/11-B/engine-mappings.json",
+            "bytes": 144726,
+            "sha256": "7325855272468776904430167032c49e1835601d54fd9a814bdb257f879153ac",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/11-B/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/11-B/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/11-B/frame-2.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/11-B/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/11-B/frame-4.png",
+            "bytes": 4508,
+            "sha256": "d2e6988de9860dc35f21f780a249cde1aaf2934e67f0b85945943067a7ecdd8f",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/11-B/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/11-B/frame-receipts.json",
+            "bytes": 2784,
+            "sha256": "55e66e91894e61b3b7ddf81f17d33bc0d768542a1aa68ab80279b69deae19f12",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/11-B/native-identity.json",
+            "bytes": 145971,
+            "sha256": "62377cf901b9822bf478676c05887aed7479924c151a88342fe2c3cd7f67fc0a",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/11-B/ready.json",
+            "bytes": 175,
+            "sha256": "6c2e81585b64d974fe608505c52d6a53e147b08fd7629eec3f107e3450048f84",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/11-B/result.json",
+            "bytes": 12288,
+            "sha256": "0cbb7e3da5f026b9964ff08589e69fe8045ba4c463f151dc7d21def81309fb61",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-hebrew/11-B/validated.json",
+            "bytes": 1551,
+            "sha256": "67fc9b2a193a840f3daece3b753cf4e0f907c265c654b86266d44713834c5340",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/00-A/app.log",
+            "bytes": 841,
+            "sha256": "6720dad43fa6a29329756a8875ce48ba63f69141da95414052cce9e5fd600801",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/00-A/config.json",
+            "bytes": 1496,
+            "sha256": "a1b42a15727326ddb54d31c8c663f54be328082ec19ccc6b4c5e4afebeb16dc5",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/00-A/engine-mappings.json",
+            "bytes": 144877,
+            "sha256": "b7277efa2781611ad6c859998c944c509ffd62dcee13532191ecc51290df44fe",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/00-A/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/00-A/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/00-A/frame-2.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/00-A/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/00-A/frame-4.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/00-A/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/00-A/frame-receipts.json",
+            "bytes": 2784,
+            "sha256": "c40238f13beacc394fb5e97f9a8ba378dafcaa9b3d2b40f76d8572cc31964a3d",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/00-A/native-identity.json",
+            "bytes": 146122,
+            "sha256": "a22f38ecb77e8b1e911f3f70ca2b4fd4385e7279ed2184dfc1ff0a3a855cec97",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/00-A/ready.json",
+            "bytes": 175,
+            "sha256": "827bbca00021234ecb045d612649f4f2b35fc568900dbb12cbf07665eac29820",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/00-A/result.json",
+            "bytes": 11135,
+            "sha256": "f16103acfaf92a98d0fe02dabc8f931f5e50c87a4b42113c1755fcdfd05dddd8",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/00-A/validated.json",
+            "bytes": 1550,
+            "sha256": "423c6ce8fb21f219da291c16844f6a2f6d0488d92dde4fd5ebf25a586c6407f2",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/01-B/app.log",
+            "bytes": 841,
+            "sha256": "6a79eb278cb063b8065beef594d661da6fa880c1da139ea894786315a21a6283",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/01-B/config.json",
+            "bytes": 1496,
+            "sha256": "60577a33fc55eee92789095781d666596743efbf612c1be045760542792bfb4b",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/01-B/engine-mappings.json",
+            "bytes": 144353,
+            "sha256": "ac333f77baee449cde1df8abb534d378c6aba5f66254ecb6e37c070567b15dbe",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/01-B/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/01-B/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/01-B/frame-2.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/01-B/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/01-B/frame-4.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/01-B/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/01-B/frame-receipts.json",
+            "bytes": 2784,
+            "sha256": "2e29955221f5ac2f79344808a8505fa4fcdc45c20dd17bafe0950fca2b63f73c",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/01-B/native-identity.json",
+            "bytes": 145598,
+            "sha256": "2de8d6f14557552f163b653964848b38e80e6e4b3f386d716a95373fd5a9db45",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/01-B/ready.json",
+            "bytes": 175,
+            "sha256": "58b2680b876a4f16d1f1fd41a6956da5a98f45fa5805a605961df5a15c6e7911",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/01-B/result.json",
+            "bytes": 11485,
+            "sha256": "523b3c5e722712c662bef5551d88fb7ec6128bc08f34af7bb0664d079ea79e6f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/01-B/validated.json",
+            "bytes": 1550,
+            "sha256": "b27fee96dd6935ad7779238924b745165df80b66a22ca94a25bc2cd2a649ae4b",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/02-C/app.log",
+            "bytes": 961,
+            "sha256": "e147712df86a21707a7a506dbc6cc274948c3f0caf00faa0182e45200ad2d32c",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/02-C/config.json",
+            "bytes": 1496,
+            "sha256": "d91cf16fe607b432294d035c60d753c926a40ca0a81fae1bfbebc44577cb0628",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/02-C/engine-mappings.json",
+            "bytes": 144577,
+            "sha256": "6ca60de646ae6b552e272dce7b5db0292b396c71a80e1ca6efc7be20d5ad92bd",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/02-C/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/02-C/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/02-C/frame-2.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/02-C/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/02-C/frame-4.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/02-C/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/02-C/frame-receipts.json",
+            "bytes": 2784,
+            "sha256": "bfb67f1a8eba919eb9374b23157cd1b02c42aa1db2ba02ca7e2338bd5fb842a2",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/02-C/native-identity.json",
+            "bytes": 145822,
+            "sha256": "0d39c958af749a4ce88d0bce9c7e9f39145e602a868479ad2f86da51def0a821",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/02-C/ready.json",
+            "bytes": 175,
+            "sha256": "59717ea96face11e9bb0be9c716fc250d9259ac9827e12eb9c41a53d0b6dd8a3",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/02-C/result.json",
+            "bytes": 11687,
+            "sha256": "db9557fcd44bc39570d41f00c597573809432095bcba4c111a1629fd014713e5",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/02-C/validated.json",
+            "bytes": 1550,
+            "sha256": "17698b29131ca2706242d940c3b8e9963a30ded112607f39f04085bfc48d9bfe",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/03-A/app.log",
+            "bytes": 841,
+            "sha256": "79b42c4621978f57c00110705c1c88abd09cd068ec982627291bed46744b5782",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/03-A/config.json",
+            "bytes": 1496,
+            "sha256": "c0547c0c330c4f0950d57c966ad8fad2a9f2c53b7ba037870a02c80751234fc2",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/03-A/engine-mappings.json",
+            "bytes": 144736,
+            "sha256": "9e0f5dcf6d6c302cbdd4a958c8f024cab08d6e4027ff0628ee2b66a72e1e273c",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/03-A/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/03-A/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/03-A/frame-2.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/03-A/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/03-A/frame-4.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/03-A/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/03-A/frame-receipts.json",
+            "bytes": 2782,
+            "sha256": "e3bb605a99ecd1a297da17b7cfc85070f0e3fc3e0621e2be1df870d0028729e4",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/03-A/native-identity.json",
+            "bytes": 145981,
+            "sha256": "ab3cc32ae34f4172edcc456e8dac3ecd433cd914ee1ecd99c41eca0622d0c110",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/03-A/ready.json",
+            "bytes": 175,
+            "sha256": "f21f939b0666fcfce5d91ed6e82eccb22d12576b249d0c0bf47998a2bc0f87d9",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/03-A/result.json",
+            "bytes": 11132,
+            "sha256": "dbb76b06047e68afd06b737ab23b396e63041991093c793e6a8f6d5390d7992f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/03-A/validated.json",
+            "bytes": 1549,
+            "sha256": "8957a979231b21c1a3f53a1c9b9380b879eb23b166772222f2d6889da7c47555",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/04-B/app.log",
+            "bytes": 841,
+            "sha256": "fb9032f91b5460a7c3018d7630caa5d6053f11a2a56c237f5b806dea361d5b0c",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/04-B/config.json",
+            "bytes": 1496,
+            "sha256": "b85e9efa25c31ea2e873de4af2fb82d066ac81ddb6b7537ee69268afff352cb6",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/04-B/engine-mappings.json",
+            "bytes": 144676,
+            "sha256": "cc0378379538ef69bfcf0653698188e64af787a5f02ea1f9704a0b3d7fef2b85",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/04-B/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/04-B/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/04-B/frame-2.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/04-B/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/04-B/frame-4.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/04-B/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/04-B/frame-receipts.json",
+            "bytes": 2784,
+            "sha256": "ed690a36fae6f2145e6793704a352b63f357b824cf3d087637c1d59d80cbca96",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/04-B/native-identity.json",
+            "bytes": 145921,
+            "sha256": "705319bde5e1c80ec9f4bf84857b7f78a88bf0e5e9a8ca7921a12cc3d3d2e540",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/04-B/ready.json",
+            "bytes": 175,
+            "sha256": "e40ed8366d46fafae2b8c7b47582802309cc4633fd0ed95d190a43ee4bc44854",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/04-B/result.json",
+            "bytes": 11485,
+            "sha256": "559a1d3944d265f2ae8e097a8a836133b1f69511a032d27f2f409a1869035af0",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/04-B/validated.json",
+            "bytes": 1550,
+            "sha256": "cbc37073443df89315191f35e0c4e6454b12c1eedc2118ef221e7b9cbfd81c24",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/05-B/app.log",
+            "bytes": 841,
+            "sha256": "1b8e6c16dd35b76d51b86178a97c5fcb00684e95a9f51ed3ad1da284a9f9a387",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/05-B/config.json",
+            "bytes": 1496,
+            "sha256": "b754130d6045dfed56a761552ac6cd953690fb8c4e5624727c21c993550898fb",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/05-B/engine-mappings.json",
+            "bytes": 144394,
+            "sha256": "14560063b6edabc49a82bac1b1d05155020e66ac0af66ab5153f92ee74ddfc4c",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/05-B/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/05-B/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/05-B/frame-2.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/05-B/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/05-B/frame-4.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/05-B/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/05-B/frame-receipts.json",
+            "bytes": 2784,
+            "sha256": "357025daf572cb4a2199348b2b65f47e4c3cbc4d1627886a8777117e2b0a63aa",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/05-B/native-identity.json",
+            "bytes": 145639,
+            "sha256": "824e97a1ce0567f69cddb02c772f4536e04ee55bd9c27edf3f443b86354b4aab",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/05-B/ready.json",
+            "bytes": 175,
+            "sha256": "9a81389c112a096d926a17f7a54a37d7eaec791aa27830bb04789707d806109b",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/05-B/result.json",
+            "bytes": 11487,
+            "sha256": "ed14751465567135f8e4e72a50ed38a0977f4f35fb864edcd1ba2ca933e0acd4",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/05-B/validated.json",
+            "bytes": 1550,
+            "sha256": "98eb69a13b027f11e565e699b3c16d800962b79060503d21d58b89de03e73bff",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/06-A/app.log",
+            "bytes": 841,
+            "sha256": "73730caff4aa9c4430b912fe581a649fbb72684bf6a5ca0b2ace14606dc2d1e1",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/06-A/config.json",
+            "bytes": 1496,
+            "sha256": "10e3e9e472f47ce53fc9ac961be490cf03d6961850d9add45a1e0562eb8e39db",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/06-A/engine-mappings.json",
+            "bytes": 144545,
+            "sha256": "4d32203ddba7c44c9e4db3101a0397af2903b6517709eb35158aee05ac8b7834",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/06-A/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/06-A/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/06-A/frame-2.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/06-A/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/06-A/frame-4.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/06-A/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/06-A/frame-receipts.json",
+            "bytes": 2784,
+            "sha256": "69fc72b49fc5557f8359647cc604b67db01cdea3749b755bc9d10990e91e0b49",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/06-A/native-identity.json",
+            "bytes": 145790,
+            "sha256": "ccbf7908de2d4f860f58337d5f4f56faa3a9b22f0f0b17b979048931abb1b68c",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/06-A/ready.json",
+            "bytes": 175,
+            "sha256": "de3d3b2a04aeab056a25eaa76a0949ccc399e984f4a7d9037a2c97cbf00bb378",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/06-A/result.json",
+            "bytes": 11133,
+            "sha256": "8f64305d2abae9aecde5a58c41bd7e524d7f27e66c11b43fc2d8e632253ab439",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/06-A/validated.json",
+            "bytes": 1550,
+            "sha256": "d98287d19a5a170e24e7ba8133d54c1704a8fecde79affc03ddc631c9d469645",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/07-B/app.log",
+            "bytes": 841,
+            "sha256": "6d40da0d8f21f9e401837ca534db218130c34d4ac36acaa47e8dfee97f3d09b8",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/07-B/config.json",
+            "bytes": 1496,
+            "sha256": "d8f1186fd24151a8d0ea8a50ea7f703b2273e5e9fc889edcc8003005ec789796",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/07-B/engine-mappings.json",
+            "bytes": 144394,
+            "sha256": "74763f6c192dc70e34ee20b374e2afd284d9cae55b509499a94bb2f5d4e20e35",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/07-B/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/07-B/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/07-B/frame-2.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/07-B/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/07-B/frame-4.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/07-B/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/07-B/frame-receipts.json",
+            "bytes": 2784,
+            "sha256": "9fa4e14562f382932eac8ea2eebc1eaad44f79d9367b589df756f0433393d281",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/07-B/native-identity.json",
+            "bytes": 145639,
+            "sha256": "508ec14c6214898686e282ac775d19932b9d825f0962a48773f537f9a41396e8",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/07-B/ready.json",
+            "bytes": 175,
+            "sha256": "b7d77314d0277c6eba4496b7520a543f18c861fd6f0dd68988ce55369555e131",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/07-B/result.json",
+            "bytes": 11485,
+            "sha256": "ecc171cd1304f0624c41d63cd6dd89e650a3bf955e87c60dd2c3a0165d780760",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/07-B/validated.json",
+            "bytes": 1550,
+            "sha256": "965d4914dd3079c5e97e91287d8a54dc33594dbe06c39e1050bbbd19cb72da84",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/08-C/app.log",
+            "bytes": 961,
+            "sha256": "93a831dc6f456ad0a1f8e5dbb51f10200364fbd62225ea6c6e6d2a7b50b388fe",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/08-C/config.json",
+            "bytes": 1496,
+            "sha256": "28e069354edbda122f3ec992d3c9fb5adf71dd97245e9c80260733c8ce5430f0",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/08-C/engine-mappings.json",
+            "bytes": 144636,
+            "sha256": "81e6e5fa33a7e9c590d7c465f9dbf7b2b59696e10be6c2b7daf112b3c172bf52",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/08-C/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/08-C/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/08-C/frame-2.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/08-C/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/08-C/frame-4.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/08-C/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/08-C/frame-receipts.json",
+            "bytes": 2784,
+            "sha256": "d9bed9d3b660cb20ba6cfd250e2976f73b0ad22e88670fb18d871aa5734b7ad8",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/08-C/native-identity.json",
+            "bytes": 145881,
+            "sha256": "f1ccbd7d532cf99b0c8af5e44c42f2a185d509034ccf1898343c69ced60e8719",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/08-C/ready.json",
+            "bytes": 175,
+            "sha256": "e1aab163e606e660390cada594e76ad24f889fc379eaaeb8ebc015f5ab26195f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/08-C/result.json",
+            "bytes": 11687,
+            "sha256": "6449e47aa4d077658f4522c8463f7dd230378b1e4d0f16626ebe9eaa94f7cd13",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/08-C/validated.json",
+            "bytes": 1550,
+            "sha256": "e840647161e6f78921091f8077cbd337be0a924f7e21e452e60f72f8dc57b76a",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/09-C/app.log",
+            "bytes": 961,
+            "sha256": "8a6cd2fc82ec7c0dee7f62f061cb5131e35c424d6885a1cee4f36a52e9451c48",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/09-C/config.json",
+            "bytes": 1496,
+            "sha256": "cf801302961fe48ac9544389e8487468af56d9a2fdfac3c482b2ba094542194b",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/09-C/engine-mappings.json",
+            "bytes": 144536,
+            "sha256": "5eb5baeea55b40c72240cc4aca5489fb5be7ffd4bddf11543e6aee6e84f67dce",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/09-C/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/09-C/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/09-C/frame-2.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/09-C/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/09-C/frame-4.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/09-C/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/09-C/frame-receipts.json",
+            "bytes": 2784,
+            "sha256": "c97933873f0099c343b27843c37815dcd95a1e40d0527a6dbcb73b237c828e2f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/09-C/native-identity.json",
+            "bytes": 145781,
+            "sha256": "be0da3ebc72760864e9cd2fe399f52ab2ab4cee0c26b2afbe1022f24b8d7852c",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/09-C/ready.json",
+            "bytes": 175,
+            "sha256": "fa061165664552287a1129a31043c1acc9b61dd7bae5aa74949e2da9a6590384",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/09-C/result.json",
+            "bytes": 11687,
+            "sha256": "1fc672cfeac795310ae250288aac8760175fae202c076fcfdf6fda455c18558d",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/09-C/validated.json",
+            "bytes": 1550,
+            "sha256": "44cda6d559541a561dae0069d42b8b18acbfb1a2c09f1ca2dfec17e598d30fd5",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/10-B/app.log",
+            "bytes": 841,
+            "sha256": "84ad8df0eb2e000468f37173ef0a7932137eba03b29a075dd52acdc0bd72eb73",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/10-B/config.json",
+            "bytes": 1496,
+            "sha256": "b9895edbbcfd996e72d04caab3cf72ad495ea25a74cc7fed063fd1569af277c6",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/10-B/engine-mappings.json",
+            "bytes": 144253,
+            "sha256": "62b41229ec522f0af8fbfc095835969a1fdd8c7eb8f96d79e6453b8cac9e6e42",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/10-B/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/10-B/frame-1.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/10-B/frame-2.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/10-B/frame-3.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/10-B/frame-4.png",
+            "bytes": 4189,
+            "sha256": "c1539a7bf114261edbd0b53d33fb2682403ee12f80cbd9a1afafd8b7751ae411",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/10-B/frame-5.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "listed-in-original-frame-receipts",
+              "width": 320,
+              "height": 400
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/10-B/frame-receipts.json",
+            "bytes": 2782,
+            "sha256": "fbdbafa5ff2c9185abfd0f42cf3c426a04708e3c1809771184e830239038e1c9",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/10-B/native-identity.json",
+            "bytes": 145498,
+            "sha256": "1877cdc3970b04f9828e6b296f5df246b0b6416228f87b926d2f439d24d535a0",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/10-B/ready.json",
+            "bytes": 175,
+            "sha256": "9fde4decf4597474f9326ab302d26c2932da3d325a3358380c063d1b981ee7f4",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/10-B/result.json",
+            "bytes": 11482,
+            "sha256": "7d0755ae3006f13a9bdbbb6c48729b8bf776a5f09f71ac95564d6d97e32aa6fa",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/initial-latin/10-B/validated.json",
+            "bytes": 1549,
+            "sha256": "5dc582da1a3355542d61e679d2a402cda30798e96ff0890b722720d5061d858b",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/report.json",
+            "bytes": 63713,
+            "sha256": "1fc26194c846d30889e41c189058dc6e107e04bd9557ed1e8cb2afa0498598e8",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/shared-fonts/00-A/app.log",
+            "bytes": 709,
+            "sha256": "de147ec2178b75f188e29b1a21f0f6cae532830640ab91151887eda921d2e2b0",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/shared-fonts/00-A/config.json",
+            "bytes": 2104,
+            "sha256": "d2df47c08463a0846225b6e146f5a23c556f2b5e53b5bf3a72808ebaa6e09501",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/shared-fonts/00-A/engine-mappings.json",
+            "bytes": 144727,
+            "sha256": "1f7f12ffb57f6aae1afa9e213a07b2e19bc4f4b00a52132406044be8769d1ed1",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/shared-fonts/00-A/failure.json",
+            "bytes": 531,
+            "sha256": "ae741946abb81bd3e62a324ec5b6134b93314e8fbc3afafef1b620059eb9ad3f",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/shared-fonts/00-A/frame-0.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "unvalidated-capture-from-incomplete-launch",
+              "width": 320,
+              "height": 400,
+              "completedFrameReceipt": false,
+              "firstGoodOrReferenceEvidence": false
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/shared-fonts/00-A/frame-1.png",
+            "bytes": 2759,
+            "sha256": "85eb569b95aec083b76f78eb5cd8210acefeabc9db80c2787182f9c005b7ee2a",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "unvalidated-capture-from-incomplete-launch",
+              "width": 320,
+              "height": 400,
+              "completedFrameReceipt": false,
+              "firstGoodOrReferenceEvidence": false
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/shared-fonts/00-A/frame-2.png",
+            "bytes": 1402,
+            "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+            "origin": "original-github-artifact-member",
+            "frameEvidence": {
+              "status": "unvalidated-capture-from-incomplete-launch",
+              "width": 320,
+              "height": 400,
+              "completedFrameReceipt": false,
+              "firstGoodOrReferenceEvidence": false
+            }
+          },
+          {
+            "path": "pdf-5538-font-profile/shared-fonts/00-A/native-identity.json",
+            "bytes": 145972,
+            "sha256": "0e44ff5d11881691ce200045fe1369937852c70ea6597727d66b02e4933ecee7",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-profile/shared-fonts/00-A/ready.json",
+            "bytes": 175,
+            "sha256": "bf09dba6bfe897ee05c18365f5a9722dea4a92b6bb770c59dd00654534ea8d91",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-session/display.txt",
+            "bytes": 96997,
+            "sha256": "e713424e67820280e8307fcae9c5cd7a850d5b7e76f86a95202549ebda37ca37",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-session/openbox.log",
+            "bytes": 85,
+            "sha256": "6f748c3cd02a858c087697c3afac639205c62b7b206558bd40d1bcbd98165a5c",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-session/window-manager.txt",
+            "bytes": 80,
+            "sha256": "44d1a297ca229c3d50d88d34abe3770226a79c3bfb29426e44b51aab355e8bc6",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-font-session/xvfb.log",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-native/flutter.json",
+            "bytes": 619,
+            "sha256": "4682a942cb5bf8557dfc373ebef9b1164979b9246cd40c036bf3ef2bccdfbbf6",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "pdf-5538-native/producer.json",
+            "bytes": 426,
+            "sha256": "5d0acf3c832ffb6f24f9c94a253e1339d3ac136c12ff3cd114f9d20e6455eeae",
+            "origin": "original-github-artifact-member"
+          },
+          {
+            "path": "workflow-job.log",
+            "bytes": 514024,
+            "sha256": "4bf6de1baeb96e7258d378ad5c3a29eb841400e1dfa0c9b29fecd73e6ae8b25a",
+            "origin": "github-connector-decoded-job-log"
+          }
+        ],
+        "fileCount": 375,
+        "uncompressedBytes": 11292111,
+        "fileTypes": {
+          ".json": 181,
+          ".log": 33,
+          ".pdf": 18,
+          ".png": 141,
+          ".txt": 2
+        },
+        "jsonlRows": 0
+      },
+      "omitted": [
+        {
+          "path": "artifact.zip",
+          "bytes": 1822083,
+          "reason": "original-container-or-dependency-archive; container identity retained"
+        },
+        {
+          "path": "pdf-5538-font-session/runtime/dconf/user",
+          "bytes": 2,
+          "reason": "dependency-build-or-runtime-copy"
+        }
+      ]
     }
   ],
   "evidenceCorrections": [
@@ -80171,6 +84430,6 @@
   ],
   "overview": {
     "path": "overview.json",
-    "sha256": "b0de4320feaf824fd8ef82cb1a637344ab3d306d79ea871883f313724584d5ca"
+    "sha256": "15bbb2a2f6820c8b011d74f88c822024f086d863e6a3b88000336e454c33ed1e"
   }
 }
