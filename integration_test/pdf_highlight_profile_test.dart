@@ -10,7 +10,10 @@ import 'package:integration_test/integration_test.dart';
 import 'package:otzaria/pdf_book/utils/pdf_book_layout.dart';
 import 'package:otzaria/pdf_book/utils/pdf_page_highlights.dart';
 import 'package:otzaria/pdf_book/utils/result_lines_highlight_pattern.dart';
+import 'package:otzaria/search/search_engine_library.dart';
 import 'package:pdfrx/pdfrx.dart';
+
+import 'support/pdf_proximity_profile_queries.dart';
 
 const _pdfiumSha256 =
     '1c251efce460d67437a4c76d4be9033ae2f17bf5603f5bff1af10209b94ca723';
@@ -60,6 +63,10 @@ void main() {
 }
 
 Future<Map<String, Object?>> _run(Directory output) async {
+  final querySuite =
+      Platform.environment['PDF_HIGHLIGHT_PROFILE_QUERY_SUITE'] ?? 'legacy-v1';
+  expect(querySuite, isIn(['legacy-v1', pdfProximityProfileSuite]));
+  final proximity = querySuite == pdfProximityProfileSuite;
   final inputSha256 =
       Platform.environment['PDF_HIGHLIGHT_PROFILE_SHA256'] ??
       const String.fromEnvironment('PDF_HIGHLIGHT_PROFILE_SHA256');
@@ -100,7 +107,13 @@ Future<Map<String, Object?>> _run(Directory output) async {
       sizes.add(Size(page.width, page.height));
     }
     expect(texts, isNotEmpty);
-    final queries = [
+    Map<String, Object?>? searchEngine;
+    if (proximity) {
+      await SearchEngineLibrary.ensureLoaded();
+      searchEngine = await _searchEngineIdentity();
+    }
+    final selected = proximity ? buildPdfProximityProfileQueries(texts) : null;
+    final queries = selected?.queries ?? <PdfHighlightProfileQuery>[
       (
         id: 'literal_alef',
         pattern: 'א' as Pattern,
@@ -136,6 +149,7 @@ Future<Map<String, Object?>> _run(Directory output) async {
     ];
     final references = <String, List<String>>{};
     final referenceCounts = <String, int>{};
+    final referenceSpans = <Map<String, Object?>>[];
     for (final query in queries) {
       final signatures = <String>[];
       var count = 0;
@@ -143,6 +157,18 @@ Future<Map<String, Object?>> _run(Directory output) async {
         final results = await _reference(text, query.pattern);
         signatures.add(_signature(results));
         count += results.length;
+        if (proximity) {
+          final spans = [for (final result in results) [result.start, result.end]];
+          referenceSpans.add({
+            'queryId': query.id,
+            'pageNumber': text.pageNumber,
+            'spans': spans,
+            'spansSha256': sha256
+                .convert(utf8.encode(jsonEncode(spans)))
+                .toString(),
+            'resultsSha256': _signature(results),
+          });
+        }
       }
       expect(count, greaterThan(0), reason: 'Empty workload: ${query.id}');
       references[query.id] = signatures;
@@ -231,6 +257,12 @@ Future<Map<String, Object?>> _run(Directory output) async {
     final layout = _layoutProfile(sizes);
     expect(await _fileHash(input), inputSha256);
     expect(await _fileHash(pdfium), _pdfiumSha256);
+    if (proximity) {
+      expect(await _searchEngineIdentity(), searchEngine);
+    }
+    final descriptors = [
+      for (final query in queries) {'id': query.id, ...query.descriptor},
+    ];
     return {
       'protocolVersion': 1,
       'status': 'passed',
@@ -259,9 +291,20 @@ Future<Map<String, Object?>> _run(Directory output) async {
           'actual app ensurePage with preloaded real structured text; extraction excluded',
       'uiLatencyCollected': false,
       'microtaskAuditTimed': false,
-      'queries': [
-        for (final query in queries) {'id': query.id, ...query.descriptor},
-      ],
+      'querySuite': querySuite,
+      'queries': descriptors,
+      if (proximity) ...{
+        'processId': pid,
+        'querySelection': selected!.selection,
+        'queryDescriptorsSha256': sha256
+            .convert(utf8.encode(jsonEncode(descriptors)))
+            .toString(),
+        'searchEngine': searchEngine,
+        'referenceSpans': referenceSpans,
+        'measurementTarget':
+            'actual product advanced-search highlight helper; '
+            'derived native-text snippets; search retrieval and UI excluded',
+      },
       'referenceMatchesPerQuery': referenceCounts,
       'textInventory': [
         for (final text in texts)
@@ -282,6 +325,26 @@ Future<Map<String, Object?>> _run(Directory output) async {
     await document.dispose();
     await PdfrxEntryFunctions.instance.stopBackgroundWorker();
   }
+}
+
+Future<Map<String, Object?>> _searchEngineIdentity() async {
+  final executable = File(Platform.resolvedExecutable);
+  final library = File('${executable.parent.path}/lib/libsearch_engine.so');
+  final resolved = await library.resolveSymbolicLinks();
+  final mappings = await File('/proc/self/maps').readAsLines();
+  final mapped = mappings.any(
+    (line) => line.trimRight().endsWith(' $resolved'),
+  );
+  expect(mapped, isTrue, reason: 'The identified search engine must be loaded');
+  return {
+    'initializer': 'SearchEngineLibrary.ensureLoaded',
+    'packageVersion': '7.2.1',
+    'libraryPath': resolved,
+    'librarySha256': await _fileHash(library),
+    'libraryBytes': await library.length(),
+    'mappedIntoProcess': mapped,
+    'initializationTimed': false,
+  };
 }
 
 Future<List<PdfTextSearchResult>> _reference(
