@@ -1,6 +1,6 @@
 const _indexVerificationPages = [2, 4];
 
-const perfPdfMultiWindowProtocol = <String, Object?>{
+const pdfMultiWindowProtocol = <String, Object?>{
   'version': 3,
   'nativeWindows': 2,
   'sources': 'distinct verified paths with identical generated PDF content',
@@ -21,16 +21,9 @@ const perfPdfMultiWindowProtocol = <String, Object?>{
   'readiness': 'native view identity, target center and final visible image',
   'owner': 'Live published owner stable within each operation; replacements between operations retain source and reference key.',
   'close': 'Every observed owner event stream closed and native dispose awaited after detach; native view absent.',
-  'imageBudgetAttribution': {
-    'legacyScopeIdentity': 'current-window-ui-isolate',
-    'actualScope':
-        'all views sharing pdfSharedImageBudget in this Dart isolate',
-    'perWindowAttribution': false,
-    'peakScope': 'since-budget-construction',
-  },
 };
 
-const perfPdfMultiWindowSteps = <String>[
+const pdfMultiWindowSteps = <String>[
   'open',
   'concurrentWork',
   'minimizeRestore',
@@ -42,10 +35,7 @@ const perfPdfMultiWindowSteps = <String>[
 
 /// Counts visible dark RGBA/BGRA content after compositing over white.
 /// Antialiased glyphs may have no opaque pixels; transparent RGB is not ink.
-int perfPdfInkPixelsOnWhite(
-  List<int> pixels, {
-  bool premultipliedAlpha = false,
-}) {
+int pdfInkPixelsOnWhite(List<int> pixels, {bool premultipliedAlpha = false}) {
   if (pixels.length % 4 != 0) {
     throw ArgumentError(
       'Native raster must contain complete four-byte pixels.',
@@ -231,17 +221,17 @@ bool _reader(Object? value, int page, Object? path) {
 
 bool _interval(Object? value) {
   final data = _map(value);
-  return _integer(data['startUs']) &&
-      _integer(data['endUs']) &&
-      (data['endUs'] as int) > (data['startUs'] as int);
+  return _integer(data['startOrder']) &&
+      _integer(data['endOrder']) &&
+      (data['endOrder'] as int) > (data['startOrder'] as int);
 }
 
 bool _overlap(Object? first, Object? second) {
   if (!_interval(first) || !_interval(second)) return false;
   final a = _map(first);
   final b = _map(second);
-  return (a['startUs'] as int) < (b['endUs'] as int) &&
-      (b['startUs'] as int) < (a['endUs'] as int);
+  return (a['startOrder'] as int) < (b['endOrder'] as int) &&
+      (b['startOrder'] as int) < (a['endOrder'] as int);
 }
 
 bool _indexSearches(Object? value, Object? indexedPath) {
@@ -254,7 +244,7 @@ bool _indexSearches(Object? value, Object? indexedPath) {
     final hits = search['hits'];
     if (search['page'] is! int ||
         search['page'] != page ||
-        search['query'] != 'PDF preview fixture - page $page' ||
+        search['query'] != 'bundlepage$page' ||
         search['totalHits'] is! int ||
         search['matchingHits'] is! int ||
         search['matchingHits'] != 1 ||
@@ -307,7 +297,7 @@ bool _closed(Object? value, Object? opened) {
 }
 
 /// בודק ראיות של החלונות שהתרחיש יצר; אינו ממציא ערכים כאשר ראיה חסרה.
-List<String> perfPdfMultiWindowErrors(Object? value) {
+List<String> pdfMultiWindowErrors(Object? value) {
   final report = _map(value);
   final errors = <String>[];
   void require(bool condition, String description) {
@@ -346,7 +336,7 @@ List<String> perfPdfMultiWindowErrors(Object? value) {
   );
 
   final steps = _map(report['steps']);
-  for (final name in perfPdfMultiWindowSteps) {
+  for (final name in pdfMultiWindowSteps) {
     require(
       _map(steps[name])['status'] == 'passed',
       'Missing or failed multi-window step: $name',
@@ -428,7 +418,7 @@ List<String> perfPdfMultiWindowErrors(Object? value) {
     final step = _map(steps[name]);
     require(
       _raster(step['raster'], 'bgra8888') &&
-          _overlap(step['rasterInterval'], step['transitionInterval']),
+          _overlap(step['rasterEvents'], step['transitionEvents']),
       'Native raster work did not overlap the transition: $name',
     );
     require(

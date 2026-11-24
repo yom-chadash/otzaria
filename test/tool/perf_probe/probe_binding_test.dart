@@ -7,57 +7,59 @@ import '../../../tool/perf_probe/src/probe_binding.dart';
 import '../../../tool/perf_probe/src/probe_completion.dart';
 
 void main() {
-  test('the two bindings have distinct explicit target and scheduler identity', () {
-    expect(PerfBindingMode.parse('integration'), PerfBindingMode.integration);
-    expect(PerfBindingMode.parse('framework'), PerfBindingMode.framework);
-    expect(
-      PerfBindingMode.framework.toComparisonJson(),
-      {
-        'bindingMode': 'framework',
-        'bindingClass': 'WidgetsFlutterBinding',
-        'framePolicy': 'frameworkRequested',
-        'platformDispatcher': 'native',
-        'probeTarget': 'tool/perf_probe/framework_pdf_probe.dart',
-      },
-    );
-    expect(PerfBindingMode.integration.framePolicy, 'fullyLive');
-    expect(PerfBindingMode.integration.platformDispatcher, 'test');
-    expect(
-      PerfBindingMode.integration.target,
-      'integration_test/perf_resource_probe_test.dart',
-    );
-  });
+  test(
+    'the integration binding has explicit target and scheduler identity',
+    () {
+      expect(PerfBindingMode.parse('integration'), PerfBindingMode.integration);
+      expect(PerfBindingMode.integration.toComparisonJson(), {
+        'bindingMode': 'integration',
+        'bindingClass': 'IntegrationTestWidgetsFlutterBinding',
+        'framePolicy': 'fullyLive',
+        'platformDispatcher': 'test',
+        'probeTarget': 'integration_test/perf_resource_probe_test.dart',
+      });
+    },
+  );
 
-  test('framework supports the native multi-window PDF workload', () {
-    for (final scenario in ['pdf-reader', 'pdf-book-view', 'pdf-multi-window']) {
-      expect(() => PerfBindingMode.framework.validateScenario(scenario), returnsNormally);
-    }
-    expect(() => PerfBindingMode.integration.validateScenario('all'), returnsNormally);
+  test('only the general integration workload remains supported', () {
     expect(
-      () => PerfBindingMode.integration.validateScenario('pdf-multi-window'),
-      throwsArgumentError,
+      () => PerfBindingMode.integration.validateScenario('all'),
+      returnsNormally,
     );
-    expect(() => PerfBindingMode.framework.validateScenario('all'), throwsArgumentError);
-    expect(() => PerfBindingMode.framework.validateScenario('unknown'), throwsArgumentError);
+    for (final scenario in [
+      'pdf-reader',
+      'pdf-book-view',
+      'pdf-multi-window',
+      'unknown',
+    ]) {
+      expect(
+        () => PerfBindingMode.integration.validateScenario(scenario),
+        throwsArgumentError,
+      );
+    }
+    expect(() => PerfBindingMode.parse('framework'), throwsArgumentError);
     expect(() => PerfBindingMode.parse('benchmarkLive'), throwsArgumentError);
   });
 
   group('atomic completion after the journal is closed', () {
     late Directory output;
     late File journal;
-    final fixtureId = 'synthetic-v4-pdf-cases:${List.filled(64, 'a').join()}';
+    final fixtureId = 'synthetic-v5-general:${List.filled(64, 'a').join()}';
 
     setUp(() async {
       output = await Directory.systemTemp.createTemp('perf-binding-contract-');
       journal = File('${output.path}/phases.jsonl');
-      await journal.writeAsString('{"type":"meta","launchIndex":2}\n', flush: true);
+      await journal.writeAsString(
+        '{"type":"meta","launchIndex":2}\n',
+        flush: true,
+      );
     });
     tearDown(() async {
       await output.delete(recursive: true);
     });
 
     Future<void> complete({
-      PerfBindingMode mode = PerfBindingMode.framework,
+      PerfBindingMode mode = PerfBindingMode.integration,
       bool successful = true,
       String? error,
       String? fixture,
@@ -75,9 +77,9 @@ void main() {
       testFailures: failures,
     );
 
-    Future<Map<String, dynamic>> result() async => jsonDecode(
-      await File('${output.path}/completion.json').readAsString(),
-    ) as Map<String, dynamic>;
+    Future<Map<String, dynamic>> result() async =>
+        jsonDecode(await File('${output.path}/completion.json').readAsString())
+            as Map<String, dynamic>;
 
     test('success binds the host handshake to the requested target', () async {
       await complete();
@@ -85,7 +87,8 @@ void main() {
       expect(value['status'], 'passed');
       expect(value['fixtureId'], fixtureId);
       expect(value['testFailures'], isEmpty);
-      for (final entry in PerfBindingMode.framework.toComparisonJson().entries) {
+      for (final entry
+          in PerfBindingMode.integration.toComparisonJson().entries) {
         expect(value[entry.key], entry.value);
       }
       final rows = (await journal.readAsLines())
@@ -98,37 +101,44 @@ void main() {
       expect(await File('${output.path}/completion.pending').exists(), isFalse);
     });
 
-    test('integration test failures cannot publish a successful handshake', () async {
-      await complete(
-        mode: PerfBindingMode.integration,
-        failures: ['late framework failure'],
-      );
-      final value = await result();
-      expect(value['status'], 'failed');
-      expect(value['testFailures'], ['late framework failure']);
-      expect(value['framePolicy'], 'fullyLive');
-      expect(value['bindingMode'], 'integration');
-    });
+    test(
+      'integration test failures cannot publish a successful handshake',
+      () async {
+        await complete(
+          mode: PerfBindingMode.integration,
+          failures: ['late test failure'],
+        );
+        final value = await result();
+        expect(value['status'], 'failed');
+        expect(value['testFailures'], ['late test failure']);
+        expect(value['framePolicy'], 'fullyLive');
+        expect(value['bindingMode'], 'integration');
+      },
+    );
 
-    test('an action error cannot be hidden by successful caller state', () async {
-      await complete(error: 'native rendering failed');
-      final value = await result();
-      expect(value['status'], 'failed');
-      expect(value['error'], 'native rendering failed');
-    });
+    test(
+      'an action error cannot be hidden by successful caller state',
+      () async {
+        await complete(error: 'action failed');
+        final value = await result();
+        expect(value['status'], 'failed');
+        expect(value['error'], 'action failed');
+      },
+    );
 
     test('fixture failure before the journal is reported', () async {
       await journal.delete();
       await complete(
         successful: false,
-        error: 'invalid PDF fixture',
+        error: 'invalid fixture',
         missingFixture: true,
       );
       final value = await result();
       expect(value['status'], 'failed');
-      expect(value['error'], 'invalid PDF fixture');
+      expect(value['error'], 'invalid fixture');
       expect(value['fixtureId'], isNull);
-      final done = jsonDecode(await journal.readAsString()) as Map<String, dynamic>;
+      final done =
+          jsonDecode(await journal.readAsString()) as Map<String, dynamic>;
       expect(done['type'], 'done');
       expect(done['status'], 'failed');
     });
@@ -161,12 +171,15 @@ void main() {
       expect(await File('${output.path}/completion.json').exists(), isFalse);
     });
 
-    test('fixture preparation has explicit identity but is not a measured launch', () async {
-      await complete(preparationOnly: true);
-      final value = await result();
-      expect(value['status'], 'passed');
-      expect(value['preparationOnly'], isTrue);
-      expect(value['bindingMode'], 'framework');
-    });
+    test(
+      'fixture preparation has explicit identity but is not a measured launch',
+      () async {
+        await complete(preparationOnly: true);
+        final value = await result();
+        expect(value['status'], 'passed');
+        expect(value['preparationOnly'], isTrue);
+        expect(value['bindingMode'], 'integration');
+      },
+    );
   });
 }

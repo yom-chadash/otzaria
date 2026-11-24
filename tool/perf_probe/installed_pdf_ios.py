@@ -242,7 +242,7 @@ def validate(wrapper, built, installed, data_container, receipt, commit):
     require(bootstrap.get("status") == "passed"
             and type(bootstrap.get("startupTimeline", {}).get("revealMs")) in (int, float), "Real app bootstrap did not reveal")
     require(isinstance(bootstrap.get("fixtureSha256"), str)
-            and re.fullmatch(r"synthetic-v4-pdf-cases:[0-9a-f]{64}", bootstrap["fixtureSha256"]),
+            and re.fullmatch(r"synthetic-v5-general:[0-9a-f]{64}", bootstrap["fixtureSha256"]),
             "Unexpected bootstrap fixture identity")
     require(report.get("bundleIdentifier") == app_identity(installed)[2], "Report belongs to another application")
     output = device_output(report, data_container)

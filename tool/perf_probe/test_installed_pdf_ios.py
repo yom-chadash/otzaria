@@ -97,7 +97,7 @@ class IosPdfEvidence(unittest.TestCase):
                        "frameworkPassed": True, "physicalDeviceAcceptance": False, "physicalPrinter": "notRun",
                        "errors": [], "contractErrors": [], "testFailures": [], "appUnmounted": True,
                        "webViewScenario": {"status": "notRun"}, "bundleIdentifier": "org.sefaria.otzaria",
-                       "bootstrap": {"status": "passed", "fixtureSha256": "synthetic-v4-pdf-cases:" + "b" * 64,
+                       "bootstrap": {"status": "passed", "fixtureSha256": "synthetic-v5-general:" + "b" * 64,
                                      "startupTimeline": {"revealMs": 100.0}},
                        "isolatedPaths": {"root": str(self.output.parent), "fixture": str(self.output.parent / "fixture"),
                                          "output": str(self.output)},
@@ -144,9 +144,9 @@ class IosPdfEvidence(unittest.TestCase):
     def test_stale_unknown_and_malformed_fixture_identities_are_rejected(self):
         for identity in (None, "synthetic-v2:" + "b" * 64,
                          "synthetic-v999:" + "b" * 64,
-                         "synthetic-v4-pdf-cases:" + "g" * 64,
-                         "synthetic-v4-pdf-cases:" + "b" * 63,
-                         "synthetic-v4-pdf-cases:" + "b" * 64 + "\n"):
+                         "synthetic-v5-general:" + "g" * 64,
+                         "synthetic-v5-general:" + "b" * 63,
+                         "synthetic-v5-general:" + "b" * 64 + "\n"):
             report = copy.deepcopy(self.report)
             report["bootstrap"]["fixtureSha256"] = identity
             with self.subTest(identity=identity), self.assertRaisesRegex(ValueError, "fixture identity"):
