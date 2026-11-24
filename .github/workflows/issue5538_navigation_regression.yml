@@ -1,0 +1,160 @@
+name: PDF 5538 navigation regression against locked viewer
+
+on:
+  push:
+    branches: [perf/5538-final-measurements-20261124]
+    paths:
+      - .github/workflows/issue5538_navigation_regression.yml
+      - tool/issue5538_ci/navigation_regression_gate.py
+      - tool/issue5538_ci/test_navigation_regression_gate.py
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pdf-5538-navigation-regression-${{ github.sha }}
+  cancel-in-progress: false
+
+env:
+  CI: 'true'
+  FLUTTER_SUPPRESS_ANALYTICS: 'true'
+  DART_SUPPRESS_ANALYTICS: 'true'
+
+jobs:
+  navigation_regression:
+    if: github.repository == 'yom-chadash/otzaria'
+    name: Original failure and repaired viewer / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022, macos-15-intel]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: Normalize exact source checkouts
+        run: |
+          git config --global core.longpaths true
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: ./.github/actions/setup-flutter
+        with:
+          flutter-version: 3.47.7
+      - uses: actions/checkout@v7.0.1
+        with:
+          repository: yom-chadash/pdfrx
+          ref: cdea38083d06b445b4ec67d8345109a0457924af
+          path: baseline-source
+          persist-credentials: false
+      - uses: actions/checkout@v7.0.1
+        with:
+          repository: yom-chadash/pdfrx
+          ref: 4f7d95e3d9e7d932a3675d837bfa3f8e7f3be703
+          path: candidate-source
+          fetch-depth: 3
+          persist-credentials: false
+      - name: Check negative-control validator and bootstrap exact SDK
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tool/issue5538_ci -p test_navigation_regression_gate.py
+          mkdir -p "$RUNNER_TEMP/pdf-navigation-regression"
+          flutter --version
+          flutter --version --machine > "$RUNNER_TEMP/pdf-navigation-regression/flutter-before.json"
+      - name: Freeze original product and identical regression tests
+        id: prepare
+        run: |
+          set -euo pipefail
+          python tool/issue5538_ci/navigation_regression_gate.py prepare \
+            --baseline baseline-source --candidate candidate-source \
+            --sdk "$RUNNER_TEMP/pdf-navigation-regression/flutter-before.json" \
+            --output "$RUNNER_TEMP/pdf-navigation-regression"
+      - name: Resolve candidate dependencies once
+        working-directory: candidate-source
+        run: |
+          set -euo pipefail
+          flutter pub get 2>&1 | tee "$RUNNER_TEMP/pdf-navigation-regression/candidate-pub-get.log"
+      - name: Use the same dependency lock for the original product
+        run: |
+          set -euo pipefail
+          cp candidate-source/pubspec.lock baseline-source/pubspec.lock
+          cp candidate-source/pubspec.lock "$RUNNER_TEMP/pdf-navigation-regression/shared-pubspec.lock"
+      - name: Resolve baseline with the enforced shared lock
+        working-directory: baseline-source
+        run: |
+          set -euo pipefail
+          flutter pub get --enforce-lockfile 2>&1 | tee "$RUNNER_TEMP/pdf-navigation-regression/baseline-pub-get.log"
+      - name: Verify inputs before tests
+        id: freeze
+        run: |
+          set -euo pipefail
+          python tool/issue5538_ci/navigation_regression_gate.py before \
+            --baseline baseline-source --candidate candidate-source \
+            --sdk "$RUNNER_TEMP/pdf-navigation-regression/flutter-before.json" \
+            --output "$RUNNER_TEMP/pdf-navigation-regression"
+          cp baseline-source/.dart_tool/package_config.json "$RUNNER_TEMP/pdf-navigation-regression/baseline-package-config.json"
+          cp candidate-source/.dart_tool/package_config.json "$RUNNER_TEMP/pdf-navigation-regression/candidate-package-config.json"
+          cp candidate-source/.dart_tool/package_graph.json "$RUNNER_TEMP/pdf-navigation-regression/package-graph.json"
+      - name: Analyze complete compatible viewer and engine
+        working-directory: candidate-source
+        run: |
+          set -euo pipefail
+          dart analyze packages/pdfrx_engine packages/pdfrx 2>&1 | tee "$RUNNER_TEMP/pdf-navigation-regression/candidate-analyze.log"
+      - name: Require the original product to reproduce all four target280 failures
+        working-directory: baseline-source/packages/pdfrx
+        run: |
+          set -euo pipefail
+          set +e
+          flutter test --no-pub --concurrency=1 --reporter expanded \
+            --file-reporter "json:$RUNNER_TEMP/pdf-navigation-regression/baseline-tests.jsonl" \
+            --plain-name 'navigation retains page 280 through geometry changes' \
+            test/pdf_viewer_test.dart 2>&1 | tee "$RUNNER_TEMP/pdf-navigation-regression/baseline-tests.log"
+          result=${PIPESTATUS[0]}
+          set -e
+          printf '%s\n' "$result" > "$RUNNER_TEMP/pdf-navigation-regression/baseline-exit.txt"
+          python "$GITHUB_WORKSPACE/tool/issue5538_ci/navigation_regression_gate.py" baseline \
+            --report "$RUNNER_TEMP/pdf-navigation-regression/baseline-tests.jsonl" \
+            --exit-code "$result" --output "$RUNNER_TEMP/pdf-navigation-regression"
+      - name: Require the repaired viewer to pass all navigation and existing layout tests
+        working-directory: candidate-source/packages/pdfrx
+        run: |
+          set -euo pipefail
+          set +e
+          flutter test --no-pub --concurrency=1 --reporter expanded \
+            --file-reporter "json:$RUNNER_TEMP/pdf-navigation-regression/candidate-tests.jsonl" \
+            test/pdf_page_layout_snapshot_test.dart test/pdf_viewer_test.dart \
+            test/page_layout_index_test.dart 2>&1 | tee "$RUNNER_TEMP/pdf-navigation-regression/candidate-tests.log"
+          result=${PIPESTATUS[0]}
+          set -e
+          printf '%s\n' "$result" > "$RUNNER_TEMP/pdf-navigation-regression/candidate-exit.txt"
+          python "$GITHUB_WORKSPACE/tool/issue5538_ci/navigation_regression_gate.py" candidate \
+            --report "$RUNNER_TEMP/pdf-navigation-regression/candidate-tests.jsonl" \
+            --exit-code "$result" --output "$RUNNER_TEMP/pdf-navigation-regression"
+      - name: Verify source and dependency receipts after tests
+        if: always() && steps.freeze.outcome == 'success'
+        run: |
+          set -euo pipefail
+          flutter --version --machine > "$RUNNER_TEMP/pdf-navigation-regression/flutter-after.json"
+          python tool/issue5538_ci/navigation_regression_gate.py after \
+            --baseline baseline-source --candidate candidate-source \
+            --sdk "$RUNNER_TEMP/pdf-navigation-regression/flutter-after.json" \
+            --output "$RUNNER_TEMP/pdf-navigation-regression"
+      - name: Preserve exact failure and repaired validation evidence
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pdf-5538-navigation-regression-${{ runner.os }}
+          retention-days: 90
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/pdf-navigation-regression/*.json
+            ${{ runner.temp }}/pdf-navigation-regression/*.jsonl
+            ${{ runner.temp }}/pdf-navigation-regression/*.log
+            ${{ runner.temp }}/pdf-navigation-regression/*.patch
+            ${{ runner.temp }}/pdf-navigation-regression/*.lock
+            ${{ runner.temp }}/pdf-navigation-regression/*.txt
