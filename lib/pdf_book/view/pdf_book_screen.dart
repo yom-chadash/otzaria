@@ -13,7 +13,7 @@ import 'dart:math';
 import 'dart:async';
 import 'dart:ui' as ui;
 
-import 'package:flutter/foundation.dart' show listEquals;
+import 'package:flutter/foundation.dart' show kIsWeb, listEquals;
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
@@ -1395,12 +1395,22 @@ class _PdfBookScreenState extends State<PdfBookScreen>
         if (mounted) _onPdfViewerControllerUpdate();
       },
       layoutPages: layoutMode.isBookView
-          ? (pages, params) => _bookViewLayoutMemo.layout(
-              pages,
-              hasCover: layoutMode.hasCoverPage,
-              // המרווח הוכפל יחד עם הפריסה, לשמירת אותה פרופורציה בין כפולות.
-              verticalMargin: params.margin * 2,
-            )
+          ? (pages, params) {
+              final controller = widget.tab.pdfViewerController;
+              final document =
+                  !kIsWeb &&
+                      PdfrxEntryFunctions.instance.backendType ==
+                          PdfrxBackendType.pdfium &&
+                      controller.isReady
+                  ? controller.document
+                  : null;
+              return _bookViewLayoutMemo.layoutNativeDocumentPages(
+                pages,
+                document: document,
+                hasCover: layoutMode.hasCoverPage,
+                verticalMargin: params.margin * 2,
+              );
+            }
           : null,
       calculateCurrentPageNumber: pdfCurrentPageCalculatorFor(layoutMode),
       normalizeMatrix: layoutMode.isBookView
@@ -1542,6 +1552,7 @@ class _PdfBookScreenState extends State<PdfBookScreen>
           ? [textSearcher!.pageTextMatchPaintCallback]
           : null,
       onDocumentChanged: (document) async {
+        _bookViewLayoutMemo.clear();
         _personalNoteViewerReady = false;
         _pdfDocumentSession++;
         _pdfNoteNavigationGeneration++;
@@ -3981,6 +3992,7 @@ class _PdfBookScreenState extends State<PdfBookScreen>
 
   @override
   void dispose() {
+    _bookViewLayoutMemo.clear();
     _pdfNotesLoadGeneration++;
     _pdfNoteNavigationGeneration++;
     _pdfDocumentSession++;

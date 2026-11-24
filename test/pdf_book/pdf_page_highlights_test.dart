@@ -15,6 +15,36 @@ PdfPageText _text(int page, [String content = 'שלום עולם']) => PdfPageTe
   fragments: const [],
 );
 
+List<Object> _resultSignature(PdfTextSearchResult result) => [
+  result.pageNumber,
+  result.start,
+  result.end,
+  result.contextStart,
+  result.contextText,
+  result.pageTextLength,
+  result.text,
+  result.rects,
+];
+
+class _ObservedPattern implements Pattern {
+  _ObservedPattern(this.onMatch);
+
+  final void Function() onMatch;
+  final _pattern = RegExp('שלום');
+
+  @override
+  Iterable<Match> allMatches(String string, [int start = 0]) sync* {
+    for (final match in _pattern.allMatches(string, start)) {
+      onMatch();
+      yield match;
+    }
+  }
+
+  @override
+  Match? matchAsPrefix(String string, [int start = 0]) =>
+      _pattern.matchAsPrefix(string, start);
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -61,6 +91,64 @@ void main() {
       for (var page = 1; page <= 20; page++) cache.ensurePage(page),
     ]);
     expect(peak, 1);
+  });
+
+  test('התאמות מחרוזת ו-RegExp שומרות את חוזה הטקסט, ההקשר והגבולות', () async {
+    final text = _text(7, 'לפני PDF pdf\nשָׁלוֹם עולם\nPDF אחרי');
+    final patterns = <Pattern>[
+      'PDF',
+      'שָׁלוֹם',
+      '',
+      RegExp('PDF'),
+      RegExp('PDF', caseSensitive: false),
+      RegExp(r'^PDF', multiLine: true),
+      RegExp(r'PDF.*עולם', dotAll: true),
+      RegExp(r'(?=PDF)'),
+    ];
+    final cache = PdfPageHighlights(
+      loadText: (_) async => text,
+      onChanged: () {},
+      contextLength: 3,
+    );
+    addTearDown(cache.dispose);
+    for (final pattern in patterns) {
+      final expected = await text
+          .allMatches(pattern, caseInsensitive: true)
+          .map(
+            (range) => _resultSignature(
+              PdfTextSearchResult.fromRange(range, contextLength: 3),
+            ),
+          )
+          .toList();
+      cache.setPattern(pattern);
+      final actual = (await cache.ensurePage(7))!;
+      expect(actual.map(_resultSignature), expected, reason: '$pattern');
+    }
+  });
+
+  test('עמוד צפוף מפנה זמן לביטול ואינו מפרסם תוצאות חלקיות', () async {
+    var visited = 0;
+    var notifications = 0;
+    final cache = PdfPageHighlights(
+      loadText: (page) async => _text(page, '${'שלום ' * 512}עולם'),
+      onChanged: () => notifications++,
+    );
+    addTearDown(cache.dispose);
+    cache.setPattern(
+      _ObservedPattern(() {
+        if (++visited == 1) Timer.run(() => cache.setActive(false));
+      }),
+    );
+    expect(await cache.ensurePage(1), isNull);
+    await pumpEventQueue();
+    expect(visited, greaterThanOrEqualTo(128));
+    expect(visited, lessThan(512));
+    expect(cache.cachedPageCount, 0);
+    expect(notifications, 0);
+    cache.setPattern('עולם');
+    cache.setActive(true);
+    expect((await cache.ensurePage(1))!.single.text, 'עולם');
+    expect(notifications, 1);
   });
 
   test('שאילתה חדשה משחררת ממתינים מיד ומשליכה תוצאה ישנה', () async {
