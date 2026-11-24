@@ -1804,24 +1804,32 @@ class IndexingRepository {
 
     // הקורא קודם — טאב שממתין לעמוד היעד לא יחכה בתור מאחורי האינדוקס.
     await PdfViewerActivity.instance.waitUntilIdle();
+    PdfFontFallbackReader? openedReader;
     final document = await openIndexingPdf(
-      open: () => PdfFontFallback.openFile(book.path),
+      open: () async {
+        final reader = await PdfFontFallback.openReader(book.path);
+        openedReader = reader;
+        // openIndexingPdf שומר בעלות גם אחרי timeout. סגירת המסמך המאוחר
+        // סוגרת גם את זרם האירועים וההאזנה לגופנים של ה-reader.
+        return reader.document;
+      },
       isCancelled: isCancelled,
     );
     if (document == null) return empty;
+    final reader = openedReader!;
     try {
       if (isCancelled()) return empty;
-      final outline = await document.loadOutline().timeout(
+      final outline = await reader.read((doc) => doc.loadOutline()).timeout(
         const Duration(seconds: 15),
         onTimeout: () => <PdfOutlineNode>[],
       );
 
       final extracted = await extractPageTextsWithRetry(
-        pageCount: document.pages.length,
-        loadPageText: (i) async {
-          final text = await document.pages[i].loadText();
+        pageCount: reader.document.pages.length,
+        loadPageText: (i) => reader.read((doc) async {
+          final text = await doc.pages[i].loadText();
           return text?.fullText;
-        },
+        }),
         beforeEachPage: () async {
           if (isCancelled()) return false;
           await PdfViewerActivity.instance.waitUntilIdle();
@@ -1856,7 +1864,7 @@ class IndexingRepository {
     } finally {
       // בלי סגירה מפורשת המסמך נשאר פתוח ב-pdfium עד סוף התהליך: אין
       // Finalizer על העטיפה, ו-FPDF_CloseDocument נקרא רק מ-dispose.
-      await document.dispose();
+      await reader.dispose();
     }
   }
 

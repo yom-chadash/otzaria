@@ -53,7 +53,7 @@ PdfPageLayout buildBookViewPageLayout({
     }
   }
 
-  return PdfPageLayout(
+  return PdfPageLayout.immutable(
     pageLayouts: pageLayouts,
     documentSize: Size(
       pageLayouts.fold(0, (width, page) => max(width, page.right)),
@@ -87,19 +87,52 @@ double pdfSpreadPageRenderScale({
   return min(1.5, pow(2, (log(needed) / ln2).ceil()).toDouble());
 }
 
-/// מחזיר את אותו [PdfPageLayout] כל עוד מידות העמודים והפרמטרים לא השתנו —
-/// pdfrx קורא ל-layoutPages בכל בנייה, ומופע זהה מקצר אצלו את ההשוואה.
+/// מטמון לפריסה מוקפאת; אימות מקור כללי סורק מידות, ומסמך PDFium משתמש בזהות הרשימה.
 class BookViewLayoutMemo {
   PdfPageLayout? _layout;
   List<double> _sizes = const [];
   bool? _hasCover;
   double? _verticalMargin;
+  PdfDocument? _document;
+  List<PdfPage>? _pages;
+
+  /// במסמך PDFium כל שינוי מידות מפרסם רשימה חדשה, עוד לפני אירוע העדכון.
+  /// מקור לא מאומת נשאר במסלול [layout], גם אם רשימת העמודים שלו לא השתנתה.
+  /// הקורא מאמת בעלות ובקר מוכן, ומנקה את המטמון בהחלפת המסמך ובסגירתו.
+  PdfPageLayout layoutNativeDocumentPages(
+    List<PdfPage> pages, {
+    required PdfDocument? document,
+    required bool hasCover,
+    required double verticalMargin,
+  }) {
+    if (document == null || !identical(pages, document.pages)) {
+      return layout(pages, hasCover: hasCover, verticalMargin: verticalMargin);
+    }
+    final cached = _layout;
+    if (cached != null &&
+        identical(document, _document) &&
+        identical(pages, _pages) &&
+        hasCover == _hasCover &&
+        verticalMargin == _verticalMargin) {
+      return cached;
+    }
+    final result = layout(
+      pages,
+      hasCover: hasCover,
+      verticalMargin: verticalMargin,
+    );
+    _document = document;
+    _pages = pages;
+    return result;
+  }
 
   PdfPageLayout layout(
     List<PdfPage> pages, {
     required bool hasCover,
     required double verticalMargin,
   }) {
+    _document = null;
+    _pages = null;
     final cached = _layout;
     if (cached != null &&
         hasCover == _hasCover &&
@@ -113,10 +146,22 @@ class BookViewLayoutMemo {
       for (final page in pages) ...[page.width, page.height],
     ];
     return _layout = buildBookViewPageLayout(
-      pageSizes: [for (final page in pages) Size(page.width, page.height)],
+      pageSizes: [
+        for (var i = 0; i < _sizes.length; i += 2)
+          Size(_sizes[i], _sizes[i + 1]),
+      ],
       hasCover: hasCover,
       verticalMargin: verticalMargin,
     );
+  }
+
+  void clear() {
+    _layout = null;
+    _sizes = const [];
+    _hasCover = null;
+    _verticalMargin = null;
+    _document = null;
+    _pages = null;
   }
 
   bool _sameSizes(List<PdfPage> pages) {
