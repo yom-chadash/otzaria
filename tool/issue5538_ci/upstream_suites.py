@@ -4,22 +4,51 @@ import argparse
 import json
 import os
 from pathlib import Path
+import platform
 import shutil
 import traceback
 
 import internal_upstream_run as upstream
 
 
+def dart_execution(text):
+    events = []
+    for line in text.splitlines():
+        try:
+            value = json.loads(line)
+        except ValueError:
+            continue
+        if isinstance(value, dict):
+            events.append(value)
+    started = {e['test']['id']: e['test'] for e in events if e.get('type') == 'testStart'}
+    completed = [e for e in events if e.get('type') == 'testDone' and not e.get('hidden', False)]
+    skipped = []
+    failed = []
+    for event in completed:
+        test = started.get(event.get('testID'), {})
+        if event.get('skipped', False):
+            skipped.append({'id': event.get('testID'), 'name': test.get('name'),
+                            'reason': test.get('metadata', {}).get('skipReason')})
+        elif event.get('result') != 'success':
+            failed.append({'id': event.get('testID'), 'name': test.get('name'), 'result': event.get('result')})
+    return {'executed': sum(not e.get('skipped', False) for e in completed),
+            'skipped': len(skipped), 'skippedTests': skipped, 'failedTests': failed}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--flutter', type=Path, required=True)
-    parser.add_argument('--chrome', type=Path, required=True)
+    parser.add_argument('--chrome', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--canary', action='store_true')
+    parser.add_argument('--native-only', action='store_true',
+                        help='Run every engine and VM viewer test; browser and Node remain in Linux lanes.')
     args = parser.parse_args()
     upstream.require(os.environ.get('CI') == 'true' and
                      os.environ.get('GITHUB_REPOSITORY') == 'yom-chadash/otzaria',
                      'These suites belong only to the authorized measurement fork')
+    upstream.require(args.native_only or args.chrome is not None, 'Chrome is required for the full suite')
+    upstream.require(not (args.native_only and args.canary), 'Desktop native lanes use the fixed SDK only')
     root = Path(__file__).resolve().parents[2]
     output = args.output.resolve()
     upstream.require(not output.exists() and not output.is_relative_to(root),
@@ -49,12 +78,12 @@ def main():
         upstream.run([args.flutter, 'pub', 'get', '--enforce-lockfile'], source, output / 'pub-get-enforced.log')
         frozen = upstream.freeze_resolved_source(source, output)
         shutil.copyfile(source / 'pubspec.lock', output / 'upstream-pubspec.lock')
-        dart = args.flutter.resolve().parent / 'cache/dart-sdk/bin/dart'
+        dart = args.flutter.resolve().parent / 'cache/dart-sdk/bin' / ('dart.exe' if os.name == 'nt' else 'dart')
         engine = source / 'packages/pdfrx_engine'
         viewer = source / 'packages/pdfrx'
         engine_tests = sorted((engine / 'test').rglob('*_test.dart'))
         browser_tests = sorted(p for p in (viewer / 'test').rglob('*_test.dart')
-                               if "@TestOn('browser')" in p.read_text())
+                               if "@TestOn('browser')" in p.read_text(encoding='utf-8'))
         viewer_tests = sorted(set((viewer / 'test').rglob('*_test.dart')) - set(browser_tests))
         node_tests = sorted((viewer / 'test').glob('*_test.cjs'))
         upstream.require(len(engine_tests) >= 25 and len(viewer_tests) >= 35 and
@@ -62,13 +91,23 @@ def main():
         groups = {
             'native': (engine, [dart, 'test', '--concurrency=1', '--reporter=json', *engine_tests]),
             'viewer': (viewer, [args.flutter, 'test', '--no-pub', '--concurrency=1', '--reporter=json', *viewer_tests]),
-            'chrome': (viewer, [args.flutter, 'test', '--no-pub', '--platform', 'chrome', '--concurrency=1',
-                                '--reporter=json', *browser_tests]),
-            'node': (viewer, ['node', '--test', '--test-reporter=tap', *node_tests]),
         }
+        omitted = {}
+        if args.native_only:
+            omitted = {name: {'status': 'not-run-in-this-lane',
+                              'reason': 'Real Chrome and Node suites run in the separate Linux lanes.'}
+                       for name in ('chrome', 'node')}
+        else:
+            groups.update({
+                'chrome': (viewer, [args.flutter, 'test', '--no-pub', '--platform', 'chrome', '--concurrency=1',
+                                    '--reporter=json', *browser_tests]),
+                'node': (viewer, ['node', '--test', '--test-reporter=tap', *node_tests]),
+            })
         upstream.write_json(output / 'provenance.json', {
             'forkCommit': fork_sha, 'upstreamCommit': upstream.UPSTREAM_SHA, 'flutter': sdk,
             'canary': args.canary, 'appSdkChanged': False, 'performanceComparison': False,
+            'platform': platform.system(), 'architecture': platform.machine(),
+            'nativeOnly': args.native_only, 'omittedSuites': omitted,
             'resolvedSource': frozen,
             'tests': {name: [str(p.relative_to(source)) for p in paths]
                       for name, paths in [('native', engine_tests), ('viewer', viewer_tests),
@@ -77,13 +116,17 @@ def main():
         })
         failures = {}
         for name, (directory, command) in groups.items():
+            log = output / (name + ('.tap' if name == 'node' else '.jsonl'))
             try:
-                text = upstream.run(command, directory, output / (name + ('.tap' if name == 'node' else '.jsonl')),
-                                    timeout=1800, extra_env={'CHROME_EXECUTABLE': str(args.chrome)})
+                text = upstream.run(command, directory, log, timeout=1800,
+                                    extra_env={'CHROME_EXECUTABLE': str(args.chrome)} if args.chrome else {})
                 receipts[name] = upstream.node_test_receipt(text) if name == 'node' else upstream.json_test_receipt(text)
+                receipts[name]['status'] = 'passed'
             except Exception as error:
                 failures[name] = str(error)
                 receipts[name] = {'status': 'failed', 'error': str(error)}
+            if name != 'node' and log.exists():
+                receipts[name].update(dart_execution(log.read_text(encoding='utf-8')))
             # A failing suite must not hide other suites, but source drift stops everything.
             upstream.verify_frozen_source(source, output, frozen, name)
             upstream.write_json(output / 'suite-receipts.json', receipts)
@@ -95,6 +138,8 @@ def main():
         upstream.require(not failures, 'Failed upstream suites: ' + ', '.join(failures))
         upstream.write_json(output / 'summary.json', {'status': 'passed', 'canary': args.canary,
                                                      'upstreamCommit': upstream.UPSTREAM_SHA, 'suites': receipts,
+                                                     'platform': platform.system(), 'nativeOnly': args.native_only,
+                                                     'omittedSuites': omitted,
                                                      'appAdoptionProven': False})
     except BaseException:
         upstream.write_json(output / 'failure.json', {'status': 'failed', 'completedSuites': receipts,

@@ -16,6 +16,7 @@ env:
   CI: 'true'
   PYTHONDONTWRITEBYTECODE: '1'
   PYTHONUNBUFFERED: '1'
+  PYTHONUTF8: '1'
   FLUTTER_SUPPRESS_ANALYTICS: 'true'
   DART_SUPPRESS_ANALYTICS: 'true'
 jobs:
@@ -70,3 +71,50 @@ jobs:
             ${{ runner.temp }}/pdf-5538-upstream-suites/*.tap
             ${{ runner.temp }}/pdf-5538-upstream-suites/*.patch
             ${{ runner.temp }}/pdf-5538-upstream-suites/*.lock
+
+  native-platforms:
+    name: Isolated upstream native and viewer / ${{ matrix.platform }} / fixed 3.50.0
+    if: github.repository == 'yom-chadash/otzaria'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: windows
+            runner: windows-2022
+          - platform: macos
+            runner: macos-latest
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.13'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.50.0'
+          cache: false
+      - name: Run every native engine and VM viewer test including font regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          flutter="$FLUTTER_ROOT/bin/flutter"
+          if [ "$RUNNER_OS" = Windows ]; then flutter="$flutter.bat"; fi
+          python -B tool/issue5538_ci/upstream_suites.py --native-only \
+            --flutter "$flutter" --output "$RUNNER_TEMP/pdf-5538-upstream-native"
+      - name: Preserve all platform results and explicit skipped tests
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pdf-5538-upstream-suites-native-${{ matrix.platform }}
+          retention-days: 90
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/pdf-5538-upstream-native/*.json
+            ${{ runner.temp }}/pdf-5538-upstream-native/*.jsonl
+            ${{ runner.temp }}/pdf-5538-upstream-native/*.log
+            ${{ runner.temp }}/pdf-5538-upstream-native/*.patch
+            ${{ runner.temp }}/pdf-5538-upstream-native/*.lock
