@@ -3,7 +3,7 @@
   "snapshotDate": "2026-11-24",
   "groupCountsByClassification": {
     "blocked-before-device-test": 2,
-    "blocked-before-measurement": 9,
+    "blocked-before-measurement": 13,
     "blocked-before-product-checks": 1,
     "completed-app-correctness": 14,
     "completed-app-correctness-partial-artifact": 2,
@@ -12,6 +12,8 @@
     "completed-upstream-correctness": 9,
     "environment-preflight": 1,
     "failed-upstream-correctness": 2,
+    "failed-viewer-test-spy": 3,
+    "failed-warmup-fixture-and-frame-validation": 1,
     "invalid-performance-comparison": 1,
     "partial-campaign-cancelled": 5,
     "partial-campaign-with-observed-product-navigation-failure-cause-not-yet-isolated": 1,
@@ -2399,6 +2401,304 @@
       "rawJsonlRows": 0,
       "compressedBytes": 856609,
       "parts": 1
+    },
+    {
+      "id": "45415519185-reuse-harness-mismatch-45415519185-linux-profile",
+      "classification": "blocked-before-measurement",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45415519185,
+        "jobId": 138521042332,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45415519185/job/138521042332",
+        "sourceCommit": "162f353bcf3a8b70ddcaf69c68a62abf32348089",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/162f353bcf3a8b70ddcaf69c68a62abf32348089",
+        "artifact": {
+          "id": 14932161951,
+          "name": "pdf-5538-reused-linux-x64-profile",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45415519185/artifacts/14932161951",
+          "zipSha256": "09b38be539762db54469237cc77f5056d71a1876106b5e853bb0066823dc3e41",
+          "zipBytes": 3109,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        },
+        "jobLog": {
+          "path": "workflow-job.log",
+          "sha256": "8b6fd2bbfdc925edb8adb9c60d58433a80627e3efb99ce41fed7fb53b5d9c921",
+          "bytes": 500902,
+          "origin": "GitHub connector decoded job log",
+          "newlineNormalization": "none; connector text already LF",
+          "originalActionsLogZip": false,
+          "expectedDigestVerified": true,
+          "artifactWasCreated": true
+        }
+      },
+      "summary": {
+        "path": "summaries/45415519185-reuse-harness-mismatch-45415519185-linux-profile.json",
+        "sha256": "5bdfd462f3586b825f952b047b8b2420ab3d408159daa422322aac2578227cf2",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 9,
+      "rawJsonlRows": 0,
+      "compressedBytes": 107088,
+      "parts": 1
+    },
+    {
+      "id": "45415519185-reuse-harness-mismatch-45415519185-linux-release",
+      "classification": "blocked-before-measurement",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45415519185,
+        "jobId": 138521042393,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45415519185/job/138521042393",
+        "sourceCommit": "162f353bcf3a8b70ddcaf69c68a62abf32348089",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/162f353bcf3a8b70ddcaf69c68a62abf32348089",
+        "artifact": {
+          "id": 14932740046,
+          "name": "pdf-5538-reused-linux-x64-release",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45415519185/artifacts/14932740046",
+          "zipSha256": "f1d7aa6b3f95cd9061953e93befc77021c8250546889c625c58867fe54721e9a",
+          "zipBytes": 3109,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        },
+        "jobLog": {
+          "path": "workflow-job.log",
+          "sha256": "2ae6516cb8fdf638511121327b0fef11aa10958419e668d774b540910f0eaef0",
+          "bytes": 500794,
+          "origin": "GitHub connector decoded job log",
+          "newlineNormalization": "none; connector text already LF",
+          "originalActionsLogZip": false,
+          "expectedDigestVerified": true,
+          "artifactWasCreated": true
+        }
+      },
+      "summary": {
+        "path": "summaries/45415519185-reuse-harness-mismatch-45415519185-linux-release.json",
+        "sha256": "b27596ddbcb8ab147b198e8600f188efeb677ab5b3248cee1cc3fb6b602522a4",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 9,
+      "rawJsonlRows": 0,
+      "compressedBytes": 107113,
+      "parts": 1
+    },
+    {
+      "id": "45418958440-pdf-5538-font-profile-attempt3",
+      "classification": "failed-warmup-fixture-and-frame-validation",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45418958440,
+        "jobId": 138532857023,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45418958440/job/138532857023",
+        "sourceCommit": "b03004ecf75a98050582b3be5dbb51bdd81ea50d",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/b03004ecf75a98050582b3be5dbb51bdd81ea50d",
+        "artifact": {
+          "id": 14934620752,
+          "name": "pdf-5538-font-profile-abc-linux-x64",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45418958440/artifacts/14934620752",
+          "zipSha256": "8ca6f474646a9db12f9003455ae6de4d919929123189e587f16507863251eeb4",
+          "zipBytes": 869659,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        },
+        "jobLog": {
+          "path": "workflow-job.log",
+          "sha256": "9b4e740262f079e2786b2391194269f82460caa715d17a9692cfb1b8901a9bf3",
+          "bytes": 513387,
+          "origin": "GitHub connector decoded job log",
+          "newlineNormalization": "none; connector text already LF",
+          "originalActionsLogZip": false,
+          "expectedDigestVerified": true,
+          "artifactWasCreated": true
+        }
+      },
+      "summary": {
+        "path": "summaries/45418958440-pdf-5538-font-profile-attempt3.json",
+        "sha256": "db80431f16a8e8ae8b89141bf5e76e475640cf3403eac6b65b6d40aff4557ce4",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 81,
+      "rawJsonlRows": 0,
+      "compressedBytes": 976068,
+      "parts": 1
+    },
+    {
+      "id": "45419791368-reader-bootstrap-45419791368-windows-profile",
+      "classification": "blocked-before-measurement",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45419791368,
+        "jobId": 138536736765,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45419791368/job/138536736765",
+        "sourceCommit": "271486301544c18376214823f8904be88f8ffd0a",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/271486301544c18376214823f8904be88f8ffd0a",
+        "artifact": {
+          "id": 14934245534,
+          "name": "pdf-5538-reused-windows-profile",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45419791368/artifacts/14934245534",
+          "zipSha256": "0afd36fc6cb542596eb37c25c68ada2ee76337c5d4bcce8a9882276faf1cc912",
+          "zipBytes": 2034,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        },
+        "jobLog": {
+          "path": "workflow-job.log",
+          "sha256": "777ddb6dcc3d971486b251c926ef973b4c763c9b2a9d02aa2e81986ac4ddc915",
+          "bytes": 68360,
+          "origin": "GitHub connector decoded job log",
+          "newlineNormalization": "LF",
+          "originalActionsLogZip": false,
+          "expectedDigestVerified": true,
+          "artifactWasCreated": true
+        }
+      },
+      "summary": {
+        "path": "summaries/45419791368-reader-bootstrap-45419791368-windows-profile.json",
+        "sha256": "383d3b703da56fe79d79fddfd6bfcd11a69f0ceed6016b282a08039a5babd945",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 6,
+      "rawJsonlRows": 0,
+      "compressedBytes": 25858,
+      "parts": 1
+    },
+    {
+      "id": "45420209174-navigation-before-launch-45420209174",
+      "classification": "blocked-before-measurement",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45420209174,
+        "jobId": 138537371290,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45420209174/job/138537371290",
+        "sourceCommit": "c87c87da78e74ac32560ab7f9b79b65ca4bf3bff",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/c87c87da78e74ac32560ab7f9b79b65ca4bf3bff",
+        "artifact": {
+          "id": 14934330455,
+          "name": "pdf-5538-navigation-windows-profile",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45420209174/artifacts/14934330455",
+          "zipSha256": "babf27d6ffa3e80a61868b93ec01be8fcdcbc9816fa51e03f754a829f21d1ea7",
+          "zipBytes": 914,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        },
+        "jobLog": {
+          "path": "workflow-job.log",
+          "sha256": "1c9d2d4529d8cdca65f9a7f677dce9b67438b7ee5046932318ed0fc35ca286aa",
+          "bytes": 70002,
+          "origin": "GitHub connector decoded job log",
+          "newlineNormalization": "LF",
+          "originalActionsLogZip": false,
+          "expectedDigestVerified": true,
+          "artifactWasCreated": true
+        }
+      },
+      "summary": {
+        "path": "summaries/45420209174-navigation-before-launch-45420209174.json",
+        "sha256": "3be30c75b343dd00dbdca777273d52357186164177c712d565a7260d22556403",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 6,
+      "rawJsonlRows": 0,
+      "compressedBytes": 25022,
+      "parts": 1
+    },
+    {
+      "id": "45421880237-layout-spy-failure-45421880237-Linux",
+      "classification": "failed-viewer-test-spy",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45421880237,
+        "jobId": 138543309731,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45421880237/job/138543309731",
+        "sourceCommit": "c60920cd85f728538e9a709eb5c03a76ae481050",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/c60920cd85f728538e9a709eb5c03a76ae481050",
+        "artifact": {
+          "id": 14935361484,
+          "name": "pdf-5538-layout-engine-Linux",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45421880237/artifacts/14935361484",
+          "zipSha256": "3b33db2d1ca4ed2956f5de118726b7e54d978554d7125ed92a12c362cc3fe40e",
+          "zipBytes": 33551,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45421880237-layout-spy-failure-45421880237-Linux.json",
+        "sha256": "22160015e1e682f89825163b5f82b0afae766d2356e684b03df909883723d89e",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 13,
+      "rawJsonlRows": 760,
+      "compressedBytes": 42001,
+      "parts": 1
+    },
+    {
+      "id": "45421880237-layout-spy-failure-45421880237-Windows",
+      "classification": "failed-viewer-test-spy",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45421880237,
+        "jobId": 138543309679,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45421880237/job/138543309679",
+        "sourceCommit": "c60920cd85f728538e9a709eb5c03a76ae481050",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/c60920cd85f728538e9a709eb5c03a76ae481050",
+        "artifact": {
+          "id": 14936205817,
+          "name": "pdf-5538-layout-engine-Windows",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45421880237/artifacts/14936205817",
+          "zipSha256": "2c1999d56ec645203ad7a98adc36d9e4268961babe606c0ad666e77c0ec06c56",
+          "zipBytes": 33790,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45421880237-layout-spy-failure-45421880237-Windows.json",
+        "sha256": "3f47ec348fe7d0f443576726313366cb2f965ac4e4470730cdbb314cc8e6b99c",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 13,
+      "rawJsonlRows": 760,
+      "compressedBytes": 42202,
+      "parts": 1
+    },
+    {
+      "id": "45421880237-layout-spy-failure-45421880237-macOS",
+      "classification": "failed-viewer-test-spy",
+      "declaredScopeComplete": false,
+      "ci": {
+        "repository": "yom-chadash/otzaria",
+        "runId": 45421880237,
+        "jobId": 138543308911,
+        "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45421880237/job/138543308911",
+        "sourceCommit": "c60920cd85f728538e9a709eb5c03a76ae481050",
+        "sourceUrl": "https://github.com/yom-chadash/otzaria/tree/c60920cd85f728538e9a709eb5c03a76ae481050",
+        "artifact": {
+          "id": 14934372306,
+          "name": "pdf-5538-layout-engine-macOS",
+          "url": "https://github.com/yom-chadash/otzaria/actions/runs/45421880237/artifacts/14934372306",
+          "zipSha256": "7dbe3e917e6d7ad55827d2290f5f1d2876ace3bf34f9b51bc52f97ddb82afb4c",
+          "zipBytes": 34035,
+          "expectedDigestVerified": true,
+          "originalZipStoredAgain": false
+        }
+      },
+      "summary": {
+        "path": "summaries/45421880237-layout-spy-failure-45421880237-macOS.json",
+        "sha256": "87ace5cdfe54658e025c01d88ce3ef2ad75b5f049102b9922a37e9601785e24c",
+        "derivedFrom": "analysis-summary.json"
+      },
+      "rawFiles": 13,
+      "rawJsonlRows": 760,
+      "compressedBytes": 42395,
+      "parts": 1
     }
   ],
   "interpretationCaveats": [
@@ -2410,6 +2710,7 @@
     "Repeated passes within one process are not independent launches; see each summary for sample sizes and timing limits.",
     "Connector-decoded job logs are labelled separately from byte-verified artifact ZIP members; any recorded newline normalization is explicit.",
     "Selected S02 frame PNGs retain their original artifact bytes and are checked against frame-receipts.json; a frame capture is not an OS presentation timestamp.",
+    "Small S02 synthetic PDF inputs are retained only under their fixture paths and verified against the original fixture manifest and artifact ZIP; real-book corpus bytes remain excluded.",
     "PdfPageHighlights is an advanced-search component. Its literal String case is a component microbenchmark, not a measured acceleration of simple product search. Simple and /regex/ searches use pdfrx.startTextSearch; the advanced-search RegExp fallback is a product path. ResultLines follow-up is mixed and supports neither an improvement nor a non-regression claim.",
     "No PDF corpus, runtime binary, dependency checkout, build tree or signed download URL is embedded in these raw archives."
   ],

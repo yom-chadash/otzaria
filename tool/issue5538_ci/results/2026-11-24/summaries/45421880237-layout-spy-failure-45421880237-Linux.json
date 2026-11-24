@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "independent post-download verification; original members unchanged",
+  "runId": 45421880237,
+  "jobId": 138543309731,
+  "artifactId": 14935361484,
+  "sourceCommit": "c60920cd85f728538e9a709eb5c03a76ae481050",
+  "artifactZipSha256": "3b33db2d1ca4ed2956f5de118726b7e54d978554d7125ed92a12c362cc3fe40e",
+  "artifactZipBytes": 33551,
+  "verifiedOriginalMembers": 9,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45421880237/job/138543309731",
+  "classification": "failed-viewer-test-spy",
+  "declaredScopeComplete": false,
+  "jobConclusion": "failure",
+  "testedSourceCommit": "c0107a62ba1860c0803818dd642692b1b67e3b02",
+  "platform": "Linux",
+  "staticAnalysis": "passed",
+  "sdk": {
+    "frameworkVersion": "3.47.7",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "engineCommitDate": "2026-10-07 17:09:12.000Z",
+    "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+    "engineBuildDate": "2026-10-07 10:51:44.552",
+    "dartSdkVersion": "3.13.5",
+    "devToolsVersion": "2.60.0",
+    "flutterVersion": "3.47.7",
+    "flutterRoot": "/opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter"
+  },
+  "engineTests": {
+    "passed": 118,
+    "failed": 0,
+    "skipped": 0,
+    "failedTests": [],
+    "reporterSuccess": true,
+    "eventRows": 317
+  },
+  "viewerTests": {
+    "passed": 111,
+    "failed": 1,
+    "skipped": 0,
+    "failedTests": [
+      "font manager preparation is deferred until missing fonts are reported"
+    ],
+    "reporterSuccess": false,
+    "eventRows": 443
+  },
+  "performanceMeasurement": false,
+  "productPerformanceClaim": false,
+  "limitations": [
+    "The entire job failed even though analyze and all 118 engine tests passed.",
+    "The failing test spy counts prepare calls but skips super.prepare, leaving the prepared backend unset; no real application prepare override was found.",
+    "A separate test-only fix delegates preparation and awaits the complete load; its subsequent CI outcome is not inferred here."
+  ]
+}

@@ -40,6 +40,9 @@ def included(path):
     if 'build' in path.parts[:-1] and path.name not in BUILD_RECEIPTS and path.suffix not in {'.log', '.d', '.lock'}:
         return False, 'build-tree-content-other-than-provenance-receipts'
     if path.suffix == '.pdf':
+        if (len(path.parts) == 4 and path.parts[:2] == ('pdf-5538-font-profile', 'fixtures')
+                and re.fullmatch(r'(source-\d+|unrelated)\.pdf', path.name)):
+            return True, None
         return False, 'pdf-input-or-generated-fixture; identities retained in reports and corpus catalog'
     if path.suffix in {'.zip', '.gz'}:
         return False, 'original-container-or-dependency-archive; container identity retained'
@@ -48,6 +51,18 @@ def included(path):
     if path.suffix in TEXT_EXTENSIONS or path.name in {'start', 'stop'}:
         return True, None
     return False, 'binary-or-redundant-source; source and binary identities retained in receipts'
+
+
+def validate_font_fixture(path, payload):
+    root = path.parent.parent
+    manifest = read_json(root / 'manifest.json')
+    relative = path.relative_to(root).as_posix()
+    matches = [item for case in manifest['cases'] for item in case['documents'] if item['path'] == relative]
+    assert len(matches) == 1, 'Font fixture must appear once in its original manifest'
+    item = matches[0]
+    assert payload.startswith(b'%PDF-') and len(payload) <= 1024 * 1024, 'Unexpected font fixture type/size'
+    assert len(payload) == item['sizeBytes'] and sha(payload) == item['sha256'], 'Font fixture changed'
+    assert not SIGNED.search(payload), 'Unexpected credential-like text in generated fixture'
 
 
 def group(source_root, relative, run, job, artifact, commit, classification, expected_sha=None, summary=None, supplementary=None, artifact_name=None, job_log=None, job_log_sha256=None, job_log_newline_normalization=None):
@@ -189,7 +204,9 @@ def archive_group(g, destination, immutable_sources):
                 omitted.append({'path': relative.as_posix(), 'bytes': path.stat().st_size, 'reason': reason})
                 continue
             payload = path.read_bytes()
-            if path.suffix == '.png':
+            if path.suffix == '.pdf':
+                validate_font_fixture(path, payload)
+            elif path.suffix == '.png':
                 assert payload.startswith(b'\x89PNG\r\n\x1a\n') and payload[12:16] == b'IHDR', 'Invalid frame PNG'
                 sidecar = read_json(path.parent / 'frame-receipts.json')
                 rows = [row for row in sidecar['measured'] + sidecar['reference'] if row['pngPath'] == path.name]
@@ -383,6 +400,7 @@ def main():
             'Repeated passes within one process are not independent launches; see each summary for sample sizes and timing limits.',
             'Connector-decoded job logs are labelled separately from byte-verified artifact ZIP members; any recorded newline normalization is explicit.',
             'Selected S02 frame PNGs retain their original artifact bytes and are checked against frame-receipts.json; a frame capture is not an OS presentation timestamp.',
+            'Small S02 synthetic PDF inputs are retained only under their fixture paths and verified against the original fixture manifest and artifact ZIP; real-book corpus bytes remain excluded.',
             'PdfPageHighlights is an advanced-search component. Its literal String case is a component microbenchmark, not a measured acceleration of simple product search. Simple and /regex/ searches use pdfrx.startTextSearch; the advanced-search RegExp fallback is a product path. ResultLines follow-up is mixed and supports neither an improvement nor a non-regression claim.',
             'No PDF corpus, runtime binary, dependency checkout, build tree or signed download URL is embedded in these raw archives.'
         ],

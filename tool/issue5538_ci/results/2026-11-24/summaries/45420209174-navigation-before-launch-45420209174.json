@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "independent post-download verification; original members unchanged",
+  "runId": 45420209174,
+  "jobId": 138537371290,
+  "artifactId": 14934330455,
+  "sourceCommit": "c87c87da78e74ac32560ab7f9b79b65ca4bf3bff",
+  "artifactZipSha256": "babf27d6ffa3e80a61868b93ec01be8fcdcbc9816fa51e03f754a829f21d1ea7",
+  "artifactZipBytes": 914,
+  "verifiedOriginalMembers": 1,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45420209174/job/138537371290",
+  "jobLog": {
+    "sizeBytes": 70002,
+    "sha256": "1c9d2d4529d8cdca65f9a7f677dce9b67438b7ee5046932318ed0fc35ca286aa",
+    "normalization": "LF",
+    "origin": "GitHub connector decoded job log",
+    "originalActionsLogZip": false
+  },
+  "jobLogSha256": "1c9d2d4529d8cdca65f9a7f677dce9b67438b7ee5046932318ed0fc35ca286aa",
+  "classification": "blocked-before-measurement",
+  "jobConclusion": "failure",
+  "declaredScopeComplete": false,
+  "retainedIndependentMeasurements": 0,
+  "productPerformanceClaim": false,
+  "productRegressionEstablished": false,
+  "failureStage": "strict Flutter SDK JSON parsing before native launch",
+  "observedError": "JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+  "measuredProcessLaunches": 0,
+  "diagnosticAttempts": 0,
+  "diagnosticSourceCommit": "69e2a1542ee4beb066d6e37a560c12ec8266df24",
+  "diagnosticSourceTree": "a914aa099df53a3a653b97d8e413b8dad88627a9",
+  "explanation": "The first Flutter invocation can bootstrap its tool and print non-JSON output; no trace was collected.",
+  "limitations": [
+    "Failure before measurements is retained as evidence, not converted to a passing or completed experiment.",
+    "Decoded connector logs are separate from byte-verified original artifact ZIP members."
+  ]
+}

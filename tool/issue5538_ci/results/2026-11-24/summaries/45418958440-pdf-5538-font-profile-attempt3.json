@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "independent post-download verification; original members unchanged",
+  "runId": 45418958440,
+  "jobId": 138532857023,
+  "artifactId": 14934620752,
+  "sourceCommit": "b03004ecf75a98050582b3be5dbb51bdd81ea50d",
+  "artifactZipSha256": "8ca6f474646a9db12f9003455ae6de4d919929123189e587f16507863251eeb4",
+  "artifactZipBytes": 869659,
+  "verifiedOriginalMembers": 77,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45418958440/job/138532857023",
+  "jobLog": {
+    "sizeBytes": 513387,
+    "sha256": "9b4e740262f079e2786b2391194269f82460caa715d17a9692cfb1b8901a9bf3",
+    "normalization": "none; connector text already LF",
+    "origin": "GitHub connector decoded job log",
+    "originalActionsLogZip": false
+  },
+  "jobLogSha256": "9b4e740262f079e2786b2391194269f82460caa715d17a9692cfb1b8901a9bf3",
+  "classification": "failed-warmup-fixture-and-frame-validation",
+  "jobConclusion": "failure",
+  "declaredScopeComplete": false,
+  "warmupProcessesExecuted": 3,
+  "hostValidatedWarmupProcesses": 2,
+  "retainedIndependentMeasurements": 0,
+  "completePairedBlocks": 0,
+  "productPerformanceClaim": false,
+  "observedError": "ValueError('Candidate has framework/capture errors or wrong-document reports.')",
+  "variants": [
+    {
+      "variant": "A",
+      "sourceCommit": "2f1acd89644525af40bb45a34e7cd74a560da6c1",
+      "appSourcesSha256": "a89fcd0f46cd24b3717fe5742af0b1cce9c7949260bb1d95b1bb4d8f05c99ab4",
+      "hostValidated": true,
+      "frameworkErrors": [],
+      "frameCaptureErrors": [],
+      "sourceText": "שלו ם",
+      "sourceTextSha256": "e3c964061b787731cd37bc424a1cdda440c7c8bdd8e48fc4396d6e52428f9db8",
+      "nativeTextGeometryAndRasterEqualToFreshReference": true,
+      "literalExpectedWordPresent": false,
+      "stableSourceFrameSamples": 0,
+      "sourceFirstGoodSampleUs": null,
+      "extraQueriesBeyondSingleFaceFixture": [],
+      "reportPath": "pdf-5538-font-profile/initial-hebrew/00-A/result.json"
+    },
+    {
+      "variant": "B",
+      "sourceCommit": "6e292521136a566bb9cd9c667914fc1a664a0479",
+      "appSourcesSha256": "a89fcd0f46cd24b3717fe5742af0b1cce9c7949260bb1d95b1bb4d8f05c99ab4",
+      "hostValidated": true,
+      "frameworkErrors": [],
+      "frameCaptureErrors": [],
+      "sourceText": "שלו ם",
+      "sourceTextSha256": "e3c964061b787731cd37bc424a1cdda440c7c8bdd8e48fc4396d6e52428f9db8",
+      "nativeTextGeometryAndRasterEqualToFreshReference": true,
+      "literalExpectedWordPresent": false,
+      "stableSourceFrameSamples": 0,
+      "sourceFirstGoodSampleUs": null,
+      "extraQueriesBeyondSingleFaceFixture": [],
+      "reportPath": "pdf-5538-font-profile/initial-hebrew/01-B/result.json"
+    },
+    {
+      "variant": "C",
+      "sourceCommit": "22af0ee2710583758fc37e3961d54fadc2a32ab3",
+      "appSourcesSha256": "c5c456782e3c515133d5715611e8ec6f7164326da52eabc94a2cd3c765a541c9",
+      "hostValidated": false,
+      "frameworkErrors": [],
+      "frameCaptureErrors": [],
+      "sourceText": "שלו ם",
+      "sourceTextSha256": "e3c964061b787731cd37bc424a1cdda440c7c8bdd8e48fc4396d6e52428f9db8",
+      "nativeTextGeometryAndRasterEqualToFreshReference": true,
+      "literalExpectedWordPresent": false,
+      "stableSourceFrameSamples": 0,
+      "sourceFirstGoodSampleUs": null,
+      "extraQueriesBeyondSingleFaceFixture": [
+        {
+          "documentId": 0,
+          "inputId": "source-0",
+          "query": {
+            "face": "Helvetica",
+            "weight": 400,
+            "italic": false,
+            "charset": 0,
+            "pitchFamily": 0
+          },
+          "eventOwnsDocument": true,
+          "byPage": {
+            "1": [
+              {
+                "face": "Helvetica",
+                "weight": 400,
+                "italic": false,
+                "charset": 0,
+                "pitchFamily": 0
+              }
+            ]
+          }
+        }
+      ],
+      "reportPath": "pdf-5538-font-profile/initial-hebrew/02-C/result.json"
+    }
+  ],
+  "verifiedFramePngCount": 12,
+  "frames": [
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/00-A/frame-0.png",
+      "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+      "inputId": "source-0",
+      "phase": "measurement",
+      "renderState": "detached",
+      "stableDocument": false
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/00-A/frame-1.png",
+      "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+      "inputId": "unrelated",
+      "phase": "measurement",
+      "renderState": "ready",
+      "stableDocument": true
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/00-A/frame-2.png",
+      "sha256": "e80cfc7b7daa6bdea5bcb496a41ff6b14a5aa997167b6b6499d581fd024f093b",
+      "inputId": "source-0",
+      "phase": "reference",
+      "renderState": "ready",
+      "stableDocument": true
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/00-A/frame-3.png",
+      "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+      "inputId": "unrelated",
+      "phase": "reference",
+      "renderState": "ready",
+      "stableDocument": true
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/01-B/frame-0.png",
+      "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+      "inputId": "source-0",
+      "phase": "measurement",
+      "renderState": "detached",
+      "stableDocument": false
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/01-B/frame-1.png",
+      "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+      "inputId": "unrelated",
+      "phase": "measurement",
+      "renderState": "ready",
+      "stableDocument": true
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/01-B/frame-2.png",
+      "sha256": "e80cfc7b7daa6bdea5bcb496a41ff6b14a5aa997167b6b6499d581fd024f093b",
+      "inputId": "source-0",
+      "phase": "reference",
+      "renderState": "ready",
+      "stableDocument": true
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/01-B/frame-3.png",
+      "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+      "inputId": "unrelated",
+      "phase": "reference",
+      "renderState": "ready",
+      "stableDocument": true
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/02-C/frame-0.png",
+      "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+      "inputId": "source-0",
+      "phase": "measurement",
+      "renderState": "detached",
+      "stableDocument": false
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/02-C/frame-1.png",
+      "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+      "inputId": "unrelated",
+      "phase": "measurement",
+      "renderState": "ready",
+      "stableDocument": true
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/02-C/frame-2.png",
+      "sha256": "e80cfc7b7daa6bdea5bcb496a41ff6b14a5aa997167b6b6499d581fd024f093b",
+      "inputId": "source-0",
+      "phase": "reference",
+      "renderState": "ready",
+      "stableDocument": true
+    },
+    {
+      "path": "pdf-5538-font-profile/initial-hebrew/02-C/frame-3.png",
+      "sha256": "2ebd14a7bafc574473e80ff23d7b3f4eca198bf83376270a8d24bfba052f72cd",
+      "inputId": "unrelated",
+      "phase": "reference",
+      "renderState": "ready",
+      "stableDocument": true
+    }
+  ],
+  "oldHelveticaNativeOriginEstablished": false,
+  "crossDocumentLeakEstablished": false,
+  "limitations": [
+    "Three warmups ran; candidate validation rejected the third. No retained timing comparison exists.",
+    "The old single-face resource validator rejects Helvetica; the event owns the correct document/page, but its native fallback origin was not established.",
+    "Both actual and fresh-reference native extraction contain an artificial space before the final Hebrew letter; their parity does not satisfy the literal-word oracle.",
+    "No stable target-page frame was captured for source-0. First-good latency cannot be reconstructed from the later reference image.",
+    "The twelve original PNGs and failed raw reports are preserved unchanged; revised fixtures constitute a new experiment."
+  ]
+}

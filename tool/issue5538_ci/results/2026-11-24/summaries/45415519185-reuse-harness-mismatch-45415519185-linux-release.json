@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "independent post-download verification; original members unchanged",
+  "runId": 45415519185,
+  "jobId": 138521042393,
+  "artifactId": 14932740046,
+  "sourceCommit": "162f353bcf3a8b70ddcaf69c68a62abf32348089",
+  "artifactZipSha256": "f1d7aa6b3f95cd9061953e93befc77021c8250546889c625c58867fe54721e9a",
+  "artifactZipBytes": 3109,
+  "verifiedOriginalMembers": 4,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45415519185/job/138521042393",
+  "jobLog": {
+    "sizeBytes": 500794,
+    "sha256": "2ae6516cb8fdf638511121327b0fef11aa10958419e668d774b540910f0eaef0",
+    "normalization": "none; connector text already LF",
+    "origin": "GitHub connector decoded job log",
+    "originalActionsLogZip": false
+  },
+  "jobLogSha256": "2ae6516cb8fdf638511121327b0fef11aa10958419e668d774b540910f0eaef0",
+  "classification": "blocked-before-measurement",
+  "jobConclusion": "failure",
+  "declaredScopeComplete": false,
+  "retainedIndependentMeasurements": 0,
+  "productPerformanceClaim": false,
+  "productRegressionEstablished": false,
+  "failureStage": "orchestrator/source harness identity guard",
+  "observedError": "The orchestrator must use the same verified harness as the measured sources.",
+  "measuredProcessLaunches": 0,
+  "originalArtifactScope": "Only four display/session setup files; the decoded job log records the guard failure.",
+  "limitations": [
+    "Failure before measurements is retained as evidence, not converted to a passing or completed experiment.",
+    "Decoded connector logs are separate from byte-verified original artifact ZIP members."
+  ]
+}

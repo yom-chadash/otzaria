@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "independent post-download verification; original members unchanged",
+  "runId": 45419791368,
+  "jobId": 138536736765,
+  "artifactId": 14934245534,
+  "sourceCommit": "271486301544c18376214823f8904be88f8ffd0a",
+  "artifactZipSha256": "0afd36fc6cb542596eb37c25c68ada2ee76337c5d4bcce8a9882276faf1cc912",
+  "artifactZipBytes": 2034,
+  "verifiedOriginalMembers": 1,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45419791368/job/138536736765",
+  "jobLog": {
+    "sizeBytes": 68360,
+    "sha256": "777ddb6dcc3d971486b251c926ef973b4c763c9b2a9d02aa2e81986ac4ddc915",
+    "normalization": "LF",
+    "origin": "GitHub connector decoded job log",
+    "originalActionsLogZip": false
+  },
+  "jobLogSha256": "777ddb6dcc3d971486b251c926ef973b4c763c9b2a9d02aa2e81986ac4ddc915",
+  "classification": "blocked-before-measurement",
+  "jobConclusion": "failure",
+  "declaredScopeComplete": false,
+  "retainedIndependentMeasurements": 0,
+  "productPerformanceClaim": false,
+  "productRegressionEstablished": false,
+  "failureStage": "strict Flutter SDK JSON parsing before native build/launch",
+  "observedError": "JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+  "measuredProcessLaunches": 0,
+  "completedConditions": 0,
+  "plannedCases": [
+    "uxlc-genesis",
+    "mikraot-gedolot-genesis-1859",
+    "letteris-hebrew-1910",
+    "gcc-15_2",
+    "derived-real-mixed-10000"
+  ],
+  "sources": {
+    "baseline": "6ada2838b7041f770d874959f874a200f3f19aa6",
+    "candidate": "bae04dfe63eb33076161af3e48e7274cd5857cc1"
+  },
+  "explanation": "Explicit SDK bootstrap was absent before strict JSON parsing; no reader measurements resulted.",
+  "limitations": [
+    "Failure before measurements is retained as evidence, not converted to a passing or completed experiment.",
+    "Decoded connector logs are separate from byte-verified original artifact ZIP members."
+  ]
+}
