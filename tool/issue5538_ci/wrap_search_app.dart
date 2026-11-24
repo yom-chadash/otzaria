@@ -11,7 +11,6 @@ import 'package:otzaria/pdf_book/utils/centered_text_search_session.dart';
 import 'package:otzaria/pdf_book/utils/pdf_user_regex_pattern.dart';
 import 'package:otzaria/pdf_book/view/pdf_search_screen.dart';
 import 'package:otzaria/search/search_engine_library.dart';
-import 'package:otzaria_search_engine/otzaria_search_engine.dart';
 import 'package:pdfrx/pdfrx.dart';
 
 import 'wrap_search_metrics.dart';
