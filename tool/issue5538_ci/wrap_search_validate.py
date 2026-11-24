@@ -4,11 +4,35 @@ import statistics
 
 ORDERS = ('page1', 'start75', 'redirect')
 QUERIES = ('app-simple', 'app-user-regex')
+FIXED_CANDIDATES = ('בראשית', 'אלהים', 'ישראל', 'משה', 'ויאמר', 'אמר', 'הוא', 'את')
 
 
 def require(condition, message):
     if not condition:
         raise ValueError(message)
+
+
+def validate_queries(queries):
+    require([row['id'] for row in queries] == list(QUERIES), 'Missing application query path')
+    simple, regex = queries
+    require(simple['builder'] == 'PdfBookSearchView.buildSimpleSearchPattern'
+            and regex['builder'] == 'PdfUserRegexPattern.tryParse', 'Pattern builders changed')
+    require(simple['query'] in FIXED_CANDIDATES and regex['query'] == '/' + simple['query'] + '/'
+            and regex.get('planKind') == 'singleWord'
+            and regex.get('runtimeType') == 'PdfUserRegexPattern',
+            'User regex is not the fixed candidate accepted by the actual product parser')
+    selection = simple['selection']
+    require(regex['selection'] == selection and selection['candidateOrder'] == list(FIXED_CANDIDATES)
+            and selection['wholeWord'] is False, 'Query selection contract differs')
+    checks = selection['presenceChecks']
+    selected = FIXED_CANDIDATES.index(simple['query'])
+    require([row['query'] for row in checks] == list(FIXED_CANDIDATES[:selected + 1]),
+            'Query selection skipped or reordered a fixed candidate')
+    keys = ('simpleBefore', 'simpleAfter', 'regexBefore', 'regexAfter')
+    require(all(type(row.get(key)) is bool for row in checks for key in keys)
+            and all(checks[-1][key] for key in keys)
+            and not any(all(row[key] for key in keys) for row in checks[:-1]),
+            'Selected queries are not the first positive pair across the wrap boundary')
 
 
 def expected_order(pages, target, order):
@@ -61,9 +85,7 @@ def validate_report(report):
             'Changed wrap boundary')
     require(report['warmup'] == 1 and report['repetitions'] == (5 if variant == 'control' else 1),
             'Unexpected dependent pass count')
-    require([row['id'] for row in report['queries']] == list(QUERIES), 'Missing application query path')
-    require(report['queries'][0]['builder'] == 'PdfBookSearchView.buildSimpleSearchPattern'
-            and report['queries'][1]['builder'] == 'PdfUserRegexPattern.tryParse', 'Pattern builders changed')
+    validate_queries(report['queries'])
     expected_keys = {(query, warmup, iteration) for query in QUERIES
                      for warmup, iteration in [(True, 0), *[(False, x) for x in range(report['repetitions'])]]}
     rows = report['observations']

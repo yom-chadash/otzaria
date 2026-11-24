@@ -1,4 +1,5 @@
 import copy
+import hashlib
 import io
 import json
 from pathlib import Path
@@ -8,7 +9,17 @@ import unittest
 
 from tool.issue5538_ci import wrap_search_run as host
 from tool.issue5538_ci.wrap_search_run import extract_regular_archive, instrument
-from tool.issue5538_ci.wrap_search_validate import expected_order, summarize, validate_report
+from tool.issue5538_ci.wrap_search_validate import FIXED_CANDIDATES, expected_order, summarize, validate_queries, validate_report
+
+
+def query_descriptors():
+    selection = {'candidateOrder': list(FIXED_CANDIDATES), 'wholeWord': False,
+                 'presenceChecks': [{'query': FIXED_CANDIDATES[0], 'simpleBefore': True,
+                                     'simpleAfter': True, 'regexBefore': True, 'regexAfter': True}]}
+    return [{'id': 'app-simple', 'query': FIXED_CANDIDATES[0],
+             'builder': 'PdfBookSearchView.buildSimpleSearchPattern', 'selection': selection},
+            {'id': 'app-user-regex', 'query': '/' + FIXED_CANDIDATES[0] + '/', 'planKind': 'singleWord',
+             'runtimeType': 'PdfUserRegexPattern', 'builder': 'PdfUserRegexPattern.tryParse', 'selection': selection}]
 
 
 def report(variant='control', order='page1'):
@@ -23,8 +34,7 @@ def report(variant='control', order='page1'):
             'inputSha256': 'b' * 64, 'inputBytes': 100, 'pdfiumSha256': 'c' * 64,
             'searchEngineSha256': 'd' * 64, 'queryDescriptorsSha256': 'e' * 64,
             'pageTextHashesSha256': 'f' * 64, 'referenceSha256': '0' * 64,
-            'queries': [{'id': 'app-simple', 'builder': 'PdfBookSearchView.buildSimpleSearchPattern'},
-                        {'id': 'app-user-regex', 'builder': 'PdfUserRegexPattern.tryParse'}],
+            'queries': query_descriptors(),
             'observations': [], 'correctness': []}
     for query in ('app-simple', 'app-user-regex'):
         row = {'queryId': query, 'scanOrder': pages, 'redirectCount': 1 if order == 'redirect' else 0,
@@ -110,6 +120,65 @@ class EvidenceTests(unittest.TestCase):
                        {'block': 0, 'path': 'two', 'report': second}], complete=False)
 
 
+class QueryPreflightTests(unittest.TestCase):
+    def setUp(self):
+        self.documents = [{'id': name, 'sha256': digit * 64, 'pageCount': pages}
+                          for name, digit, pages in [('uxlc-genesis', 'a', 54),
+                                                     ('mikraot-gedolot-genesis-1859', 'b', 374)]]
+        self.commit = 'c' * 40
+        self.value = {'schemaVersion': 1, 'status': 'passed', 'sourceCommit': self.commit,
+                      'processId': 123, 'pdfiumSha256': host.PDFIUM_SHA,
+                      'searchEngineSha256': 'd' * 64, 'documents': []}
+        for document in self.documents:
+            queries = query_descriptors()
+            self.value['documents'].append({
+                'id': document['id'], 'inputSha256': document['sha256'],
+                'pageCount': document['pageCount'], 'targetPage': document['pageCount'] * 3 // 4,
+                'queries': queries,
+                'queryDescriptorsSha256': hashlib.sha256(json.dumps(queries, ensure_ascii=False, separators=(',', ':')).encode()).hexdigest(),
+                'pageTextHashesSha256': 'e' * 64})
+
+    def test_real_parser_descriptor_and_both_corpus_inputs_are_required(self):
+        result = host.validate_preflight(self.value, self.documents, self.commit)
+        self.assertEqual(list(result), [row['id'] for row in self.documents])
+
+    def test_literal_source_wrapped_as_user_regex_is_not_an_accepted_query(self):
+        queries = query_descriptors()
+        queries[1]['query'] = '/(?:בראשית[\\p{M}]*)/'
+        with self.assertRaisesRegex(ValueError, 'actual product parser'):
+            validate_queries(queries)
+
+    def test_fallback_or_different_parser_mode_is_rejected(self):
+        for field, value in [('planKind', 'invalid'), ('runtimeType', 'RegExp')]:
+            queries = query_descriptors()
+            queries[1][field] = value
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError, 'actual product parser'):
+                validate_queries(queries)
+
+    def test_absent_native_corpus_document_or_wrong_source_is_rejected(self):
+        self.value['documents'].pop()
+        with self.assertRaisesRegex(ValueError, 'omitted or reordered'):
+            host.validate_preflight(self.value, self.documents, self.commit)
+        self.value['sourceCommit'] = 'f' * 40
+        with self.assertRaisesRegex(ValueError, 'identity or completion'):
+            host.validate_preflight(self.value, self.documents, self.commit)
+
+    def test_query_must_match_both_sides_and_be_first_positive_candidate(self):
+        queries = query_descriptors()
+        queries[0]['selection']['presenceChecks'][0]['regexAfter'] = False
+        with self.assertRaisesRegex(ValueError, 'first positive pair'):
+            validate_queries(queries)
+
+    def test_changed_descriptor_or_extraction_digest_is_rejected(self):
+        self.value['documents'][0]['queryDescriptorsSha256'] = 'f' * 64
+        with self.assertRaisesRegex(ValueError, 'descriptor hash differs'):
+            host.validate_preflight(self.value, self.documents, self.commit)
+        self.setUp()
+        self.value['documents'][0]['pageTextHashesSha256'] = 'not-a-native-hash'
+        with self.assertRaisesRegex(ValueError, 'native text hash'):
+            host.validate_preflight(self.value, self.documents, self.commit)
+
+
 class InstrumentationTests(unittest.TestCase):
     def test_only_observers_are_inserted_around_unchanged_copy(self):
         source = ("import 'dart:collection';\n"
@@ -179,7 +248,7 @@ class CompilerReceiptTests(unittest.TestCase):
         mapping = host.normalized_config(self.original, self.config)
         mapping['packages'][1]['rootUri'] = self.viewer.as_uri() + '/'
         host.write(self.overlay, mapping)
-        self.required = [self.checkout / host.TARGET, self.checkout / host.METRICS,
+        self.required = [self.checkout / host.TARGET, self.checkout / host.METRICS, self.checkout / host.QUERIES,
                          self.checkout / host.APP[0], self.viewer / host.SEARCHER]
         for path in self.required:
             path.parent.mkdir(parents=True, exist_ok=True)

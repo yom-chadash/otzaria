@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 import platform
+import re
 import shutil
 import subprocess
 import sys
@@ -25,22 +26,25 @@ from tool.perf_probe import build_receipt as identity
 from tool.perf_probe import run_perf_probe_posix as owned
 from tool.perf_probe.posix_engine import BundledFlutterEngine
 from tool.perf_probe.run_pdf_highlight_pair import load_documents
-from tool.issue5538_ci.wrap_search_validate import validate_report, summarize
+from tool.issue5538_ci.wrap_search_validate import validate_queries, validate_report, summarize
 
 TARGET = 'tool/issue5538_ci/wrap_search_app.dart'
 METRICS = 'tool/issue5538_ci/wrap_search_metrics.dart'
+QUERIES = 'tool/issue5538_ci/wrap_search_queries.dart'
+QUERY_TEST = 'tool/issue5538_ci/wrap_search_queries_test.dart'
 SEARCHER = 'lib/src/widgets/pdf_text_searcher.dart'
 VIEWER_ARCHIVE_SHA = '69e2fdfae25c9686b336d89c3841766a1043bc5ba7f24bb8252224b837018440'
 PDFIUM_SHA = '1c251efce460d67437a4c76d4be9033ae2f17bf5603f5bff1af10209b94ca723'
 ORDERS = ('page1', 'start75', 'redirect')
 BLOCKS = (ORDERS, tuple(reversed(ORDERS)), ('start75', 'page1', 'redirect'))
-HARNESS = (TARGET, METRICS, 'tool/issue5538_ci/wrap_search_run.py',
+HARNESS = (TARGET, METRICS, QUERIES, QUERY_TEST, 'test/support/search_engine_test_init.dart',
+           'tool/issue5538_ci/wrap_search_run.py',
            'tool/issue5538_ci/wrap_search_validate.py', 'tool/perf_probe/build_receipt.py',
            'tool/perf_probe/run_perf_probe_posix.py', 'tool/perf_probe/posix_engine.py',
            'tool/perf_probe/run_pdf_highlight_pair.py')
 APP = ('lib/pdf_book/utils/centered_text_search_session.dart',
        'lib/pdf_book/view/pdf_search_screen.dart', 'lib/pdf_book/utils/pdf_user_regex_pattern.dart',
-       'lib/search/utils/literal_search_pattern.dart')
+       'lib/search/utils/literal_search_pattern.dart', 'lib/search/utils/user_regex_query.dart')
 
 
 def require(condition, message):
@@ -58,12 +62,13 @@ def write(path, value):
     path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
 
 
-def run(command, cwd, log):
+def run(command, cwd, log, environment=None):
     log.parent.mkdir(parents=True, exist_ok=True)
     print(f'Running {log.stem}', flush=True)
     with log.open('x', encoding='utf-8') as output:
         completed = subprocess.run([str(x) for x in command], cwd=cwd,
-                                   stdout=output, stderr=subprocess.STDOUT, check=False)
+                                   stdout=output, stderr=subprocess.STDOUT, check=False,
+                                   env=environment)
     require(completed.returncode == 0,
             f'{log.stem} failed ({completed.returncode}):\n{log.read_text(errors="replace")[-8000:]}')
 
@@ -266,7 +271,7 @@ def preserve_compiler_records(checkout, directory):
 
 def compiler_inputs(checkout, viewer, diagnostics=None):
     candidates = []
-    required = {(checkout / TARGET).resolve(), (checkout / METRICS).resolve(),
+    required = {(checkout / TARGET).resolve(), (checkout / METRICS).resolve(), (checkout / QUERIES).resolve(),
                 (checkout / APP[0]).resolve(), (viewer / SEARCHER).resolve()}
     findings = []
     for depfile in sorted((checkout / '.dart_tool/flutter_build').glob('*/kernel_snapshot_program.d')):
@@ -363,6 +368,58 @@ def mapped_library(pid, path):
     return {'path': str(path.resolve()), 'identity': identity.file_record(path), 'mappingLines': lines}
 
 
+def validate_preflight(report, documents, commit):
+    require(report.get('schemaVersion') == 1 and report.get('status') == 'passed'
+            and report.get('sourceCommit') == commit and type(report.get('processId')) is int
+            and report['processId'] > 0 and report.get('pdfiumSha256') == PDFIUM_SHA,
+            'Query preflight identity or completion differs')
+    require(isinstance(report.get('searchEngineSha256'), str)
+            and re.fullmatch(r'[0-9a-f]{64}', report['searchEngineSha256']),
+            'Query preflight native search engine receipt is missing')
+    rows = report['documents']
+    require([row['id'] for row in rows] == [document['id'] for document in documents],
+            'Query preflight omitted or reordered a native corpus document')
+    for row, document in zip(rows, documents):
+        require(row['inputSha256'] == document['sha256'] and row['pageCount'] == document['pageCount']
+                and row['targetPage'] == document['pageCount'] * 3 // 4,
+                'Query preflight corpus or wrap boundary differs')
+        validate_queries(row['queries'])
+        descriptor_sha = hashlib.sha256(json.dumps(row['queries'], ensure_ascii=False, separators=(',', ':')).encode()).hexdigest()
+        require(row['queryDescriptorsSha256'] == descriptor_sha, 'Preflight query descriptor hash differs')
+        require(isinstance(row['pageTextHashesSha256'], str)
+                and re.fullmatch(r'[0-9a-f]{64}', row['pageTextHashesSha256']),
+                'Preflight native text hash is missing')
+    return {row['id']: row for row in rows}
+
+
+def query_preflight(checkout, overlay, documents, pdfium, commit, output):
+    """Run the shared query builder against native text before either AOT build."""
+    path = output / 'query-preflight-config.json'
+    report_path = output / 'query-preflight-report.json'
+    write(path, {'sourceCommit': commit, 'pdfium': str(pdfium), 'pdfiumSha256': PDFIUM_SHA,
+                 'documents': documents, 'output': str(report_path)})
+    before = identity.source_identity(checkout)
+    require(before['commit'] == commit, 'Preflight source revision differs')
+    resolution = verify_installed_overlay(checkout, overlay)
+    command = ['flutter', 'test', '--no-pub', '--concurrency=1', '--reporter=expanded', QUERY_TEST]
+    write(output / 'query-preflight-command.json', command)
+    run(command, checkout, output / 'query-preflight.log',
+        environment={**os.environ, 'WRAP_SEARCH_QUERY_PREFLIGHT': str(path)})
+    require(identity.source_identity(checkout) == before
+            and verify_installed_overlay(checkout, overlay) == resolution,
+            'Source or package resolution changed during the query gate')
+    report = json.loads(report_path.read_text())
+    result = validate_preflight(report, documents, commit)
+    write(output / 'query-preflight-validated.json', {
+        'status': 'passed', 'scope': 'Early debug/JIT functional gate, not a performance comparison',
+        'report': identity.file_record(report_path), 'config': identity.file_record(path),
+        'source': before, 'resolution': resolution,
+        'sharedQuerySource': identity.file_record(checkout / QUERIES),
+        'testSource': identity.file_record(checkout / QUERY_TEST),
+        'runtimeComparison': 'Both profile variants must reproduce these descriptors and native text hashes; debug gate binary is not a timed baseline.'})
+    return result
+
+
 def launch(info, document, pdfium, order, output):
     output.mkdir(parents=True, exist_ok=False)
     native = output / 'native'
@@ -383,6 +440,9 @@ def launch(info, document, pdfium, order, output):
             require(ready['processId'] == process.pid and ready['sourceCommit'] == info['commit']
                     and ready['variant'] == info['variant'] and ready['measurementsStarted'] is False,
                     'Native preparation identity mismatch')
+            preflight = info['queryPreflight'][document['id']]
+            require(ready['queryDescriptorsSha256'] == preflight['queryDescriptorsSha256'],
+                    'Profile query descriptors differ from the early product-parser gate')
             mapping = {'flutter': engine.observe_loaded(process.pid),
                        'pdfium': mapped_library(process.pid, pdfium),
                        'searchEngine': mapped_library(process.pid, info['executable'].parent / 'lib/libsearch_engine.so')}
@@ -398,6 +458,9 @@ def launch(info, document, pdfium, order, output):
             require(report['inputSha256'] == document['sha256'] and report['pageCount'] == document['pageCount']
                     and report['sourceCommit'] == info['commit'] and report['variant'] == info['variant']
                     and report['scanCondition'] == order, 'Report identity mismatch')
+            require(report['queries'] == preflight['queries']
+                    and report['pageTextHashesSha256'] == preflight['pageTextHashesSha256'],
+                    'Profile query selection or native extraction differs from preflight')
             require(digest(native / 'reference.json') == report['referenceSha256'], 'Reference hash mismatch')
             write(output / 'native-mappings-after.json', {'flutter': engine.observe_loaded(process.pid),
                   'pdfium': mapped_library(process.pid, pdfium),
@@ -443,6 +506,7 @@ def main():
         require(digest(pdfium) == PDFIUM_SHA, 'Unexpected PDFium')
         original = archive_viewer(output)
         builds = {}
+        preflight = None
         for variant in ('control', 'counts'):
             directory = output / 'builds' / variant
             directory.mkdir(parents=True)
@@ -455,8 +519,10 @@ def main():
             require(VIEWER_ARCHIVE_SHA in lock and '001090d220b2773747ce396f2bcda3d6ac9389d87f937ef12d64ed3a9e80e8b0' in lock,
                     'Locked PDF packages changed')
             viewer, overlay = prepare_overlay(checkout, variant, original, directory)
-            run(['flutter', 'analyze', '--no-pub', TARGET, METRICS], checkout, directory / 'analyze.log')
+            run(['flutter', 'analyze', '--no-pub', TARGET, METRICS, QUERIES, QUERY_TEST], checkout, directory / 'analyze.log')
             verify_installed_overlay(checkout, overlay)
+            if preflight is None:
+                preflight = query_preflight(checkout, overlay, documents, pdfium, commit, output)
             command = ['flutter', 'build', 'linux', '--profile', '--no-pub',
                        f'--target={TARGET}', f'--dart-define=WRAP_SEARCH_SOURCE={commit}',
                        f'--dart-define=WRAP_SEARCH_INSTRUMENTED={str(variant == "counts").lower()}']
@@ -470,6 +536,7 @@ def main():
             write(directory / 'build-snapshot.json', frozen)
             builds[variant] = {'checkout': checkout, 'viewer': viewer, 'overlay': overlay,
                                'executable': executable, 'snapshot': frozen, 'commit': commit, 'variant': variant,
+                               'queryPreflight': preflight,
                                'snapshotSha256': digest(directory / 'build-snapshot.json')}
         for document in documents:
             for block, orders in enumerate(BLOCKS):

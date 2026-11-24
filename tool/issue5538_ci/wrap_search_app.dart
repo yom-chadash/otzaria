@@ -8,27 +8,16 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:otzaria/pdf_book/utils/centered_text_search_session.dart';
-import 'package:otzaria/pdf_book/utils/pdf_user_regex_pattern.dart';
-import 'package:otzaria/pdf_book/view/pdf_search_screen.dart';
 import 'package:otzaria/search/search_engine_library.dart';
 import 'package:pdfrx/pdfrx.dart';
 
 import 'wrap_search_metrics.dart';
+import 'wrap_search_queries.dart';
 
 const _instrumented = bool.fromEnvironment('WRAP_SEARCH_INSTRUMENTED');
 const _source = String.fromEnvironment('WRAP_SEARCH_SOURCE');
 const _pdfiumSha =
     '1c251efce460d67437a4c76d4be9033ae2f17bf5603f5bff1af10209b94ca723';
-const _candidates = [
-  'בראשית',
-  'אלהים',
-  'ישראל',
-  'משה',
-  'ויאמר',
-  'אמר',
-  'הוא',
-  'את',
-];
 
 void _require(bool condition, String message) {
   if (!condition) throw StateError(message);
@@ -180,83 +169,6 @@ String _key(PdfTextSearchResult match) =>
 String _signature(Iterable<PdfTextSearchResult> matches) =>
     _hash(matches.map(_result).toList());
 
-typedef _Query = ({
-  String id,
-  Pattern pattern,
-  Map<String, Object?> descriptor,
-});
-
-List<_Query> _queries(List<PdfPageText> texts, int target) {
-  final presence = <Map<String, Object?>>[];
-  for (final word in _candidates) {
-    final literal = PdfBookSearchView.buildSimpleSearchPattern(
-      word,
-      wholeWord: false,
-    );
-    _require(
-      literal != null,
-      'Application simple-pattern builder rejected candidate',
-    );
-    final userInput = '/${literal!.source}/';
-    final regex = PdfUserRegexPattern.tryParse(userInput);
-    _require(regex != null, 'Application regex parser rejected candidate');
-    final simpleBefore = texts
-        .take(target - 1)
-        .any((t) => literal.regExp.hasMatch(t.fullText));
-    final simpleAfter = texts
-        .skip(target - 1)
-        .any((t) => literal.regExp.hasMatch(t.fullText));
-    final regexBefore = texts
-        .take(target - 1)
-        .any((t) => regex!.hasMatch(t.fullText));
-    final regexAfter = texts
-        .skip(target - 1)
-        .any((t) => regex!.hasMatch(t.fullText));
-    presence.add({
-      'query': word,
-      'simpleBefore': simpleBefore,
-      'simpleAfter': simpleAfter,
-      'regexBefore': regexBefore,
-      'regexAfter': regexAfter,
-    });
-    if (simpleBefore && simpleAfter && regexBefore && regexAfter) {
-      final selection = {
-        'algorithm': 'first fixed candidate with positive matches before and at/after 75%; no timings consulted',
-        'candidateOrder': _candidates,
-        'presenceChecks': presence,
-        'wholeWord': false,
-      };
-      return [
-        (
-          id: 'app-simple',
-          pattern: literal.regExp,
-          descriptor: {
-            'query': word,
-            'source': literal.source,
-            'builder': 'PdfBookSearchView.buildSimpleSearchPattern',
-            'runtimeType': '${literal.regExp.runtimeType}',
-            'selection': selection,
-          },
-        ),
-        (
-          id: 'app-user-regex',
-          pattern: regex!,
-          descriptor: {
-            'query': userInput,
-            'source': regex.pattern,
-            'builder': 'PdfUserRegexPattern.tryParse',
-            'runtimeType': '${regex.runtimeType}',
-            'selection': selection,
-          },
-        ),
-      ];
-    }
-  }
-  throw StateError(
-    'No fixed candidate is positive on both sides of the wrap boundary; no empty workload is permitted. $presence',
-  );
-}
-
 Future<List<PdfTextSearchResult>> _reference(
   List<PdfPageText> texts,
   Pattern pattern,
@@ -289,7 +201,7 @@ List<int> _expectedOrder(int pages, int target, String order) =>
 Future<Map<String, Object?>> _scan(
   PdfDocument document,
   List<PdfPageText> texts,
-  _Query query,
+  WrapSearchQuery query,
   List<PdfTextSearchResult> reference,
   String order,
   int target, {
@@ -515,7 +427,7 @@ Future<Map<String, Object?>> _run(Directory output) async {
         .floor()
         .clamp(3, texts.length)
         .toInt();
-    final queries = _queries(texts, target);
+    final queries = buildWrapSearchQueries(texts, target);
     final references = <String, List<PdfTextSearchResult>>{};
     for (final query in queries) {
       references[query.id] = await _reference(texts, query.pattern);
