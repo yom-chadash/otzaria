@@ -15,6 +15,68 @@ const _hash =
 const _primaryPath = '/fixture/מקור.pdf';
 const _secondaryPath = '/fixture/עותק.pdf';
 
+Map<String, dynamic> _captureCheck(String operation, int generation) => {
+  'operation': operation,
+  'generation': generation,
+  'matchesReferenceKey': true,
+  'matchesSourceName': true,
+  'matchesPublishedOwner': true,
+  'closedEventObserved': false,
+  'currentOwner': true,
+};
+
+Map<String, dynamic> _ownerProof(
+  String path,
+  int handle,
+  String operation, {
+  int generation = 2,
+}) => {
+  'nativeOwner': {
+    'generation': generation,
+    'documentIdentity': handle * 10 + generation,
+    'sourceName': 'file%$path',
+    'expectedSourceName': 'file%$path',
+  },
+  'ownerChecks': [
+    _captureCheck('$operation:before', generation),
+    _captureCheck('$operation:after', generation),
+    {
+      'operation': operation,
+      'beforeGeneration': generation,
+      'afterGeneration': generation,
+      'ownerUnchangedDuringOperation': true,
+    },
+  ],
+};
+
+Map<String, dynamic> _ownerLifetimes(
+  String path,
+  int handle, {
+  int generations = 2,
+}) => {
+  'scope': 'Observed owners; no retained document reference.',
+  'retainsDocumentRef': false,
+  'observerStopped': true,
+  'allNativeClosesCompleted': true,
+  'expectedSourceName': 'file%$path',
+  'ownersObserved': generations,
+  'replacementsObserved': generations - 1,
+  'owners': [
+    for (var generation = 1; generation <= generations; generation++)
+      {
+        'generation': generation,
+        'sourceName': 'file%$path',
+        'documentIdentity': handle * 10 + generation,
+        'documentEventsClosed': true,
+        'nativeDisposeAwaited': true,
+      },
+  ],
+  'checks': [
+    for (var generation = 1; generation <= generations; generation++)
+      _captureCheck('observed-operation-$generation', generation),
+  ],
+};
+
 List<Map<String, dynamic>> _indexedSearches(String path) => [
   for (final page in [2, 4])
     {
@@ -35,11 +97,11 @@ Map<String, dynamic> _reader(
   int page, {
   List<int> views = const [0, 1],
 }) => {
+  ..._ownerProof(path, handle, 'snapshot-page-$page'),
   'path': path,
   'targetPage': page,
   'visibleRenderState': 'ready',
   'targetCenterVisible': true,
-  'documentUnchanged': true,
   'windowVisible': true,
   'windowMinimized': false,
   'viewId': view,
@@ -69,12 +131,18 @@ Map<String, dynamic> _transition(int start, List<int> views) => {
   'transitionInterval': _interval(start + 50, start + 300),
   'raster': _raster(),
   'primaryAfter': _reader(_primaryPath, 0, 1001, 3, views: views),
+  'primaryDuringTransition': _ownerProof(
+    _primaryPath,
+    1001,
+    'primary-during-transition',
+  ),
   'primaryUnchanged': true,
 };
 
 Map<String, dynamic> _closed(int view, int handle) => {
   'viewId': view,
   'nativeHandle': handle,
+  'ownerLifetimes': _ownerLifetimes(_secondaryPath, handle),
   'documentEventsClosed': true,
   'nativeDisposeAwaited': true,
   'registryEntryRemoved': true,
@@ -117,6 +185,16 @@ Map<String, dynamic> _fixture() => {
       'secondary': _reader(_secondaryPath, 1, 1002, 4),
       'primaryUnchangedBySecondaryNavigation': true,
       'secondaryUnchangedByPrimaryNavigation': true,
+      'primaryDuringSecondaryNavigation': _ownerProof(
+        _primaryPath,
+        1001,
+        'primary-during-secondary-navigation',
+      ),
+      'secondaryDuringPrimaryNavigation': _ownerProof(
+        _secondaryPath,
+        1002,
+        'secondary-during-primary-navigation',
+      ),
       'indexing': {
         'clean': true,
         'indexedBooks': 1,
@@ -163,6 +241,7 @@ Map<String, dynamic> _fixture() => {
       'status': 'passed',
       'primaryDocumentEventsClosed': true,
       'primaryNativeDisposeAwaited': true,
+      'primaryOwnerLifetimes': _ownerLifetimes(_primaryPath, 1001),
       'ownedWindowsRemaining': 0,
       'ownedDocumentsRemaining': 0,
       'pendingOperations': 0,
@@ -184,6 +263,26 @@ List<Map<String, dynamic>> _readers(Map<String, dynamic> report) {
     steps['closeSecondary']['primaryAfter'],
     steps['reopen']['secondary'],
     steps['closeReopened']['primaryAfter'],
+  ];
+}
+
+List<Map<String, dynamic>> _ownerOperations(Map<String, dynamic> report) {
+  final steps = report['steps'];
+  return [
+    ..._readers(report),
+    steps['concurrentWork']['primaryDuringSecondaryNavigation'],
+    steps['concurrentWork']['secondaryDuringPrimaryNavigation'],
+    for (final name in ['minimizeRestore', 'closeSecondary', 'closeReopened'])
+      steps[name]['primaryDuringTransition'],
+  ];
+}
+
+List<Map<String, dynamic>> _closedOwnerLifetimes(Map<String, dynamic> report) {
+  final steps = report['steps'];
+  return [
+    steps['closeSecondary']['closed']['ownerLifetimes'],
+    steps['closeReopened']['closed']['ownerLifetimes'],
+    steps['teardown']['primaryOwnerLifetimes'],
   ];
 }
 
@@ -237,10 +336,7 @@ void main() {
       perfPdfInkPixelsOnWhite([0, 0, 0, 192], premultipliedAlpha: true),
       1,
     );
-    expect(
-      perfPdfInkPixelsOnWhite([0, 0, 0, 0], premultipliedAlpha: true),
-      0,
-    );
+    expect(perfPdfInkPixelsOnWhite([0, 0, 0, 0], premultipliedAlpha: true), 0);
   });
 
   test('accepts complete actual-window evidence on all desktop platforms', () {
@@ -249,6 +345,126 @@ void main() {
       report['steps']['concurrentWork']['printing']['raster']['alphaPremultiplied'] =
           platform == 'macos';
       expect(perfPdfMultiWindowErrors(report), isEmpty, reason: platform);
+    }
+  });
+
+  test(
+    'a same-source reload between operations preserves native ownership',
+    () {
+      final report = _fixture();
+      final initial = report['steps']['open']['primary'];
+      // The fixture already observed and retired generation 1 before readiness.
+      // This second replacement occurs after a completed snapshot, not during
+      // the bounded operation whose before/after evidence must remain stable.
+      for (final proof in _ownerOperations(report)) {
+        if (identical(proof, initial) ||
+            proof['nativeOwner']['sourceName'] != 'file%$_primaryPath') {
+          continue;
+        }
+        final operation = proof['ownerChecks'][2]['operation'] as String;
+        proof.addAll(_ownerProof(_primaryPath, 1001, operation, generation: 3));
+      }
+      report['steps']['teardown']['primaryOwnerLifetimes'] = _ownerLifetimes(
+        _primaryPath,
+        1001,
+        generations: 3,
+      );
+      expect(perfPdfMultiWindowErrors(report), isEmpty);
+    },
+  );
+
+  test(
+    'every owner check must use the live published same-source generation',
+    () {
+      for (
+        var index = 0;
+        index < _ownerOperations(_fixture()).length;
+        index++
+      ) {
+        for (var boundary = 0; boundary < 2; boundary++) {
+          for (final entry in <String, Object?>{
+            'generation': 1,
+            'matchesReferenceKey': false,
+            'matchesSourceName': false,
+            'matchesPublishedOwner': false,
+            'closedEventObserved': true,
+            'currentOwner': false,
+          }.entries) {
+            _reject((report) {
+              _ownerOperations(
+                report,
+              )[index]['ownerChecks'][boundary][entry.key] = entry.value;
+            }, reason: 'operation $index boundary $boundary ${entry.key}');
+          }
+        }
+        for (final entry in <String, Object?>{
+          'beforeGeneration': 1,
+          'afterGeneration': 3,
+          'ownerUnchangedDuringOperation': false,
+        }.entries) {
+          _reject((report) {
+            _ownerOperations(report)[index]['ownerChecks'][2][entry.key] =
+                entry.value;
+          }, reason: 'operation $index ${entry.key}');
+        }
+        _reject((report) {
+          _ownerOperations(report)[index]['nativeOwner']['sourceName'] =
+              'file%/foreign.pdf';
+        }, reason: 'operation $index foreign native source');
+        _reject((report) {
+          _ownerOperations(report)[index]['nativeOwner']['documentIdentity'] =
+              -1;
+        }, reason: 'operation $index missing native object identity');
+        _reject((report) {
+          _ownerOperations(report)[index]['ownerChecks'] = <Object?>[];
+        }, reason: 'operation $index claimed stable owner without checks');
+      }
+    },
+  );
+
+  test('every retired owner must be closed after observer detach', () {
+    for (var index = 0; index < 3; index++) {
+      for (final entry in <String, Object?>{
+        'retainsDocumentRef': true,
+        'observerStopped': false,
+        'allNativeClosesCompleted': false,
+        'ownersObserved': 1,
+        'replacementsObserved': 0,
+      }.entries) {
+        _reject((report) {
+          _closedOwnerLifetimes(report)[index][entry.key] = entry.value;
+        }, reason: 'lifetime $index ${entry.key}');
+      }
+      for (var generation = 0; generation < 2; generation++) {
+        for (final entry in <String, Object?>{
+          'documentEventsClosed': false,
+          'nativeDisposeAwaited': false,
+          'sourceName': 'file%/foreign.pdf',
+        }.entries) {
+          _reject((report) {
+            _closedOwnerLifetimes(
+              report,
+            )[index]['owners'][generation][entry.key] = entry.value;
+          }, reason: 'lifetime $index owner $generation ${entry.key}');
+        }
+      }
+      _reject((report) {
+        final owners = _closedOwnerLifetimes(report)[index]['owners'];
+        owners[1]['generation'] = 1;
+      }, reason: 'lifetime $index duplicate generation');
+      _reject((report) {
+        final owners = _closedOwnerLifetimes(report)[index]['owners'];
+        owners[1]['documentIdentity'] = owners[0]['documentIdentity'];
+      }, reason: 'lifetime $index duplicate native owner');
+      _reject((report) {
+        _closedOwnerLifetimes(report)[index]['owners'][1]['documentIdentity'] =
+            999999;
+      }, reason: 'lifetime $index did not close the owner actually used');
+      _reject((report) {
+        _closedOwnerLifetimes(
+          report,
+        )[index]['checks'][0]['matchesReferenceKey'] = false;
+      }, reason: 'lifetime $index recorded a foreign reference earlier');
     }
   });
 
@@ -287,10 +503,7 @@ void main() {
       'windowingOwnerInstalled': false,
       'engineId': 0,
     }.entries) {
-      _reject(
-        (report) => report[entry.key] = entry.value,
-        reason: entry.key,
-      );
+      _reject((report) => report[entry.key] = entry.value, reason: entry.key);
     }
   });
 
@@ -327,7 +540,6 @@ void main() {
           'targetPage': 99,
           'visibleRenderState': 'loading',
           'targetCenterVisible': false,
-          'documentUnchanged': false,
           'windowVisible': false,
           'windowMinimized': true,
           'screenViewId': 99,

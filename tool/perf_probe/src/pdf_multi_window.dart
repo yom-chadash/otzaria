@@ -1,7 +1,7 @@
 const _indexVerificationPages = [2, 4];
 
 const perfPdfMultiWindowProtocol = <String, Object?>{
-  'version': 2,
+  'version': 3,
   'nativeWindows': 2,
   'sources': 'distinct verified paths with identical generated PDF content',
   'primaryPages': [1, 3],
@@ -19,10 +19,12 @@ const perfPdfMultiWindowProtocol = <String, Object?>{
   'rasterAlpha': 'printing macOS premultiplied; PDFium straight',
   'nativeTransitions': ['minimizeRestore', 'closeSecondary', 'closeReopened'],
   'readiness': 'native view identity, target center and final visible image',
-  'close': 'event stream closed, native dispose awaited, native view absent',
+  'owner': 'Live published owner stable within each operation; replacements between operations retain source and reference key.',
+  'close': 'Every observed owner event stream closed and native dispose awaited after detach; native view absent.',
   'imageBudgetAttribution': {
     'legacyScopeIdentity': 'current-window-ui-isolate',
-    'actualScope': 'all views sharing pdfSharedImageBudget in this Dart isolate',
+    'actualScope':
+        'all views sharing pdfSharedImageBudget in this Dart isolate',
     'perWindowAttribution': false,
     'peakScope': 'since-budget-construction',
   },
@@ -96,7 +98,115 @@ bool _distinctReaders(Object? first, Object? second) {
   final a = _map(first);
   final b = _map(second);
   return a['viewId'] != b['viewId'] &&
-      a['nativeHandle'] != b['nativeHandle'];
+      a['nativeHandle'] != b['nativeHandle'] &&
+      _map(a['nativeOwner'])['documentIdentity'] !=
+          _map(b['nativeOwner'])['documentIdentity'];
+}
+
+bool _liveOwner(Object? value) {
+  final owner = _map(value);
+  return _positive(owner['generation']) &&
+      _integer(owner['documentIdentity']) &&
+      _path(owner['sourceName']) &&
+      owner['sourceName'] == owner['expectedSourceName'];
+}
+
+bool _captureCheck(Object? value, Object? generation) {
+  final check = _map(value);
+  return _path(check['operation']) &&
+      _positive(generation) &&
+      check['generation'] is int &&
+      check['generation'] == generation &&
+      check['matchesReferenceKey'] == true &&
+      check['matchesSourceName'] == true &&
+      check['matchesPublishedOwner'] == true &&
+      check['closedEventObserved'] == false &&
+      check['currentOwner'] == true;
+}
+
+bool _ownerOperation(Object? value) {
+  final data = _map(value);
+  final owner = _map(data['nativeOwner']);
+  final checks = data['ownerChecks'];
+  if (!_liveOwner(owner) || checks is! List || checks.length != 3) {
+    return false;
+  }
+  final pair = _map(checks[2]);
+  final name = pair['operation'];
+  final generation = owner['generation'];
+  return _path(name) &&
+      _captureCheck(checks[0], generation) &&
+      _captureCheck(checks[1], generation) &&
+      _map(checks[0])['operation'] == '$name:before' &&
+      _map(checks[1])['operation'] == '$name:after' &&
+      pair['beforeGeneration'] is int &&
+      pair['beforeGeneration'] == generation &&
+      pair['afterGeneration'] is int &&
+      pair['afterGeneration'] == generation &&
+      pair['ownerUnchangedDuringOperation'] == true;
+}
+
+bool _ownerWasClosed(Object? lifetimes, Object? value) {
+  final data = _map(lifetimes);
+  final owner = _map(_map(value)['nativeOwner']);
+  final entries = data['owners'];
+  if (!_liveOwner(owner) || entries is! List) return false;
+  return entries.map(_map).where((entry) {
+        return entry['generation'] == owner['generation'] &&
+            entry['documentIdentity'] == owner['documentIdentity'] &&
+            entry['sourceName'] == owner['sourceName'] &&
+            data['expectedSourceName'] == owner['expectedSourceName'];
+      }).length ==
+      1;
+}
+
+bool _allOwnersClosed(Object? value) {
+  final data = _map(value);
+  final owners = data['owners'];
+  final checks = data['checks'];
+  if (data['retainsDocumentRef'] != false ||
+      data['observerStopped'] != true ||
+      data['allNativeClosesCompleted'] != true ||
+      !_path(data['expectedSourceName']) ||
+      owners is! List ||
+      owners.isEmpty ||
+      data['ownersObserved'] is! int ||
+      data['ownersObserved'] != owners.length ||
+      data['replacementsObserved'] is! int ||
+      data['replacementsObserved'] != owners.length - 1 ||
+      checks is! List ||
+      checks.isEmpty) {
+    return false;
+  }
+  final identities = <int>{};
+  for (var index = 0; index < owners.length; index++) {
+    final owner = _map(owners[index]);
+    if (owner['generation'] is! int ||
+        owner['generation'] != index + 1 ||
+        !_integer(owner['documentIdentity']) ||
+        !identities.add(owner['documentIdentity'] as int) ||
+        owner['sourceName'] != data['expectedSourceName'] ||
+        owner['documentEventsClosed'] != true ||
+        owner['nativeDisposeAwaited'] != true) {
+      return false;
+    }
+  }
+  for (final value in checks) {
+    final check = _map(value);
+    final generation = check['generation'] ?? check['beforeGeneration'];
+    if (!_positive(generation) || (generation as int) > owners.length) {
+      return false;
+    }
+    if (check.containsKey('generation')) {
+      if (!_captureCheck(check, generation)) return false;
+    } else if (!_path(check['operation']) ||
+        check['afterGeneration'] is! int ||
+        check['afterGeneration'] != generation ||
+        check['ownerUnchangedDuringOperation'] != true) {
+      return false;
+    }
+  }
+  return true;
 }
 
 bool _reader(Object? value, int page, Object? path) {
@@ -108,7 +218,7 @@ bool _reader(Object? value, int page, Object? path) {
       data['targetPage'] == page &&
       data['visibleRenderState'] == 'ready' &&
       data['targetCenterVisible'] == true &&
-      data['documentUnchanged'] == true &&
+      _ownerOperation(data) &&
       data['windowVisible'] == true &&
       data['windowMinimized'] == false &&
       _integer(data['viewId']) &&
@@ -165,11 +275,7 @@ bool _indexSearches(Object? value, Object? indexedPath) {
   return true;
 }
 
-bool _raster(
-  Object? value,
-  String format, {
-  bool premultipliedAlpha = false,
-}) {
+bool _raster(Object? value, String format, {bool premultipliedAlpha = false}) {
   final data = _map(value);
   return _positive(data['width']) &&
       _positive(data['height']) &&
@@ -191,6 +297,8 @@ bool _closed(Object? value, Object? opened) {
   return _integer(data['viewId']) &&
       _positive(data['nativeHandle']) &&
       _sameReader(data, opened) &&
+      _allOwnersClosed(data['ownerLifetimes']) &&
+      _ownerWasClosed(data['ownerLifetimes'], opened) &&
       data['documentEventsClosed'] == true &&
       data['nativeDisposeAwaited'] == true &&
       data['registryEntryRemoved'] == true &&
@@ -208,7 +316,8 @@ List<String> perfPdfMultiWindowErrors(Object? value) {
 
   require(
     report['schemaVersion'] is int &&
-        report['schemaVersion'] == 1 && report['status'] == 'passed',
+        report['schemaVersion'] == 1 &&
+        report['status'] == 'passed',
     'Multi-window report did not complete successfully.',
   );
   require(
@@ -274,6 +383,8 @@ List<String> perfPdfMultiWindowErrors(Object? value) {
         _sameReader(concurrent['primary'], primary) &&
         _reader(concurrent['secondary'], 4, copy) &&
         _sameReader(concurrent['secondary'], secondary) &&
+        _ownerOperation(concurrent['primaryDuringSecondaryNavigation']) &&
+        _ownerOperation(concurrent['secondaryDuringPrimaryNavigation']) &&
         concurrent['primaryUnchangedBySecondaryNavigation'] == true &&
         concurrent['secondaryUnchangedByPrimaryNavigation'] == true,
     'Navigation did not preserve both reader identities and independent targets.',
@@ -363,6 +474,7 @@ List<String> perfPdfMultiWindowErrors(Object? value) {
   require(
     teardown['primaryDocumentEventsClosed'] == true &&
         teardown['primaryNativeDisposeAwaited'] == true &&
+        _allOwnersClosed(teardown['primaryOwnerLifetimes']) &&
         teardown['ownedWindowsRemaining'] is int &&
         teardown['ownedWindowsRemaining'] == 0 &&
         teardown['ownedDocumentsRemaining'] is int &&
@@ -375,6 +487,46 @@ List<String> perfPdfMultiWindowErrors(Object? value) {
         (finalViews as List).length == (initialViews as List).length &&
         finalViews.toSet().containsAll(initialViews),
     'Owned PDF work or native views remain after teardown.',
+  );
+  final primaryLifetimes = teardown['primaryOwnerLifetimes'];
+  final secondaryLifetimes = _map(
+    _map(steps['closeSecondary'])['closed'],
+  )['ownerLifetimes'];
+  final reopenedLifetimes = _map(
+    _map(steps['closeReopened'])['closed'],
+  )['ownerLifetimes'];
+  for (final value in [
+    primary,
+    concurrent['primary'],
+    concurrent['primaryDuringSecondaryNavigation'],
+    for (final name in [
+      'minimizeRestore',
+      'closeSecondary',
+      'closeReopened',
+    ]) ...[
+      _map(steps[name])['primaryAfter'],
+      _map(steps[name])['primaryDuringTransition'],
+    ],
+  ]) {
+    require(
+      _ownerOperation(value) && _ownerWasClosed(primaryLifetimes, value),
+      'A primary operation used an unverified owner or omitted its native close.',
+    );
+  }
+  for (final value in [
+    secondary,
+    concurrent['secondary'],
+    concurrent['secondaryDuringPrimaryNavigation'],
+    _map(steps['minimizeRestore'])['secondaryAfter'],
+  ]) {
+    require(
+      _ownerOperation(value) && _ownerWasClosed(secondaryLifetimes, value),
+      'A secondary operation used an unverified owner or omitted its native close.',
+    );
+  }
+  require(
+    _ownerWasClosed(reopenedLifetimes, reopenedReader),
+    'The reopened reader owner has no matching native close receipt.',
   );
   return errors;
 }

@@ -39,16 +39,16 @@ import 'package:window_manager/window_manager.dart';
 import '../../tool/perf_probe/src/pdf_multi_window.dart';
 import '../../tool/perf_probe/src/pdf_reader_case.dart';
 import 'installed_plugin_pdf_readiness.dart';
+import 'pdf_native_owner_tracker.dart';
 import 'perf_fixture.dart';
 import 'perf_probe_wait.dart';
 
-typedef PerfPdfMultiWindowPhase =
-    Future<void> Function(
-      String name,
-      Future<void> Function() action, {
-      Map<String, Object?>? details,
-      Duration? observationWindow,
-    });
+typedef PerfPdfMultiWindowPhase = Future<void> Function(
+  String name,
+  Future<void> Function() action, {
+  Map<String, Object?>? details,
+  Duration? observationWindow,
+});
 
 /// מפעיל חלונות וקוראים דרך מסלולי האפליקציה ובודק רק משאבים שבבעלות התרחיש.
 Future<Map<String, Object?>> runPerfPdfMultiWindow({
@@ -78,13 +78,7 @@ class _Reader {
     required this.viewId,
     required this.nativeHandle,
     this.entry,
-  }) : document = tab.pdfViewerController.document {
-    events = document.events.listen(
-      (_) {},
-      onError: (Object error, StackTrace stack) => eventError = error,
-      onDone: () => closed.complete(),
-    );
-  }
+  }) : owners = PdfNativeOwnerTracker(tab.pdfViewerController);
 
   final PdfBookTab tab;
   final TabsBloc tabs;
@@ -92,11 +86,38 @@ class _Reader {
   final int viewId;
   final int nativeHandle;
   final ViewWindowEntry? entry;
-  final PdfDocument document;
-  final closed = Completer<void>();
-  late final StreamSubscription<PdfDocumentEvent> events;
-  Object? eventError;
+  final PdfNativeOwnerTracker owners;
   bool nativeClosed = false;
+}
+
+/// Checks one live native owner across the actual asynchronous operation.
+/// A replacement between completed operations is valid; a borrowed owner
+/// changing during an operation is not.
+class _OwnerOperation {
+  _OwnerOperation(this.tracker, this.name) {
+    _start = (tracker.receipt['checks']! as List).length;
+    before = tracker.capture('$name:before');
+  }
+
+  final PdfNativeOwnerTracker tracker;
+  final String name;
+  late final PdfNativeOwnerSnapshot before;
+  late final int _start;
+
+  Map<String, Object?> finish() {
+    tracker.verify(before, name);
+    final checks = (tracker.receipt['checks']! as List).skip(_start).toList();
+    _require(checks.length == 3, 'Native owner operation checks overlapped.');
+    return {
+      'nativeOwner': {
+        'generation': before.generation,
+        'documentIdentity': identityHashCode(before.document),
+        'sourceName': before.document.sourceName,
+        'expectedSourceName': tracker.receipt['expectedSourceName'],
+      },
+      'ownerChecks': checks,
+    };
+  }
 }
 
 class _MultiWindowProbe {
@@ -112,9 +133,9 @@ class _MultiWindowProbe {
     'platform': Platform.operatingSystem,
     'bindingMode': 'framework',
     'scope': 'Actual app readers in native windows, indexing and PDF output.',
-    'overlapMeaning':
-        'Intervals of submitted and awaited work; not proof of native parallelism.',
-    'readiness': 'Final visible image in the layer tree; no GPU presentation claim.',
+    'overlapMeaning': 'Intervals of submitted and awaited work; not proof of native parallelism.',
+    'readiness':
+        'Final visible image in the layer tree; no GPU presentation claim.',
     'physicalSleep': 'notRun',
     'physicalPrinter': 'notRun',
     'steps': <String, Object?>{},
@@ -201,11 +222,16 @@ class _MultiWindowProbe {
   Future<T> _tracked<T>(Future<T> operation, String description) {
     // A timeout does not cancel native work. Keep it joinable before disposal.
     late final Future<void> settled;
-    settled = operation.then<void>((_) {}, onError: (Object _, StackTrace _) {});
+    settled = operation.then<void>(
+      (_) {},
+      onError: (Object _, StackTrace _) {},
+    );
     _pendingOperations.add(settled);
-    unawaited(settled.then((_) {
-      _pendingOperations.remove(settled);
-    }));
+    unawaited(
+      settled.then((_) {
+        _pendingOperations.remove(settled);
+      }),
+    );
     return operation.timeout(
       _deadline,
       onTimeout: () => throw TimeoutException(description, _deadline),
@@ -229,11 +255,13 @@ class _MultiWindowProbe {
     final value = Platform.isMacOS
         ? implicitViewWindowHandle()
         : Platform.isLinux
-        ? await const MethodChannel(
-            'otzaria/multiwindow',
-          ).invokeMethod<int>('mainWindowHandle')
+        ? await const MethodChannel('otzaria/multiwindow')
+              .invokeMethod<int>('mainWindowHandle')
         : await windowManager.getId();
-    _require(value != null && value > 0, 'Missing primary native window handle.');
+    _require(
+      value != null && value > 0,
+      'Missing primary native window handle.',
+    );
     return value!;
   }
 
@@ -256,14 +284,23 @@ class _MultiWindowProbe {
             MultiViewMode.ownerInstalled,
         'This scenario requires the real desktop dispatcher and windowing owner.',
       );
-      _require(_initialWindows.isEmpty, 'Unrelated secondary windows are open.');
-      _require(primaryTabs.state.tabs.isEmpty, 'Unrelated primary tabs are open.');
+      _require(
+        _initialWindows.isEmpty,
+        'Unrelated secondary windows are open.',
+      );
+      _require(
+        primaryTabs.state.tabs.isEmpty,
+        'Unrelated primary tabs are open.',
+      );
       _require(
         fixture.pdfReaderCase.sourceKind == PerfPdfSourceKind.generated &&
             fixture.pdfReaderCase.pageCount >= 4,
         'Multi-window QA requires a generated PDF case with at least four pages.',
       );
-      _require(!provider.isIndexing.value, 'Unrelated indexing is already active.');
+      _require(
+        !provider.isIndexing.value,
+        'Unrelated indexing is already active.',
+      );
       await _prepare();
       late _Reader secondary;
       await _step('open', () async {
@@ -274,7 +311,8 @@ class _MultiWindowProbe {
           const NavigateToScreen(Screen.reading),
         );
         await _wait(
-          () => primaryTabs.state.tabs.contains(tab) &&
+          () =>
+              primaryTabs.state.tabs.contains(tab) &&
               tab.pdfViewerController.isReady,
           'Primary PDF controller',
         );
@@ -289,11 +327,15 @@ class _MultiWindowProbe {
         _readers.add(primary);
         _unreadyTabs.remove(tab);
         _primary = primary;
-        fixture.pdfReaderCase.verifyPageCount(primary.document.pages.length);
         await _navigate(primary, 1);
         secondary = await _openSecondary(2);
+        final primaryOwner = primary.owners.capture('open:primary');
+        final secondaryOwner = secondary.owners.capture('open:secondary');
+        fixture.pdfReaderCase.verifyPageCount(
+          primaryOwner.document.pages.length,
+        );
         _require(
-          !identical(primary.document, secondary.document) &&
+          !identical(primaryOwner.document, secondaryOwner.document) &&
               !identical(
                 primary.tab.pdfViewerController,
                 secondary.tab.pdfViewerController,
@@ -324,17 +366,21 @@ class _MultiWindowProbe {
           () async => !await secondary.window.isMinimized(),
           'Secondary native window restored',
         );
-        _record('minimizeRestore')['secondaryAfter'] =
-            await _snapshot(secondary, 4);
+        _record('minimizeRestore')['secondaryAfter'] = await _snapshot(
+          secondary,
+          4,
+        );
       });
+      late PdfNativeOwnerSnapshot previousOwner;
       await _duringRaster('closeSecondary', () async {
+        previousOwner = secondary.owners.capture('closeSecondary:current');
         _record('closeSecondary')['closed'] = await _close(secondary);
       });
-      final previousDocument = secondary.document;
       await _step('reopen', () async {
         secondary = await _openSecondary(2);
+        final reopenedOwner = secondary.owners.capture('reopen:current');
         _require(
-          !identical(previousDocument, secondary.document),
+          !identical(previousOwner.document, reopenedOwner.document),
           'Reopened window reused the closed native PDF document.',
         );
         _record('reopen').addAll({
@@ -378,7 +424,10 @@ class _MultiWindowProbe {
     final copy = await source.copy(p.join(output.path, 'secondary.pdf'));
     final after = (await sha256.bind(source.openRead()).first).toString();
     final copied = (await sha256.bind(copy.openRead()).first).toString();
-    _require(before == after && copied == before, 'PDF copy identity mismatch.');
+    _require(
+      before == after && copied == before,
+      'PDF copy identity mismatch.',
+    );
     _primaryBook = PdfBook(
       title: 'בדיקת PDF בחלון ראשי',
       path: source.path,
@@ -424,17 +473,25 @@ class _MultiWindowProbe {
       );
       final tabs = secondaryContext!.read<TabsBloc>();
       await _wait(
-        () => tabs.state.currentTab is PdfBookTab &&
-            (tabs.state.currentTab as PdfBookTab).book.path == _secondaryBook.path,
+        () =>
+            tabs.state.currentTab is PdfBookTab &&
+            (tabs.state.currentTab as PdfBookTab).book.path ==
+                _secondaryBook.path,
         'Transferred PDF tab in the secondary window',
       );
       final tab = tabs.state.currentTab! as PdfBookTab;
       _require(!identical(tab, seed), 'Window transfer did not clone the tab.');
       _unreadyTabs[tab] = tabs;
       _require(!_cleaningUp, 'Secondary window opened after cleanup started.');
-      await _wait(() => tab.pdfViewerController.isReady, 'Secondary PDF controller');
+      await _wait(
+        () => tab.pdfViewerController.isReady,
+        'Secondary PDF controller',
+      );
       final handle = entry.handle.nativeHandle;
-      _require(handle != null && handle > 0, 'Secondary native handle is missing.');
+      _require(
+        handle != null && handle > 0,
+        'Secondary native handle is missing.',
+      );
       final reader = _Reader(
         tab: tab,
         tabs: tabs,
@@ -445,8 +502,10 @@ class _MultiWindowProbe {
       );
       _readers.add(reader);
       _unreadyTabs.remove(tab);
-      fixture.pdfReaderCase.verifyPageCount(reader.document.pages.length);
       await _navigate(reader, page);
+      fixture.pdfReaderCase.verifyPageCount(
+        reader.owners.capture('openSecondary:ready').document.pages.length,
+      );
       return reader;
     } finally {
       // WindowOpener transfers a clone; the seed never belongs to a reader.
@@ -468,28 +527,37 @@ class _MultiWindowProbe {
       () => installedPdfTargetReady(reader.tab.pdfViewerController, page),
       'Visible final image for target page $page',
     );
-    _require(
-      identical(reader.document, reader.tab.pdfViewerController.document),
-      'Reader document identity changed.',
-    );
-    final screens = find.byWidgetPredicate(
-      (widget) => widget is PdfBookScreen && identical(widget.tab, reader.tab),
-      skipOffstage: false,
-    ).evaluate().toList();
+    final owner = _OwnerOperation(reader.owners, 'snapshot-page-$page');
+    final screens = find
+        .byWidgetPredicate(
+          (widget) =>
+              widget is PdfBookScreen && identical(widget.tab, reader.tab),
+          skipOffstage: false,
+        )
+        .evaluate()
+        .toList();
     _require(screens.length == 1, 'Reader screen ownership is ambiguous.');
     final screenView = View.of(screens.single).viewId;
-    _require(screenView == reader.viewId, 'Reader is attached to another view.');
+    _require(
+      screenView == reader.viewId,
+      'Reader is attached to another view.',
+    );
     await _nativeWait(reader.window.isVisible, 'Reader native window visible');
     _require(
       !await reader.window.isMinimized() && _viewIds.contains(reader.viewId),
       'Reader native view is minimized or absent.',
     );
+    final ownerProof = owner.finish();
+    _require(
+      installedPdfTargetReady(reader.tab.pdfViewerController, page),
+      'Reader target readiness changed during its native window checks.',
+    );
     return {
+      ...ownerProof,
       'path': reader.tab.book.path,
       'targetPage': page,
       'visibleRenderState': 'ready',
       'targetCenterVisible': true,
-      'documentUnchanged': true,
       'windowVisible': true,
       'windowMinimized': false,
       'viewId': reader.viewId,
@@ -506,9 +574,7 @@ class _MultiWindowProbe {
     record['submittedOperations'] = operations;
     final clock = Stopwatch()..start();
     Future<void> observed(String name, Future<void> Function() action) async {
-      final interval = <String, Object?>{
-        'startUs': clock.elapsedMicroseconds,
-      };
+      final interval = <String, Object?>{'startUs': clock.elapsedMicroseconds};
       operations[name] = interval;
       try {
         await action();
@@ -587,10 +653,20 @@ class _MultiWindowProbe {
         );
       }),
       observed('viewing', () async {
+        final primaryOwner = _OwnerOperation(
+          primary.owners,
+          'primary-during-secondary-navigation',
+        );
         await _navigate(secondary, 4);
+        record['primaryDuringSecondaryNavigation'] = primaryOwner.finish();
         await _snapshot(primary, 1);
         record['primaryUnchangedBySecondaryNavigation'] = true;
+        final secondaryOwner = _OwnerOperation(
+          secondary.owners,
+          'secondary-during-primary-navigation',
+        );
         await _navigate(primary, 3);
+        record['secondaryDuringPrimaryNavigation'] = secondaryOwner.finish();
         record['primary'] = await _snapshot(primary, 3);
         record['secondary'] = await _snapshot(secondary, 4);
         record['secondaryUnchangedByPrimaryNavigation'] = true;
@@ -599,7 +675,10 @@ class _MultiWindowProbe {
   }
 
   Future<Map<String, Object?>> _printAndExport() async {
-    _require((await Printing.info()).canRaster, 'Printing raster is unavailable.');
+    _require(
+      (await Printing.info()).canRaster,
+      'Printing raster is unavailable.',
+    );
     final bytes = await composePdfSheets(
       _rasterDocument,
       firstIndex: 1,
@@ -609,16 +688,23 @@ class _MultiWindowProbe {
       sheetWidth: 480,
       sheetHeight: 320,
     );
-    await File(p.join(output.path, 'two-up.pdf')).writeAsBytes(bytes, flush: true);
+    await File(p.join(output.path, 'two-up.pdf'))
+        .writeAsBytes(bytes, flush: true);
     final export = await _openDocument(PrintPdfSource.data(bytes));
     try {
       _require(export.pages.length == 1, 'Expected one vector output sheet.');
       final page = export.pages.single;
-      _require(page.width == 480 && page.height == 320, 'Wrong output sheet size.');
+      _require(
+        page.width == 480 && page.height == 320,
+        'Wrong output sheet size.',
+      );
       final text = await page.loadStructuredText();
       final right = text.fullText.indexOf('PDF preview fixture - page 2');
       final left = text.fullText.indexOf('PDF preview fixture - page 3');
-      _require(right >= 0 && left >= 0, 'Selected text was lost during export.');
+      _require(
+        right >= 0 && left >= 0,
+        'Selected text was lost during export.',
+      );
       _require(
         !text.fullText.contains('PDF preview fixture - page 1') &&
             !text.fullText.contains('PDF preview fixture - page 4'),
@@ -643,10 +729,8 @@ class _MultiWindowProbe {
         premultipliedAlpha: Platform.isMacOS,
       );
       final png = await raster.toPng();
-      await File(p.join(output.path, 'two-up.png')).writeAsBytes(
-        png,
-        flush: true,
-      );
+      await File(p.join(output.path, 'two-up.png'))
+          .writeAsBytes(png, flush: true);
       return {
         'sourcePages': [2, 3],
         'textPreserved': true,
@@ -710,11 +794,13 @@ class _MultiWindowProbe {
     Future<void> Function() transition,
   ) => _step(name, () async {
     final record = _record(name);
+    final primaryOwner = _OwnerOperation(
+      _primary!.owners,
+      'primary-during-$name',
+    );
     final clock = Stopwatch()..start();
     Future<void> observed(String key, Future<void> Function() action) async {
-      final interval = <String, Object?>{
-        'startUs': clock.elapsedMicroseconds,
-      };
+      final interval = <String, Object?>{'startUs': clock.elapsedMicroseconds};
       record[key] = interval;
       try {
         await action();
@@ -732,6 +818,7 @@ class _MultiWindowProbe {
       }),
       observed('transitionInterval', transition),
     ]);
+    record['primaryDuringTransition'] = primaryOwner.finish();
     record['primaryAfter'] = await _snapshot(_primary!, 3);
     record['primaryUnchanged'] = true;
   });
@@ -743,12 +830,16 @@ class _MultiWindowProbe {
         reader.tabs.add(RemoveTabs([reader.tab]));
       }
       await _wait(
-        () => !reader.tabs.state.tabs.contains(reader.tab) &&
+        () =>
+            !reader.tabs.state.tabs.contains(reader.tab) &&
             !reader.tab.pdfViewerController.isReady,
         'Primary PDF tab detached',
       );
     } else {
-      _require(_windows.containsKey(entry), 'Refusing to close an unowned window.');
+      _require(
+        _windows.containsKey(entry),
+        'Refusing to close an unowned window.',
+      );
       if (registry.windows.contains(entry)) {
         await entry.controller.close().timeout(_deadline);
       }
@@ -756,11 +847,18 @@ class _MultiWindowProbe {
         () => !registry.windows.contains(entry),
         'Owned secondary window removed from the registry',
       );
+      await _wait(
+        () => !reader.tab.pdfViewerController.isReady,
+        'Secondary PDF controller detached from its native host',
+      );
     }
-    await reader.closed.future.timeout(_deadline);
-    _require(reader.eventError == null, 'PDF event stream reported an error.');
-    await reader.document.dispose().timeout(_deadline);
-    reader.nativeClosed = true;
+    reader.owners.stopObserving();
+    await reader.owners.waitForNativeClose(_deadline);
+    _require(
+      reader.owners.allNativeClosesCompleted,
+      'An observed native PDF owner remains open after reader detach.',
+    );
+    reader.nativeClosed = reader.owners.allNativeClosesCompleted;
     if (entry != null) {
       // Linux removes the registry entry before its deferred native destroy.
       await _wait(
@@ -769,14 +867,15 @@ class _MultiWindowProbe {
       );
       _windows.remove(entry);
     }
-    await reader.events.cancel();
     _readers.remove(reader);
     return {
       'viewId': reader.viewId,
       'nativeHandle': reader.nativeHandle,
-      'documentEventsClosed': reader.closed.isCompleted,
+      'ownerLifetimes': reader.owners.receipt,
+      'documentEventsClosed': reader.owners.allNativeClosesCompleted,
       'nativeDisposeAwaited': reader.nativeClosed,
-      'registryEntryRemoved': entry == null || !registry.windows.contains(entry),
+      'registryEntryRemoved':
+          entry == null || !registry.windows.contains(entry),
       'liveViewIdsAfter': _viewIds,
     };
   }
@@ -837,7 +936,8 @@ class _MultiWindowProbe {
             await entry.controller.close().timeout(_deadline);
           }
           await _wait(
-            () => !registry.windows.contains(entry) && !_viewIds.contains(viewId),
+            () =>
+                !registry.windows.contains(entry) && !_viewIds.contains(viewId),
             'Partially opened owned native window removed',
           );
           _windows.remove(entry);
@@ -853,12 +953,15 @@ class _MultiWindowProbe {
         }
       } else {
         await attempt(() async {
-          throw StateError('Native work remains pending; source ownership retained.');
+          throw StateError(
+            'Native work remains pending; source ownership retained.',
+          );
         });
       }
       await attempt(() async {
         await _wait(
-          () => _viewIds.length == _initialViews.length &&
+          () =>
+              _viewIds.length == _initialViews.length &&
               _viewIds.toSet().containsAll(_initialViews),
           'Initial native view set restored',
         );
@@ -869,7 +972,9 @@ class _MultiWindowProbe {
       });
     } finally {
       _record('teardown').addAll({
-        'primaryDocumentEventsClosed': _primary?.closed.isCompleted == true,
+        'primaryOwnerLifetimes': _primary?.owners.receipt,
+        'primaryDocumentEventsClosed':
+            _primary?.owners.allNativeClosesCompleted == true,
         'primaryNativeDisposeAwaited': _primary?.nativeClosed == true,
         'ownedWindowsRemaining': _windows.length,
         'ownedDocumentsRemaining':
