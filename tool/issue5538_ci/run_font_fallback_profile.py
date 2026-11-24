@@ -252,6 +252,61 @@ def validate_pngs(directory, report):
     return sidecar["reference"]
 
 
+def validate_replacement_lifecycle(report, config, opens, counts):
+    """Separate the fixture's explicit source replacement from a font reload.
+
+    The target initially mounts the font-free peer, then hides that slot and
+    opens the same PDF in the replaced source's existing viewer/controller.
+    Both intentional opens must finish while registration is still held.
+    """
+    events = report['measuredEvents']
+    requests = [row for row in events if row['type'] == 'replaceRequested']
+    gates = [row for row in events if row['type'] == 'registrationGateReleased']
+    starts = [row for row in events if row['type'] == 'fontRegistrationStart']
+    require(len(requests) == 1 and requests[0].get('inputId') == 'unrelated'
+            and len(gates) == 1 and starts, 'Replacement needs one explicit request and registration gate.')
+    times = [requests[0].get('elapsedUs'), gates[0].get('elapsedUs'), starts[0].get('elapsedUs')]
+    require(all(type(value) is int and value >= 0 for value in times)
+            and times[2] < times[0] < times[1], 'Replacement did not occur while font registration was pending.')
+    requested, released = times[:2]
+    require(counts['unrelated'] == 2 and counts['source-0'] == 1,
+            'Replacement needs two intentional peer opens and exactly one original source open.')
+    paths = {item['id']: item['absolutePath'] for item in config['documents']}
+    peers = [row for row in opens.values() if row['path'] == paths['unrelated']]
+    sources = [row for row in opens.values() if row['path'] == paths['source-0']]
+    for row in opens.values():
+        require(type(row.get('startedUs')) is int and type(row.get('elapsedUs')) is int
+                and 0 <= row['startedUs'] <= row['elapsedUs'] < released,
+                'A replacement scenario opened a document after registration was released.')
+    peers.sort(key=lambda row: row['elapsedUs'])
+    old_peer, replacement = peers
+    require(old_peer['documentId'] != replacement['documentId']
+            and old_peer['elapsedUs'] < requested
+            and starts[0]['elapsedUs'] <= replacement['startedUs'],
+            'Replacement native owner is not the deliberate second peer open.')
+    closed_before_release = {
+        row['documentId'] for row in events if row['type'] == 'documentEventsClosed'
+        and type(row.get('elapsedUs')) is int and row['elapsedUs'] < released
+    }
+    require({sources[0]['documentId'], old_peer['documentId']} <= closed_before_release,
+            'Original source and peer owners must close before registration is released.')
+    publications = [row for row in events if row['type'] == 'viewerDocument'
+                    and row.get('inputId') == 'unrelated' and row.get('documentId') is not None]
+    require(publications and publications[-1]['documentId'] == replacement['documentId'],
+            'The live viewer did not publish the explicit replacement owner.')
+    require(any(row.get('inputId') == 'unrelated' and row.get('documentId') == replacement['documentId']
+                and row.get('renderState') == row.get('renderStateAfterCapture') == 'ready'
+                and row.get('stableDocument') is True and row.get('stableView') is True
+                and type(row.get('elapsedUs')) is int and row['elapsedUs'] >= released
+                for row in report['measuredFrames']),
+            'No actual painted-ready replacement owner was observed after registration.')
+    return {'explicitReplacementRequests': 1, 'intentionalFontFreeOpens': 2,
+            'sourceDocumentId': sources[0]['documentId'], 'retiredPeerDocumentId': old_peer['documentId'],
+            'replacementDocumentId': replacement['documentId'], 'requestUs': requested,
+            'registrationReleasedUs': released, 'nativeOpensAfterRegistrationRelease': 0,
+            'originalOwnersClosedBeforeRelease': True, 'paintedReplacementObservedAfterRelease': True}
+
+
 def validate_result(directory, report, config, owned_pid):
     require(report.get("status") == "completed" and report.get("mode") == "profile"
             and report.get("pid") == owned_pid, "Missing owned profile result.")
@@ -354,7 +409,10 @@ def validate_result(directory, report, config, owned_pid):
                 "Candidate has framework/capture errors or wrong-document reports.")
         require({item["requestedFace"] for item in config["documents"] if item["requestedFace"]} <= reported_faces,
                 "A candidate fixture did not exercise its actual missing-font event.")
-        require(counts["unrelated"] == 1, "Font-free peer was reopened.")
+        if config['scenario'] == 'replace-pending-font':
+            verdict['replacementLifecycle'] = validate_replacement_lifecycle(report, config, opens, counts)
+        else:
+            require(counts["unrelated"] == 1, "Font-free peer was reopened.")
         if config["scenario"] in ("close-pending-font", "replace-pending-font"):
             require(counts["source-0"] == 1, "Closed/replaced source was reopened after font completion.")
         else:
