@@ -2,7 +2,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:crypto/crypto.dart';
@@ -377,7 +376,9 @@ Future<void> _settle(_Observer probe, List<_Slot> slots) async {
         slots.where((slot) => slot.visible).every((slot) =>
           slot.controller.isReady &&
           slot.controller.visibleRenderState.value == PdfVisibleRenderState.ready,
-        )) return;
+        )) {
+      return;
+    }
     await _until(() => probe.pending == 0, 'pending native/font operations');
   }
 }
