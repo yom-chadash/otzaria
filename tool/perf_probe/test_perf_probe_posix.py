@@ -798,6 +798,60 @@ class OrchestrationTest(PosixFixture):
         self.assertIn(f"--target={target}", builds[0])
         self.assertNotIn(f"--target={runner.TARGET}", builds[0])
 
+    def test_reuse_launches_without_pub_get_or_build_and_checks_outside_process_lifetime(self):
+        frozen = self.root / "frozen-build.json"
+        frozen.write_text('{"fixture":"verified separately by build_receipt tests"}\n')
+        digest = hashlib.sha256(frozen.read_bytes()).hexdigest()
+        proof = {"status": "passed", "receiptSha256": digest, "sourceCommit": "a" * 40,
+                 "bundleManifestSha256": "b" * 64, "aotPayload": {"sha256": "c" * 64}}
+        events = []
+        actual_invoke = runner.invoke_launch
+
+        def invoke(*args, **kwargs):
+            events.append("process-start")
+            value = actual_invoke(*args, **kwargs)
+            directory = args[1]
+            launch = runner.read_json(directory / "launch.json")
+            with self.assertRaises(ProcessLookupError):
+                os.kill(launch["pid"], 0)
+            self.assertTrue(runner.read_json(directory / "samples.csv.status.json")["complete"])
+            events.append("process-ended")
+            return value
+
+        def verify(*args):
+            self.assertNotEqual(events[-1:] , ["process-start"])
+            events.append("hash-verification")
+            return proof
+
+        with (mock.patch.object(runner.build_receipt, "specification", return_value={"fixture": True}),
+              mock.patch.object(runner.build_receipt, "prepare", side_effect=AssertionError("reuse prepared a build")),
+              mock.patch.object(runner.build_receipt, "freeze", side_effect=AssertionError("reuse rebuilt")),
+              mock.patch.object(runner.build_receipt, "verify", side_effect=verify),
+              mock.patch.object(runner, "invoke_launch", side_effect=invoke)):
+            code, manifest, commands = self.measured_run(binding_mode="framework", build_policy="reuse",
+                build_receipt=frozen, build_receipt_sha256=digest)
+        self.assertEqual(code, 0)
+        self.assertEqual(manifest["buildReceipt"]["policy"], "reuse")
+        self.assertFalse(any(command[:2] in (["flutter", "pub"], ["flutter", "build"]) for command in commands))
+        self.assertEqual(events, ["hash-verification", "hash-verification", "hash-verification", "process-start",
+                                 "process-ended", "hash-verification", "hash-verification", "process-start",
+                                 "process-ended", "hash-verification"])
+        output = self.root / "result"
+        for name in ("prepare-data-0", "launch-000"):
+            for stage in ("before", "after"):
+                self.assertTrue((output / f"build-proof-{name}-{stage}.json").is_file())
+
+    def test_invalid_reuse_receipt_fails_before_any_process_without_rebuild(self):
+        with (mock.patch.object(runner.build_receipt, "specification", return_value={"fixture": True}),
+              mock.patch.object(runner.build_receipt, "verify", side_effect=RuntimeError("AOT payload drift")),
+              mock.patch.object(runner, "invoke_launch") as invoke):
+            code, manifest, commands = self.measured_run(binding_mode="framework", build_policy="reuse",
+                build_receipt=self.root / "changed-build.json", build_receipt_sha256="a" * 64)
+        self.assertEqual(code, 1)
+        self.assertIn("AOT payload drift", manifest["error"])
+        invoke.assert_not_called()
+        self.assertFalse(any(command[:2] in (["flutter", "pub"], ["flutter", "build"]) for command in commands))
+
     def test_framework_run_rejects_missing_scheduler_evidence(self):
         code, manifest, _ = self.measured_run(binding_mode="framework", missing_scheduler=True)
         self.assertEqual(code, 1)

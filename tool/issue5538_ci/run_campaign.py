@@ -62,11 +62,13 @@ def percentile(values, fraction):
     return ordered[low] + (ordered[high] - ordered[low]) * (position - low)
 
 
-def latency_summary(blocks):
+def latency_summary(blocks, *, exclude_startup=False):
     collected = {}
     for block_index, reports in enumerate(blocks):
         for role, report in reports.items():
             for row in report["scenarios"]:
+                if exclude_startup and row["name"].startswith("startup."):
+                    continue
                 if row.get("status") != "passed" or row.get("measurementKind") == "resource-observation":
                     continue
                 clusters = collected.setdefault(row["name"], {}).setdefault(role, {})
@@ -110,6 +112,28 @@ def latency_summary(blocks):
     return summary
 
 
+def verify_launch_viewports(directory, report, launches, *, controlled_macos=False):
+    viewport = report.get("metadata", {}).get("viewport")
+    if not isinstance(viewport, dict) or any(
+            type(viewport.get(key)) not in (int, float)
+            or not math.isfinite(viewport[key]) or viewport[key] <= 0
+            for key in ("width", "height", "devicePixelRatio")):
+        raise ValueError("A measured viewport must have finite positive dimensions and DPR.")
+    for index in range(launches):
+        path = directory / f"launch-{index:03d}" / "phases.jsonl"
+        records = [json.loads(line) for line in path.read_text(encoding="utf-8-sig").splitlines() if line.strip()]
+        observations = [row["viewport"] for row in records if row.get("type") == "meta" and "viewport" in row]
+        if observations != [viewport]:
+            raise ValueError(f"Viewport changed within the measured process launches: {path}.")
+        if controlled_macos:
+            notes = [row for row in records if row.get("name") == "pdf.controlled_viewport"]
+            if (len(notes) != 1 or notes[0].get("startupComparisonExcluded") is not True
+                    or viewport["width"] != 1000 or viewport["height"] != 600
+                    or notes[0].get("width") != 1000 or notes[0].get("height") != 600):
+                raise ValueError("macOS requires a controlled PDF client viewport in every launch.")
+    return viewport
+
+
 def campaign(args):
     source, output, corpus = (value.resolve() for value in (args.source, args.output, args.corpus))
     if (output == source or output.is_relative_to(source) or source.is_relative_to(output)
@@ -137,7 +161,7 @@ def campaign(args):
     if not flutter or not dart or (system == "Windows" and not pwsh):
         raise ValueError("Required Flutter/Dart/PowerShell tools are missing.")
     output.mkdir(parents=True, exist_ok=False, mode=0o700 if os.name == "posix" else 0o777)
-    for name in ("worktrees", "logs", "corpus", "conditions"):
+    for name in ("worktrees", "logs", "corpus", "conditions", "build-receipts"):
         (output / name).mkdir()
     checkouts = {role: output / "worktrees" / role for role in commits}
     created, snapshots = [], {}
@@ -152,14 +176,17 @@ def campaign(args):
                           "bootstrap": "4000 resamples of whole process-launch clusters; random seed 5538"},
         "workflow": {key: os.environ.get(key) for key in (
             "GITHUB_REPOSITORY", "GITHUB_WORKFLOW_REF", "GITHUB_SHA", "GITHUB_RUN_ID", "GITHUB_RUN_ATTEMPT")},
-        "conditions": [], "preparation": {},
+        "conditions": [], "preparation": {}, "frozenBuilds": {},
+        "excludedComparativeScenarios": ["startup.first_content", "startup.window_useful"] if system == "Darwin" else [],
         "limitations": [
             "Cold means fresh application data, not a flushed OS file cache.",
             "Single hosted VM per platform/mode; no physical GPU, printer or sleep/resume claim.",
             "Balanced ABBA/BAAB blocks, six process launches per variant at the default settings.",
             "Bootstrap intervals are exploratory with few launch clusters and no multiple-comparison adjustment.",
             "Tail percentiles are descriptive; no automatic performance pass/fail threshold is applied.",
-            "The existing native runner rechecks incremental builds; no source or engine guard is bypassed.",
+            "One native build is frozen per source/mode. Every later invocation verifies its pinned receipt and launches only; mismatch never triggers a rebuild.",
+            "Full source/SDK/dependency/compiler/AOT/native/asset hashes are checked before and after each owned process, outside application resource sampling.",
+            "On macOS the PDF client viewport is controlled after startup; startup rows are diagnostic only and excluded from performance conclusions.",
         ],
     }
     def save():
@@ -217,9 +244,21 @@ def campaign(args):
                     if pair.sdk_identity(flutter, checkout) != receipt["sdk"]:
                         raise ValueError("SDK identity changed during the campaign.")
                     case.verify()
+                    frozen_path = output / "build-receipts" / f"{role}.json"
+                    previous_build = receipt["frozenBuilds"].get(role)
+                    build_policy = "reuse" if previous_build is not None else "create"
+                    expected_build_sha = previous_build["sha256"] if previous_build is not None else ""
                     command = pair.native_arguments(checkout, native_args, results / role, case.path,
-                                                    receipt["hardwareId"], system, pwsh)
+                                                    receipt["hardwareId"], system, pwsh,
+                                                    build_receipt=frozen_path, build_policy=build_policy,
+                                                    build_receipt_sha256=expected_build_sha)
                     block["stages"][role] = pair.run_logged(command, checkout, output / "logs" / f"{name}-{block_index}-{role}.log")
+                    build_proof = pair.verify_native_build_receipt(
+                        results / role, frozen_path, build_policy, commits[role], settings, system,
+                        expected_sha256=expected_build_sha)
+                    block.setdefault("buildPolicies", {})[role] = build_proof
+                    if previous_build is None:
+                        receipt["frozenBuilds"][role] = {**build_proof, "path": str(frozen_path.relative_to(output))}
                     case.verify_run(results / role, pair.read_json(results / role / "report.json"))
                     pair.verify_checkout(checkout, commits[role])
                     save()
@@ -229,13 +268,8 @@ def campaign(args):
                 reports = {role: pair.read_json(results / role / "report.json") for role in commits}
                 for role, report in reports.items():
                     case.verify_run(results / role, report)
-                    viewport = report.get("metadata", {}).get("viewport")
-                    if not isinstance(viewport, dict) or any(
-                            type(viewport.get(key)) not in (int, float) or viewport[key] <= 0
-                            for key in ("width", "height", "devicePixelRatio")):
-                        raise ValueError("A measured viewport must have finite positive dimensions and DPR.")
-                    if any(not math.isfinite(viewport[key]) for key in ("width", "height", "devicePixelRatio")):
-                        raise ValueError("A measured viewport contains a nonfinite dimension.")
+                    viewport = verify_launch_viewports(results / role, report, settings["launches"],
+                                                       controlled_macos=system == "Darwin")
                     if "viewport" in receipt and receipt["viewport"] != viewport:
                         raise ValueError("The viewport changed across sources, blocks or corpus cases.")
                     receipt["viewport"] = viewport
@@ -243,6 +277,11 @@ def campaign(args):
                     pair.verify_posix_engines(results, reports, settings, system)
                 block["comparison"] = pair.validate_reports(reports, commits, settings,
                     receipt["hardwareId"], receipt["sdk"], expected_corpus=case.comparison["source"])
+                if system == "Darwin":
+                    for row in block["comparison"]["scenarios"]:
+                        if row["name"].startswith("startup."):
+                            row["excludedFromPerformanceConclusions"] = True
+                            row["reason"] = "The controlled client viewport was applied after startup."
                 measured_blocks.append(reports)
                 block["status"] = "passed"
                 destination = archive / f"block-{block_index}"
@@ -256,7 +295,7 @@ def campaign(args):
                     if data.exists():
                         shutil.rmtree(data)
                 save()
-            condition["latency"] = latency_summary(measured_blocks)
+            condition["latency"] = latency_summary(measured_blocks, exclude_startup=system == "Darwin")
             condition["status"] = "passed"
             pair.write_json(archive / "condition.json", condition)
             save()

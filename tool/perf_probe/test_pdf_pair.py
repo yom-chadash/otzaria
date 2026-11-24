@@ -18,6 +18,39 @@ from unittest.mock import patch
 from tool.perf_probe import run_pdf_pair as pair
 
 
+def frozen_build_evidence(directory, frozen_path, commit, tree, settings, system):
+    """Native-runner contract fixture, with evidence for every owned process."""
+    aot = {"path": "lib/libapp.so", "bytes": 17, "sha256": "a" * 64}
+    bundle = {"manifestSha256": "b" * 64, "aotPayload": aot}
+    frozen = {"schemaVersion": "otzaria-pdf-native-build-v1", "kind": "frozen-native-build",
+              "status": "frozen", "inputs": {
+                  "source": {"commit": commit, "tree": tree, "clean": True},
+                  "specification": {"platform": {"Windows": "windows", "Linux": "linux", "Darwin": "macos"}[system],
+                                    "mode": settings["mode"], "binding": {"bindingMode": "framework"}}},
+              "output": {"bundle": bundle}}
+    pair.write_json(frozen_path, frozen)
+    snapshot = directory / "build-receipt.snapshot.json"
+    snapshot.write_bytes(frozen_path.read_bytes())
+    digest = hashlib.sha256(snapshot.read_bytes()).hexdigest()
+    pair.write_json(directory / "manifest.json", {"buildReceipt": {
+        "policy": "create", "path": str(frozen_path), "sha256": digest, "sourceCommit": commit,
+        "bundleManifestSha256": bundle["manifestSha256"], "aotPayload": aot,
+        "verificationOverlapsAppSampling": False}})
+    proof = {"status": "passed", "receiptSha256": digest, "sourceCommit": commit, "sourceTree": tree,
+             "bundleManifestSha256": bundle["manifestSha256"], "aotPayload": aot,
+             "verificationOverlapsAppSampling": False}
+    launches = [f"launch-{index:03d}" for index in range(settings["launches"])]
+    launches += (["prepare-data", "prepare-warm"] if settings["cacheState"] == "warm" else
+                 [f"prepare-data-{index}" for index in range(settings["launches"])])
+    for launch in launches:
+        for stage in ("before", "after"):
+            path = (directory / launch / f"build-proof-{stage}.json" if system == "Windows" else
+                    directory / f"build-proof-{launch}-{stage}.json")
+            path.parent.mkdir(parents=True, exist_ok=True)
+            pair.write_json(path, proof)
+    return digest
+
+
 class SourceTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
@@ -163,6 +196,11 @@ class SourceTests(unittest.TestCase):
                 comparison["navigation"].update(zoomPage=3, zoomAnchor="pageCenter")
                 pair.write_json(directory / "report.json", {"metadata": {"settings": {
                     "pdfReaderCase": comparison, "pdfPageCount": 17}}})
+                receipt_option = "-BuildReceipt" if system == "Windows" else "--build-receipt"
+                frozen_build_evidence(directory, Path(command[command.index(receipt_option) + 1]),
+                                      pair.git(checkout, "rev-parse", "HEAD"),
+                                      pair.git(checkout, "rev-parse", "HEAD^{tree}"),
+                                      {"mode": args.mode, "launches": args.launches, "cacheState": args.cache_state}, system)
                 if mutation == "source":
                     pdf.write_bytes(b"changed while a native runner was active")
                 elif mutation == "source_removed":
@@ -229,6 +267,70 @@ class SourceTests(unittest.TestCase):
         self.assertEqual((output / "corpus-source.pdf").read_bytes(), pdf.read_bytes())
         for original in (pdf, request):
             self.assertEqual(stat.S_IMODE(original.stat().st_mode), 0o600)
+
+
+class FrozenBuildProofTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        self.commit, self.tree = "c" * 40, "d" * 40
+
+    def evidence(self, system="Linux", state="cold"):
+        directory = self.root / f"{system}-{state}"
+        directory.mkdir()
+        path = self.root / f"{system}-{state}.json"
+        settings = {"mode": "profile", "cacheState": state, "launches": 3}
+        digest = frozen_build_evidence(directory, path, self.commit, self.tree, settings, system)
+        return directory, path, settings, digest
+
+    def verify(self, evidence, system="Linux"):
+        directory, path, settings, digest = evidence
+        return pair.verify_native_build_receipt(directory, path, "create", self.commit,
+                                                settings, system, expected_sha256=digest)
+
+    def test_every_preparation_and_measured_process_has_two_verified_proofs(self):
+        for system in ("Linux", "Darwin", "Windows"):
+            for state in ("cold", "warm"):
+                with self.subTest(system=system, state=state):
+                    proof = self.verify(self.evidence(system, state), system)
+                    self.assertEqual(proof["verifiedProcesses"], 6 if state == "cold" else 5)
+
+    def test_changing_both_cached_and_snapshotted_receipts_cannot_replace_the_pinned_identity(self):
+        evidence = self.evidence()
+        directory, path, _, _ = evidence
+        changed = path.read_bytes() + b"\n"
+        path.write_bytes(changed)
+        (directory / "build-receipt.snapshot.json").write_bytes(changed)
+        with self.assertRaisesRegex(ValueError, "expected frozen"):
+            self.verify(evidence)
+
+    def test_missing_post_process_or_changed_aot_proof_fails(self):
+        for system in ("Linux", "Windows"):
+            with self.subTest(system=system):
+                evidence = self.evidence(system)
+                path = (evidence[0] / "launch-002/build-proof-after.json" if system == "Windows" else
+                        evidence[0] / "build-proof-launch-002-after.json")
+                original = path.read_bytes()
+                path.unlink()
+                with self.assertRaises(FileNotFoundError):
+                    self.verify(evidence, system)
+                path.write_bytes(original)
+                proof = pair.read_json(path)
+                proof["aotPayload"]["sha256"] = "e" * 64
+                pair.write_json(path, proof)
+                with self.assertRaisesRegex(ValueError, "proof outside process sampling"):
+                    self.verify(evidence, system)
+
+    def test_receipt_for_another_source_or_mode_cannot_validate_a_run(self):
+        evidence = self.evidence()
+        directory, path, settings, digest = evidence
+        with self.assertRaisesRegex(ValueError, "another source"):
+            pair.verify_native_build_receipt(directory, path, "create", "e" * 40, settings,
+                                            "Linux", expected_sha256=digest)
+        with self.assertRaisesRegex(ValueError, "another source"):
+            pair.verify_native_build_receipt(directory, path, "create", self.commit,
+                                            {**settings, "mode": "release"}, "Linux", expected_sha256=digest)
 
 
 class PlatformArgumentsTests(unittest.TestCase):

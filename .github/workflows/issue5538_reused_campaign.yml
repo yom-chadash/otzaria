@@ -1,0 +1,303 @@
+name: PDF 5538 immutable build reuse corpus campaign in fork
+'on':
+  push:
+    branches:
+    - perf/5538-final-measurements-20261124
+    paths:
+    - .github/workflows/issue5538_reused_campaign.yml
+    - tool/issue5538_ci/campaign_plan.*.json
+    - tool/issue5538_ci/run_campaign.py
+    - tool/perf_probe/build_receipt.py
+    - tool/perf_probe/test_build_receipt.py
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: pdf-5538-reused-campaign-${{ github.sha }}
+  cancel-in-progress: false
+env:
+  CI: 'true'
+  FLUTTER_SUPPRESS_ANALYTICS: 'true'
+  DART_SUPPRESS_ANALYTICS: 'true'
+  PYTHONUNBUFFERED: '1'
+  PYTHONDONTWRITEBYTECODE: '1'
+jobs:
+  contracts:
+    name: Build receipt and runner contracts / ${{ matrix.os }}
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+        - ubuntu-24.04
+        - windows-2025
+    steps:
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: 'false'
+    - uses: actions/setup-python@v7.1.0
+      with:
+        python-version: '3.13'
+    - name: Immutable receipt and native orchestration contracts
+      run: |
+        python -B -m unittest discover -s tool/perf_probe -p 'test_build_receipt.py'
+        python -B -m unittest discover -s tool/perf_probe -p 'test_pdf_pair.py'
+      shell: bash
+    - name: POSIX owned-process and engine mapping contracts
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        python -B -m unittest discover -s tool/perf_probe -p 'test_perf_probe_posix.py'
+        python -B -m unittest discover -s tool/perf_probe -p 'test_posix_engine.py'
+    - name: Parse native Windows entrypoints before any app build
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        Set-StrictMode -Version Latest
+        $ErrorActionPreference = 'Stop'
+        foreach ($path in @('tool/perf_probe/runner.ps1', 'tool/perf_probe/run_perf_probe.ps1')) {
+          $tokens = $null
+          $parseErrors = $null
+          [void][System.Management.Automation.Language.Parser]::ParseFile((Join-Path $PWD $path), [ref]$tokens, [ref]$parseErrors)
+          if ($parseErrors.Count) { throw ($parseErrors | Out-String) }
+        }
+  windows:
+    name: Windows x64 / ${{ matrix.mode }} / frozen AOT corpus
+    needs: contracts
+    if: github.repository == 'yom-chadash/otzaria'
+    strategy:
+      fail-fast: false
+      matrix:
+        mode:
+        - profile
+        - release
+    runs-on: windows-2025
+    timeout-minutes: 300
+    steps:
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: 'false'
+    - uses: actions/setup-python@v7.1.0
+      with:
+        python-version: '3.13'
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        flutter-version: 3.47.7
+        cache: 'false'
+    - uses: dtolnay/rust-toolchain@stable
+    - uses: actions/download-artifact@v8.0.2
+      with:
+        name: pdf-5538-pinned-corpus
+        path: ${{ runner.temp }}/pdf-5538-inputs
+        run-id: 45392015952
+        repository: yom-chadash/otzaria
+        github-token: ${{ github.token }}
+    - name: Install the verified release engine
+      if: matrix.mode == 'release'
+      uses: ./.github/actions/patched-flutter-engine
+      with:
+        arch: x64
+    - name: Freeze one native build per source and measure all corpus conditions
+      shell: pwsh
+      env:
+        CAMPAIGN_MODE: ${{ matrix.mode }}
+      run: |
+        Set-StrictMode -Version Latest
+        $ErrorActionPreference = 'Stop'
+        git config --global core.longpaths true
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        $plan = "tool/issue5538_ci/campaign_plan.$env:CAMPAIGN_MODE.json"
+        python tool/issue5538_ci/prepare_campaign.py --plan $plan
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        $arguments = @('tool/issue5538_ci/run_campaign.py', '--plan', $plan,
+          '--corpus', (Join-Path $env:RUNNER_TEMP 'pdf-5538-inputs/pdf-5538-corpus/cases'),
+          '--output', (Join-Path $env:RUNNER_TEMP 'pdf-5538-campaign'), '--mode', $env:CAMPAIGN_MODE)
+        if ($env:CAMPAIGN_MODE -eq 'release') {
+          if ($env:PATCHED_FLUTTER_DLL_SHA256 -cnotmatch '^[a-f0-9]{64}$') { throw 'Missing verified release engine hash.' }
+          $arguments += @('--expected-engine-sha256', $env:PATCHED_FLUTTER_DLL_SHA256)
+        }
+        python @arguments
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    - name: Preserve complete and partial evidence
+      if: always()
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: pdf-5538-reused-windows-${{ matrix.mode }}
+        retention-days: 90
+        if-no-files-found: warn
+        path: |
+          ${{ runner.temp }}/pdf-5538-campaign/**/*.json
+          ${{ runner.temp }}/pdf-5538-campaign/**/*.jsonl
+          ${{ runner.temp }}/pdf-5538-campaign/**/*.csv
+          ${{ runner.temp }}/pdf-5538-campaign/**/*.log
+          ${{ runner.temp }}/pdf-5538-campaign/**/*.md
+  posix:
+    name: ${{ matrix.platform.name }} ${{ matrix.platform.arch }} / ${{ matrix.mode }} / frozen AOT corpus
+    needs: contracts
+    if: github.repository == 'yom-chadash/otzaria'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - platform:
+            name: linux
+            arch: x64
+            runner: ubuntu-24.04
+            container: debian:bookworm-slim
+          mode: profile
+        - platform:
+            name: linux
+            arch: x64
+            runner: ubuntu-24.04
+            container: debian:bookworm-slim
+          mode: release
+        - platform:
+            name: macos
+            arch: intel
+            runner: macos-15-intel
+            container: ''
+          mode: profile
+        - platform:
+            name: macos
+            arch: intel
+            runner: macos-15-intel
+            container: ''
+          mode: release
+        - platform:
+            name: macos
+            arch: arm64
+            runner: macos-15
+            container: ''
+          mode: profile
+    runs-on: ${{ matrix.platform.runner }}
+    container: ${{ matrix.platform.container }}
+    timeout-minutes: 300
+    defaults:
+      run:
+        shell: bash
+    env:
+      CARGO_NET_GIT_FETCH_WITH_CLI: 'true'
+      CARGO_BUILD_JOBS: '2'
+      CAMPAIGN_MODE: ${{ matrix.mode }}
+    steps:
+    - name: Prepare the supported Linux build container
+      if: matrix.platform.name == 'linux'
+      run: |
+        set -euo pipefail
+        apt-get update -y
+        apt-get install -y ca-certificates curl git jq unzip xz-utils zstd python3 nodejs \
+          build-essential clang-14 cmake libblkid1 libcurl4-openssl-dev libglib2.0-dev \
+          libgtk-3-dev liblzma5 liblzma-dev libsecret-1-dev libsoup-3.0-dev \
+          libwebkit2gtk-4.1-dev libxkbcommon-dev ninja-build openjdk-17-jdk-headless \
+          pkg-config xvfb xauth binutils dbus dbus-x11 openbox wmctrl x11-utils \
+          x11-xserver-utils libgl1-mesa-dri libegl1 libglx-mesa0 mesa-utils
+        update-alternatives --install /usr/bin/clang clang /usr/bin/clang-14 100
+        update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-14 100
+        git config --global --add safe.directory '*'
+        {
+          echo "RUSTUP_HOME=$RUNNER_TEMP/pdf-5538-rustup"
+          echo "CARGO_HOME=$RUNNER_TEMP/pdf-5538-cargo"
+          echo 'JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64'
+          echo 'WPE_SDK=/opt/wpe-sdk'
+          echo 'PKG_CONFIG_PATH=/opt/wpe-sdk/lib/pkgconfig'
+          echo 'LD_LIBRARY_PATH=/opt/wpe-sdk/lib'
+          echo 'LIBRARY_PATH=/opt/wpe-sdk/lib'
+          echo 'CC=clang'
+          echo 'CXX=clang++'
+          echo 'CFLAGS=-Wno-error=unknown-warning-option'
+          echo 'CXXFLAGS=-Wno-error=unknown-warning-option'
+          echo 'LIBGL_ALWAYS_SOFTWARE=1'
+        } >> "$GITHUB_ENV"
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: 'false'
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        flutter-version: 3.47.7
+        cache: 'false'
+    - uses: dtolnay/rust-toolchain@stable
+    - uses: actions/setup-python@v7.1.0
+      if: matrix.platform.name == 'macos'
+      with:
+        python-version: '3.15'
+    - uses: actions/download-artifact@v8.0.2
+      with:
+        name: pdf-5538-pinned-corpus
+        path: ${{ runner.temp }}/pdf-5538-inputs
+        run-id: 45392015952
+        repository: yom-chadash/otzaria
+        github-token: ${{ github.token }}
+    - name: Install the pinned Linux WPE runtime
+      if: matrix.platform.name == 'linux'
+      env:
+        WPE_RUNTIME_SHA256: ca7e706c0ec2f66623fede2c369e3e13339448843e125f2ccd1553f4a3c4bcaf
+      run: |
+        set -euo pipefail
+        echo "$CARGO_HOME/bin" >> "$GITHUB_PATH"
+        asset=wpe-runtime-2.48.7-linux-x86_64.tar.zst
+        base=https://github.com/Otzaria/otzaria-wpe-runtime/releases/download/wpe-2.48.7-print-to-pdf
+        curl -fSL --retry 3 --retry-delay 5 --max-time 300 -o "$RUNNER_TEMP/$asset" "$base/$asset"
+        printf '%s  %s\n' "$WPE_RUNTIME_SHA256" "$RUNNER_TEMP/$asset" | sha256sum -c -
+        tar -C /opt -I zstd -xf "$RUNNER_TEMP/$asset"
+        pkg-config --print-errors --exists wpe-webkit-2.0 wpe-platform-2.0 wpe-platform-headless-2.0 wpe-1.0
+    - name: Freeze one native build per source and measure all corpus conditions
+      run: |
+        set -euo pipefail
+        plan="tool/issue5538_ci/campaign_plan.$CAMPAIGN_MODE.json"
+        python3 tool/issue5538_ci/prepare_campaign.py --plan "$plan"
+        arguments=(tool/issue5538_ci/run_campaign.py --plan "$plan"
+          --corpus "$RUNNER_TEMP/pdf-5538-inputs/pdf-5538-corpus/cases"
+          --output "$RUNNER_TEMP/pdf-5538-campaign" --mode "$CAMPAIGN_MODE")
+        if [ "$RUNNER_OS" = Linux ]; then
+          arguments+=(--display-mode xvfb)
+          mkdir -p "$RUNNER_TEMP/pdf-5538-session/runtime"
+          chmod 700 "$RUNNER_TEMP/pdf-5538-session/runtime"
+          export XDG_RUNTIME_DIR="$RUNNER_TEMP/pdf-5538-session/runtime"
+          export XDG_SESSION_TYPE=x11 GDK_BACKEND=x11
+          xvfb-run --auto-servernum --error-file="$RUNNER_TEMP/pdf-5538-session/xvfb.log" \
+            --server-args='-screen 0 1440x1000x24 -dpi 96 -nolisten tcp' \
+            dbus-run-session -- bash -s -- "${arguments[@]}" <<'SESSION'
+        set -euo pipefail
+        openbox --sm-disable > "$RUNNER_TEMP/pdf-5538-session/openbox.log" 2>&1 &
+        wm=$!
+        trap 'kill "$wm" 2>/dev/null || true; wait "$wm" 2>/dev/null || true' EXIT
+        ready=0
+        for attempt in {1..100}; do
+          if wmctrl -m > "$RUNNER_TEMP/pdf-5538-session/window-manager.txt" 2>&1 &&
+             grep -q 'Name: Openbox' "$RUNNER_TEMP/pdf-5538-session/window-manager.txt"; then
+            ready=1
+            break
+          fi
+          kill -0 "$wm"
+          sleep 0.1
+        done
+        test "$ready" = 1
+        xdpyinfo > "$RUNNER_TEMP/pdf-5538-session/display.txt"
+        python3 -B "$@"
+        SESSION
+        else
+          python3 -B "${arguments[@]}"
+        fi
+    - name: Locate evidence inside the active runner environment
+      if: always()
+      id: evidence-root
+      run: echo "root=$RUNNER_TEMP" >> "$GITHUB_OUTPUT"
+    - name: Preserve complete and partial evidence
+      if: always()
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: pdf-5538-reused-${{ matrix.platform.name }}-${{ matrix.platform.arch }}-${{ matrix.mode }}
+        retention-days: 90
+        if-no-files-found: warn
+        path: |
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-campaign/**/*.json
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-campaign/**/*.jsonl
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-campaign/**/*.csv
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-campaign/**/*.log
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-campaign/**/*.md
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-session/**

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "baseline": "345eeedf8877ce8372056c5b689810f834acf6e0",
-  "candidate": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+  "baseline": "c5496bdd7f8af840626432fc81eb7e995a3285e5",
+  "candidate": "2191750b23ea6b8a5c95530639312a2f86ecd44c",
   "launchesPerBlock": 3,
   "repetitions": 5,
   "cacheStates": [
