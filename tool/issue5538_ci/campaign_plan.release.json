@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "baseline": "345eeedf8877ce8372056c5b689810f834acf6e0",
+  "candidate": "329f198b2c2c2bc21b292905ae54785d1d28f016",
+  "launchesPerBlock": 3,
+  "repetitions": 5,
+  "cacheStates": [
+    "cold",
+    "warm"
+  ],
+  "scenarios": [
+    "pdf-reader",
+    "pdf-book-view"
+  ],
+  "cases": [
+    "gcc-15_2",
+    "mikraot-gedolot-genesis-1859",
+    "derived-real-mixed-10000"
+  ]
+}
