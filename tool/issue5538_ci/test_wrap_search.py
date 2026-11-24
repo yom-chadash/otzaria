@@ -1,7 +1,11 @@
 import copy
+import io
+from pathlib import Path
+import tarfile
+import tempfile
 import unittest
 
-from tool.issue5538_ci.wrap_search_run import instrument
+from tool.issue5538_ci.wrap_search_run import extract_regular_archive, instrument
 from tool.issue5538_ci.wrap_search_validate import expected_order, summarize, validate_report
 
 
@@ -119,6 +123,35 @@ class InstrumentationTests(unittest.TestCase):
     def test_source_drift_fails_without_partial_patch(self):
         with self.assertRaisesRegex(ValueError, 'anchor changed'):
             instrument("import 'dart:collection';", 'file:///owned/metrics.dart')
+
+
+class ArchiveCompatibilityTests(unittest.TestCase):
+    def test_extracts_nested_regular_files_without_new_python_filter_api(self):
+        with tempfile.TemporaryDirectory() as directory:
+            archive = Path(directory) / 'input.tar'
+            with tarfile.open(archive, 'w') as output:
+                member = tarfile.TarInfo('lib/src/search.dart')
+                member.size = 7
+                output.addfile(member, io.BytesIO(b'content'))
+            with tarfile.open(archive) as source:
+                extract_regular_archive(source, Path(directory) / 'viewer')
+            self.assertEqual((Path(directory) / 'viewer/lib/src/search.dart').read_bytes(), b'content')
+
+    def test_rejects_escapes_links_and_devices_before_creating_destination(self):
+        for name, kind in (('../outside', tarfile.REGTYPE), ('/outside', tarfile.REGTYPE),
+                           ('link', tarfile.SYMTYPE), ('link', tarfile.LNKTYPE),
+                           ('device', tarfile.CHRTYPE), ('fifo', tarfile.FIFOTYPE)):
+            with self.subTest(name=name, kind=kind), tempfile.TemporaryDirectory() as directory:
+                archive = Path(directory) / 'input.tar'
+                with tarfile.open(archive, 'w') as output:
+                    member = tarfile.TarInfo(name)
+                    member.type = kind
+                    member.linkname = '../outside'
+                    output.addfile(member)
+                destination = Path(directory) / 'viewer'
+                with tarfile.open(archive) as source, self.assertRaisesRegex(ValueError, 'unsafe'):
+                    extract_regular_archive(source, destination)
+                self.assertFalse(destination.exists())
 
 
 if __name__ == '__main__':

@@ -6,7 +6,7 @@ import difflib
 import hashlib
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import platform
 import shutil
 import subprocess
@@ -98,6 +98,25 @@ def file_manifest(root):
             for path in sorted(root.rglob('*')) if path.is_file()}
 
 
+def extract_regular_archive(archive, destination):
+    members = archive.getmembers()
+    for member in members:
+        path = PurePosixPath(member.name)
+        require(not path.is_absolute() and '..' not in path.parts
+                and '\\' not in member.name and (member.isdir() or member.isfile()),
+                'Viewer archive contains an unsafe path or non-regular entry')
+    destination.mkdir()
+    for member in members:
+        target = destination.joinpath(*PurePosixPath(member.name).parts)
+        if member.isdir():
+            target.mkdir(parents=True, exist_ok=True)
+        else:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with archive.extractfile(member) as source, target.open('xb') as output:
+                shutil.copyfileobj(source, output)
+            require(target.stat().st_size == member.size, 'Incomplete viewer archive member')
+
+
 def archive_viewer(output):
     archive = output / 'pdfrx-2.13.1.tar.gz'
     with urlopen('https://pub.dev/api/archives/pdfrx-2.13.1.tar.gz', timeout=120) as response, archive.open('xb') as target:
@@ -105,7 +124,7 @@ def archive_viewer(output):
     require(digest(archive) == VIEWER_ARCHIVE_SHA, 'Viewer archive differs from the locked package')
     original = output / 'viewer-original'
     with tarfile.open(archive, 'r:gz') as source:
-        source.extractall(original, filter='data')
+        extract_regular_archive(source, original)
     require((original / SEARCHER).is_file(), 'Missing locked search implementation')
     write(output / 'viewer-archive.json', {'version': '2.13.1', 'sha256': digest(archive),
           'bytes': archive.stat().st_size, 'sourceUrl': 'https://pub.dev/api/archives/pdfrx-2.13.1.tar.gz',
