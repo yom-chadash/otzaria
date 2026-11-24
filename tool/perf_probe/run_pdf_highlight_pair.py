@@ -24,13 +24,22 @@ HIGHLIGHTS = "lib/pdf_book/utils/pdf_page_highlights.dart"
 LAYOUT = "lib/pdf_book/utils/pdf_book_layout.dart"
 HARNESS = (
     TARGET, DRIVER,
+    "integration_test/support/pdf_proximity_profile_queries.dart",
     "tool/perf_probe/run_pdf_highlight_pair.py",
     "tool/perf_probe/validate_pdf_highlight_profile.py",
+    "tool/perf_probe/validate_pdf_proximity_profile.py",
     "tool/perf_probe/run_pdf_text_profile.py",
 )
 SHARED = (*HARNESS, LAYOUT, "pubspec.yaml", "pubspec.lock",
           "lib/pdf_book/utils/result_lines_highlight_pattern.dart",
-          "lib/pdf_book/utils/proximity_highlight_pattern.dart")
+          "lib/pdf_book/utils/proximity_highlight_pattern.dart",
+          "lib/pdf_book/view/pdf_search_screen.dart",
+          "lib/search/in_book_search_settings.dart",
+          "lib/search/search_engine_library.dart",
+          "lib/search/models/search_configuration.dart",
+          "lib/search/models/search_match_policy.dart",
+          "lib/search/utils/in_book_search_routing.dart",
+          "lib/utils/text/text_manipulation.dart")
 ALLOWED_DELTA = {HIGHLIGHTS, "test/pdf_book/pdf_page_highlights_test.dart"}
 require, digest, write_json = common.require, common.digest, common.write_json
 
@@ -101,7 +110,12 @@ def compiler_receipt(repo):
         for value in shlex.split(text.split(": ", 1)[1]):
             path = Path(value)
             paths.add((path if path.is_absolute() else repo / path).resolve())
-        if repo / TARGET in paths and repo / HIGHLIGHTS in paths:
+        required = (TARGET, HIGHLIGHTS,
+                    "integration_test/support/pdf_proximity_profile_queries.dart",
+                    "lib/pdf_book/view/pdf_search_screen.dart",
+                    "lib/pdf_book/utils/proximity_highlight_pattern.dart",
+                    "lib/search/search_engine_library.dart")
+        if all(repo / name in paths for name in required):
             candidates.append((depfile, paths))
     require(len(candidates) == 1, "Need exactly one compiler depfile containing the real app helper and benchmark entry point")
     depfile, paths = candidates[0]
@@ -110,8 +124,9 @@ def compiler_receipt(repo):
 
 
 def bundle_receipt(bundle):
-    required = (bundle / "otzaria", bundle / "lib/libapp.so", bundle / "lib/libflutter_linux_gtk.so")
-    require(all(path.is_file() for path in required), "Profile bundle lacks executable, AOT app, or Flutter engine")
+    required = (bundle / "otzaria", bundle / "lib/libapp.so", bundle / "lib/libflutter_linux_gtk.so",
+                bundle / "lib/libsearch_engine.so")
+    require(all(path.is_file() for path in required), "Profile bundle lacks executable, AOT app, Flutter engine, or native search library")
     return {path.relative_to(bundle).as_posix(): {"sha256": digest(path), "bytes": path.stat().st_size}
             for path in sorted(bundle.rglob("*")) if path.is_file()}
 
@@ -132,6 +147,8 @@ def main():
     parser.add_argument("--documents", nargs="+", default=["uxlc-genesis", "birkon-3_0"])
     parser.add_argument("--warmup", type=int, default=1)
     parser.add_argument("--repetitions", type=int, default=7)
+    parser.add_argument("--blocks", type=int, default=1)
+    parser.add_argument("--query-suite", choices=("legacy-v1", validation.proximity.SUITE), default="legacy-v1")
     args = parser.parse_args()
     repo = Path(__file__).resolve().parents[2]
     output = args.output.resolve()
@@ -142,6 +159,9 @@ def main():
     try:
         require(platform.system() == "Linux" and platform.machine() in ("x86_64", "AMD64"), "Profile pairing currently pins Linux x64")
         require(args.warmup >= 0 and args.repetitions > 0, "Invalid sample counts")
+        require(args.blocks > 0, "ABBA block count must be positive")
+        require(args.query_suite != validation.proximity.SUITE or args.blocks >= 3, "Product Proximity requires at least three fresh-process ABBA blocks")
+        launch_order = validation.proximity.ABBA * args.blocks
         plan = load_plan(args.plan.resolve(strict=True))
         manifest = args.corpus.resolve(strict=True)
         manifest_sha = digest(manifest)
@@ -155,6 +175,13 @@ def main():
         sdk = common.sdk_receipt(run([dart, "--version"], repo), sdk_json)
         toolchain = {"flutterSha256": digest(flutter), "dartSha256": digest(dart), "pdfiumSha256": digest(pdfium), "sdk": sdk}
         write_json(output / "plan.json", plan)
+        write_json(output / "sampling-plan.json", {
+            "querySuite": args.query_suite, "blocksPerCorpus": args.blocks,
+            "launchOrderPerCorpus": launch_order, "processesPerSidePerCorpus": 2 * args.blocks,
+            "warmupPassesPerProcess": args.warmup, "measuredPassesPerProcess": args.repetitions,
+            "statisticalUnit": "fresh app process; repeated passes within a process are dependent",
+            "builds": 2, "binaryReuse": "one verified AOT bundle per source across all corpora and blocks",
+        })
         write_json(output / "corpus-manifest.json", json.loads(manifest.read_text(encoding="utf-8")))
         write_json(output / "host.json", {"name": socket.gethostname(), "platform": platform.platform(), "processors": os.cpu_count()})
         receipts = {}
@@ -194,11 +221,14 @@ def main():
             write_json(build / "resolution.json", receipt["resolution"])
             write_json(build / "compiler-inputs.json", receipt["compiler"])
             write_json(build / "bundle.json", receipt["bundle"])
+        require(receipts["baseline"]["bundle"]["lib/libsearch_engine.so"] == receipts["candidate"]["bundle"]["lib/libsearch_engine.so"],
+                "Native search engine differs between baseline and candidate builds")
         all_results = {}
         for document in documents:
             completed = {"baseline": [], "candidate": []}
             paths = {"baseline": [], "candidate": []}
-            for index, side in enumerate(("baseline", "candidate", "candidate", "baseline")):
+            launches = []
+            for index, side in enumerate(launch_order):
                 receipt = receipts[side]
                 checkout = receipt["checkout"]
                 run_root = output / document["id"] / f"{index + 1}-{side}"
@@ -209,6 +239,7 @@ def main():
                     "PDF_HIGHLIGHT_PROFILE_SHA256": document["sha256"],
                     "PDF_HIGHLIGHT_PROFILE_PDFIUM": str(pdfium),
                     "PDF_HIGHLIGHT_PROFILE_OUTPUT": str(native),
+                    "PDF_HIGHLIGHT_PROFILE_QUERY_SUITE": args.query_suite,
                 }
                 require(source_receipt(checkout) == receipt["source"] and compiler_receipt(checkout) == receipt["compiler"], "Source or compiler inputs changed before launch")
                 require(bundle_receipt(receipt["bundlePath"]) == receipt["bundle"], "Profile binary changed before launch")
@@ -229,11 +260,20 @@ def main():
                 require(report["sourceCommit"] == plan[side] and report["highlightSourceSha256"] == receipt["source"]["files"][HIGHLIGHTS], "Runtime source identity does not match the built source")
                 require(report["inputSha256"] == document["sha256"] and report["sourcePageCount"] == document["pageCount"], "Runtime corpus identity differs from manifest")
                 require(report["warmup"] == args.warmup and report["repetitions"] == args.repetitions, "Compiled sample configuration differs")
+                require(report.get("querySuite") == args.query_suite, "Runtime query suite differs from the sampling plan")
+                if args.query_suite == validation.proximity.SUITE:
+                    require(report["searchEngine"]["librarySha256"] == receipt["bundle"]["lib/libsearch_engine.so"]["sha256"] and
+                            report["searchEngine"]["libraryBytes"] == receipt["bundle"]["lib/libsearch_engine.so"]["bytes"],
+                            "Actually mapped search engine differs from the recorded AOT bundle")
                 completed[side].append(report)
                 paths[side].append(report_path)
-                write_json(run_root / "validated.json", {"status": "passed", "source": receipt["source"], "reportSha256": digest(report_path), "launchIndex": index, "side": side})
+                launches.append({"side": side, "report": report, "reportPath": str(report_path.relative_to(output)), "reportSha256": digest(report_path)})
+                write_json(run_root / "validated.json", {"status": "passed", "source": receipt["source"], "reportSha256": digest(report_path),
+                                                        "launchIndex": index, "block": index // 4 + 1, "positionInBlock": index % 4 + 1, "side": side,
+                                                        "querySuite": args.query_suite})
             comparison = validation.compare(completed["baseline"], completed["candidate"])
-            comparison["launchOrder"] = ["baseline", "candidate", "candidate", "baseline"]
+            comparison["launchOrder"] = launch_order
+            comparison["processBlocks"] = validation.proximity.summarize_abba(launches)
             comparison["reports"] = {str(path.relative_to(output)): digest(path) for side in paths for path in paths[side]}
             write_json(output / document["id"] / "comparison.json", comparison)
             all_results[document["id"]] = comparison
@@ -241,7 +281,8 @@ def main():
         require(toolchain == {"flutterSha256": digest(flutter), "dartSha256": digest(dart), "pdfiumSha256": digest(pdfium), "sdk": common.sdk_receipt(run([dart, "--version"], repo), sdk_json)}, "SDK/native binary changed")
         write_json(output / "validated.json", {"protocolVersion": 1, "status": "passed", "plan": plan,
                                                "toolchain": toolchain, "corpusManifestSha256": manifest_sha,
-                                               "launchOrderPerCorpus": ["baseline", "candidate", "candidate", "baseline"],
+                                               "querySuite": args.query_suite, "blocksPerCorpus": args.blocks,
+                                               "launchOrderPerCorpus": launch_order,
                                                "results": all_results})
         print(json.dumps({"status": "passed", "output": str(output), "corpora": list(all_results)}))
         return 0
