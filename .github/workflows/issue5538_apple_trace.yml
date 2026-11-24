@@ -1,0 +1,74 @@
+name: PDF 5538 isolated Apple baseline and thread trace in fork
+on:
+  push:
+    branches: [perf/5538-final-measurements-20261124]
+    paths:
+      - '.github/workflows/issue5538_apple_trace.yml'
+      - 'tool/issue5538_ci/internal_apple_*'
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: 'Intel is a separate CI baseline; ARM64 can run when hosted capacity is available.'
+        type: choice
+        default: macos-15-intel
+        options: [macos-15-intel, macos-latest]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: pdf-5538-apple-trace-${{ github.ref }}-${{ inputs.runner || 'macos-15-intel' }}
+  cancel-in-progress: false
+env:
+  CI: 'true'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONUNBUFFERED: '1'
+  FLUTTER_SUPPRESS_ANALYTICS: 'true'
+  DART_SUPPRESS_ANALYTICS: 'true'
+jobs:
+  apple:
+    name: Same binary ABBA then separate native thread samples
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ${{ inputs.runner || 'macos-15-intel' }}
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.13'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.50.0'
+          cache: false
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          name: pdf-5538-component-corpus
+          path: ${{ runner.temp }}/pdf-5538-inputs
+          run-id: 45389994425
+          repository: yom-chadash/otzaria
+          github-token: ${{ github.token }}
+      - name: Run the baseline without Instruments, then trace the same executable separately
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tool/issue5538_ci/internal_apple_run.py --flutter "$FLUTTER_ROOT/bin/flutter" \
+            --corpus-manifest "$RUNNER_TEMP/pdf-5538-inputs/pdf-5538-corpus/corpus.json" \
+            --output "$RUNNER_TEMP/pdf-5538-apple-trace" --with-thread-trace
+      - name: Preserve measurements, raw stack exports and trace data without upstream builds
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pdf-5538-apple-trace-${{ runner.arch }}
+          retention-days: 90
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/pdf-5538-apple-trace/*.json
+            ${{ runner.temp }}/pdf-5538-apple-trace/*.log
+            ${{ runner.temp }}/pdf-5538-apple-trace/*.lock
+            ${{ runner.temp }}/pdf-5538-apple-trace/traces/*.json
+            ${{ runner.temp }}/pdf-5538-apple-trace/traces/*.xml
+            ${{ runner.temp }}/pdf-5538-apple-trace/traces/*.log
+            ${{ runner.temp }}/pdf-5538-apple-trace/traces/*.trace
+            ${{ runner.temp }}/pdf-5538-apple-trace/traces/*.trace/**

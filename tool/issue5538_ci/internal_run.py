@@ -2,6 +2,7 @@
 
 import argparse
 import difflib
+from email.utils import parsedate_to_datetime
 import hashlib
 import json
 import os
@@ -25,6 +26,7 @@ ENGINE_REVISION = "deb287481e3ce9468f3434937ced4240a70539ca"
 MODULES = (
     "internal_run.py", "internal_probe.dart", "internal_http.dart",
     "internal_fonts.dart", "internal_metrics.dart", "internal_metrics_access.dart",
+    "internal_http_revalidation.dart",
 )
 
 
@@ -178,15 +180,69 @@ def dependency_receipt(path):
     return {str(p): digest(p) for p in sorted(paths)}
 
 
-def validate_report(report, instrumented):
+def validate_http_revalidation(rows):
+    expected = set()
+    policies = ("etag-fresh", "etag-stale", "modified-since-stale", "etag-must-revalidate-fresh")
+    for linearized in (False, True):
+        for progressive in (False, True):
+            for policy in policies:
+                phases = ["cold", "warm", "warm-late-pages"]
+                if policy.endswith("-stale"):
+                    phases += ["changed", "changed-warm"]
+                expected.update((linearized, progressive, policy, phase) for phase in phases)
+    actual = [(r["initialLinearized"], r["progressive"], r["policy"], r["phase"]) for r in rows]
+    require(len(actual) == len(expected) and set(actual) == expected, "Incomplete or duplicate revalidation cases")
+    for row in rows:
+        require(row["workload"] == "http-revalidation" and row["section"] == "E10", "Wrong HTTP workload")
+        require(row["rasterParityWithLocalFile"] is True and row["bytesParity"] is True, "HTTP raster or cache bytes differ from local input")
+        require(row["serverErrors"] == [], "HTTP server failed")
+        cache = row["cacheAfter"]
+        require(cache["allResidentBytesMatchInput"] is True and cache["fileSize"] == row["inputBytes"], "HTTP cache content mismatch")
+        require(cache["blocks"] and all(b["matches"] is True and b["actualSha256"] == b["expectedSha256"] for b in cache["blocks"]), "Missing resident-byte parity")
+        requests = row["requests"]
+        require(row["requestCount"] == len(requests), "HTTP request accounting mismatch")
+        require(row["payloadBytes"] == sum(r["payloadBytes"] for r in requests), "HTTP byte accounting mismatch")
+        require(row["conditionalRequests"] == sum(r["conditionalRequest"] for r in requests), "Conditional request accounting mismatch")
+        require(row["notModifiedResponses"] == sum(r["status"] == 304 for r in requests), "304 accounting mismatch")
+        if row["phase"] == "cold":
+            require(requests and row["conditionalRequests"] == 0 and row["payloadBytes"] > 0, "Cold cache was not cold")
+        for request in requests:
+            require(request["completed"] is True and not request.get("transportError"), "HTTP response did not finish")
+            require(request["resourceSha256"] == row["pdfSha256"] and request["resourceBytes"] == row["inputBytes"], "Server resource identity drift")
+            etag = request["ifNoneMatch"]
+            modified = request["ifModifiedSince"]
+            conditional = etag is not None or modified is not None
+            require(request["conditionalRequest"] is conditional, "Conditional request label mismatch")
+            if etag is not None:
+                tags = [re.sub(r"^W/", "", value.strip()) for value in etag.split(",")]
+                matched = "*" in tags or request["responseHeaders"].get("etag") in tags
+            elif modified is not None:
+                matched = parsedate_to_datetime(modified) >= parsedate_to_datetime(request["responseHeaders"]["last-modified"])
+            else:
+                matched = False
+            require(request["validatorMatched"] is matched, "Validator decision differs from recorded headers")
+            if request["status"] == 304:
+                require(conditional and matched, "Unconditional or unmatched 304 is not evidence")
+                require(request["payloadBytes"] == 0 and request["payloadSha256"] == hashlib.sha256(b"").hexdigest(), "304 carried a response body")
+                require("content-range" not in request["responseHeaders"], "304 unexpectedly carries a byte range")
+            else:
+                require(request["status"] in (200, 206) and not matched, "Conditional HTTP status mismatch")
+                require(request["payloadBytes"] == request["endExclusive"] - request["start"] > 0, "HTTP response range mismatch")
+
+
+def validate_report(report, instrumented, suite="internals"):
     require(report.get("measurementComplete") is True and report.get("executionMode") == "dart-aot", "Incomplete AOT observation")
     require(report.get("instrumented") is instrumented and report.get("uiLatencyCollected") is False, "Wrong observation scope")
     rows = report.get("observations", [])
     require(rows and all(row.get("measurementComplete") is True for row in rows), "A scenario did not finish")
+    require(report.get("cleanupErrors") == [], "Native ownership did not close cleanly")
+    if suite == "http-revalidation":
+        require(report.get("suite") == suite, "Wrong observation suite")
+        validate_http_revalidation(rows)
+        return
     require({row["section"] for row in rows} == {"M01", "E10", "S02"}, "Missing assigned measurement section")
     require(any(r.get("workload") == "native-pdf-mixed" for r in rows), "No real native PDF scheduler workload")
     require(any(r.get("workload") == "overlapping-cache-reads" for r in rows), "No overlapping HTTP observation")
-    require(report.get("cleanupErrors") == [], "Native ownership did not close cleanly")
     if instrumented:
         sched = [r for r in rows if r.get("workload") == "worker-burst"]
         require(sched and all(r["metrics"]["worker"]["counters"].get("selections", 0) >= r["tasks"] for r in sched), "Missing scheduler counters")
@@ -204,6 +260,7 @@ def main():
     parser.add_argument("--font", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--engine-archive", type=Path)
+    parser.add_argument("--suite", choices=("internals", "http-revalidation"), default="internals")
     parser.add_argument("--allow-uncommitted-validation", action="store_true")
     args = parser.parse_args()
     require(os.environ.get("CI") == "true", "CI=true is required")
@@ -234,7 +291,7 @@ def main():
             "source": source, "sdk": sdk, "dartSha256": digest(args.dart), "pdfiumSha256": PDFIUM_SHA256,
             "packageConfigSha256": digest(config_path), "engineArchiveSha256": ENGINE_ARCHIVE_SHA256,
             "engineSource": "https://pub.dev/api/archives/pdfrx_engine-0.9.3.tar.gz", "archiveFiles": hashes,
-            "inputFiles": inputs, "runOrder": ["control", "instrumented", "instrumented", "control"],
+            "inputFiles": inputs, "suite": args.suite, "runOrder": ["control", "instrumented", "instrumented", "control"],
             "timingClaim": "Control timings only; instrumented timings include measurement overhead.",
             "osCacheCleared": False, "physicalDevice": False})
         variants = {}
@@ -252,12 +309,12 @@ def main():
             variant = variants[instrumented]
             destination = output / f"run-{index + 1}-{variant.name}"
             command = [variant / "probe", "--output", destination, "--pdfium", args.pdfium.resolve(), "--font", args.font.resolve(),
-                       "--http-pdf", args.http_pdf.resolve(), "--http-linearized", args.http_linearized.resolve()]
+                       "--http-pdf", args.http_pdf.resolve(), "--http-linearized", args.http_linearized.resolve(), "--suite", args.suite]
             for pdf in args.pdf:
                 command += ["--pdf", pdf.resolve()]
             run(command, root, output / f"run-{index + 1}.log", timeout=1500)
             report = json.loads((destination / "report.json").read_text())
-            validate_report(report, instrumented)
+            validate_report(report, instrumented, args.suite)
             cache_files = [p for p in (destination / "cache").rglob("*") if p.is_file()]
             runs.append({"index": index + 1, "variant": variant.name, "executableSha256": digest(variant / "probe"),
                          "reportSha256": digest(destination / "report.json"), "report": str(destination / "report.json"),
@@ -271,7 +328,9 @@ def main():
         require(all(digest(Path(name)) == info["sha256"] for name, info in inputs.items()), "Measured input changed")
         require(all(digest(root / name) == value for name, value in source.items()), "Harness source changed")
         write_json(output / "summary.json", {"measurementComplete": True, "runs": runs, "productImprovementClaim": False,
-                    "sectionsMeasured": ["M01 scheduler", "E10 HTTP cache", "S02 fonts"], "comparativeEvidence": not dirty})
+                    "suite": args.suite,
+                    "sectionsMeasured": ["E10 HTTP revalidation"] if args.suite == "http-revalidation" else ["M01 scheduler", "E10 HTTP cache", "S02 fonts"],
+                    "comparativeEvidence": not dirty})
     except Exception:
         write_json(output / "failure.json", {"measurementComplete": False, "error": traceback.format_exc()})
         raise

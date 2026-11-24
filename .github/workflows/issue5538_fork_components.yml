@@ -1,15 +1,6 @@
 name: PDF 5538 fork component measurements
 
 on:
-  push:
-    branches: [perf/5538-final-measurements-20261124]
-    paths:
-      - '.github/workflows/issue5538_fork_components.yml'
-      - 'tool/issue5538_ci/corpus_sources.json'
-      - 'tool/issue5538_ci/prepare_corpus.py'
-      - 'tool/issue5538_ci/prepare_native_inputs.py'
-      - 'tool/issue5538_ci/internal_*'
-      - 'tool/perf_probe/run_pdf_external_text_profile.*'
   workflow_dispatch:
 
 permissions:

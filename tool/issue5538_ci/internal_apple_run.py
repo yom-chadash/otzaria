@@ -12,6 +12,8 @@ import shutil
 import subprocess
 import traceback
 
+import internal_apple_trace
+
 
 UPSTREAM_SHA = "683df93e986af19bbcefd22606a417083116847b"
 FLUTTER_SHA = "ab2912035e160d9cad6306df307576da6128ebdb"
@@ -59,12 +61,14 @@ def main():
     parser.add_argument("--flutter", type=Path, required=True)
     parser.add_argument("--corpus-manifest", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--with-thread-trace", action="store_true",
+                        help="After the unprofiled ABBA runs, export separate Time Profiler stacks.")
     args = parser.parse_args()
     require(platform.system() == "Darwin" and os.environ.get("CI") == "true", "Apple producer needs macOS and CI=true")
     module = Path(__file__).resolve().parent
     repo = module.parents[1]
     output = args.output.resolve()
-    require(not output.exists(), "Apple output must be new")
+    require(not output.exists() and not output.is_relative_to(repo), "Apple output must be new and outside source")
     output.mkdir(parents=True)
     try:
         sdk = json.loads(run([args.flutter, "--version", "--machine"], repo, output / "flutter.json"))
@@ -129,6 +133,7 @@ dependencies:
                      *(app / "macos/Runner").glob("*.entitlements")]
         write_json(output / "provenance.json", {"sourceCommit": source, "sourceDirty": False,
             "upstreamCommit": UPSTREAM_SHA, "flutter": sdk, "bundleFiles": bundle_hashes,
+            "operatingSystem": platform.platform(), "architecture": platform.machine(),
             "upstreamLockSha256": digest(lock), "corpusManifestSha256": digest(args.corpus_manifest),
             "harnessFiles": {p.name: digest(p) for p in module.glob("internal_apple_*") if p.is_file()},
             "generatedOverrides": {str(p.relative_to(upstream)): digest(p) for p in generated},
@@ -160,6 +165,16 @@ dependencies:
         write_json(output / "summary.json", {"measurementComplete": True, "section": "E12", "runs": runs,
             "scope": "isolated upstream Apple backends on the same Flutter 3.50.0 binary",
             "otzariaAdoptionApproved": False, "physicalDevice": False})
+        if args.with_thread_trace:
+            internal_apple_trace.capture(executable=executable, app=app, output=output, documents=documents,
+                manifest=args.corpus_manifest, source_commit=source,
+                provenance_sha256=digest(output / "provenance.json"), run=run, validate=validate,
+                digest=digest, require=require, write_json=write_json)
+            require({str(p.relative_to(bundle)): digest(p) for p in bundle.rglob("*")
+                     if p.is_file() and not p.is_symlink()} == bundle_hashes,
+                    "Apple bundle changed during the separate profiler runs")
+        require(not run(["git", "status", "--porcelain", "--untracked-files=all"], repo,
+                        output / "source-status-after.log"), "Fork source changed during Apple measurement")
     except Exception:
         write_json(output / "failure.json", {"measurementComplete": False, "error": traceback.format_exc()})
         raise

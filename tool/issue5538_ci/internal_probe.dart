@@ -10,14 +10,16 @@ import 'package:pdfrx_engine/src/native/worker.dart';
 
 import 'internal_fonts.dart';
 import 'internal_http.dart';
+import 'internal_http_revalidation.dart';
 import 'internal_metrics_access.dart';
 
-typedef Observe = Future<void> Function(
-  String section,
-  String workload,
-  Map<String, Object?> configuration,
-  Future<Map<String, Object?>> Function() action,
-);
+typedef Observe =
+    Future<void> Function(
+      String section,
+      String workload,
+      Map<String, Object?> configuration,
+      Future<Map<String, Object?>> Function() action,
+    );
 
 Future<String> fileHash(File file) async =>
     (await sha256.bind(file.openRead()).single).toString();
@@ -39,6 +41,10 @@ Future<void> main(List<String> arguments) async {
         .add(arguments[i + 1]);
   }
   final output = Directory(options['output']!.single);
+  final suite = options['suite']?.single ?? 'internals';
+  if (suite != 'internals' && suite != 'http-revalidation') {
+    throw ArgumentError.value(suite, 'suite');
+  }
   if (output.existsSync() || Platform.environment['CI'] != 'true') {
     throw StateError('A new output directory and CI=true are required');
   }
@@ -90,16 +96,26 @@ Future<void> main(List<String> arguments) async {
     Pdfrx.decodeLegacyHebrewText = true;
     Pdfrx.cacheDirectoryPath = '${output.path}/cache';
     await pdfrxInitialize(tmpPath: Pdfrx.cacheDirectoryPath);
-    await schedulerObservations(options['pdf']!, observe);
-    await httpObservations(
-      File(options['http-pdf']!.single),
-      File(options['http-linearized']!.single),
-      observe,
-    );
-    await fontObservations(output, File(options['font']!.single), observe);
+    if (suite == 'http-revalidation') {
+      await httpRevalidationObservations(
+        output,
+        File(options['http-pdf']!.single),
+        File(options['http-linearized']!.single),
+        observe,
+      );
+    } else {
+      await schedulerObservations(options['pdf']!, observe);
+      await httpObservations(
+        File(options['http-pdf']!.single),
+        File(options['http-linearized']!.single),
+        observe,
+      );
+      await fontObservations(output, File(options['font']!.single), observe);
+    }
   } catch (error, stack) {
-    File('${output.path}/failure.json')
-        .writeAsStringSync(jsonEncode({'error': '$error', 'stack': '$stack'}));
+    File(
+      '${output.path}/failure.json',
+    ).writeAsStringSync(jsonEncode({'error': '$error', 'stack': '$stack'}));
     rethrow;
   } finally {
     try {
@@ -110,6 +126,7 @@ Future<void> main(List<String> arguments) async {
   }
   final report = <String, Object?>{
     'protocolVersion': 1,
+    'suite': suite,
     'measurementComplete': cleanupErrors.isEmpty,
     'executionMode': const String.fromEnvironment('INTERNAL_MODE'),
     'instrumented': const bool.fromEnvironment('INTERNAL_INSTRUMENTED'),
@@ -175,7 +192,8 @@ Future<void> schedulerObservations(List<String> pdfs, Observe observe) async {
           'pdfSha256': await fileHash(file),
           'fileBytes': file.lengthSync(),
           'warmProcessPass': pass,
-          'pdfWorkload': 'concurrent extraction, low-priority raster, visible raster, canceled raster',
+          'pdfWorkload':
+              'concurrent extraction, low-priority raster, visible raster, canceled raster',
         },
         () async {
           final document = await PdfDocument.openFile(path);

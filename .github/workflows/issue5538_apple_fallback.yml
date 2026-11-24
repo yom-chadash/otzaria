@@ -1,0 +1,188 @@
+name: PDF 5538 remaining Apple measurements on Intel
+'on':
+  push:
+    branches:
+    - perf/5538-final-measurements-20261124
+    paths:
+    - .github/workflows/issue5538_apple_fallback.yml
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: pdf-5538-apple-fallback-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  CI: 'true'
+  FLUTTER_SUPPRESS_ANALYTICS: 'true'
+  DART_SUPPRESS_ANALYTICS: 'true'
+  PYTHONUNBUFFERED: '1'
+  PYTHONDONTWRITEBYTECODE: '1'
+jobs:
+  release:
+    name: macOS Intel / release / balanced real corpus
+    if: github.repository == 'yom-chadash/otzaria'
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+        - name: macos
+          runner: macos-15-intel
+          container: ''
+        mode:
+        - release
+    runs-on: ${{ matrix.platform.runner }}
+    container: ${{ matrix.platform.container }}
+    timeout-minutes: 300
+    defaults:
+      run:
+        shell: bash
+    env:
+      CARGO_NET_GIT_FETCH_WITH_CLI: 'true'
+      CARGO_BUILD_JOBS: '2'
+      CAMPAIGN_MODE: ${{ matrix.mode }}
+    steps:
+    - name: Prepare the supported Linux build container
+      if: matrix.platform.name == 'linux'
+      run: "set -euo pipefail\napt-get update -y\napt-get install -y ca-certificates curl git jq unzip xz-utils zstd python3\
+        \ nodejs \\\n  build-essential clang-14 cmake libblkid1 libcurl4-openssl-dev libglib2.0-dev \\\n  libgtk-3-dev liblzma5\
+        \ liblzma-dev libsecret-1-dev libsoup-3.0-dev \\\n  libwebkit2gtk-4.1-dev libxkbcommon-dev ninja-build openjdk-17-jdk-headless\
+        \ \\\n  pkg-config xvfb xauth binutils dbus dbus-x11 openbox wmctrl x11-utils \\\n  x11-xserver-utils libgl1-mesa-dri\
+        \ libegl1 libglx-mesa0 mesa-utils\nupdate-alternatives --install /usr/bin/clang clang /usr/bin/clang-14 100\nupdate-alternatives\
+        \ --install /usr/bin/clang++ clang++ /usr/bin/clang++-14 100\ngit config --global --add safe.directory '*'\n{\n  echo\
+        \ \"RUSTUP_HOME=$RUNNER_TEMP/pdf-5538-rustup\"\n  echo \"CARGO_HOME=$RUNNER_TEMP/pdf-5538-cargo\"\n  echo 'JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64'\n\
+        \  echo 'WPE_SDK=/opt/wpe-sdk'\n  echo 'PKG_CONFIG_PATH=/opt/wpe-sdk/lib/pkgconfig'\n  echo 'LD_LIBRARY_PATH=/opt/wpe-sdk/lib'\n\
+        \  echo 'LIBRARY_PATH=/opt/wpe-sdk/lib'\n  echo 'CC=clang'\n  echo 'CXX=clang++'\n  echo 'CFLAGS=-Wno-error=unknown-warning-option'\n\
+        \  echo 'CXXFLAGS=-Wno-error=unknown-warning-option'\n  echo 'LIBGL_ALWAYS_SOFTWARE=1'\n} >> \"$GITHUB_ENV\"\n"
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: 'false'
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        flutter-version: 3.47.7
+        cache: 'false'
+    - uses: dtolnay/rust-toolchain@stable
+    - uses: actions/setup-python@v7.1.0
+      if: matrix.platform.name == 'macos'
+      with:
+        python-version: '3.15'
+    - uses: actions/download-artifact@v8.0.2
+      with:
+        name: pdf-5538-pinned-corpus
+        path: ${{ runner.temp }}/pdf-5538-inputs
+        run-id: 45392015952
+        repository: yom-chadash/otzaria
+        github-token: ${{ github.token }}
+    - name: Install the pinned Linux WPE runtime
+      if: matrix.platform.name == 'linux'
+      env:
+        WPE_RUNTIME_SHA256: ca7e706c0ec2f66623fede2c369e3e13339448843e125f2ccd1553f4a3c4bcaf
+      run: 'set -euo pipefail
+
+        echo "$CARGO_HOME/bin" >> "$GITHUB_PATH"
+
+        asset=wpe-runtime-2.48.7-linux-x86_64.tar.zst
+
+        base=https://github.com/Otzaria/otzaria-wpe-runtime/releases/download/wpe-2.48.7-print-to-pdf
+
+        curl -fSL --retry 3 --retry-delay 5 --max-time 300 -o "$RUNNER_TEMP/$asset" "$base/$asset"
+
+        printf ''%s  %s\n'' "$WPE_RUNTIME_SHA256" "$RUNNER_TEMP/$asset" | sha256sum -c -
+
+        tar -C /opt -I zstd -xf "$RUNNER_TEMP/$asset"
+
+        pkg-config --print-errors --exists wpe-webkit-2.0 wpe-platform-2.0 wpe-platform-headless-2.0 wpe-1.0
+
+        '
+    - name: Fetch immutable sources and measure on this host
+      run: "set -euo pipefail\nplan=\"tool/issue5538_ci/campaign_plan.$CAMPAIGN_MODE.json\"\npython3 tool/issue5538_ci/prepare_campaign.py\
+        \ --plan \"$plan\"\narguments=(tool/issue5538_ci/run_campaign.py --plan \"$plan\"\n  --corpus \"$RUNNER_TEMP/pdf-5538-inputs/pdf-5538-corpus/cases\"\
+        \n  --output \"$RUNNER_TEMP/pdf-5538-campaign\" --mode \"$CAMPAIGN_MODE\")\nif [ \"$RUNNER_OS\" = Linux ]; then\n\
+        \  arguments+=(--display-mode xvfb)\n  mkdir -p \"$RUNNER_TEMP/pdf-5538-session/runtime\"\n  chmod 700 \"$RUNNER_TEMP/pdf-5538-session/runtime\"\
+        \n  export XDG_RUNTIME_DIR=\"$RUNNER_TEMP/pdf-5538-session/runtime\"\n  export XDG_SESSION_TYPE=x11 GDK_BACKEND=x11\n\
+        \  xvfb-run --auto-servernum --error-file=\"$RUNNER_TEMP/pdf-5538-session/xvfb.log\" \\\n    --server-args='-screen\
+        \ 0 1440x1000x24 -dpi 96 -nolisten tcp' \\\n    dbus-run-session -- bash -s -- \"${arguments[@]}\" <<'SESSION'\nset\
+        \ -euo pipefail\nopenbox --sm-disable > \"$RUNNER_TEMP/pdf-5538-session/openbox.log\" 2>&1 &\nwm=$!\ntrap 'kill \"\
+        $wm\" 2>/dev/null || true; wait \"$wm\" 2>/dev/null || true' EXIT\nready=0\nfor attempt in {1..100}; do\n  if wmctrl\
+        \ -m > \"$RUNNER_TEMP/pdf-5538-session/window-manager.txt\" 2>&1 &&\n     grep -q 'Name: Openbox' \"$RUNNER_TEMP/pdf-5538-session/window-manager.txt\"\
+        ; then\n    ready=1\n    break\n  fi\n  kill -0 \"$wm\"\n  sleep 0.1\ndone\ntest \"$ready\" = 1\nxdpyinfo > \"$RUNNER_TEMP/pdf-5538-session/display.txt\"\
+        \npython3 -B \"$@\"\nSESSION\nelse\n  python3 -B \"${arguments[@]}\"\nfi\n"
+    - name: Locate evidence inside the active runner environment
+      if: always()
+      id: evidence-root
+      run: echo "root=$RUNNER_TEMP" >> "$GITHUB_OUTPUT"
+    - name: Preserve complete and partial evidence
+      if: always()
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: pdf-5538-${{ matrix.platform.name }}-${{ matrix.mode }}-intel
+        retention-days: 90
+        if-no-files-found: warn
+        path: '${{ steps.evidence-root.outputs.root }}/pdf-5538-campaign/**/*.json
+
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-campaign/**/*.jsonl
+
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-campaign/**/*.csv
+
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-campaign/**/*.log
+
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-campaign/**/*.md
+
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-session/**
+
+          '
+  ios:
+    name: iOS Simulator on Intel / large real PDF through Files
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: macos-15-intel
+    timeout-minutes: 100
+    env:
+      CARGO_NET_GIT_FETCH_WITH_CLI: 'true'
+      GH_TOKEN: ${{ github.token }}
+    steps:
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: 'false'
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        flutter-version: 3.47.7
+        cache: 'false'
+    - uses: dtolnay/rust-toolchain@stable
+      with:
+        targets: aarch64-apple-ios-sim,x86_64-apple-ios
+    - uses: actions/download-artifact@v8.0.2
+      with:
+        name: pdf-5538-pinned-corpus
+        path: ${{ runner.temp }}/pdf-5538-inputs
+        run-id: 45392015952
+        repository: yom-chadash/otzaria
+        github-token: ${{ github.token }}
+    - name: Build the actual Runner and exercise real Files
+      run: "python3 tool/issue5538_ci/run_large_ios_export.py \\\n  --root \"$RUNNER_TEMP/pdf-5538-large-ios\" --source \"\
+        $GITHUB_WORKSPACE\" --commit \"$GITHUB_SHA\" \\\n  --input \"$RUNNER_TEMP/pdf-5538-inputs/pdf-5538-corpus/mikraot-gedolot-genesis-1859.pdf\"\
+        \ \\\n  --input-sha256 92a145512e33c4a3c8f1b1c92d2d79c4db91a49cc921a316201be81bfa85040d\n"
+    - name: Cleanup only the Simulator owned by this run
+      if: always()
+      run: python3 tool/issue5538_ci/run_large_ios_export.py --root "$RUNNER_TEMP/pdf-5538-large-ios" --cleanup-only
+    - name: Preserve complete and partial observations
+      if: always()
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: pdf-5538-large-ios-intel
+        retention-days: 90
+        if-no-files-found: warn
+        path: '${{ runner.temp }}/pdf-5538-large-ios/*.json
+
+          ${{ runner.temp }}/pdf-5538-large-ios/*.txt
+
+          ${{ runner.temp }}/pdf-5538-large-ios/*.diff
+
+          ${{ runner.temp }}/pdf-5538-large-ios/*.log
+
+          ${{ runner.temp }}/pdf-5538-large-ios/probe/
+
+          ${{ runner.temp }}/pdf-5538-large-ios/native.xcresult/
+
+          '

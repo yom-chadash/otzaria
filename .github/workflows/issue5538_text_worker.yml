@@ -1,0 +1,95 @@
+name: PDF 5538 text worker decomposition in fork
+'on':
+  push:
+    branches:
+    - perf/5538-final-measurements-20261124
+    paths:
+    - .github/workflows/issue5538_text_worker.yml
+    - tool/issue5538_ci/internal_text_access.dart
+    - tool/issue5538_ci/internal_text_metrics.dart
+    - tool/issue5538_ci/internal_text_probe.dart
+    - tool/issue5538_ci/internal_text_run.py
+    - tool/issue5538_ci/internal_text_run_test.py
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: pdf-5538-text-worker-${{ github.ref }}-${{ github.sha }}
+  cancel-in-progress: false
+env:
+  CI: 'true'
+  FLUTTER_SUPPRESS_ANALYTICS: 'true'
+  DART_SUPPRESS_ANALYTICS: 'true'
+  PYTHONUNBUFFERED: '1'
+  PYTHONDONTWRITEBYTECODE: '1'
+jobs:
+  worker:
+    name: AOT worker raw text, normalization and residual / ${{ matrix.document }}
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - document: uxlc-genesis
+        - document: mikraot-gedolot-genesis-1859
+    steps:
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: false
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        flutter-version: 3.47.7
+        cache: true
+    - uses: actions/download-artifact@v8.0.2
+      with:
+        name: pdf-5538-component-corpus
+        path: ${{ runner.temp }}/pdf-5538-inputs
+        run-id: 45389994425
+        repository: yom-chadash/otzaria
+        github-token: ${{ github.token }}
+    - name: Verify SDK, locked dependencies and the native producer
+      shell: bash
+      run: |
+        set -euo pipefail
+        sudo apt-get update -y
+        sudo apt-get install -y poppler-utils
+        flutter pub get --enforce-lockfile
+        python3 tool/issue5538_ci/prepare_native_inputs.py --output "$RUNNER_TEMP/pdf-5538-native"
+    - name: Measure real worker phases and verify every text character and rectangle
+      shell: bash
+      env:
+        DOCUMENT: ${{ matrix.document }}
+      run: |
+        set -euo pipefail
+        python3 -B - <<'PYCODE'
+        import json, os, pathlib, subprocess
+        root = pathlib.Path(os.environ['RUNNER_TEMP'])
+        corpus = root / 'pdf-5538-inputs/pdf-5538-corpus'
+        manifest = json.loads((corpus / 'corpus.json').read_text())
+        if manifest['status'] != 'passed':
+            raise SystemExit('Incomplete corpus preparation')
+        document = next(item for item in manifest['documents'] if item['id'] == os.environ['DOCUMENT'])
+        subprocess.run([
+            'python3', 'tool/issue5538_ci/internal_text_run.py',
+            '--dart', str(pathlib.Path(os.environ['FLUTTER_ROOT']) / 'bin/cache/dart-sdk/bin/dart'),
+            '--pdfium', str(root / 'pdf-5538-native/libpdfium.so'),
+            '--flutter-json', str(root / 'pdf-5538-native/flutter.json'),
+            '--pdf', str(corpus / document['path']), '--document', document['id'],
+            '--output', str(root / 'pdf-5538-text-worker'),
+        ], check=True)
+        PYCODE
+    - name: Preserve raw native observations and partial failures
+      if: always()
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: pdf-5538-text-worker-${{ matrix.document }}
+        retention-days: 90
+        if-no-files-found: warn
+        path: |
+          ${{ runner.temp }}/pdf-5538-native/flutter.json
+          ${{ runner.temp }}/pdf-5538-native/producer.json
+          ${{ runner.temp }}/pdf-5538-text-worker/**

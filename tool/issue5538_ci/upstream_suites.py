@@ -35,6 +35,22 @@ def dart_execution(text):
             'skipped': len(skipped), 'skippedTests': skipped, 'failedTests': failed}
 
 
+def viewer_pdfium(source, system=None):
+    """Reuse the actual native-test module for upstream's explicit PDFIUM_PATH gate."""
+    name = {'Linux': 'libpdfium.so', 'Darwin': 'libpdfium.dylib',
+            'Windows': 'pdfium.dll'}[system or platform.system()]
+    candidates = sorted(p for p in (source / '.dart_tool/hooks_runner/shared/pdfium_dart/build').rglob(name)
+                        if p.is_file() and not p.is_symlink())
+    upstream.require(candidates, 'Native suite did not provide the PDFium required by lazy_loading_test.dart')
+    hashes = {upstream.digest(p) for p in candidates}
+    upstream.require(len(hashes) == 1 and all(p.stat().st_size > 0 for p in candidates),
+                     'Native suite produced ambiguous or empty PDFium modules')
+    path = candidates[0].resolve()
+    return path, {'path': str(path.relative_to(source.resolve())),
+                  'sha256': upstream.digest(path), 'bytes': path.stat().st_size,
+                  'reason': 'Run all six upstream lazy-loading/network tests gated by PDFIUM_PATH.'}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--flutter', type=Path, required=True)
@@ -68,6 +84,9 @@ def main():
                                          root, output / 'fork-status.log'), 'Fork source is dirty')
         source.mkdir()
         upstream.run(['git', 'init'], source, output / 'git-init.log')
+        # The immutable-source receipt compares file bytes with git-show on every OS.
+        upstream.run(['git', 'config', '--local', 'core.autocrlf', 'false'],
+                     source, output / 'git-line-endings.log')
         upstream.run(['git', 'remote', 'add', 'origin', 'https://github.com/espresso3389/pdfrx.git'],
                      source, output / 'git-remote.log')
         upstream.run(['git', 'fetch', '--depth=1', 'origin', upstream.UPSTREAM_SHA], source, output / 'git-fetch.log')
@@ -118,8 +137,16 @@ def main():
         for name, (directory, command) in groups.items():
             log = output / (name + ('.tap' if name == 'node' else '.jsonl'))
             try:
+                environment = {'CHROME_EXECUTABLE': str(args.chrome)} if args.chrome else {}
+                if name == 'viewer':
+                    pdfium, identity = viewer_pdfium(source)
+                    upstream.write_json(output / 'viewer-pdfium.json', identity)
+                    environment['PDFIUM_PATH'] = str(pdfium)
                 text = upstream.run(command, directory, log, timeout=1800,
-                                    extra_env={'CHROME_EXECUTABLE': str(args.chrome)} if args.chrome else {})
+                                    extra_env=environment)
+                if name == 'viewer':
+                    upstream.require(upstream.digest(pdfium) == identity['sha256'],
+                                     'Viewer PDFium module changed during the suite')
                 receipts[name] = upstream.node_test_receipt(text) if name == 'node' else upstream.json_test_receipt(text)
                 receipts[name]['status'] = 'passed'
             except Exception as error:
