@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "baseline": "c5496bdd7f8af840626432fc81eb7e995a3285e5",
-  "candidate": "2191750b23ea6b8a5c95530639312a2f86ecd44c",
+  "baseline": "6ada2838b7041f770d874959f874a200f3f19aa6",
+  "candidate": "bae04dfe63eb33076161af3e48e7274cd5857cc1",
   "launchesPerBlock": 3,
   "repetitions": 5,
   "cacheStates": [
@@ -9,8 +9,7 @@
     "warm"
   ],
   "scenarios": [
-    "pdf-reader",
-    "pdf-book-view"
+    "pdf-reader"
   ],
   "cases": [
     "uxlc-genesis",

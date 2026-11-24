@@ -18,7 +18,12 @@ def main():
     for role in ("baseline", "candidate"):
         subprocess.run(["git", "fetch", "--no-tags", "https://github.com/yom-chadash/otzaria.git", plan[role]],
                        cwd=ROOT, check=True)
-    pair.verify_sources(ROOT, {role: plan[role] for role in ("baseline", "candidate")})
+    identities = pair.verify_sources(ROOT, {role: plan[role] for role in ("baseline", "candidate")})
+    orchestrator_commit = pair.git(ROOT, "rev-parse", "HEAD")
+    pair.verify_checkout(ROOT, orchestrator_commit)
+    if (pair.source_identity(ROOT, orchestrator_commit)["harnessObjects"] !=
+            identities["sources"]["baseline"]["harnessObjects"]):
+        raise ValueError("The orchestrator must use the same verified harness as the measured sources.")
     conditions = len(plan["cases"]) * len(plan["cacheStates"]) * len(plan["scenarios"])
     launches = conditions * 2 * 2 * plan["launchesPerBlock"]
     print(f"Verified {conditions} conditions, {launches} measured process launches, "

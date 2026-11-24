@@ -1,4 +1,4 @@
-name: PDF 5538 immutable build reuse corpus campaign in fork
+name: PDF 5538 immutable continuous reader corpus campaign in fork
 'on':
   push:
     branches:
@@ -41,6 +41,11 @@ jobs:
     - uses: actions/setup-python@v7.1.0
       with:
         python-version: '3.13'
+    - name: Verify both frozen source pairs and the orchestrator before native builds
+      shell: bash
+      run: |
+        python -B tool/issue5538_ci/prepare_campaign.py --plan tool/issue5538_ci/campaign_plan.profile.json
+        python -B tool/issue5538_ci/prepare_campaign.py --plan tool/issue5538_ci/campaign_plan.release.json
     - name: Immutable receipt and native orchestration contracts
       run: |
         python -B -m unittest discover -s tool/perf_probe -p 'test_build_receipt.py'
@@ -65,7 +70,7 @@ jobs:
           if ($parseErrors.Count) { throw ($parseErrors | Out-String) }
         }
   windows:
-    name: Windows x64 / ${{ matrix.mode }} / frozen AOT corpus
+    name: Windows x64 / ${{ matrix.mode }} / continuous reader / frozen AOT corpus
     needs: contracts
     if: github.repository == 'yom-chadash/otzaria'
     strategy:
@@ -136,7 +141,7 @@ jobs:
           ${{ runner.temp }}/pdf-5538-campaign/**/*.log
           ${{ runner.temp }}/pdf-5538-campaign/**/*.md
   posix:
-    name: ${{ matrix.platform.name }} ${{ matrix.platform.arch }} / ${{ matrix.mode }} / frozen AOT corpus
+    name: ${{ matrix.platform.name }} ${{ matrix.platform.arch }} / ${{ matrix.mode }} / continuous reader / frozen AOT corpus
     needs: contracts
     if: github.repository == 'yom-chadash/otzaria'
     strategy:
