@@ -29,14 +29,14 @@ class PdfFontFallback {
     PdfPasswordProvider? passwordProvider,
     bool useProgressiveLoading = false,
   }) async {
-    final opened = await _openWithFonts(
+    final opened = (await _openWithFonts(
       _PdfFileOpener(
         filePath,
         passwordProvider: passwordProvider,
         useProgressiveLoading: useProgressiveLoading,
       ),
       <PdfFontQueryKey>{},
-    );
+    ))!;
     await opened.recovery.dispose();
     return opened.document;
   }
@@ -55,7 +55,7 @@ class PdfFontFallback {
     final recovered = <PdfFontQueryKey>{};
     return PdfFontFallbackReader._(
       opener,
-      await _openWithFonts(opener, recovered),
+      (await _openWithFonts(opener, recovered))!,
       recovered,
     );
   }
@@ -75,31 +75,46 @@ class PdfFontFallback {
     );
   }
 
-  static Future<_OpenedPdf> _openWithFonts(
+  static Future<_OpenedPdf?> _openWithFonts(
     _PdfFileOpener opener,
-    Set<PdfFontQueryKey> recovered,
-  ) async {
+    Set<PdfFontQueryKey> recovered, {
+    Completer<void>? cancellation,
+  }) async {
     while (true) {
+      if (cancellation?.isCompleted ?? false) return null;
       final document = await opener.open();
+      if (cancellation?.isCompleted ?? false) {
+        await document.dispose();
+        return null;
+      }
       final recovery = PdfDocumentFontRecovery(
         document,
         fontManager: _manager,
         recoveredQueries: recovered,
       );
+      var delivered = false;
       try {
-        await recovery.waitForPendingLoads();
+        if (cancellation == null) {
+          await recovery.waitForPendingLoads();
+        } else {
+          await Future.any([
+            recovery.waitForPendingLoads(),
+            cancellation.future,
+          ]);
+        }
+        if (cancellation?.isCompleted ?? false) return null;
         if (recovery.availableQueries.isEmpty) {
+          delivered = true;
           return (document: document, recovery: recovery);
         }
         recovered.addAll(recovery.availableQueries);
-      } catch (_) {
-        await recovery.dispose();
-        await document.dispose();
-        rethrow;
+      } finally {
+        if (!delivered) {
+          await recovery.dispose();
+          // open/native של המסמך הסתיימו; resolver אטי אינו מחזיק אותו.
+          await document.dispose();
+        }
       }
-      await recovery.dispose();
-      // אין פעולת native של הצרכן לפני מסירת המסמך; סוגרים לפני reopen.
-      await document.dispose();
     }
   }
 
@@ -214,6 +229,7 @@ class PdfFontFallbackReader {
   final _PdfFileOpener _opener;
   _OpenedPdf _opened;
   final Set<PdfFontQueryKey> _recovered;
+  final _cancellation = Completer<void>();
   Future<void> _tail = Future<void>.value();
   Future<void>? _disposeFuture;
   bool _closed = false;
@@ -238,7 +254,12 @@ class PdfFontFallbackReader {
           final replacement = await PdfFontFallback._openWithFonts(
             _opener,
             recovered,
+            cancellation: _cancellation,
           );
+          if (replacement == null) {
+            completer.complete(result);
+            return;
+          }
           if (_closed) {
             await replacement.recovery.dispose();
             await replacement.document.dispose();
@@ -262,6 +283,7 @@ class PdfFontFallbackReader {
 
   Future<void> dispose() {
     _closed = true;
+    if (!_cancellation.isCompleted) _cancellation.complete();
     return _disposeFuture ??= () async {
       await _opened.recovery.dispose();
       // יכול להיקרא אחרי timeout כש-read עוד ב-native. אין סגירה תחתיו.

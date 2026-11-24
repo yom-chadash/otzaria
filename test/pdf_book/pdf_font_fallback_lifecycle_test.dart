@@ -55,6 +55,7 @@ class _Backend extends Fake implements PdfrxEntryFunctions {
   final registered = <String>[];
   final gates = <String, Completer<void>>{};
   final initial = <String, List<PdfFontQuery>>{};
+  final initialByAttempt = <String, Map<int, List<PdfFontQuery>>>{};
   final encrypted = <String>{};
   final failOpen = <String, Set<int>>{};
   int fontReloads = 0;
@@ -112,7 +113,8 @@ class _Backend extends Fake implements PdfrxEntryFunctions {
     final document = _Document(
       path,
       isEncrypted: encrypted.contains(path),
-      initial: attempt == 1 ? initial[path] ?? const [] : const [],
+      initial: initialByAttempt[path]?[attempt] ??
+          (attempt == 1 ? initial[path] ?? const [] : const []),
     );
     documents.add(document);
     return document;
@@ -336,5 +338,39 @@ void main() {
     expect(old.disposals, 0);
     expect(await reader.read(read), 'after');
     expect(old.disposals, 1);
+  });
+
+  test('סגירה מבטלת גם resolver אטי במסמך replacement שטרם נמסר', () async {
+    final reader = await PdfFontFallback.openReader('replacement-close.pdf');
+    readers.add(reader);
+    final old = reader.document as _Document;
+    final firstQuery = _font('OtzariaLifecycleReplacementFirst');
+    final nextQuery = _font('OtzariaLifecycleReplacementSlow');
+    final gate = Completer<void>();
+    backend
+      ..initialByAttempt['replacement-close.pdf'] = {2: [nextQuery]}
+      ..gates[nextQuery.face] = gate;
+    final result = reader.read((document) async {
+      if (identical(document, old)) old.missing(firstQuery);
+      return identical(document, old) ? 'before-cancellation' : 'replacement';
+    });
+    try {
+      await _until(() => backend.registered.contains(nextQuery.face));
+      final replacement = backend.opened['replacement-close.pdf']![1];
+      expect(old.disposals, 0);
+      expect(replacement.disposals, 0);
+
+      // No native read is pending now: only the new document's resolver is.
+      await reader.dispose().timeout(const Duration(seconds: 3));
+      expect(gate.isCompleted, isFalse);
+      expect(await result, 'before-cancellation');
+      expect(old.disposals, 1);
+      expect(replacement.disposals, 1);
+      expect(replacement.controller.hasListener, isFalse);
+      expect(backend.opened['replacement-close.pdf'], hasLength(2));
+    } finally {
+      gate.complete();
+      await _until(() => backend.fontReloads == 2);
+    }
   });
 }
