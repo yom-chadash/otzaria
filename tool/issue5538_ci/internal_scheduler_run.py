@@ -195,7 +195,7 @@ def main():
                       "platform": platform.platform(), "processors": os.cpu_count(),
                       "runId": os.environ.get("GITHUB_RUN_ID"), "job": os.environ.get("GITHUB_JOB"),
                       "fixtureOrigin": "espresso3389/pdfrx#880 at 7aa9ed50d1453c3c43ba349ffe41ee1f9eace642",
-                      "fixtureSourceSha256": common.digest(module / "internal_scheduler_benchmark.dart"),
+                      "fixtureSourceSha256": common.digest(module / "internal_scheduler_benchmark.dart.template"),
                       "harness": {p.name: common.digest(p) for p in
                                   [Path(__file__), module / "internal_scheduler_scan.py",
                                    module / "internal_upstream_run.py"]},
@@ -229,7 +229,7 @@ def main():
             temporary.mkdir(parents=True)
             entry = temporary / "benchmark.dart"
             test = temporary / "background_worker_cancellation_queue_test.dart"
-            shutil.copyfile(module / "internal_scheduler_benchmark.dart", entry)
+            shutil.copyfile(module / "internal_scheduler_benchmark.dart.template", entry)
             shutil.copyfile(regression, test)
             common.run([dart, "analyze", entry, test], package, receipt / "analyze.log")
             test_log = common.run([dart, "test", "--concurrency=1", "--reporter=json",

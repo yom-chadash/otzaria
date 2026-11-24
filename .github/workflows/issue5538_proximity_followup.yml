@@ -5,6 +5,11 @@ name: PDF 5538 actual Proximity product path in fork
     - perf/5538-final-measurements-20261124
     paths:
     - .github/workflows/issue5538_proximity_followup.yml
+    - tool/issue5538_ci/proximity_pair.json
+    - tool/perf_probe/*highlight*
+    - tool/perf_probe/*proximity*
+    - integration_test/pdf_highlight_profile_test.dart
+    - integration_test/support/pdf_proximity_profile_queries.dart
   workflow_dispatch: null
 permissions:
   contents: read
