@@ -74,7 +74,8 @@ def native_threads(path, expected_process, backend):
 
 
 def capture(*, executable, app, output, documents, manifest, source_commit,
-            provenance_sha256, run, validate, digest, require, write_json):
+            provenance_sha256, run, validate, digest, require, write_json,
+            selected_documents=None, selected_backends=None):
     traces = output / 'traces'
     traces.mkdir()
     executable_sha = digest(executable)
@@ -85,13 +86,19 @@ def capture(*, executable, app, output, documents, manifest, source_commit,
             'Installed xctrace does not support the required noninteractive launch contract')
     templates = run(['xcrun', 'xctrace', 'list', 'templates'], app, traces / 'templates.log', timeout=60)
     require('Time Profiler' in templates, 'Time Profiler is unavailable on this runner')
-    selected = [d for d in documents if d['id'] in ('uxlc-genesis', 'mikraot-gedolot-genesis-1859')]
-    require(len(selected) == 2, 'Missing real text and scan/OCR corpus for the thread trace')
+    wanted = tuple(selected_documents or ('uxlc-genesis', 'mikraot-gedolot-genesis-1859'))
+    backends = tuple(selected_backends or ('pdfium', 'coregraphics'))
+    require(len(set(wanted)) == len(wanted) and set(wanted) <= {'uxlc-genesis', 'mikraot-gedolot-genesis-1859'},
+            'Unsupported trace document selection')
+    require(len(set(backends)) == len(backends) and set(backends) <= {'pdfium', 'coregraphics'},
+            'Unsupported trace backend selection')
+    selected = [d for d in documents if d['id'] in wanted]
+    require({d['id'] for d in selected} == set(wanted), 'Missing real text and scan/OCR corpus for the thread trace')
     results = []
     for document in selected:
         input_path = (manifest.parent / document['path']).resolve()
         require(digest(input_path) == document['sha256'], 'Trace corpus identity changed')
-        for backend in ('pdfium', 'coregraphics'):
+        for backend in backends:
             label = f"{document['id']}-{backend}"
             trace_path = traces / f'{label}.trace'
             config = {'backend': backend, 'workload': 'file', 'input': str(input_path),
@@ -146,6 +153,7 @@ def capture(*, executable, app, output, documents, manifest, source_commit,
             require(sum(e['threadSamples'] for e in exports) > 0, 'No resolved thread/stack samples were exported')
     require(digest(executable) == executable_sha, 'Executable changed between traces')
     summary = {'complete': True, 'sourceCommit': source_commit, 'baselineProvenanceSha256': provenance_sha256,
+               'declaredDocuments': list(wanted), 'declaredBackends': list(backends),
                'executableSha256': executable_sha, 'xctraceVersion': version.strip(), 'traceRuns': results,
                'workloadsComplete': all(r['workloadComplete'] for r in results),
                'phaseDiagnosticIoEnabled': True,

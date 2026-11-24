@@ -121,14 +121,16 @@ def apply_swift_initializer_compatibility(upstream, output):
     return receipt
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--flutter", type=Path, required=True)
     parser.add_argument("--corpus-manifest", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--with-thread-trace", action="store_true",
                         help="After the unprofiled ABBA runs, export separate Time Profiler stacks.")
-    args = parser.parse_args()
+    parser.add_argument("--prepare-only", action="store_true",
+                        help="Build the pinned binary and retain it for verified fork-only measurement jobs.")
+    args = parser.parse_args(argv)
     require(platform.system() == "Darwin" and os.environ.get("CI") == "true", "Apple producer needs macOS and CI=true")
     require(all(hasattr(os, name) for name in ("waitid", "P_PID", "WEXITED", "WNOHANG", "WNOWAIT", "CLD_EXITED")),
             "This macOS Python lacks waitable-child process-group ownership support")
@@ -137,6 +139,7 @@ def main():
     output = args.output.resolve()
     require(not output.exists() and not output.is_relative_to(repo), "Apple output must be new and outside source")
     output.mkdir(parents=True)
+    prepared = False
     try:
         sdk = json.loads(run([args.flutter, "--version", "--machine"], repo, output / "flutter.json"))
         require(sdk.get("frameworkVersion") == "3.50.0" and sdk.get("frameworkRevision") == FLUTTER_SHA
@@ -214,6 +217,16 @@ dependencies:
             "generatedOverrides": {str(p.relative_to(upstream)): digest(p) for p in generated},
             "productionSdkChanged": False, "otzariaPerformanceComparison": False,
             "runOrder": ["pdfium", "coregraphics", "coregraphics", "pdfium"]})
+        if args.prepare_only:
+            require(not run(["git", "status", "--porcelain", "--untracked-files=all"], repo,
+                            output / "source-status-prepared.log"), "Fork source changed during Apple preparation")
+            write_json(output / "prepared-context.json", {
+                "bundle": str(bundle.relative_to(output)), "executable": str(executable.relative_to(bundle)),
+                "provenanceSha256": digest(output / "provenance.json"),
+                "measurementComplete": False, "measurementProcesses": 0,
+            })
+            prepared = True
+            return
         runs = []
         baseline_error = None
         try:
@@ -276,7 +289,7 @@ dependencies:
         write_json(output / "failure.json", {"measurementComplete": False, "error": traceback.format_exc()})
         raise
     finally:
-        if (output / "upstream").exists():
+        if (output / "upstream").exists() and not prepared:
             shutil.rmtree(output / "upstream")
 
 

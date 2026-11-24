@@ -5,10 +5,11 @@ on:
     paths:
       - '.github/workflows/issue5538_apple_trace.yml'
       - 'tool/issue5538_ci/internal_apple_*'
+      - 'tool/issue5538_ci/test_internal_apple_*'
   workflow_dispatch:
     inputs:
       runner:
-        description: 'Intel is a separate CI baseline; ARM64 can run when hosted capacity is available.'
+        description: 'Intel is a separate CI baseline; ARM64 needs hosted capacity.'
         type: choice
         default: macos-15-intel
         options: [macos-15-intel, macos-latest]
@@ -16,7 +17,7 @@ permissions:
   contents: read
   actions: read
 concurrency:
-  group: pdf-5538-apple-trace-${{ github.ref }}-${{ inputs.runner || 'macos-15-intel' }}
+  group: pdf-5538-apple-shards-${{ github.sha }}-${{ inputs.runner || 'macos-15-intel' }}
   cancel-in-progress: false
 env:
   CI: 'true'
@@ -25,11 +26,14 @@ env:
   FLUTTER_SUPPRESS_ANALYTICS: 'true'
   DART_SUPPRESS_ANALYTICS: 'true'
 jobs:
-  apple:
-    name: Same binary ABBA then separate native thread samples
+  prepare:
+    name: Freeze one experimental binary and its transport identity
     if: github.repository == 'yom-chadash/otzaria'
     runs-on: ${{ inputs.runner || 'macos-15-intel' }}
-    timeout-minutes: 90
+    timeout-minutes: 70
+    outputs:
+      transport_sha256: ${{ steps.prepare.outputs.transport_sha256 }}
+      artifact_id: ${{ steps.bundle.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -37,41 +41,164 @@ jobs:
       - uses: actions/setup-python@v7.1.0
         with:
           python-version: '3.13'
-      - name: Verify owned timeout cleanup before building the Apple probe
-        shell: bash
-        run: python3 -B -m unittest tool/issue5538_ci/test_internal_apple_timeout.py -v
+      - name: Verify process ownership and bundle transport before building
+        run: |
+          python3 -B -m unittest discover -s tool/issue5538_ci -p 'test_internal_apple_*.py' -v
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           flutter-version: '3.50.0'
           cache: false
+      - name: Bootstrap the experimental SDK before strict JSON capture
+        run: flutter --version
       - uses: actions/download-artifact@v8.0.2
         with:
           name: pdf-5538-component-corpus
-          path: ${{ runner.temp }}/pdf-5538-inputs
+          path: ${{ runner.temp }}/pdf-5538-apple-inputs
           run-id: 45389994425
           repository: yom-chadash/otzaria
           github-token: ${{ github.token }}
-      - name: Run the baseline without Instruments, then trace the same executable separately
+      - name: Prepare without running or profiling any measurement
+        id: prepare
         shell: bash
         run: |
           set -euo pipefail
-          python3 tool/issue5538_ci/internal_apple_run.py --flutter "$FLUTTER_ROOT/bin/flutter" \
-            --corpus-manifest "$RUNNER_TEMP/pdf-5538-inputs/pdf-5538-corpus/corpus.json" \
-            --output "$RUNNER_TEMP/pdf-5538-apple-trace" --with-thread-trace
-      - name: Preserve measurements, raw stack exports and trace data without upstream builds
+          python3 tool/issue5538_ci/internal_apple_shards.py prepare \
+            --flutter "$FLUTTER_ROOT/bin/flutter" \
+            --corpus-manifest "$RUNNER_TEMP/pdf-5538-apple-inputs/pdf-5538-corpus/corpus.json" \
+            --output "$RUNNER_TEMP/pdf-5538-apple-prepared"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          receipt = json.loads((Path(os.environ['RUNNER_TEMP']) / 'pdf-5538-apple-prepared/prepared-summary.json').read_text())
+          assert receipt['preparedComplete'] and receipt['measurementProcesses'] == 0
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as target:
+              target.write('transport_sha256=' + receipt['transportSha256'] + '\n')
+          PY
+      - name: Preserve the prepared binary separately from measurement evidence
+        id: bundle
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pdf-5538-apple-prepared-runtime-${{ runner.arch }}
+          retention-days: 14
+          if-no-files-found: error
+          compression-level: 0
+          path: ${{ runner.temp }}/pdf-5538-apple-prepared/transport/*
+      - name: Preserve preparation and compile compatibility receipts
         if: always()
         uses: actions/upload-artifact@v7.0.2
         with:
-          name: pdf-5538-apple-trace-${{ runner.arch }}
+          name: pdf-5538-apple-preparation-${{ runner.arch }}
           retention-days: 90
           if-no-files-found: warn
           path: |
-            ${{ runner.temp }}/pdf-5538-apple-trace/*.json
-            ${{ runner.temp }}/pdf-5538-apple-trace/*.log
-            ${{ runner.temp }}/pdf-5538-apple-trace/*.lock
-            ${{ runner.temp }}/pdf-5538-apple-trace/traces/*.json
-            ${{ runner.temp }}/pdf-5538-apple-trace/traces/*.xml
-            ${{ runner.temp }}/pdf-5538-apple-trace/traces/*.log
-            ${{ runner.temp }}/pdf-5538-apple-trace/traces/*.trace
-            ${{ runner.temp }}/pdf-5538-apple-trace/traces/*.trace/**
+            ${{ runner.temp }}/pdf-5538-apple-prepared/prepared-summary.json
+            ${{ runner.temp }}/pdf-5538-apple-prepared/build/*.json
+            ${{ runner.temp }}/pdf-5538-apple-prepared/build/*.log
+            ${{ runner.temp }}/pdf-5538-apple-prepared/build/*.lock
+
+  baseline:
+    name: ABBA / ${{ matrix.document }} / ${{ matrix.workload }}
+    needs: prepare
+    runs-on: ${{ inputs.runner || 'macos-15-intel' }}
+    timeout-minutes: 65
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        document: [uxlc-genesis, mikraot-gedolot-genesis-1859, gcc-15_2]
+        workload: [file, custom, lifecycle]
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.13'
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          artifact-ids: ${{ needs.prepare.outputs.artifact_id }}
+          path: ${{ runner.temp }}/pdf-5538-apple-transport
+          merge-multiple: true
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          name: pdf-5538-component-corpus
+          path: ${{ runner.temp }}/pdf-5538-apple-inputs
+          run-id: 45389994425
+          repository: yom-chadash/otzaria
+          github-token: ${{ github.token }}
+      - name: Run all four unprofiled processes on this host
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tool/issue5538_ci/internal_apple_shards.py baseline \
+            --prepared "$RUNNER_TEMP/pdf-5538-apple-transport" \
+            --expected-transport-sha256 '${{ needs.prepare.outputs.transport_sha256 }}' \
+            --corpus-manifest "$RUNNER_TEMP/pdf-5538-apple-inputs/pdf-5538-corpus/corpus.json" \
+            --document '${{ matrix.document }}' --workload '${{ matrix.workload }}' \
+            --output "$RUNNER_TEMP/pdf-5538-apple-baseline"
+      - name: Preserve this complete or partial ABBA block immediately
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pdf-5538-apple-baseline-${{ matrix.document }}-${{ matrix.workload }}-${{ runner.arch }}
+          retention-days: 90
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/pdf-5538-apple-baseline/*.json
+            ${{ runner.temp }}/pdf-5538-apple-baseline/*.log
+
+  trace:
+    name: Separate thread diagnostic / ${{ matrix.document }} / ${{ matrix.backend }}
+    needs: prepare
+    runs-on: ${{ inputs.runner || 'macos-15-intel' }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        document: [uxlc-genesis, mikraot-gedolot-genesis-1859]
+        backend: [pdfium, coregraphics]
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.13'
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          artifact-ids: ${{ needs.prepare.outputs.artifact_id }}
+          path: ${{ runner.temp }}/pdf-5538-apple-transport
+          merge-multiple: true
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          name: pdf-5538-component-corpus
+          path: ${{ runner.temp }}/pdf-5538-apple-inputs
+          run-id: 45389994425
+          repository: yom-chadash/otzaria
+          github-token: ${{ github.token }}
+      - name: Sample this prepared binary separately from all baseline timings
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tool/issue5538_ci/internal_apple_shards.py trace \
+            --prepared "$RUNNER_TEMP/pdf-5538-apple-transport" \
+            --expected-transport-sha256 '${{ needs.prepare.outputs.transport_sha256 }}' \
+            --corpus-manifest "$RUNNER_TEMP/pdf-5538-apple-inputs/pdf-5538-corpus/corpus.json" \
+            --document '${{ matrix.document }}' --backend '${{ matrix.backend }}' \
+            --output "$RUNNER_TEMP/pdf-5538-apple-thread-trace"
+      - name: Preserve this trace independently of every other workload
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pdf-5538-apple-thread-trace-${{ matrix.document }}-${{ matrix.backend }}-${{ runner.arch }}
+          retention-days: 90
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/pdf-5538-apple-thread-trace/*.json
+            ${{ runner.temp }}/pdf-5538-apple-thread-trace/traces/*.json
+            ${{ runner.temp }}/pdf-5538-apple-thread-trace/traces/*.xml
+            ${{ runner.temp }}/pdf-5538-apple-thread-trace/traces/*.log
+            ${{ runner.temp }}/pdf-5538-apple-thread-trace/traces/*.trace
+            ${{ runner.temp }}/pdf-5538-apple-thread-trace/traces/*.trace/**
