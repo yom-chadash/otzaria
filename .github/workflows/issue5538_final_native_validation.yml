@@ -1,0 +1,700 @@
+name: PDF 5538 final product and cleanup native QA in fork
+'on':
+  push:
+    branches:
+    - ci/5538-final-native-20261124
+  workflow_dispatch: null
+permissions:
+  contents: read
+concurrency:
+  group: pdf-5538-final-native-${{ github.sha }}
+  cancel-in-progress: false
+env:
+  CI: 'true'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONUNBUFFERED: '1'
+jobs:
+  source-contracts:
+    name: Validate combined sources before native builds
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: false
+    - name: Support long paths in pinned Git dependencies on Windows
+      if: runner.os == 'Windows'
+      run: git config --global core.longpaths true
+    - uses: ./.github/actions/setup-flutter
+      with:
+        flutter-version: 3.47.7
+    - uses: dtolnay/rust-toolchain@stable
+    - name: Resolve the exact committed dependencies
+      run: 'set -euo pipefail
+
+        flutter --version
+
+        flutter --version --machine > "$RUNNER_TEMP/pdf-product-sdk.json"
+
+        git rev-parse HEAD > "$RUNNER_TEMP/pdf-product-source.txt"
+
+        flutter pub get --enforce-lockfile
+
+        git diff --exit-code -- pubspec.yaml pubspec.lock
+
+        '
+    - name: Require complete analysis with no diagnostics
+      run: 'set -euo pipefail
+
+        flutter analyze --no-pub 2>&1 | tee "$RUNNER_TEMP/pdf-product-analyze.log"
+
+        '
+    - name: Verify geometry, document ownership, fonts, indexing and highlighting
+      run: "set -euo pipefail\nflutter test --no-pub --concurrency=1 --reporter expanded \\\n  --file-reporter \"\
+        json:$RUNNER_TEMP/pdf-product-tests.json\" \\\n  test/pdf_book/book_view_layout_memo_test.dart \\\n  test/pdf_book/book_view_layout_scale_test.dart\
+        \ \\\n  test/pdf_book/pdf_spread_layout_test.dart \\\n  test/pdf_book/pdf_per_book_layout_zoom_test.dart\
+        \ \\\n  test/pdf_book/pdf_book_view_current_page_test.dart \\\n  test/pdf_book/pdf_search_highlight_pattern_test.dart\
+        \ \\\n  test/pdf_book/pdf_search_no_text_layer_test.dart \\\n  test/pdf_book/pdf_page_highlights_test.dart\
+        \ \\\n  test/pdf_book/pdf_document_font_recovery_test.dart \\\n  test/pdf_book/pdf_font_fallback_lifecycle_test.dart\
+        \ \\\n  test/pdf_book/pdf_font_fallback_test.dart \\\n  test/pdf_book/pdf_native_owner_tracker_test.dart\
+        \ \\\n  test/pdf_book/pdf_multi_window_contract_test.dart \\\n  test/tool/perf_probe/installed_plugin_pdf_runtime_test.dart\
+        \ \\\n  test/indexing/utils/pdf_indexing_document_test.dart 2>&1 | tee \"$RUNNER_TEMP/pdf-product-tests.log\"\
+        \ngit diff --exit-code -- pubspec.yaml pubspec.lock lib test\n"
+    - name: Preserve complete or failed validation evidence
+      if: always()
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: pdf-5538-combined-source-contracts
+        retention-days: 90
+        if-no-files-found: error
+        path: '${{ runner.temp }}/pdf-product-sdk.json
+
+          ${{ runner.temp }}/pdf-product-source.txt
+
+          ${{ runner.temp }}/pdf-product-analyze.log
+
+          ${{ runner.temp }}/pdf-product-tests.json
+
+          ${{ runner.temp }}/pdf-product-tests.log
+
+          '
+  contracts:
+    name: Sampler contracts (no performance thresholds)
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: 'false'
+    - name: Validate process identity and invariant CSV formatting
+      shell: pwsh
+      run: ./tool/perf_probe/test_sample_resources.ps1
+    - name: Validate the general integration binding identity
+      shell: pwsh
+      run: ./tool/perf_probe/test_probe_binding.ps1
+    - name: Validate the bundled Windows engine and patch identity
+      shell: pwsh
+      run: ./tool/perf_probe/test_probe_engine.ps1
+    - name: Validate backend correlation and comparison readiness
+      shell: pwsh
+      run: ./tool/perf_probe/test_webview_hosting_probe.ps1
+    - name: Validate WebView fixture state and bounded observers
+      run: node --test tool/perf_probe/test_webview_probe_fixture.mjs
+    - name: Validate native window source and engine evidence
+      run: python3 -B -m unittest tool.pdf_multi_window.test_run_smoke -v
+  windows:
+    name: Two native PDF windows (Windows release correctness)
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: windows-2025
+    timeout-minutes: 60
+    env:
+      CI: 'true'
+    steps:
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: 'false'
+    - uses: ./.github/actions/setup-flutter
+      with:
+        flutter-version: 3.47.7
+    - uses: dtolnay/rust-toolchain@stable
+    - name: Resolve pinned dependencies
+      shell: pwsh
+      run: 'git config --global core.longpaths true
+
+        flutter pub get --enforce-lockfile
+
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+        '
+    - name: Install the existing patched release engine
+      uses: ./.github/actions/patched-flutter-engine
+      with:
+        arch: x64
+    - name: Validate native window evidence and owned-process cleanup
+      shell: pwsh
+      run: 'python -B -m unittest tool.pdf_multi_window.test_run_smoke -v
+
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+        flutter test --no-pub --reporter expanded test/pdf_book/pdf_multi_window_contract_test.dart
+
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+        '
+    - name: Require two native PDF windows and clean teardown
+      shell: pwsh
+      run: "if ($env:PATCHED_FLUTTER_DLL_SHA256 -notmatch '^[a-f0-9]{64}$') {\n  throw 'The patched engine action\
+        \ did not provide a verified DLL hash.'\n}\npython tool/pdf_multi_window/run_smoke.py --platform windows\
+        \ --mode release `\n  --expected-engine-sha256 $env:PATCHED_FLUTTER_DLL_SHA256 `\n  --output (Join-Path\
+        \ $env:RUNNER_TEMP 'pdf-multi-window-correctness')\nif ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }\n"
+    - name: Preserve correctness evidence and partial failures
+      if: always()
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: pdf-multi-window-windows-release-correctness
+        if-no-files-found: warn
+        retention-days: 90
+        path: '${{ runner.temp }}/pdf-multi-window-correctness/*.json
+
+          ${{ runner.temp }}/pdf-multi-window-correctness/*.log
+
+          ${{ runner.temp }}/pdf-multi-window-correctness/run/**
+
+          '
+    needs:
+    - source-contracts
+  linux:
+    name: Actual app / Linux WPE ${{ matrix.arch }} / profile
+    if: github.repository == 'yom-chadash/otzaria'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - arch: x64
+          runner: ubuntu-26.04
+          wpe_arch: x86_64
+          jdk_arch: amd64
+          wpe_sha256: ca7e706c0ec2f66623fede2c369e3e13339448843e125f2ccd1553f4a3c4bcaf
+          pdfium_sha256: 1c251efce460d67437a4c76d4be9033ae2f17bf5603f5bff1af10209b94ca723
+        - arch: arm64
+          runner: ubuntu-24.04-arm
+          wpe_arch: aarch64
+          jdk_arch: arm64
+          wpe_sha256: d59f7c7a00d2d15370afc805dfa3a2e017c04833320805f5299989865913dc3d
+          pdfium_sha256: 8cdc437dce84a6493b9ec6c4f5ad9ff2c299e505acfd7b0ad38cb440805b2c70
+    runs-on: ${{ matrix.runner }}
+    container:
+      image: debian:bookworm-slim
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash
+    env:
+      BOT: 'true'
+      CI: 'true'
+      FLUTTER_SUPPRESS_ANALYTICS: 'true'
+      DART_SUPPRESS_ANALYTICS: 'true'
+      PYTHONUNBUFFERED: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+      CARGO_BUILD_JOBS: '2'
+      WPE_SDK: /opt/wpe-sdk
+      PKG_CONFIG_PATH: /opt/wpe-sdk/lib/pkgconfig
+      LD_LIBRARY_PATH: /opt/wpe-sdk/lib
+      LIBRARY_PATH: /opt/wpe-sdk/lib
+      JAVA_HOME: /usr/lib/jvm/java-17-openjdk-${{ matrix.jdk_arch }}
+      CC: clang
+      CXX: clang++
+      CFLAGS: -Wno-error=unknown-warning-option
+      CXXFLAGS: -Wno-error=unknown-warning-option
+    steps:
+    - name: Prepare build container and fresh artifact paths
+      run: "set -euo pipefail\nroot=\"$RUNNER_TEMP/installed-plugin-linux-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT\"\n\
+        mkdir \"$root\"\n{\n  echo \"INSTALLED_PROBE_ROOT=$root\"\n  echo \"INSTALLED_PROBE_DATA=$RUNNER_TEMP/installed-plugin-linux-data\"\
+        \n  echo \"INSTALLED_PROBE_OUTPUT=$root/device\"\n  echo \"INSTALLED_PROBE_REPORTS=$root/host\"\n  echo\
+        \ \"INSTALLED_PROBE_STORE_SOURCE=$RUNNER_TEMP/installed-plugin-linux-source\"\n  echo \"INSTALLED_PROBE_MACHINE_ID=$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-linux-${{\
+        \ matrix.arch }}-bookworm-xvfb\"\n  echo \"RUSTUP_HOME=$RUNNER_TEMP/otzaria-rustup\"\n  echo \"CARGO_HOME=$RUNNER_TEMP/otzaria-cargo\"\
+        \n} >> \"$GITHUB_ENV\"\ncat /etc/os-release > \"$root/os-release.txt\"\nuname -a > \"$root/kernel.txt\"\n\
+        apt-get update -y 2>&1 | tee \"$root/apt-update.log\"\napt-get install -y ca-certificates curl git jq unzip\
+        \ xz-utils zstd \\\n  python3 nodejs 2>&1 | tee \"$root/apt-bootstrap.log\"\ngit config --global --add safe.directory\
+        \ '*'\n"
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: 'false'
+    - uses: subosito/flutter-action@v2
+      if: matrix.arch == 'x64'
+      with:
+        channel: stable
+        flutter-version: 3.47.7
+        cache: false
+    - name: Bootstrap the locked native ARM64 Flutter SDK
+      if: matrix.arch == 'arm64'
+      run: 'set -euo pipefail
+
+        git clone --depth 1 --branch 3.47.7 https://github.com/flutter/flutter.git /opt/flutter
+
+        echo "/opt/flutter/bin" >> "$GITHUB_PATH"
+
+        /opt/flutter/bin/flutter --version
+
+        '
+    - name: Require the native host and Dart architecture
+      run: 'set -euo pipefail
+
+        test "$(uname -m)" = ''${{ matrix.wpe_arch }}''
+
+        dart --version 2>&1 | tee "$INSTALLED_PROBE_ROOT/dart.txt"
+
+        grep -F ''linux_${{ matrix.arch }}'' "$INSTALLED_PROBE_ROOT/dart.txt"
+
+        '
+    - name: Install native build and desktop session dependencies
+      run: "set -euo pipefail\napt-get install -y build-essential clang-14 cmake \\\n  libblkid1 libcurl4-openssl-dev\
+        \ libglib2.0-dev libgtk-3-dev \\\n  liblzma5 liblzma-dev libsecret-1-dev libsoup-3.0-dev \\\n  libwebkit2gtk-4.1-dev\
+        \ libxkbcommon-dev ninja-build \\\n  openjdk-17-jdk-headless pkg-config xvfb xauth binutils \\\n  dbus dbus-x11\
+        \ openbox wmctrl x11-utils x11-xserver-utils \\\n  libgl1-mesa-dri libegl1 libglx-mesa0 mesa-utils \\\n\
+        \  2>&1 | tee \"$INSTALLED_PROBE_ROOT/apt-native.log\"\nupdate-alternatives --install /usr/bin/clang clang\
+        \ /usr/bin/clang-14 100\nupdate-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-14 100\n"
+    - uses: dtolnay/rust-toolchain@stable
+    - name: Record toolchain and verified Store source
+      run: "set -euo pipefail\necho \"$CARGO_HOME/bin\" >> \"$GITHUB_PATH\"\nflutter --version --machine > \"$INSTALLED_PROBE_ROOT/flutter.json\"\
+        \nrustc -Vv > \"$INSTALLED_PROBE_ROOT/rust.txt\"\ncargo -V >> \"$INSTALLED_PROBE_ROOT/rust.txt\"\nrustup\
+        \ show >> \"$INSTALLED_PROBE_ROOT/rust.txt\"\ngit rev-parse HEAD > \"$INSTALLED_PROBE_ROOT/source-commit.txt\"\
+        \npython3 tool/perf_probe/prepare_installed_plugin_source.py \\\n  --output \"$INSTALLED_PROBE_STORE_SOURCE\"\
+        \ \\\n  2>&1 | tee \"$INSTALLED_PROBE_ROOT/source.log\"\n"
+    - name: Install the pinned WPE runtime SDK
+      env:
+        WPE_RUNTIME_SHA256: ${{ matrix.wpe_sha256 }}
+      run: "set -euo pipefail\nasset=wpe-runtime-2.48.7-linux-${{ matrix.wpe_arch }}.tar.zst\nbase=https://github.com/Otzaria/otzaria-wpe-runtime/releases/download/wpe-2.48.7-print-to-pdf\n\
+        curl -fSL --retry 3 --retry-delay 5 --max-time 300 \\\n  -o \"$RUNNER_TEMP/$asset\" \"$base/$asset\"\nprintf\
+        \ '%s  %s\\n' \"$WPE_RUNTIME_SHA256\" \"$RUNNER_TEMP/$asset\" \\\n  | sha256sum -c - | tee \"$INSTALLED_PROBE_ROOT/wpe-sdk-sha256.txt\"\
+        \ntar -C /opt -I zstd -xf \"$RUNNER_TEMP/$asset\"\ntest -f \"$WPE_SDK/lib/pkgconfig/wpe-webkit-2.0.pc\"\n\
+        pkg-config --print-errors --exists \\\n  wpe-webkit-2.0 wpe-platform-2.0 wpe-platform-headless-2.0 wpe-1.0\n\
+        cp \"$WPE_SDK/VERSIONS\" \"$INSTALLED_PROBE_ROOT/wpe-sdk-versions.txt\"\n"
+    - name: Resolve exact dependencies and analyze
+      run: 'set -euo pipefail
+
+        flutter pub get --enforce-lockfile 2>&1 | tee "$INSTALLED_PROBE_ROOT/pub-get.log"
+
+        flutter analyze --no-pub 2>&1 | tee "$INSTALLED_PROBE_ROOT/analyze.log"
+
+        '
+    - name: Validate the runner, fixture and evidence contracts
+      run: "set -euo pipefail\npython3 -m unittest discover -s tool/perf_probe -p 'test_installed_plugin_linux.py'\
+        \ -v \\\n  2>&1 | tee \"$INSTALLED_PROBE_ROOT/session-tests.log\"\npython3 -m unittest tool.perf_probe.test_installed_pdf_desktop\
+        \ tool.perf_probe.test_installed_pdf_architecture -v\npython3 -B -m unittest tool.pdf_multi_window.test_run_smoke\
+        \ -v \\\n  2>&1 | tee \"$INSTALLED_PROBE_ROOT/multi-window-host-tests.log\"\nnode --test tool/perf_probe/test_installed_plugin_fixture.mjs\
+        \ \\\n  tool/perf_probe/test_installed_plugin_store.mjs \\\n  2>&1 | tee \"$INSTALLED_PROBE_ROOT/fixture-tests.log\"\
+        \nflutter test --no-pub --concurrency=1 --reporter expanded \\\n  test/tool/perf_probe/installed_plugin_probe_test.dart\
+        \ \\\n  test/tool/perf_probe/installed_plugin_pdf_runtime_test.dart test/tool/perf_probe/installed_plugin_pdf_desktop_test.dart\
+        \ test/tool/perf_probe/installed_plugin_memory_pressure_test.dart \\\n  test/tool/perf_probe/installed_plugin_pdf_fixture_test.dart\
+        \ \\\n  test/tool/perf_probe/perf_fixture_test.dart \\\n  test/tool/perf_probe/perf_fixture_startup_settings_test.dart\
+        \ \\\n  test/core/window_listener_native_visibility_test.dart \\\n  test/core/window_listener_restore_from_minimize_test.dart\
+        \ \\\n  test/core/window_listener_focus_keyboard_test.dart \\\n  test/core/window_listener_hide_on_exit_test.dart\
+        \ \\\n  test/pdf_book/pdf_multi_window_contract_test.dart \\\n  2>&1 | tee \"$INSTALLED_PROBE_ROOT/contract-tests.log\"\
+        \n"
+    - name: Build the actual app scenario in profile
+      timeout-minutes: 40
+      run: "set -euo pipefail\nflutter build linux --profile --no-pub \\\n  --target=integration_test/installed_plugin_resource_probe_test.dart\
+        \ \\\n  --dart-define=INSTALLED_PROBE_FLUTTER_VERSION=3.47.7 \\\n  --dart-define=\"INSTALLED_PROBE_COMMIT=$(git\
+        \ rev-parse HEAD)\" \\\n  --dart-define=INSTALLED_PROBE_IDLE_MS=1000 \\\n  2>&1 | tee \"$INSTALLED_PROBE_ROOT/build-profile.log\"\
+        \n"
+    - name: Audit PDFium 8125/5200 loader isolation in the actual bundle
+      run: "set -euo pipefail\nlibdir=\"build/linux/${{ matrix.arch }}/profile/bundle/lib\"\npublic=\"$libdir/libpdfium.so\"\
+        \nprivate=\"$libdir/libpdfium_printing.so\"\nplugin=\"$libdir/libprinting_plugin.so\"\ntest -f \"$public\"\
+        \ && test -f \"$private\" && test -f \"$plugin\"\n# PDFium 8125 for pdfrx must not be replaced by the printing\
+        \ copy.\necho \"${{ matrix.pdfium_sha256 }}  $public\" \\\n  | sha256sum -c -\ncmp_status=0\ncmp -s \"$public\"\
+        \ \"$private\" || cmp_status=$?\nif [ \"$cmp_status\" -ne 1 ]; then\n  echo \"::error::PDFium binaries must\
+        \ differ and both must be readable\"\n  exit 1\nfi\nreadelf -d \"$plugin\" | tee \"$INSTALLED_PROBE_ROOT/printing-elf-dynamic.txt\"\
+        \nif readelf -d \"$plugin\" | grep -E 'NEEDED.*(libpdfium|libpdfium_printing)'; then\n  echo \"::error::printing\
+        \ must not bind either PDFium in the base namespace\"\n  exit 1\nfi\nif nm -D \"$plugin\" | grep -E ' U\
+        \ (FPDF|FPDFBitmap)'; then\n  echo \"::error::printing must resolve PDFium only from dlmopen namespace\"\
+        \n  exit 1\nfi\nsha256sum \"$public\" \"$private\" | tee \"$INSTALLED_PROBE_ROOT/pdfium-sha256.txt\"\nstat\
+        \ -c '%n %s bytes' \"$public\" \"$private\" \\\n  | tee \"$INSTALLED_PROBE_ROOT/pdfium-disk-bytes.txt\"\n"
+    - name: Run installed plugin and PDF runtime in the actual bundle
+      timeout-minutes: 25
+      run: "set -euo pipefail\npython3 tool/perf_probe/run_installed_plugin_linux.py \\\n  --output \"$INSTALLED_PROBE_ROOT/session\"\
+        \ --seconds 1320 \\\n  --binary \"build/linux/${{ matrix.arch }}/profile/bundle/otzaria\" \\\n  2>&1 | tee\
+        \ \"$INSTALLED_PROBE_ROOT/drive-profile.log\"\n"
+    - name: Verify the native executable and mapped PDF module architecture
+      run: "set -euo pipefail\npython3 tool/perf_probe/installed_pdf_architecture.py \\\n  --reports \"$INSTALLED_PROBE_REPORTS\"\
+        \ --platform linux \\\n  --architecture '${{ matrix.arch }}' --commit \"$GITHUB_SHA\" \\\n  --executable\
+        \ \"build/linux/${{ matrix.arch }}/profile/bundle/otzaria\" \\\n  | tee \"$INSTALLED_PROBE_ROOT/pdf-architecture.json\"\
+        \n"
+    - name: Verify PDF operations across two real native windows
+      timeout-minutes: 40
+      run: "set -euo pipefail\npython3 -B tool/pdf_multi_window/run_smoke.py \\\n  --platform linux --mode profile\
+        \ \\\n  --output \"$RUNNER_TEMP/pdf-multi-window-smoke\"\n"
+    - name: Collect partial native build diagnostics
+      if: always()
+      run: "set -euo pipefail\nif [ -f \"$INSTALLED_PROBE_STORE_SOURCE/source-provenance.json\" ]; then\n  cp \"\
+        $INSTALLED_PROBE_STORE_SOURCE/source-provenance.json\" \"$INSTALLED_PROBE_ROOT/\"\nfi\npython3 - <<'PY'\n\
+        import os\nfrom pathlib import Path\nimport shutil\nroot = Path(os.environ['INSTALLED_PROBE_ROOT']) / 'build-diagnostics'\n\
+        build = Path('build/linux')\nfor name in ('CMakeCache.txt', 'CMakeError.log', 'CMakeOutput.log', 'CMakeConfigureLog.yaml'):\n\
+        \    for source in build.rglob(name):\n        target = root / source.relative_to(build)\n        target.parent.mkdir(parents=True,\
+        \ exist_ok=True)\n        shutil.copyfile(source, target)\nPY\n"
+    - name: Preserve raw reports and partial failures
+      if: always()
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: installed-plugin-linux-wpe-${{ matrix.arch }}-profile
+        if-no-files-found: warn
+        path: ${{ env.INSTALLED_PROBE_ROOT }}
+        retention-days: 90
+    - name: Locate native evidence inside the active container
+      if: always()
+      id: multi-window-evidence
+      run: echo "root=$RUNNER_TEMP" >> "$GITHUB_OUTPUT"
+    - name: Preserve native multi-window correctness evidence
+      if: always()
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: pdf-multi-window-linux-${{ matrix.arch }}-profile
+        if-no-files-found: warn
+        retention-days: 90
+        path: '${{ steps.multi-window-evidence.outputs.root }}/pdf-multi-window-smoke/*.json
+
+          ${{ steps.multi-window-evidence.outputs.root }}/pdf-multi-window-smoke/*.log
+
+          ${{ steps.multi-window-evidence.outputs.root }}/pdf-multi-window-smoke/run/*.json
+
+          ${{ steps.multi-window-evidence.outputs.root }}/pdf-multi-window-smoke/run/*.pdf
+
+          ${{ steps.multi-window-evidence.outputs.root }}/pdf-multi-window-smoke/run/*.png
+
+          ${{ steps.multi-window-evidence.outputs.root }}/pdf-multi-window-smoke/data/multi-window.pdf
+
+          '
+    needs:
+    - source-contracts
+  apple-contracts:
+    name: Fail-closed Apple report contract tests
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: 'false'
+    - name: Verify accepted and rejected native report shapes
+      run: "python3 -m unittest -v \\\n  tool/perf_probe/test_webview_apple_smoke_validator.py \\\n  tool/perf_probe/test_installed_plugin_macos.py\
+        \ \\\n  tool/perf_probe/test_installed_pdf_ios.py \\\n  tool/perf_probe/test_installed_pdf_desktop.py \\\
+        \n  tool/pdf_multi_window/test_run_smoke.py\n"
+  macos:
+    if: github.repository == 'yom-chadash/otzaria'
+    name: Native Apple app / ${{ inputs.platform || 'macos' }} / Intel
+    runs-on: macos-15-intel
+    timeout-minutes: 90
+    env:
+      CI: 'true'
+      BOT: 'true'
+      FLUTTER_SUPPRESS_ANALYTICS: 'true'
+      DART_SUPPRESS_ANALYTICS: 'true'
+      PYTHONDONTWRITEBYTECODE: '1'
+      CARGO_NET_GIT_FETCH_WITH_CLI: 'true'
+      GH_TOKEN: ${{ github.token }}
+      WEBVIEW_PROBE_DEVICE_OUTPUT: ''
+      PROBE_PLATFORM: ${{ inputs.platform || 'macos' }}
+      PROBE_MODE: ${{ inputs.platform == 'ios' && 'debug' || 'profile' }}
+    steps:
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: 'false'
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        flutter-version: 3.47.7
+        cache: false
+    - uses: dtolnay/rust-toolchain@stable
+    - uses: actions/setup-python@v7.1.0
+      with:
+        python-version: '3.15'
+    - name: Capture exact host and source provenance
+      shell: bash
+      run: "set -euo pipefail\n{\n  echo \"WEBVIEW_PROBE_REPORTS=$RUNNER_TEMP/apple-webview-reports\"\n} >> \"$GITHUB_ENV\"\
+        \nmkdir -p \"$RUNNER_TEMP/apple-webview-$PROBE_PLATFORM\"\nsw_vers > \"$RUNNER_TEMP/apple-webview-$PROBE_PLATFORM/os.txt\"\
+        \nuname -a >> \"$RUNNER_TEMP/apple-webview-$PROBE_PLATFORM/os.txt\"\nxcodebuild -version > \"$RUNNER_TEMP/apple-webview-$PROBE_PLATFORM/xcode.txt\"\
+        \nflutter --version --machine > \"$RUNNER_TEMP/apple-webview-$PROBE_PLATFORM/flutter.json\"\ngit rev-parse\
+        \ HEAD > \"$RUNNER_TEMP/apple-webview-$PROBE_PLATFORM/source-commit.txt\"\ngit rev-parse 'HEAD^{tree}' >\
+        \ \"$RUNNER_TEMP/apple-webview-$PROBE_PLATFORM/source-tree.txt\"\n"
+    - name: Resolve locked dependencies
+      shell: bash
+      run: 'set -euo pipefail
+
+        flutter pub get --enforce-lockfile 2>&1 | tee "$RUNNER_TEMP/apple-webview-$PROBE_PLATFORM/pub-get.log"
+
+        '
+    - name: Create only an owned iOS Simulator
+      if: env.PROBE_PLATFORM == 'ios'
+      shell: bash
+      run: "set -euo pipefail\nexport PROBE_RECEIPT=\"$RUNNER_TEMP/apple-webview-ios/simulator-id.txt\"\npython3\
+        \ - <<'PY'\nimport json, os, pathlib, subprocess\nruntimes = json.loads(subprocess.check_output(['xcrun','simctl','list','-j','runtimes']))['runtimes']\n\
+        available = [r for r in runtimes if r.get('isAvailable') and\n             r['identifier'].startswith('com.apple.CoreSimulator.SimRuntime.iOS-')]\n\
+        installed = json.loads(subprocess.check_output(['xcrun','simctl','list','-j','devices']))['devices']\ncompatible\
+        \ = []\nfor runtime_info in available:\n    runtime_id = runtime_info['identifier']\n    for entry in installed.get(runtime_id,\
+        \ []):\n        kind = entry.get('deviceTypeIdentifier', '')\n        if entry.get('isAvailable') and kind.startswith('com.apple.CoreSimulator.SimDeviceType.iPhone-'):\n\
+        \            compatible.append((runtime_info, entry))\nif not compatible:\n    raise SystemExit('No iOS\
+        \ runtime with a known-compatible iPhone device \u2014 NOT_RUN')\ndef version(entry):\n    return tuple(int(x)\
+        \ for x in entry[0].get('version', '0').split('.') if x.isdigit())\nselected, prototype = max(compatible,\
+        \ key=version)\nruntime = selected['identifier']\ndevice = prototype['deviceTypeIdentifier']\nname='otzaria-webview-'\
+        \ + os.environ['GITHUB_RUN_ID'] + '-' + os.environ['GITHUB_RUN_ATTEMPT']\nsim=subprocess.check_output(['xcrun','simctl','create',name,device,runtime],text=True).strip()\n\
+        pathlib.Path(os.environ['PROBE_RECEIPT']).write_text(sim+'\\n')\nprint('Created owned simulator',sim,'runtime',runtime,'device\
+        \ type',device)\nPY\nsim=\"$(cat \"$PROBE_RECEIPT\")\"\nxcrun simctl boot \"$sim\"\nxcrun simctl bootstatus\
+        \ \"$sim\" -b\nflutter devices --machine > \"$RUNNER_TEMP/apple-webview-ios/devices.json\"\n"
+    - name: Run real native WebView scenario (no mocks, no threshold waivers)
+      timeout-minutes: 35
+      shell: bash
+      run: "set -euo pipefail\ntarget=macos\nif [ \"$PROBE_PLATFORM\" = ios ]; then\n  target=\"$(cat \"$RUNNER_TEMP/apple-webview-ios/simulator-id.txt\"\
+        )\"\nfi\nflutter drive --\"$PROBE_MODE\" -d \"$target\" --no-pub \\\n  --driver=test_driver/webview_resource_probe.dart\
+        \ \\\n  --target=integration_test/webview_resource_probe_test.dart \\\n  --dart-define=WEBVIEW_PROBE_FLUTTER_VERSION=3.47.7\
+        \ \\\n  --dart-define=WEBVIEW_PROBE_COMMIT=${{ github.sha }} \\\n  --dart-define=WEBVIEW_PROBE_TABS=3 \\\
+        \n  --dart-define=WEBVIEW_PROBE_IDLE_MS=3000 \\\n  2>&1 | tee \"$RUNNER_TEMP/apple-webview-$PROBE_PLATFORM/run.log\"\
+        \n"
+    - name: Validate complete real device report
+      shell: bash
+      run: "set -euo pipefail\npython3 tool/perf_probe/validate_webview_apple_smoke.py \\\n  --root \"$WEBVIEW_PROBE_REPORTS\"\
+        \ \\\n  --platform \"$PROBE_PLATFORM\" \\\n  --mode \"$PROBE_MODE\" \\\n  --commit \"$GITHUB_SHA\"\n"
+    - name: Prepare the installed macOS PDF scenario
+      if: env.PROBE_PLATFORM == 'macos'
+      shell: bash
+      env:
+        INSTALLED_PROBE_ROOT: ${{ runner.temp }}/apple-installed-pdf
+      run: "set -euo pipefail\ntest ! -e \"$INSTALLED_PROBE_ROOT\"\nmkdir -p \"$INSTALLED_PROBE_ROOT\"\npython3\
+        \ tool/perf_probe/prepare_installed_plugin_source.py \\\n  --output \"$INSTALLED_PROBE_ROOT/store-source\"\
+        \ \\\n  2>&1 | tee \"$INSTALLED_PROBE_ROOT/source.log\"\nflutter test --no-pub --concurrency=1 --reporter\
+        \ expanded \\\n  test/tool/perf_probe/installed_plugin_pdf_macos_test.dart \\\n  test/tool/perf_probe/installed_plugin_pdf_runtime_test.dart\
+        \ test/tool/perf_probe/installed_plugin_pdf_desktop_test.dart test/tool/perf_probe/installed_plugin_memory_pressure_test.dart\
+        \ \\\n  test/tool/perf_probe/installed_plugin_pdf_fixture_test.dart \\\n  test/pdf_book/pdf_multi_window_contract_test.dart\
+        \ \\\n  2>&1 | tee \"$INSTALLED_PROBE_ROOT/contracts.log\"\n"
+    - name: Run viewing, indexing and printing in the macOS profile app
+      if: env.PROBE_PLATFORM == 'macos'
+      timeout-minutes: 35
+      shell: bash
+      env:
+        INSTALLED_PROBE_DATA: ${{ runner.temp }}/apple-installed-pdf/data
+        INSTALLED_PROBE_OUTPUT: ${{ runner.temp }}/apple-installed-pdf/device
+        INSTALLED_PROBE_REPORTS: ${{ runner.temp }}/apple-installed-pdf/host
+        INSTALLED_PROBE_STORE_SOURCE: ${{ runner.temp }}/apple-installed-pdf/store-source
+        INSTALLED_PROBE_MACHINE_ID: ${{ github.run_id }}-${{ github.run_attempt }}-macos
+      run: "set -euo pipefail\nflutter drive --profile -d macos --no-dds --no-pub \\\n  --driver=test_driver/installed_plugin_resource_probe.dart\
+        \ \\\n  --target=integration_test/installed_plugin_resource_probe_test.dart \\\n  --dart-define=INSTALLED_PROBE_FLUTTER_VERSION=3.47.7\
+        \ \\\n  --dart-define=INSTALLED_PROBE_COMMIT=\"$GITHUB_SHA\" \\\n  --dart-define=INSTALLED_PROBE_IDLE_MS=1500\
+        \ \\\n  2>&1 | tee \"$RUNNER_TEMP/apple-installed-pdf/run.log\"\n"
+    - name: Verify actual macOS app images, PDF output and teardown
+      if: env.PROBE_PLATFORM == 'macos'
+      shell: bash
+      run: "set -euo pipefail\npython3 tool/perf_probe/validate_installed_plugin_macos.py \\\n  --root \"$RUNNER_TEMP/apple-installed-pdf/host\"\
+        \ \\\n  --products build/macos/Build/Products/Profile \\\n  --output \"$RUNNER_TEMP/apple-installed-pdf/device\"\
+        \ \\\n  --commit \"$GITHUB_SHA\" \\\n  2>&1 | tee \"$RUNNER_TEMP/apple-installed-pdf/verified-result.json\"\
+        \n"
+    - name: Verify PDF operations across two real native windows
+      if: env.PROBE_PLATFORM == 'macos'
+      timeout-minutes: 40
+      shell: bash
+      run: "set -euo pipefail\npython3 -B -m unittest tool.pdf_multi_window.test_run_smoke -v\npython3 -B tool/pdf_multi_window/run_smoke.py\
+        \ \\\n  --platform macos --mode profile \\\n  --output \"$RUNNER_TEMP/pdf-multi-window-smoke\"\n"
+    - name: Cleanup only the Simulator created by this job
+      if: always() && env.PROBE_PLATFORM == 'ios'
+      shell: bash
+      run: "receipt=\"$RUNNER_TEMP/apple-webview-ios/simulator-id.txt\"\nif [ -f \"$receipt\" ]; then\n  sim=\"\
+        $(cat \"$receipt\")\"\n  if [[ \"$sim\" =~ ^[0-9A-Fa-f-]{36}$ ]]; then\n    xcrun simctl shutdown \"$sim\"\
+        \ || true\n    xcrun simctl delete \"$sim\" || true\n  else\n    echo \"::error::Refusing cleanup of invalid\
+        \ owned simulator receipt\"\n    exit 1\n  fi\nfi\n"
+    - name: Preserve full raw and partial evidence
+      if: always()
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: apple-webview-${{ env.PROBE_PLATFORM }}-${{ env.PROBE_MODE }}
+        if-no-files-found: warn
+        retention-days: 90
+        path: '${{ runner.temp }}/apple-webview-${{ env.PROBE_PLATFORM }}/
+
+          ${{ env.WEBVIEW_PROBE_REPORTS }}/
+
+          ${{ runner.temp }}/apple-installed-pdf/
+
+          '
+    - name: Preserve native multi-window correctness evidence
+      if: always() && env.PROBE_PLATFORM == 'macos'
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: pdf-multi-window-macos-profile
+        if-no-files-found: warn
+        retention-days: 90
+        path: '${{ runner.temp }}/pdf-multi-window-smoke/*.json
+
+          ${{ runner.temp }}/pdf-multi-window-smoke/*.log
+
+          ${{ runner.temp }}/pdf-multi-window-smoke/run/*.json
+
+          ${{ runner.temp }}/pdf-multi-window-smoke/run/*.pdf
+
+          ${{ runner.temp }}/pdf-multi-window-smoke/run/*.png
+
+          ${{ runner.temp }}/pdf-multi-window-smoke/data/multi-window.pdf
+
+          '
+    needs:
+    - source-contracts
+  ios:
+    name: Actual installed PDF / iOS Simulator / debug / Intel
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: macos-15-intel
+    timeout-minutes: 60
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.1.1.app/Contents/Developer
+      CI: 'true'
+      BOT: 'true'
+      FLUTTER_SUPPRESS_ANALYTICS: 'true'
+      DART_SUPPRESS_ANALYTICS: 'true'
+      CARGO_NET_GIT_FETCH_WITH_CLI: 'true'
+      CARGO_BUILD_JOBS: '2'
+      PYTHONUNBUFFERED: '1'
+    steps:
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: 'false'
+    - name: Require the Xcode SDK declared by locked device_info_plus
+      shell: bash
+      run: 'set -euo pipefail
+
+        test -d "$DEVELOPER_DIR"
+
+        xcodebuild -version
+
+        test "$(xcodebuild -version | sed -n ''1p'')" = ''Xcode 26.1.1''
+
+        sdk_version="$(xcrun --sdk iphonesimulator --show-sdk-version)"
+
+        printf ''iOS Simulator SDK: %s\n'' "$sdk_version"
+
+        test "$sdk_version" = ''26.1''
+
+        xcrun --sdk iphonesimulator --show-sdk-path
+
+        '
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        flutter-version: 3.47.7
+        cache: false
+    - uses: dtolnay/rust-toolchain@stable
+    - name: Resolve locked dependencies and verify PDF contracts
+      shell: bash
+      run: "set -euo pipefail\nflutter pub get --enforce-lockfile\nflutter test --no-pub --concurrency=1 --reporter\
+        \ expanded \\\n  test/tool/perf_probe/installed_plugin_pdf_ios_test.dart \\\n  test/tool/perf_probe/installed_plugin_pdf_macos_test.dart\
+        \ \\\n  test/tool/perf_probe/installed_plugin_pdf_runtime_test.dart test/tool/perf_probe/installed_plugin_pdf_desktop_test.dart\
+        \ test/tool/perf_probe/installed_plugin_memory_pressure_test.dart \\\n  test/tool/perf_probe/installed_plugin_pdf_fixture_test.dart\n"
+    - name: Run actual PDF app and verify Simulator bundle provenance
+      timeout-minutes: 45
+      shell: bash
+      run: "set -euo pipefail\npython3 tool/perf_probe/run_installed_pdf_ios.py \\\n  --root \"$RUNNER_TEMP/installed-pdf-ios\"\
+        \ --commit \"$GITHUB_SHA\"\n"
+    - name: Cleanup only the PDF Simulator created by this job
+      if: always()
+      shell: bash
+      run: python3 tool/perf_probe/run_installed_pdf_ios.py --root "$RUNNER_TEMP/installed-pdf-ios" --cleanup
+    - name: Preserve PDF reports, native artifacts and partial failures
+      if: always()
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: installed-pdf-ios-simulator-debug
+        if-no-files-found: warn
+        retention-days: 90
+        path: ${{ runner.temp }}/installed-pdf-ios/
+    needs:
+    - source-contracts
+  android_contracts:
+    name: Host negatives and push control contracts
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: false
+    - uses: ./.github/actions/setup-flutter
+      with:
+        flutter-version: 3.47.7
+    - uses: dtolnay/rust-toolchain@stable
+    - name: Validate bounded host control and real SDK fixture
+      run: 'python3 -m unittest -v tool/perf_probe/test_installed_plugin_android.py tool/perf_probe/test_installed_pdf_android.py
+
+        node --test tool/perf_probe/test_installed_plugin_fixture.mjs
+
+        '
+    - name: Verify sources, dependencies, analysis and original scenario contracts
+      env:
+        INSTALLED_PROBE_STORE_SOURCE: ${{ runner.temp }}/installed-android-store
+      run: "python3 tool/perf_probe/prepare_installed_plugin_source.py --output \"$INSTALLED_PROBE_STORE_SOURCE\"\
+        \nnode --test tool/perf_probe/test_installed_plugin_store.mjs\nflutter pub get --enforce-lockfile\nflutter\
+        \ analyze --no-pub\nflutter test --no-pub --concurrency=1 --reporter expanded \\\n  test/tool/perf_probe/installed_plugin_android_control_test.dart\
+        \ \\\n  test/tool/perf_probe/installed_plugin_probe_test.dart \\\n  test/tool/perf_probe/installed_plugin_pdf_android_test.dart\
+        \ \\\n  test/tool/perf_probe/installed_plugin_pdf_runtime_test.dart \\\n  test/tool/perf_probe/installed_plugin_pdf_fixture_test.dart\
+        \ \\\n  test/tool/perf_probe/perf_fixture_startup_settings_test.dart\n"
+    env:
+      CARGO_BUILD_JOBS: '2'
+      CARGO_NET_GIT_FETCH_WITH_CLI: 'true'
+      FLUTTER_SUPPRESS_ANALYTICS: 'true'
+      DART_SUPPRESS_ANALYTICS: 'true'
+      CI: 'true'
+  android:
+    name: Actual plugins and PDF / Android emulator / debug
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: false
+    - name: Free hosted runner space for the emulator and native engine
+      run: 'sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost "$AGENT_TOOLSDIRECTORY"
+
+        df -h
+
+        '
+    - uses: actions/setup-java@v6.1.0
+      with:
+        distribution: temurin
+        java-version: '17'
+    - uses: ./.github/actions/setup-flutter
+      with:
+        flutter-version: 3.47.7
+    - uses: dtolnay/rust-toolchain@stable
+      with:
+        targets: x86_64-linux-android
+    - name: Enable KVM
+      run: "echo 'KERNEL==\"kvm\", GROUP=\"kvm\", MODE=\"0666\", OPTIONS+=\"static_node=kvm\"' \\\n  | sudo tee\
+        \ /etc/udev/rules.d/99-kvm4all.rules\nsudo udevadm control --reload-rules\nsudo udevadm trigger --name-match=kvm\n"
+    - name: Preinstall emulator and system image
+      run: bash .github/scripts/sdkmanager-install.sh emulator 'system-images;android-34;google_apis;x86_64'
+    - name: Run real plugins, Home/resume and PDF viewing, indexing and raster
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 34
+        arch: x86_64
+        target: google_apis
+        disable-animations: true
+        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
+        script: python3 tool/perf_probe/run_installed_plugin_android.py --device emulator-5554 --quiet-ms 1500 --output
+          build/installed-plugin-android
+    - name: Retain full evidence and partial failures
+      if: always()
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: installed-plugin-android-emulator-debug
+        path: build/installed-plugin-android
+        if-no-files-found: warn
+        retention-days: 90
+    env:
+      CARGO_BUILD_JOBS: '2'
+      CARGO_NET_GIT_FETCH_WITH_CLI: 'true'
+      FLUTTER_SUPPRESS_ANALYTICS: 'true'
+      DART_SUPPRESS_ANALYTICS: 'true'
+      CI: 'true'
+    needs:
+    - source-contracts
