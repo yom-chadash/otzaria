@@ -92,8 +92,9 @@ jobs:
         while IFS= read -r revision; do
           git fetch --no-tags https://github.com/yom-chadash/otzaria.git "$revision"
         done < <(python3 -c 'import json; print("\n".join(json.load(open("tool/issue5538_ci/font_profile_plan.json")).values()))')
-        flutter pub get --enforce-lockfile
-        flutter analyze --no-pub
+        mkdir -p "$RUNNER_TEMP/pdf-5538-font-preflight"
+        flutter pub get --enforce-lockfile 2>&1 | tee "$RUNNER_TEMP/pdf-5538-font-preflight/resolve.log"
+        flutter analyze --no-pub 2>&1 | tee "$RUNNER_TEMP/pdf-5538-font-preflight/analyze.log"
         python3 tool/issue5538_ci/prepare_native_inputs.py --output "$RUNNER_TEMP/pdf-5538-native"
     - name: Measure actual font recovery with three reusable AOT builds
       run: |
@@ -121,4 +122,5 @@ jobs:
           ${{ steps.evidence-root.outputs.root }}/pdf-5538-font-profile/**/*.png
           ${{ steps.evidence-root.outputs.root }}/pdf-5538-font-profile/**/*.pdf
           ${{ steps.evidence-root.outputs.root }}/pdf-5538-font-session/**
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-font-preflight/**
           ${{ steps.evidence-root.outputs.root }}/pdf-5538-native/*.json
