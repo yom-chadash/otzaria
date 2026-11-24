@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "baseline": "7a56977418884eec592d8d15fa275f176e29442f",
+  "candidate": "14f6ee6699082410a61fcc040e748261b7365459",
+  "launchesPerBlock": 3,
+  "repetitions": 5,
+  "cacheStates": [
+    "cold",
+    "warm"
+  ],
+  "scenarios": [
+    "pdf-reader",
+    "pdf-book-view"
+  ],
+  "cases": [
+    "uxlc-genesis",
+    "mikraot-gedolot-genesis-1859",
+    "letteris-hebrew-1910",
+    "gcc-15_2",
+    "derived-real-mixed-10000"
+  ]
+}

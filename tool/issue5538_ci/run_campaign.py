@@ -62,11 +62,13 @@ def percentile(values, fraction):
     return ordered[low] + (ordered[high] - ordered[low]) * (position - low)
 
 
-def latency_summary(blocks):
+def latency_summary(blocks, *, exclude_startup=False):
     collected = {}
     for block_index, reports in enumerate(blocks):
         for role, report in reports.items():
             for row in report["scenarios"]:
+                if exclude_startup and row["name"].startswith("startup."):
+                    continue
                 if row.get("status") != "passed" or row.get("measurementKind") == "resource-observation":
                     continue
                 clusters = collected.setdefault(row["name"], {}).setdefault(role, {})
@@ -108,6 +110,28 @@ def latency_summary(blocks):
             "exploratoryClusterBootstrap95Ms": [percentile(estimates, 0.025), percentile(estimates, 0.975)],
         }
     return summary
+
+
+def verify_launch_viewports(directory, report, launches, *, controlled_macos=False):
+    viewport = report.get("metadata", {}).get("viewport")
+    if not isinstance(viewport, dict) or any(
+            type(viewport.get(key)) not in (int, float)
+            or not math.isfinite(viewport[key]) or viewport[key] <= 0
+            for key in ("width", "height", "devicePixelRatio")):
+        raise ValueError("A measured viewport must have finite positive dimensions and DPR.")
+    for index in range(launches):
+        path = directory / f"launch-{index:03d}" / "phases.jsonl"
+        records = [json.loads(line) for line in path.read_text(encoding="utf-8-sig").splitlines() if line.strip()]
+        observations = [row["viewport"] for row in records if row.get("type") == "meta" and "viewport" in row]
+        if observations != [viewport]:
+            raise ValueError(f"Viewport changed within the measured process launches: {path}.")
+        if controlled_macos:
+            notes = [row for row in records if row.get("name") == "pdf.controlled_viewport"]
+            if (len(notes) != 1 or notes[0].get("startupComparisonExcluded") is not True
+                    or viewport["width"] != 1000 or viewport["height"] != 600
+                    or notes[0].get("width") != 1000 or notes[0].get("height") != 600):
+                raise ValueError("macOS requires a controlled PDF client viewport in every launch.")
+    return viewport
 
 
 def campaign(args):
@@ -153,6 +177,7 @@ def campaign(args):
         "workflow": {key: os.environ.get(key) for key in (
             "GITHUB_REPOSITORY", "GITHUB_WORKFLOW_REF", "GITHUB_SHA", "GITHUB_RUN_ID", "GITHUB_RUN_ATTEMPT")},
         "conditions": [], "preparation": {},
+        "excludedComparativeScenarios": ["startup.first_content", "startup.window_useful"] if system == "Darwin" else [],
         "limitations": [
             "Cold means fresh application data, not a flushed OS file cache.",
             "Single hosted VM per platform/mode; no physical GPU, printer or sleep/resume claim.",
@@ -160,6 +185,7 @@ def campaign(args):
             "Bootstrap intervals are exploratory with few launch clusters and no multiple-comparison adjustment.",
             "Tail percentiles are descriptive; no automatic performance pass/fail threshold is applied.",
             "The existing native runner rechecks incremental builds; no source or engine guard is bypassed.",
+            "On macOS the PDF client viewport is controlled after startup; startup rows are diagnostic only and excluded from performance conclusions.",
         ],
     }
     def save():
@@ -229,13 +255,8 @@ def campaign(args):
                 reports = {role: pair.read_json(results / role / "report.json") for role in commits}
                 for role, report in reports.items():
                     case.verify_run(results / role, report)
-                    viewport = report.get("metadata", {}).get("viewport")
-                    if not isinstance(viewport, dict) or any(
-                            type(viewport.get(key)) not in (int, float) or viewport[key] <= 0
-                            for key in ("width", "height", "devicePixelRatio")):
-                        raise ValueError("A measured viewport must have finite positive dimensions and DPR.")
-                    if any(not math.isfinite(viewport[key]) for key in ("width", "height", "devicePixelRatio")):
-                        raise ValueError("A measured viewport contains a nonfinite dimension.")
+                    viewport = verify_launch_viewports(results / role, report, settings["launches"],
+                                                       controlled_macos=system == "Darwin")
                     if "viewport" in receipt and receipt["viewport"] != viewport:
                         raise ValueError("The viewport changed across sources, blocks or corpus cases.")
                     receipt["viewport"] = viewport
@@ -243,6 +264,11 @@ def campaign(args):
                     pair.verify_posix_engines(results, reports, settings, system)
                 block["comparison"] = pair.validate_reports(reports, commits, settings,
                     receipt["hardwareId"], receipt["sdk"], expected_corpus=case.comparison["source"])
+                if system == "Darwin":
+                    for row in block["comparison"]["scenarios"]:
+                        if row["name"].startswith("startup."):
+                            row["excludedFromPerformanceConclusions"] = True
+                            row["reason"] = "The controlled client viewport was applied after startup."
                 measured_blocks.append(reports)
                 block["status"] = "passed"
                 destination = archive / f"block-{block_index}"
@@ -256,7 +282,7 @@ def campaign(args):
                     if data.exists():
                         shutil.rmtree(data)
                 save()
-            condition["latency"] = latency_summary(measured_blocks)
+            condition["latency"] = latency_summary(measured_blocks, exclude_startup=system == "Darwin")
             condition["status"] = "passed"
             pair.write_json(archive / "condition.json", condition)
             save()
