@@ -1,4 +1,5 @@
 // Fork-only debug/JIT work counts and native correctness; no latency claims.
+// ignore_for_file: invalid_use_of_visible_for_testing_member
 import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
@@ -46,6 +47,13 @@ PdfPageLayout _appLayout(
   return memo.layout(pages, hasCover: cover, verticalMargin: margin);
 }
 
+void _clearMemo(BookViewLayoutMemo memo) {
+  if (_candidate) {
+    final dynamic candidateMemo = memo;
+    candidateMemo.clear();
+  }
+}
+
 class _CountPage extends Fake implements PdfPage {
   _CountPage(this.w, this.h);
   double w;
@@ -91,14 +99,23 @@ Future<void> _pumpReady(
   throw StateError('Native viewer did not become ready.');
 }
 
-Future<void> _finishNativeDisposal(WidgetTester tester, PdfDocument document) async {
+Future<void> _finishNativeDisposal(
+  WidgetTester tester,
+  PdfDocument document,
+) async {
   var completed = false;
   final disposing = document.dispose().then((_) => completed = true);
   for (var i = 0; i < 100 && !completed; i++) {
-    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 10)));
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 10)),
+    );
     await tester.pump(const Duration(milliseconds: 10));
   }
-  expect(completed, isTrue, reason: 'native disposal must finish before leaving fake time');
+  expect(
+    completed,
+    isTrue,
+    reason: 'native disposal must finish before leaving fake time',
+  );
   await disposing;
 }
 
@@ -357,10 +374,10 @@ void main() {
               isVisible: isReal,
               margin: margin / 2,
               backgroundColor: Colors.white,
-              onDocumentChanged: (_) => memo.clear(),
+              onDocumentChanged: (_) => _clearMemo(memo),
               layoutPages: (pages, _) {
                 calls++;
-                if (mutableOverride != null) return mutableOverride!;
+                if (mutableOverride != null) return mutableOverride;
                 final owner =
                     !kIsWeb &&
                         PdfrxEntryFunctions.instance.backendType ==
@@ -517,7 +534,7 @@ void main() {
       } finally {
         await tester.pumpWidget(const SizedBox.shrink());
         await tester.pump();
-        memo.clear();
+        _clearMemo(memo);
         await _finishNativeDisposal(tester, document);
       }
       completedTests.add('native layout ${item['id']}');
