@@ -156,6 +156,38 @@ class EvidenceTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'painted-ready replacement owner'):
             self.validate()
 
+    def replacement_with_retired_good_frame(self):
+        self.replacement()
+        replacement = self.report['measuredFrames'][0]
+        retired = {**replacement, 'documentId': 0, 'captureStartedUs': 14, 'elapsedUs': 15}
+        self.report['measuredFrames'] = [retired, replacement]
+        self.report['parity']['unrelated'].update(firstGoodSampleUs=15, samples=2)
+        return replacement
+
+    def test_retired_good_frame_cannot_hide_a_wrong_replacement_image(self):
+        replacement = self.replacement_with_retired_good_frame()
+        path = self.root / 'wrong-replacement.png'
+        image = Image.new('RGBA', (320, 400), (0, 0, 0, 255))
+        image.save(path)
+        replacement.update(rgbaSha256=hashlib.sha256(image.tobytes()).hexdigest(),
+                           pngSha256=runner.digest(path), pngPath=path.name)
+        self.report['parity']['unrelated']['sampledMismatchingReadyFrames'] = 1
+        sidecar = json.loads((self.root / 'frame-receipts.json').read_text())
+        sidecar['measured'] = self.report['measuredFrames']
+        runner.save(self.root / 'frame-receipts.json', sidecar)
+        with self.assertRaisesRegex(ValueError, 'painted-ready replacement owner'):
+            self.validate()
+
+    def test_retired_good_frame_cannot_hide_a_wrong_replacement_page(self):
+        replacement = self.replacement_with_retired_good_frame()
+        replacement['pageNumber'] = 2
+        self.report['parity']['unrelated']['samples'] = 1
+        sidecar = json.loads((self.root / 'frame-receipts.json').read_text())
+        sidecar['measured'] = self.report['measuredFrames']
+        runner.save(self.root / 'frame-receipts.json', sidecar)
+        with self.assertRaisesRegex(ValueError, 'painted-ready replacement owner'):
+            self.validate()
+
     def test_recomputed_png_rejects_wrong_raw_rgba_hash(self):
         row = self.report["measuredFrames"][0]
         row["rgbaSha256"] = "0" * 64

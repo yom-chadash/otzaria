@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "strictValidatorSha256": "5690d7ea381220c867240af74730406838150b9f54a11339b091a44cc31762b1",
+  "groups": [
+    {
+      "id": "seven-scenarios-45431324033",
+      "runId": 45431324033,
+      "jobId": 138577099871,
+      "artifactId": 14942110080,
+      "sourceCommit": "d169dde56c8372086e02302346f9a3e5606fc9d6",
+      "zipSha256": "d55c845d5f74d3de71334497d87f26c1f7652518f3de5c0b817ecae314f2456f",
+      "zipSizeBytes": 4707900,
+      "memberCount": 1352,
+      "rawResultCount": 83,
+      "originalValidatedRows": 82,
+      "originalStatus": "failed",
+      "originalValidatorSha256": "03c2d33203d9b877200be013254268c36eee70cc26397270a713a26af2aabf2e",
+      "allowedOriginallyUnvalidated": ["replace-pending-font/02-C/result.json"],
+      "plan": {
+        "A": "2eccf6930b0a6bb8f2e772e02eb778af00e8f617",
+        "B": "bd08ceada1ac1e35c8e9fab51c369ed368bd3f51",
+        "C": "70bfd367954e4c83544d7195bfa37fbf07a96607"
+      }
+    },
+    {
+      "id": "replacement-45436343577",
+      "runId": 45436343577,
+      "jobId": 138595080937,
+      "artifactId": 14941633189,
+      "sourceCommit": "44f2b42110ec10aa3def28988ef4957bc5eec86e",
+      "zipSha256": "45815c85ea27050b5c15c1e5f73e0c9a94b238c5fe627bb5811724401aced3bf",
+      "zipSizeBytes": 1228407,
+      "memberCount": 198,
+      "rawResultCount": 12,
+      "originalValidatedRows": 12,
+      "originalStatus": "passed",
+      "originalValidatorSha256": "aebd90e08aee64decfa32cbf06a982c5edc7ac379349846e75fa7cae7e1e47bd",
+      "allowedOriginallyUnvalidated": [],
+      "plan": {
+        "A": "0ad2e41e1986bc159845bde05c3874bb934bd323",
+        "B": "0479cf74746ceaeb434282853399b68735d73787",
+        "C": "f88e86afea99ef0afa99a78790d3c6c39e1e6893"
+      }
+    }
+  ]
+}

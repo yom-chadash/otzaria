@@ -1,0 +1,119 @@
+name: PDF 5538 strict replay of frozen font evidence in fork
+
+'on':
+  push:
+    branches:
+      - ci/5538-font-replay-20261124
+    paths:
+      - .github/workflows/issue5538_font_replay.yml
+      - tool/issue5538_ci/font_fallback_replay*
+      - tool/issue5538_ci/font_fallback_profile_test.py
+      - tool/issue5538_ci/run_font_fallback_profile.py
+  workflow_dispatch: null
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: pdf-5538-font-replay-${{ github.sha }}
+  cancel-in-progress: false
+
+env:
+  CI: 'true'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONUNBUFFERED: '1'
+
+jobs:
+  replay:
+    name: Verify 83 plus 12 frozen native results without remeasurement
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: 'false'
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Install the exact Python validators used for local replay
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check Pillow==13.0.0 pypdf==6.21.4 PyYAML==6.0.3
+      - name: Run the six replay and 32 full-verifier contracts
+        run: |
+          set -euo pipefail
+          python -B -m unittest discover -s tool/issue5538_ci -p font_fallback_replay_test.py -v
+          python -B -m unittest discover -s tool/issue5538_ci -p font_fallback_profile_test.py -v
+          git diff --exit-code
+      - name: Download exact original ZIP artifacts and check GitHub provenance
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          import subprocess
+
+          plan = json.loads(Path('tool/issue5538_ci/font_fallback_replay_plan.json').read_text())
+          output = Path(os.environ['RUNNER_TEMP']) / 'pdf-5538-font-replay-inputs'
+          output.mkdir(exist_ok=False)
+          repo = 'yom-chadash/otzaria'
+          def api(path):
+              value = subprocess.run(['gh', 'api', path], check=True, capture_output=True, text=True)
+              return json.loads(value.stdout)
+          for spec in plan['groups']:
+              artifact_id = spec['artifactId']
+              metadata = api(f'repos/{repo}/actions/artifacts/{artifact_id}')
+              if not (metadata['id'] == artifact_id and metadata['expired'] is False
+                      and metadata['size_in_bytes'] == spec['zipSizeBytes']
+                      and metadata['digest'] == 'sha256:' + spec['zipSha256']
+                      and metadata['workflow_run']['id'] == spec['runId']
+                      and metadata['workflow_run']['head_sha'] == spec['sourceCommit']):
+                  raise ValueError('GitHub artifact identity differs from the pinned plan')
+              job = api(f'repos/{repo}/actions/jobs/{spec["jobId"]}')
+              expected = 'success' if spec['originalStatus'] == 'passed' else 'failure'
+              if not (job['id'] == spec['jobId'] and job['run_id'] == spec['runId']
+                      and job['status'] == 'completed' and job['conclusion'] == expected):
+                  raise ValueError('Original job identity/conclusion differs from the plan')
+              (output / f'{artifact_id}.metadata.json').write_text(json.dumps(metadata, indent=2) + '\n')
+              (output / f'{artifact_id}.job.json').write_text(json.dumps(job, indent=2) + '\n')
+              archive = output / f'{artifact_id}.zip'
+              with archive.open('xb') as target:
+                  subprocess.run(['gh', 'api', f'repos/{repo}/actions/artifacts/{artifact_id}/zip'],
+                                 check=True, stdout=target)
+              with archive.open('rb') as source:
+                  checksum = hashlib.file_digest(source, 'sha256').hexdigest()
+              if checksum != spec['zipSha256'] or archive.stat().st_size != spec['zipSizeBytes']:
+                  raise ValueError('Original downloaded ZIP hash/size differs')
+              print(json.dumps({'runId': spec['runId'], 'artifactId': artifact_id,
+                                'sha256': checksum, 'bytes': archive.stat().st_size}))
+          PY
+      - name: Replay all original raw results with strict v2 checks
+        run: |
+          set -euo pipefail
+          python -B tool/issue5538_ci/font_fallback_replay.py \
+            --plan tool/issue5538_ci/font_fallback_replay_plan.json \
+            --archives "$RUNNER_TEMP/pdf-5538-font-replay-inputs" \
+            --output "$RUNNER_TEMP/pdf-5538-font-replay"
+          git diff --exit-code
+      - name: Preserve validation results and original provenance
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pdf-5538-font-strict-replay
+          retention-days: 90
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/pdf-5538-font-replay/replay-summary.json
+            ${{ runner.temp }}/pdf-5538-font-replay/*/replay-result.json
+            ${{ runner.temp }}/pdf-5538-font-replay/*/replay-original-members.json
+            ${{ runner.temp }}/pdf-5538-font-replay-inputs/*.metadata.json
+            ${{ runner.temp }}/pdf-5538-font-replay-inputs/*.job.json

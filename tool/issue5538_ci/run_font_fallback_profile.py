@@ -294,9 +294,12 @@ def validate_replacement_lifecycle(report, config, opens, counts):
                     and row.get('inputId') == 'unrelated' and row.get('documentId') is not None]
     require(publications and publications[-1]['documentId'] == replacement['documentId'],
             'The live viewer did not publish the explicit replacement owner.')
+    replacement_input = next(item for item in config['documents'] if item['id'] == 'unrelated')
     require(any(row.get('inputId') == 'unrelated' and row.get('documentId') == replacement['documentId']
+                and row.get('pageNumber') == replacement_input['targetPage']
                 and row.get('renderState') == row.get('renderStateAfterCapture') == 'ready'
                 and row.get('stableDocument') is True and row.get('stableView') is True
+                and row.get('rgbaSha256') == report['referenceFrames']['unrelated']
                 and type(row.get('elapsedUs')) is int and row['elapsedUs'] >= released
                 for row in report['measuredFrames']),
             'No actual painted-ready replacement owner was observed after registration.')
