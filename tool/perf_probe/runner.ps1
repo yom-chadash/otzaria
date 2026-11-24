@@ -1,11 +1,11 @@
 # Invoked by run_perf_probe.ps1. Build once, then launch only the owned binary.
 #Requires -Version 7.4
+[CmdletBinding()]
 param(
   [ValidateSet('profile', 'debug', 'release')][string]$Mode = 'profile',
   [ValidateSet('cold', 'warm')][string]$CacheState = 'cold',
-  [ValidateSet('all', 'pdf-reader', 'pdf-book-view', 'pdf-multi-window')][string]$ScenarioSet = 'all',
-  [ValidateSet('integration', 'framework')][string]$BindingMode = 'integration',
-  [string]$PdfCase = '',
+  [ValidateSet('all')][string]$ScenarioSet = 'all',
+  [ValidateSet('integration')][string]$BindingMode = 'integration',
   [string]$ExpectedEngineSha256 = '',
   [ValidateRange(0, 10)][int]$Warmup = 1,
   [ValidateRange(1, 100)][int]$Repetitions = 5,
@@ -22,20 +22,12 @@ $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'probe_binding.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'probe_engine.psm1') -Force
 $bindingIdentity = Get-PerfBindingIdentity $BindingMode
-if ($BindingMode -eq 'framework' -and $ScenarioSet -eq 'all') {
-  throw 'The framework target accepts pdf-reader or pdf-book-view.'
-}
-if ($ScenarioSet -eq 'pdf-multi-window' -and $BindingMode -ne 'framework') {
-  throw 'The multi-window scenario requires the framework binding.'
-}
 if ($ExpectedEngineSha256 -and ($Mode -ne 'release' -or $ExpectedEngineSha256 -notmatch '^[a-fA-F0-9]{64}$')) {
   throw 'ExpectedEngineSha256 requires a release build and a SHA-256 digest.'
 }
 if (-not $IsWindows) { throw 'The automated desktop runner requires Windows. See README.md for other platforms.' }
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 if ($Baseline) { $Baseline = [IO.Path]::GetFullPath($Baseline, $PWD.Path) }
-if ($PdfCase) { $PdfCase = [IO.Path]::GetFullPath($PdfCase, $PWD.Path) }
-$pdfCaseSnapshot = ''
 $runDir = if ($OutputDirectory) { [IO.Path]::GetFullPath($OutputDirectory, $PWD.Path) } else {
   Join-Path $repo ("build/perf_probe/run_" + (Get-Date -Format 'yyyyMMdd_HHmmss') + '_' + [guid]::NewGuid().ToString('N').Substring(0, 8))
 }
@@ -76,35 +68,6 @@ function Merge-PerfOutputs([string[]]$Directories) {
   } finally { $journal.Dispose(); $samples.Dispose(); $errors.Dispose() }
 }
 
-function Write-PerfFrameworkFailureDiagnostics([string]$Directory) {
-  # Read only this launch's owned files, at most 16 KiB per file.
-  foreach ($name in @('completion.json', 'stdout.log', 'stderr.log')) {
-    try {
-      $stream = [IO.File]::Open(
-        (Join-Path $Directory $name), [IO.FileMode]::Open,
-        [IO.FileAccess]::Read, [IO.FileShare]::ReadWrite)
-      try {
-        $length = $stream.Length
-        $offset = if ($name -eq 'completion.json') { 0L } else { [Math]::Max(0L, $length - 16384L) }
-        [void]$stream.Seek($offset, [IO.SeekOrigin]::Begin)
-        $count = [int][Math]::Min(16384L, $length - $offset)
-        $buffer = [byte[]]::new($count)
-        $read = 0
-        while ($read -lt $count) {
-          $received = $stream.Read($buffer, $read, $count - $read)
-          if ($received -eq 0) { break }
-          $read += $received
-        }
-      } finally { $stream.Dispose() }
-      Write-Host "Framework failure evidence: $name (offset $offset, $read of $length bytes)"
-      Write-Host ([Text.Encoding]::UTF8.GetString($buffer, 0, $read))
-    } catch {
-      # Diagnostics must never replace the benchmark's original failure.
-      Write-Host ('Framework failure evidence unavailable for {0}: {1}' -f $name, $_.Exception.Message)
-    }
-  }
-}
-
 function Invoke-PerfLaunch([string]$Executable, [string]$Directory,
                            [string]$DataDirectory, [string]$Cache, [int]$Index,
                            [bool]$PreparationOnly = $false) {
@@ -124,7 +87,6 @@ function Invoke-PerfLaunch([string]$Executable, [string]$Directory,
         PERF_WARMUP = "$Warmup"; PERF_REPETITIONS = "$Repetitions"
         PERF_SCENARIO_SET = $ScenarioSet
         PERF_ENGINE_IDENTITY = ($manifest.engineIdentity | ConvertTo-Json -Depth 10 -Compress)
-        PERF_PDF_CASE = $pdfCaseSnapshot
         PERF_PREPARE_ONLY = $(if ($PreparationOnly) { '1' } else { '0' })
       }
     $ticks = $process.StartTime.ToUniversalTime().Ticks
@@ -155,11 +117,6 @@ function Invoke-PerfLaunch([string]$Executable, [string]$Directory,
     if ($process.HasExited -and $process.ExitCode -ne 0) {
       throw "Benchmark exited unsuccessfully (exit $($process.ExitCode))."
     }
-  } catch {
-    if ($BindingMode -eq 'framework') {
-      Write-PerfFrameworkFailureDiagnostics $Directory
-    }
-    throw
   } finally {
     try {
       New-Item -ItemType File -Path $stop -Force | Out-Null
@@ -196,11 +153,6 @@ Push-Location $repo
 try {
   & flutter pub get --enforce-lockfile
   if ($LASTEXITCODE -ne 0) { throw 'Pinned dependency resolution failed.' }
-  if ($PdfCase) {
-    $pdfCaseSnapshot = Join-Path $runDir 'pdf-case.json'
-    & dart tool/perf_probe/prepare_pdf_case.dart $PdfCase $pdfCaseSnapshot
-    if ($LASTEXITCODE -ne 0) { throw 'PDF case validation failed.' }
-  }
   $commit = (& git rev-parse HEAD).Trim()
   if ($LASTEXITCODE -ne 0) { throw 'Cannot identify source commit.' }
   $sdk = (& flutter --version --machine | Out-String | ConvertFrom-Json)
@@ -277,21 +229,6 @@ try {
       if ($Baseline) { $arguments += @('--baseline', $Baseline) }
       & dart @arguments
       if ($LASTEXITCODE -ne 0 -and $null -eq $failure) { $failure = "Report analysis failed ($LASTEXITCODE)." }
-      if ($null -eq $failure -and $BindingMode -eq 'framework') {
-        try {
-          $report = Get-Content -LiteralPath (Join-Path $runDir 'report.json') -Raw | ConvertFrom-Json
-          if ($report.complete -ne $true -or $report.successful -ne $true) {
-            throw 'Analysis did not confirm a complete successful run.'
-          }
-          Assert-PerfBindingIdentity $report.metadata.settings $BindingMode
-          Assert-PerfFrameworkScheduler $report.notes $Launches
-        } catch {
-          $failure = $_
-          $manifest.status = 'failed'
-          $manifest.analysisError = $_.Exception.Message
-          Write-PerfJson (Join-Path $runDir 'manifest.json') $manifest
-        }
-      }
     }
   } finally { Pop-Location }
   Write-Host "Results: $runDir"

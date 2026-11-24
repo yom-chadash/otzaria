@@ -103,7 +103,6 @@ void main() {
     try {
       await tester.pumpWidget(host());
       await _until(tester, () => document.loadStarts.contains(20));
-      debugPrint('native thumbnail metadata loaders: ${document.loadStarts}');
       expect(document.loadStarts, [20]);
       expect(document.delegate.pages.any((page) => !page.isLoaded), isTrue);
 
@@ -299,10 +298,6 @@ void main() {
           listenable.notifyListeners();
           await tester.pump();
         }
-        debugPrint(
-          'thumbnail metadata: pages=$count, notifications=20, '
-          'extraLoaders=${document.progressiveLoads}',
-        );
         expect(document.progressiveLoads, 0);
         expect(document.activeSubscriptions, 1);
         expect(tester.takeException(), isNull);

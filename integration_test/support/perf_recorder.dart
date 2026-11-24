@@ -74,7 +74,6 @@ class PerfRecorder {
   final _frames = <FrameTiming>[];
   final PerfHeapSampler heap = PerfHeapSampler();
   Map<String, Object?> Function()? counters;
-  Map<String, Object?> Function()? imageBudget;
   void Function()? verifyAction;
   bool _collecting = false;
   int _droppedFrames = 0;
@@ -111,7 +110,6 @@ class PerfRecorder {
     }
     final heapBefore = sampleHeap ? await heap.sample() : null;
     final countersBefore = counters?.call();
-    final imageBudgetBefore = imageBudget?.call();
     _frames.clear();
     _droppedFrames = 0;
     _collecting = true;
@@ -154,7 +152,6 @@ class PerfRecorder {
       rssPeak = rssEnd;
     }
     final countersAfter = counters?.call();
-    final imageBudgetAfter = imageBudget?.call();
     if (status == 'passed' &&
         observationWindow != null &&
         clock.elapsed < observationWindow) {
@@ -212,11 +209,6 @@ class PerfRecorder {
             : 'Disabled during startup.',
       'countersBefore': countersBefore,
       'countersAfter': countersAfter,
-      'imageBudgetBefore': imageBudgetBefore,
-      'imageBudgetAfter': imageBudgetAfter,
-      if (imageBudget == null)
-        'imageBudgetUnavailableReason':
-            'No PDF image budget sampler configured.',
       'details': details,
     });
     await _sink.flush();
