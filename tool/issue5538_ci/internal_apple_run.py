@@ -11,9 +11,14 @@ import plistlib
 import re
 import shutil
 import subprocess
+import sys
+import time
 import traceback
 
 import internal_apple_trace
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "perf_probe"))
+from run_perf_probe_posix import child_exit, cleanup_group
 
 
 UPSTREAM_SHA = "683df93e986af19bbcefd22606a417083116847b"
@@ -37,12 +42,32 @@ def write_json(path, value):
 
 
 def run(command, directory, log, timeout=900, extra_env=None):
-    result = subprocess.run([str(x) for x in command], cwd=directory,
-        env={**os.environ, "CI": "true", **(extra_env or {})}, text=True,
-        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=timeout)
-    log.write_text(result.stdout)
-    require(result.returncode == 0, f"Command exited {result.returncode}: {command}\n{result.stdout[-5000:]}")
-    return result.stdout
+    command = [str(x) for x in command]
+    receipt = {"command": command, "timeoutSeconds": timeout, "timedOut": False, "commandCompleted": False,
+               "ownedProcessGroupReaped": False}
+    with log.open("x", encoding="utf-8") as output:
+        process = subprocess.Popen(command, cwd=directory,
+            env={**os.environ, "CI": "true", **(extra_env or {})},
+            stdout=output, stderr=subprocess.STDOUT, start_new_session=True)
+        receipt["processGroupPid"] = process.pid
+        try:
+            deadline = time.monotonic() + timeout
+            while (code := child_exit(process)) is None:
+                if time.monotonic() >= deadline:
+                    receipt["timedOut"] = True
+                    raise TimeoutError(f"Command exceeded {timeout}s; partial log: {log}")
+                time.sleep(.05)
+            receipt["exitCode"] = code
+            receipt["commandCompleted"] = True
+        finally:
+            try:
+                cleanup_group(process)
+                receipt["ownedProcessGroupReaped"] = True
+            finally:
+                write_json(log.with_suffix(".process.json"), receipt)
+    result = log.read_text(encoding="utf-8")
+    require(code == 0, f"Command exited {code}: {command}\n{result[-5000:]}")
+    return result
 
 
 def validate(report, config):
@@ -105,6 +130,8 @@ def main():
                         help="After the unprofiled ABBA runs, export separate Time Profiler stacks.")
     args = parser.parse_args()
     require(platform.system() == "Darwin" and os.environ.get("CI") == "true", "Apple producer needs macOS and CI=true")
+    require(all(hasattr(os, name) for name in ("waitid", "P_PID", "WEXITED", "WNOHANG", "WNOWAIT", "CLD_EXITED")),
+            "This macOS Python lacks waitable-child process-group ownership support")
     module = Path(__file__).resolve().parent
     repo = module.parents[1]
     output = args.output.resolve()
@@ -182,45 +209,69 @@ dependencies:
             "operatingSystem": platform.platform(), "architecture": platform.machine(),
             "upstreamLockSha256": digest(lock), "corpusManifestSha256": digest(args.corpus_manifest),
             "harnessFiles": {p.name: digest(p) for p in module.glob("internal_apple_*") if p.is_file()},
+            "nativeOwnerSupportFiles": {name: digest(module.parent / "perf_probe" / name) for name in (
+                "run_perf_probe_posix.py", "posix_engine.py", "posix_resources.py", "probe_binding.py")},
             "generatedOverrides": {str(p.relative_to(upstream)): digest(p) for p in generated},
             "productionSdkChanged": False, "otzariaPerformanceComparison": False,
             "runOrder": ["pdfium", "coregraphics", "coregraphics", "pdfium"]})
         runs = []
-        for document in documents:
-            path = (args.corpus_manifest.parent / document["path"]).resolve()
-            require(digest(path) == document["sha256"], "Apple corpus hash mismatch")
-            for workload in ("file", "custom", "lifecycle"):
-                for index, backend in enumerate(("pdfium", "coregraphics", "coregraphics", "pdfium")):
-                    label = f"{document['id']}-{workload}-{index + 1}-{backend}"
-                    config = {"backend": backend, "workload": workload, "input": str(path),
-                              "inputSha256": document["sha256"], "output": str(output / f"{label}.json")}
-                    config_path = output / f"{label}-config.json"
-                    write_json(config_path, config)
-                    usage = run(["/usr/bin/time", "-lp", executable], app, output / f"{label}.log", timeout=600,
-                                extra_env={"ISSUE5538_CONFIG": str(config_path)})
-                    report = json.loads(Path(config["output"]).read_text())
-                    validate(report, config)
-                    cpu = {name: float(value) for name, value in re.findall(r"(?m)^(real|user|sys)\s+([\d.]+)$", usage)}
-                    peak = re.search(r"(?m)^\s*(\d+)\s+maximum resident set size\s*$", usage)
-                    require(set(cpu) == {"real", "user", "sys"} and peak, "Missing macOS process resource usage")
-                    runs.append({"label": label, "reportSha256": digest(config["output"]),
-                                 "processSeconds": cpu, "processPeakRssBytes": int(peak.group(1))})
-                    write_json(output / "runs.json", runs)
+        baseline_error = None
+        try:
+            for document in documents:
+                path = (args.corpus_manifest.parent / document["path"]).resolve()
+                require(digest(path) == document["sha256"], "Apple corpus hash mismatch")
+                for workload in ("file", "custom", "lifecycle"):
+                    for index, backend in enumerate(("pdfium", "coregraphics", "coregraphics", "pdfium")):
+                        label = f"{document['id']}-{workload}-{index + 1}-{backend}"
+                        config = {"backend": backend, "workload": workload, "input": str(path),
+                                  "inputSha256": document["sha256"], "output": str(output / f"{label}.json")}
+                        config_path = output / f"{label}-config.json"
+                        write_json(config_path, config)
+                        usage = run(["/usr/bin/time", "-lp", executable], app, output / f"{label}.log", timeout=600,
+                                    extra_env={"ISSUE5538_CONFIG": str(config_path)})
+                        report = json.loads(Path(config["output"]).read_text())
+                        validate(report, config)
+                        cpu = {name: float(value) for name, value in re.findall(r"(?m)^(real|user|sys)\s+([\d.]+)$", usage)}
+                        peak = re.search(r"(?m)^\s*(\d+)\s+maximum resident set size\s*$", usage)
+                        require(set(cpu) == {"real", "user", "sys"} and peak, "Missing macOS process resource usage")
+                        runs.append({"label": label, "reportSha256": digest(config["output"]),
+                                     "processSeconds": cpu, "processPeakRssBytes": int(peak.group(1))})
+                        write_json(output / "runs.json", runs)
+        except TimeoutError as error:
+            cleanup = json.loads((output / f"{label}.process.json").read_text())
+            require(cleanup.get("timedOut") is True and cleanup.get("ownedProcessGroupReaped") is True,
+                    "Timed-out workload was not safely closed; do not start profiling")
+            baseline_error = error
+            write_json(output / "baseline-failure.json", {"measurementComplete": False,
+                "label": label, "completedProcesses": len(runs), "expectedProcesses": 36,
+                "error": traceback.format_exc(), "cleanupReceipt": cleanup,
+                "traceMayContinueAfterBundleVerification": True})
         require({str(p.relative_to(bundle)): digest(p) for p in bundle.rglob("*") if p.is_file() and not p.is_symlink()} == bundle_hashes,
                 "Apple binary changed between paired runs")
-        write_json(output / "summary.json", {"measurementComplete": True, "section": "E12", "runs": runs,
+        write_json(output / "summary.json", {"measurementComplete": baseline_error is None, "section": "E12", "runs": runs,
+            "completedProcesses": len(runs), "expectedProcesses": 36, "bundleVerifiedAfterBaseline": True,
             "scope": "isolated upstream Apple backends on the same Flutter 3.50.0 binary",
             "otzariaAdoptionApproved": False, "physicalDevice": False})
+        trace_error = None
         if args.with_thread_trace:
-            internal_apple_trace.capture(executable=executable, app=app, output=output, documents=documents,
-                manifest=args.corpus_manifest, source_commit=source,
-                provenance_sha256=digest(output / "provenance.json"), run=run, validate=validate,
-                digest=digest, require=require, write_json=write_json)
+            try:
+                internal_apple_trace.capture(executable=executable, app=app, output=output, documents=documents,
+                    manifest=args.corpus_manifest, source_commit=source,
+                    provenance_sha256=digest(output / "provenance.json"), run=run, validate=validate,
+                    digest=digest, require=require, write_json=write_json)
+            except Exception as error:
+                trace_error = error
+                write_json(output / "trace-failure.json", {"traceComplete": False, "error": traceback.format_exc(),
+                    "baselineComplete": baseline_error is None, "timingsComparableWithBaseline": False})
             require({str(p.relative_to(bundle)): digest(p) for p in bundle.rglob("*")
                      if p.is_file() and not p.is_symlink()} == bundle_hashes,
                     "Apple bundle changed during the separate profiler runs")
         require(not run(["git", "status", "--porcelain", "--untracked-files=all"], repo,
                         output / "source-status-after.log"), "Fork source changed during Apple measurement")
+        if baseline_error is not None:
+            raise RuntimeError("ABBA workload timed out; retained partial evidence and a separate trace diagnostic") from baseline_error
+        if trace_error is not None:
+            raise RuntimeError("Separate native thread diagnostic failed; see trace-failure.json") from trace_error
     except Exception:
         write_json(output / "failure.json", {"measurementComplete": False, "error": traceback.format_exc()})
         raise

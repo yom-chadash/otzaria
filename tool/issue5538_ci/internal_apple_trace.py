@@ -95,7 +95,8 @@ def capture(*, executable, app, output, documents, manifest, source_commit,
             label = f"{document['id']}-{backend}"
             trace_path = traces / f'{label}.trace'
             config = {'backend': backend, 'workload': 'file', 'input': str(input_path),
-                      'inputSha256': document['sha256'], 'output': str(traces / f'{label}-report.json')}
+                      'inputSha256': document['sha256'], 'output': str(traces / f'{label}-report.json'),
+                      'diagnosticProgress': True}
             config_path = traces / f'{label}-config.json'
             write_json(config_path, config)
             command = ['xcrun', 'xctrace', 'record', '--template', 'Time Profiler',
@@ -104,8 +105,14 @@ def capture(*, executable, app, output, documents, manifest, source_commit,
             write_json(traces / f'{label}-command.json', [str(value) for value in command])
             run(command, app, traces / f'{label}-record.log', timeout=180)
             require(trace_path.exists(), 'xctrace did not create its recording')
-            report = json.loads(Path(config['output']).read_text())
-            validate(report, config)
+            report_path = Path(config['output'])
+            report, report_error = None, None
+            try:
+                report = json.loads(report_path.read_text())
+                validate(report, config)
+                require(report.get('phaseDiagnostics') is True, 'Missing isolated diagnostic mode')
+            except Exception as error:
+                report_error = f'{type(error).__name__}: {error}'
             require(digest(executable) == executable_sha, 'Trace changed the executable identity')
             toc = traces / f'{label}-toc.xml'
             run(['xcrun', 'xctrace', 'export', '--input', trace_path, '--toc', '--output', toc],
@@ -130,13 +137,18 @@ def capture(*, executable, app, output, documents, manifest, source_commit,
                                     **native_threads(xml, executable.name, backend)})
             require(exports, 'No supported Time Profiler stack table; available schemas: ' + str(schemas))
             results.append({'corpus': document['id'], 'backend': backend, 'inputSha256': document['sha256'],
-                            'executableSha256': executable_sha, 'reportSha256': digest(config['output']),
-                            'exports': exports, 'textCharacters': [r['textCharacters'] for r in report['observations']]})
+                            'executableSha256': executable_sha,
+                            'reportSha256': digest(report_path) if report_path.is_file() else None,
+                            'workloadComplete': report_error is None, 'workloadError': report_error,
+                            'exports': exports,
+                            'textCharacters': [r['textCharacters'] for r in report['observations']] if report_error is None else None})
             write_json(traces / 'summary.json', {'traceRuns': results, 'complete': False})
             require(sum(e['threadSamples'] for e in exports) > 0, 'No resolved thread/stack samples were exported')
     require(digest(executable) == executable_sha, 'Executable changed between traces')
     summary = {'complete': True, 'sourceCommit': source_commit, 'baselineProvenanceSha256': provenance_sha256,
                'executableSha256': executable_sha, 'xctraceVersion': version.strip(), 'traceRuns': results,
+               'workloadsComplete': all(r['workloadComplete'] for r in results),
+               'phaseDiagnosticIoEnabled': True,
                'nativeThreadAttributionAvailable': all(sum(e['nativeSymbolSamples'] for e in r['exports']) > 0
                                                        for r in results),
                'baselineTimingsProfiled': False, 'timingsComparableWithBaseline': False,
@@ -146,4 +158,5 @@ def capture(*, executable, app, output, documents, manifest, source_commit,
                'scope': 'Sampled native stacks during the same binary real-PDF text/render workload; '
                         'absence of native symbols is missing attribution, not evidence of no native work.'}
     write_json(traces / 'summary.json', summary)
+    require(summary['workloadsComplete'], 'A profiled workload did not complete; its exported stacks and partial phase log are retained')
     return summary

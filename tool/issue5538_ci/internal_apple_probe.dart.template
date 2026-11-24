@@ -13,11 +13,9 @@ final displayed = ValueNotifier<ui.Image?>(null);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final config =
-      jsonDecode(
-            File(Platform.environment['ISSUE5538_CONFIG']!).readAsStringSync(),
-          )
-          as Map<String, dynamic>;
+  final config = jsonDecode(
+    File(Platform.environment['ISSUE5538_CONFIG']!).readAsStringSync(),
+  ) as Map<String, dynamic>;
   final output = File(config['output'] as String);
   final backend = config['backend'] as String;
   final workload = config['workload'] as String;
@@ -61,6 +59,25 @@ Future<void> main() async {
   var documentsOpened = 0;
   var documentsClosed = 0;
   final beforeRss = ProcessInfo.currentRss;
+  final diagnosticProgress = config['diagnosticProgress'] == true;
+  void progress(String phase, int iteration, {bool boundary = false}) {
+    if (!boundary && !diagnosticProgress) return;
+    stdout.writeln(
+      jsonEncode({
+        'issue5538Progress': true,
+        'pid': pid,
+        'backend': backend,
+        'workload': workload,
+        'iteration': iteration,
+        'phase': phase,
+        'elapsedUs': clock.elapsedMicroseconds,
+        'observationsCompleted': rows.length,
+        'documentsClosed': documentsClosed,
+        'diagnosticProgress': diagnosticProgress,
+      }),
+    );
+  }
+
   try {
     if (backend == 'coregraphics') {
       PdfrxEntryFunctions.instance = PdfrxCoreGraphicsEntryFunctions();
@@ -73,6 +90,8 @@ Future<void> main() async {
       throw StateError('Apple input identity changed');
     final iterations = workload == 'lifecycle' ? 20 : 3;
     for (var iteration = 0; iteration < iterations; iteration++) {
+      progress('iteration-start', iteration, boundary: true);
+      await stdout.flush();
       final operation = Stopwatch()..start();
       RandomAccessFile? reader;
       PdfDocument? document;
@@ -80,6 +99,7 @@ Future<void> main() async {
       var customReads = 0;
       var customReadBytes = 0;
       try {
+        progress('open', iteration);
         if (workload == 'custom') {
           reader = await input.open();
           document = await PdfrxEntryFunctions.instance.openCustom(
@@ -102,6 +122,7 @@ Future<void> main() async {
         documentsOpened++;
         final openUs = operation.elapsedMicroseconds;
         final page = document.pages.first;
+        progress('render', iteration);
         final pixels = await page.render(
           fullWidth: 1000,
           fullHeight: 1000 * page.height / page.width,
@@ -113,18 +134,23 @@ Future<void> main() async {
         final width = pixels.width;
         final height = pixels.height;
         try {
+          progress('create-image', iteration);
           display = await pixels.createImage();
         } finally {
           pixels.dispose();
         }
         final imageReadyUs = operation.elapsedMicroseconds;
+        progress('submit-frame', iteration);
         displayed.value = display;
         await WidgetsBinding.instance.endOfFrame;
         final frameSubmittedUs = operation.elapsedMicroseconds;
+        progress('text', iteration);
         final text = (await page.loadText())?.fullText ?? '';
+        progress('links', iteration);
         final links = await page.loadLinks();
         final queued = <Map<String, Object?>>[];
         if (workload != 'lifecycle') {
+          progress('queued-renders', iteration);
           await Future.wait(
             List.generate(min(document.pages.length, 10), (i) async {
               final target = document!.pages[i];
@@ -172,9 +198,9 @@ Future<void> main() async {
           'pixelHeight': height,
           'textSha256': sha256.convert(utf8.encode(text)).toString(),
           'textCharacters': text.length,
-          'hebrewCharacters': RegExp(
-            r'[\u0590-\u05ff]',
-          ).allMatches(text).length,
+          'hebrewCharacters': RegExp(r'[\u0590-\u05ff]')
+              .allMatches(text)
+              .length,
           'linkCount': links.length,
           'customReadCalls': customReads,
           'customReadBytes': customReadBytes,
@@ -184,6 +210,8 @@ Future<void> main() async {
           'processLifetimePeakRss': ProcessInfo.maxRss,
         });
       } finally {
+        operation.stop();
+        progress('dispose', iteration);
         displayed.value = null;
         await WidgetsBinding.instance.endOfFrame;
         display?.dispose();
@@ -192,6 +220,8 @@ Future<void> main() async {
           documentsClosed++;
         }
         await reader?.close();
+        progress('iteration-finished', iteration, boundary: true);
+        await stdout.flush();
       }
     }
     await Future<void>.delayed(const Duration(milliseconds: 200));
@@ -227,6 +257,8 @@ Future<void> main() async {
         'documentsOpened': documentsOpened,
         'documentsClosed': documentsClosed,
         'customDisposeCallbacks': customDisposes,
+        'boundaryCheckpointsOutsideTimedOperations': true,
+        'phaseDiagnostics': diagnosticProgress,
         'errors': errors,
         'physicalDevice': false,
         'nativeHandleCompatibilityProven': false,
