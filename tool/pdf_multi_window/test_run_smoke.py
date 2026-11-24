@@ -1,6 +1,7 @@
 """Correctness evidence must reject stale or substituted native artifacts."""
 
 import copy
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -13,7 +14,7 @@ from unittest.mock import patch
 
 from tool.pdf_multi_window.engine import (
     BundledFlutterEngine, bundle_identity, darwin_engine_images, linux_engine_images,
-    verify_bundle_unchanged,
+    file_identity, verify_bundle_unchanged,
 )
 from tool.pdf_multi_window.run_smoke import (
     OwnedProcess, engine_identity, file_sha, source_snapshot, validate_completion,
@@ -59,6 +60,37 @@ class SmokeEvidenceTest(unittest.TestCase):
         self.report.write_text('{"status":"replaced"}', encoding="utf-8")
         with self.assertRaisesRegex(RuntimeError, "report has changed"):
             validate_completion(self.root, self.receipt)
+
+    def test_write_during_native_hash_is_rejected(self):
+        payload = self.root / "native.so"
+        payload.write_bytes(b"original native payload")
+        digest = hashlib.file_digest
+
+        def change_after_read(source, algorithm):
+            result = digest(source, algorithm)
+            with payload.open("ab") as writer:
+                writer.write(b"changed")
+            return result
+
+        with patch("tool.pdf_multi_window.engine.hashlib.file_digest", change_after_read):
+            with self.assertRaisesRegex(RuntimeError, "changed while hashing"):
+                file_identity(payload)
+
+    @unittest.skipIf(os.name == "nt", "Replacing an open file requires POSIX rename semantics")
+    def test_replacing_path_during_native_hash_is_rejected(self):
+        payload = self.root / "native.so"
+        payload.write_bytes(b"identical bytes in a different file")
+        digest = hashlib.file_digest
+
+        def replace_after_read(source, algorithm):
+            result = digest(source, algorithm)
+            payload.rename(self.root / "original.so")
+            payload.write_bytes(b"identical bytes in a different file")
+            return result
+
+        with patch("tool.pdf_multi_window.engine.hashlib.file_digest", replace_after_read):
+            with self.assertRaisesRegex(RuntimeError, "changed while hashing"):
+                file_identity(payload)
 
     def test_dirty_source_is_rejected_before_build(self):
         with patch("tool.pdf_multi_window.run_smoke.capture", side_effect=["a" * 40, " M pubspec.lock"]):

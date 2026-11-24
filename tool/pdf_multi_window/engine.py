@@ -15,10 +15,15 @@ def file_identity(path, *, allow_empty=False):
             raise RuntimeError("The bundled native file is not a nonempty regular file")
         digest = hashlib.file_digest(source, "sha256").hexdigest()
         after = os.fstat(source.fileno())
-    current = path.stat()
+        # Compare handle metadata consistently. Windows path stat and fstat
+        # can expose different file identifiers; keep the original handle
+        # alive while reopening the name to detect replacement without reuse.
+        with path.open("rb") as named_source:
+            current = os.fstat(named_source.fileno())
     for field in ("st_dev", "st_ino", "st_size", "st_mtime_ns", "st_ctime_ns"):
         if getattr(before, field) != getattr(after, field) or getattr(after, field) != getattr(current, field):
-            raise RuntimeError("A bundled native file changed while hashing it")
+            raise RuntimeError(f"A bundled native file changed while hashing it: {field} "
+                               f"{getattr(before, field)} -> {getattr(after, field)} -> {getattr(current, field)}")
     return {"bytes": after.st_size, "sha256": digest, "mode": stat.S_IMODE(after.st_mode)}
 
 

@@ -8,7 +8,7 @@ name: PDF 5538 cleanup native QA in fork
 permissions:
   contents: read
 concurrency:
-  group: pdf-5538-cleanup-qa-${{ github.ref }}
+  group: pdf-5538-cleanup-qa-${{ github.ref }}-${{ github.sha }}
   cancel-in-progress: false
 env:
   CI: 'true'
@@ -305,8 +305,8 @@ jobs:
         \ \\\n  tool/perf_probe/test_installed_pdf_ios.py \\\n  tool/perf_probe/test_installed_pdf_desktop.py \\\n  tool/pdf_multi_window/test_run_smoke.py\n"
   macos:
     if: github.repository == 'yom-chadash/otzaria'
-    name: Native Apple app / ${{ inputs.platform || 'macos' }}
-    runs-on: macos-latest
+    name: Native Apple app / ${{ inputs.platform || 'macos' }} / Intel
+    runs-on: macos-15-intel
     timeout-minutes: 90
     env:
       CI: 'true'
@@ -456,9 +456,9 @@ jobs:
 
           '
   ios:
-    name: Actual installed PDF / iOS Simulator / debug
+    name: Actual installed PDF / iOS Simulator / debug / Intel
     if: github.repository == 'yom-chadash/otzaria'
-    runs-on: macos-latest
+    runs-on: macos-15-intel
     timeout-minutes: 60
     env:
       CI: 'true'
