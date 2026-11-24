@@ -108,26 +108,21 @@ class PdfPageHighlights {
             _failed.add(page);
             continue;
           }
-          final ranges = pattern is String || pattern is RegExp
-              ? text.allMatches(pattern, caseInsensitive: true)
-              : Stream.fromIterable(
-                  pattern
-                      .allMatches(text.fullText)
-                      .where((m) => m.end > m.start)
-                      .map(
-                        (m) => PdfPageTextRange(
-                          pageText: text,
-                          start: m.start,
-                          end: m.end,
-                        ),
-                      ),
-                );
+          final needle = pattern is String ? pattern.toLowerCase() : pattern;
+          final content = pattern is String
+              ? text.fullText.toLowerCase()
+              : text.fullText;
           final matches = <PdfTextSearchResult>[];
-          await for (final range in ranges) {
+          for (final match in needle.allMatches(content)) {
             if (!current()) break;
+            if (match.end <= match.start) continue;
             matches.add(
               PdfTextSearchResult.fromRange(
-                range,
+                PdfPageTextRange(
+                  pageText: text,
+                  start: match.start,
+                  end: match.end,
+                ),
                 contextLength: contextLength,
               ),
             );
