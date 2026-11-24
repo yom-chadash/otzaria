@@ -166,8 +166,9 @@ Future<Map<String, Object?>> _measure(
       } else {
         await _until(
           () => documents.every(
-            (input) => probe.documents.any(
-              (document) => document.sourceName == input['absolutePath'],
+            (input) => probe.events.any(
+              (event) => event['type'] == 'nativeOpen' &&
+                  event['path'] == input['absolutePath'],
             ),
           ),
           'every concurrent native open',
@@ -383,6 +384,13 @@ Future<Map<String, Object?>> _measure(
       if (!gate.isCompleted) gate.complete();
     }
     await frames.stop();
+    await _save(File('${output.path}/lifecycle-snapshot.json'), {
+      'phase': probe.phase,
+      'events': probe.events,
+      'frames': frames.rows,
+      'pending': probe.pending,
+      'scope': 'Checkpoint before final cleanup; not proof of successful completion.',
+    });
     runApp(const SizedBox.shrink());
     await WidgetsBinding.instance.endOfFrame;
     await probe.disposeDocuments();
