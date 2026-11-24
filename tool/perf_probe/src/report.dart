@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:math' as math;
 
-import 'pdf_image_budget.dart';
-
 const _comparisonKeys = [
   'protocolVersion',
   'fixtureId',
@@ -215,7 +213,6 @@ Map<String, dynamic> buildProbeReport({
     }
   }
   final phases = <String, List<Map<String, dynamic>>>{};
-  final imageBudgetPeaks = <int, int>{};
   final phaseKeys = <(int, String, bool, int)>{};
   final legacyErrors = records
       .where((r) => r['type'] == 'note' && r['name'] == 'phase_error')
@@ -268,7 +265,6 @@ Map<String, dynamic> buildProbeReport({
       if (!legacy) _validateFrames(phase);
     }
     _validateMeasurementKind(phase);
-    _validateImageBudgetSnapshots(phase, meta, imageBudgetPeaks);
     phases.putIfAbsent(name, () => []).add(phase);
   }
   final expectedLaunches = {for (var i = 0; i < launchCount; i++) i};
@@ -350,9 +346,7 @@ Map<String, dynamic> _scenario(
   required bool legacy,
 }) {
   final measured = phases
-      .where(
-        (p) => p['status'] == 'passed' && p['warmup'] != true,
-      )
+      .where((p) => p['status'] == 'passed' && p['warmup'] != true)
       .toList();
   final failed = phases.where((p) => p['status'] == 'failed').length;
   final skipped = phases.where((p) => p['status'] == 'skipped').length;
@@ -424,7 +418,6 @@ Map<String, dynamic> _scenario(
       'observationDurationMs': sampleDistribution(
         measured.map((p) => p['durationMs'] as num),
       ),
-    'checkpointsMs': _checkpointMeasurements(measured),
     'frames': {
       'count': frameValues['buildMs']!.length,
       'truncatedIterations': truncatedFrames,
@@ -443,7 +436,6 @@ Map<String, dynamic> _scenario(
       'externalUsage',
       'isolateCount',
     ]),
-    'imageBudget': _imageBudgetSnapshots(measured),
     'counters': _snapshots(measured, 'counters', [
       'activeWork',
       'openTabs',
@@ -462,30 +454,6 @@ Map<String, dynamic> _scenario(
   };
 }
 
-Map<String, dynamic> _checkpointMeasurements(
-  List<Map<String, dynamic>> phases,
-) {
-  final values = <String, List<num>>{};
-  for (final phase in phases) {
-    final points = _map(_map(phase['details'])['checkpointsMs']);
-    for (final entry in points.entries) {
-      final samples = values.putIfAbsent(entry.key, () => []);
-      final value = _number(entry.value, 'checkpoint ${entry.key}');
-      if (value == null) continue;
-      if (value < 0 || value > (phase['durationMs'] as num)) {
-        throw FormatException('Checkpoint ${entry.key} is outside its phase');
-      }
-      samples.add(value);
-    }
-  }
-  return {
-    for (final entry in values.entries)
-      entry.key: entry.value.length == phases.length
-          ? sampleDistribution(entry.value)
-          : null,
-  };
-}
-
 Map<String, dynamic> _snapshots(
   List<Map<String, dynamic>> phases,
   String prefix,
@@ -500,34 +468,6 @@ Map<String, dynamic> _snapshots(
         ]),
     },
 };
-
-Map<String, dynamic> _imageBudgetSnapshots(
-  List<Map<String, dynamic>> phases,
-) {
-  final result = <String, dynamic>{...pdfImageBudgetObservationIdentity};
-  for (final point in ['Before', 'After']) {
-    final snapshots = [
-      for (final phase in phases)
-        if (phase['imageBudget$point'] != null)
-          _map(phase['imageBudget$point']),
-    ];
-    final complete = snapshots.isNotEmpty && snapshots.length == phases.length;
-    result[point.toLowerCase()] = {
-      'sampleCount': snapshots.length,
-      'expectedCount': phases.length,
-      'complete': complete,
-      if (!complete)
-        'unavailableReason': phases.isEmpty
-            ? 'No successful measured iterations.'
-            : 'A PDF image budget snapshot is missing from one or more iterations.',
-      for (final key in pdfImageBudgetByteKeys)
-        key: complete
-            ? sampleDistribution(snapshots.map((s) => s[key] as int))
-            : null,
-    };
-  }
-  return result;
-}
 
 Map<String, dynamic> _resources(
   List<Map<String, dynamic>> phases,
@@ -745,12 +685,6 @@ Map<String, dynamic> compareProbeReports(
 
 final _comparedMetrics = [
   for (final q in ['p50', 'p95', 'p99']) 'latencyMs.$q',
-  for (final checkpoint in [
-    'controller_ready',
-    'final_image_ready',
-    'first_visible_thumbnail_observed',
-  ])
-    for (final q in ['p50', 'p95', 'p99']) 'checkpointsMs.$checkpoint.$q',
   for (final frame in ['buildMs', 'rasterMs', 'totalMs'])
     for (final q in ['p50', 'p95', 'p99']) 'frames.$frame.$q',
   'memory.rssPeakBytes',
@@ -758,14 +692,6 @@ final _comparedMetrics = [
   'memory.rssDeltaBytes.p50',
   'heap.after.heapUsage.p50',
   'heap.after.externalUsage.p50',
-  for (final key in [
-    'retainedBytes',
-    'pendingBytes',
-    'speculativePendingBytes',
-    'estimatedBytes',
-  ])
-    'imageBudget.after.$key.p50',
-  'imageBudget.after.processPeakEstimatedBytes.max',
   'resources.cpuAverageCorePercent',
   'resources.treeWorkingSetPeakBytes',
   'resources.treePrivatePeakBytes',
@@ -809,31 +735,6 @@ String renderProbeMarkdown(Map<String, dynamic> report) {
       '${_format(_scale(_at(s, 'memory.rssPeakBytes'), 1048576))} |',
     );
   }
-  final checkpoints = <Map<String, dynamic>>[
-    for (final scenario in report['scenarios'] as List)
-      for (final point in _map(scenario['checkpointsMs']).entries)
-        {
-          'scenario': scenario['name'],
-          'point': point.key,
-          'values': point.value,
-        },
-  ];
-  if (checkpoints.isNotEmpty) {
-    out.writeln(
-      '\nנקודות מוכנות נמדדות מאותה תחילת פעולה; הן אינן שלבים עוקבים. '
-      'משאבים ופריימים משויכים לפעולה השלמה.\n',
-    );
-    out.writeln('| תרחיש | נקודת מוכנות | n | p50 ms | p95 ms | p99 ms |');
-    out.writeln('|---|---|---:|---:|---:|---:|');
-    for (final point in checkpoints) {
-      final values = _map(point['values']);
-      out.writeln(
-        '| ${_cell(point['scenario'])} | ${_cell(point['point'])} | '
-        '${values['count'] ?? "—"} | ${_format(values['p50'])} | '
-        '${_format(values['p95'])} | ${_format(values['p99'])} |',
-      );
-    }
-  }
   out.writeln(
     '\n| תרחיש | CPU ממוצע % ליבה | כיסוי CPU % | private peak MiB | heap אחרי p50 MiB | handles peak | תהליכים peak |',
   );
@@ -855,40 +756,6 @@ String renderProbeMarkdown(Map<String, dynamic> report) {
     'מקף מציין מדד חסר. CPU: ‏100% = ליבה אחת; private memory הוא commit פרטי, '
     'ואינו אומדן לזיכרון native בלבד. דגימות גודל וזמן כיסוי CPU מפורטים ב-JSON.',
   );
-  final budgetScenarios = (report['scenarios'] as List)
-      .cast<Map<String, dynamic>>()
-      .where(
-        (s) =>
-            (_at(s, 'imageBudget.before.sampleCount') as int? ?? 0) > 0 ||
-            (_at(s, 'imageBudget.after.sampleCount') as int? ?? 0) > 0,
-      );
-  if (budgetScenarios.isNotEmpty) {
-    out.writeln('\n## אומדן תקציב תמונות PDF\n');
-    out.writeln(
-      'נתוני pdfSharedImageBudget בחלון וב־UI isolate הנוכחיים, ב־MiB מוערכים. '
-      'אלה אינם RSS או מדידות הקצאות native/GPU. '
-      'שיא התהליך הוא השיא מאז יצירת התקציב, כולל warmup ופעולות קודמות; '
-      'הוא אינו שיא השלב ואינו מאופס. דגימה חסרה בחזרה אחת משאירה את אחוזוני אותה נקודה חסרים.\n',
-    );
-    out.writeln(
-      '| תרחיש | נקודה | כיסוי | retained p50 | pending p50 | speculative pending p50 | estimated p50 | שיא תהליך מצטבר max |',
-    );
-    out.writeln('|---|---|---:|---:|---:|---:|---:|---:|');
-    for (final scenario in budgetScenarios) {
-      for (final point in ['before', 'after']) {
-        final values = _map(_map(scenario['imageBudget'])[point]);
-        String bytes(String key, [String quantile = 'p50']) =>
-            _format(_scale(_at(values, '$key.$quantile'), 1048576));
-        out.writeln(
-          '| ${_cell(scenario['name'])} | $point | '
-          '${values['sampleCount']}/${values['expectedCount']} | '
-          '${bytes('retainedBytes')} | ${bytes('pendingBytes')} | '
-          '${bytes('speculativePendingBytes')} | ${bytes('estimatedBytes')} | '
-          '${bytes('processPeakEstimatedBytes', 'max')} |',
-        );
-      }
-    }
-  }
   final observations = (report['scenarios'] as List).where(
     (s) => s['measurementKind'] == 'resource-observation',
   );
@@ -958,38 +825,6 @@ void _validateMeasurementKind(Map<String, dynamic> phase) {
     }
   } else if (window != null) {
     throw FormatException('${phase['name']}: חלון תצפית הוצג כפעולה');
-  }
-}
-
-void _validateImageBudgetSnapshots(
-  Map<String, dynamic> phase,
-  Map<String, dynamic> metadata,
-  Map<int, int> previousPeaks,
-) {
-  final settings = _map(metadata['settings']);
-  final launch = _launch(phase);
-  for (final point in ['Before', 'After']) {
-    final snapshot = parsePdfImageBudgetSnapshot(
-      phase['imageBudget$point'],
-      context: '${phase['name']}.imageBudget$point',
-    );
-    if (snapshot == null) continue;
-    if (settings['resourceObservationVersion'] !=
-            perfResourceObservationVersion ||
-        settings['resourceObservationVersion'] is! int ||
-        settings['pdfImageBudgetMaximumBytes'] != snapshot['maximumBytes'] ||
-        settings['pdfImageBudgetMaximumBytes'] is! int) {
-      if (metadata['settings'] != null || metadata['status'] == 'passed') {
-        throw FormatException(
-          '${phase['name']}: הגדרות מדידת תקציב PDF חסרות או סותרות',
-        );
-      }
-    }
-    final peak = snapshot['processPeakEstimatedBytes'] as int;
-    if (peak < (previousPeaks[launch] ?? 0)) {
-      throw FormatException('${phase['name']}: שיא תקציב PDF נסוג באותה הפעלה');
-    }
-    previousPeaks[launch] = peak;
   }
 }
 

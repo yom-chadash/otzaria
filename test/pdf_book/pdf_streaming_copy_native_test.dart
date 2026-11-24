@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -73,7 +72,6 @@ void main() {
         expect(range.start.text.pageNumber, 1);
         expect(range.end.text.pageNumber, pageCount);
         final cache = PdfPageTextCache.forDocument(document);
-        final before = _cacheCounters(cache);
 
         expect(
           await tester.runAsync(() => actions.copy(keepSelection: true)),
@@ -82,7 +80,6 @@ void main() {
         expect(clipboard, hasLength(1));
         expect(selection.textSelectionPointRange!.start, range.start);
         expect(selection.textSelectionPointRange!.end, range.end);
-        final after = _cacheCounters(cache);
         expect(cache.length, lessThanOrEqualTo(cache.maximumPages));
         expect(cache.estimatedBytes, lessThanOrEqualTo(cache.maximumBytes));
         expect(clipboard.single, contains('Page 1 line 0'));
@@ -90,18 +87,6 @@ void main() {
 
         final reference = await tester.runAsync(selection.getSelectedText);
         expect(clipboard.single, reference);
-        debugPrint(
-          'PDF_STREAMING_COPY ${jsonEncode({
-            'pages': pageCount,
-            'fixtureBytes': bytes.length,
-            'fixtureSha256': sha256.convert(bytes).toString(),
-            'outputCharacters': clipboard.single.length,
-            'before': before,
-            'afterApplicationCopy': after,
-            'afterLibraryReferenceRead': _cacheCounters(cache),
-            'scope': 'Dart text-cache counters; not native allocations or RSS',
-          })}',
-        );
         expect(tester.takeException(), isNull);
       } finally {
         await tester.pumpWidget(const SizedBox.shrink());
@@ -219,11 +204,6 @@ Future<PdfViewerController> _show(
   }
   return controller;
 }
-
-Map<String, int> _cacheCounters(PdfPageTextCache cache) => {
-  'pages': cache.length,
-  'estimatedBytes': cache.estimatedBytes,
-};
 
 Uint8List _largePdf(int count) {
   final ids = [for (var i = 0; i < count; i++) 4 + i * 2];

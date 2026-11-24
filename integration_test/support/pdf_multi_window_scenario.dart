@@ -36,32 +36,34 @@ import 'package:pdfrx/pdfrx.dart';
 import 'package:printing/printing.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../../tool/perf_probe/src/pdf_multi_window.dart';
-import '../../tool/perf_probe/src/pdf_reader_case.dart';
-import 'installed_plugin_pdf_readiness.dart';
+import 'pdf_multi_window_contract.dart';
 import 'pdf_native_owner_tracker.dart';
-import 'perf_fixture.dart';
+import 'installed_plugin_pdf_fixture.dart';
+import 'installed_plugin_pdf_readiness.dart';
 import 'perf_probe_wait.dart';
 
-typedef PerfPdfMultiWindowPhase = Future<void> Function(
-  String name,
-  Future<void> Function() action, {
-  Map<String, Object?>? details,
-  Duration? observationWindow,
-});
+class PdfMultiWindowInput {
+  const PdfMultiWindowInput(this.pdfPath, this.pdfSha256);
 
-/// מפעיל חלונות וקוראים דרך מסלולי האפליקציה ובודק רק משאבים שבבעלות התרחיש.
-Future<Map<String, Object?>> runPerfPdfMultiWindow({
+  final String pdfPath;
+  final String pdfSha256;
+  int get pageCount => installedPdfPageSizes.length;
+
+  void verifyPageCount(int actual) {
+    _require(actual == pageCount, 'Generated native PDF page count changed.');
+  }
+}
+
+/// בודק חלונות וקוראים אמיתיים; אין כאן דגימת זמנים או משאבים.
+Future<Map<String, Object?>> runPdfMultiWindowSmoke({
   required WidgetController controller,
   required BuildContext context,
-  required PerfFixture fixture,
+  required PdfMultiWindowInput input,
   required Directory output,
-  required PerfPdfMultiWindowPhase phase,
 }) async {
-  final directory = await output.createTemp('pdf-multi-window-');
-  final probe = _MultiWindowProbe(controller, context, fixture, directory);
-  await phase('pdf_multi_window', probe.run, details: probe.report);
-  return probe.report;
+  final scenario = _MultiWindowSmoke(controller, context, input, output);
+  await scenario.run();
+  return scenario.report;
 }
 
 const _deadline = Duration(seconds: 45);
@@ -120,12 +122,12 @@ class _OwnerOperation {
   }
 }
 
-class _MultiWindowProbe {
-  _MultiWindowProbe(this.driver, this.context, this.fixture, this.output);
+class _MultiWindowSmoke {
+  _MultiWindowSmoke(this.driver, this.context, this.fixture, this.output);
 
   final WidgetController driver;
   final BuildContext context;
-  final PerfFixture fixture;
+  final PdfMultiWindowInput fixture;
   final Directory output;
   final report = <String, Object?>{
     'schemaVersion': 1,
@@ -133,7 +135,8 @@ class _MultiWindowProbe {
     'platform': Platform.operatingSystem,
     'bindingMode': 'framework',
     'scope': 'Actual app readers in native windows, indexing and PDF output.',
-    'overlapMeaning': 'Intervals of submitted and awaited work; not proof of native parallelism.',
+    'overlapMeaning':
+        'Order of submitted and awaited work; not proof of native parallelism.',
     'readiness':
         'Final visible image in the layer tree; no GPU presentation claim.',
     'physicalSleep': 'notRun',
@@ -180,7 +183,6 @@ class _MultiWindowProbe {
     final record = <String, Object?>{'status': 'running'};
     (report['steps'] as Map<String, Object?>)[name] = record;
     await _checkpoint();
-    final clock = Stopwatch()..start();
     try {
       await action();
       record['status'] = 'passed';
@@ -188,7 +190,6 @@ class _MultiWindowProbe {
       record.addAll({'status': 'failed', 'error': error.toString()});
       rethrow;
     } finally {
-      record['durationUs'] = clock.elapsedMicroseconds;
       await _checkpoint();
     }
   }
@@ -293,9 +294,8 @@ class _MultiWindowProbe {
         'Unrelated primary tabs are open.',
       );
       _require(
-        fixture.pdfReaderCase.sourceKind == PerfPdfSourceKind.generated &&
-            fixture.pdfReaderCase.pageCount >= 4,
-        'Multi-window QA requires a generated PDF case with at least four pages.',
+        fixture.pageCount == 4,
+        'Multi-window QA requires the four-page installed PDF fixture.',
       );
       _require(
         !provider.isIndexing.value,
@@ -331,9 +331,7 @@ class _MultiWindowProbe {
         secondary = await _openSecondary(2);
         final primaryOwner = primary.owners.capture('open:primary');
         final secondaryOwner = secondary.owners.capture('open:secondary');
-        fixture.pdfReaderCase.verifyPageCount(
-          primaryOwner.document.pages.length,
-        );
+        fixture.verifyPageCount(primaryOwner.document.pages.length);
         _require(
           !identical(primaryOwner.document, secondaryOwner.document) &&
               !identical(
@@ -406,7 +404,7 @@ class _MultiWindowProbe {
     }
     report['status'] = failure == null ? 'passed' : 'failed';
     if (failure == null) {
-      final errors = perfPdfMultiWindowErrors(report);
+      final errors = pdfMultiWindowErrors(report);
       if (errors.isNotEmpty) {
         failure = StateError(errors.join('\n'));
         failureStack = StackTrace.current;
@@ -440,7 +438,7 @@ class _MultiWindowProbe {
     );
     report['fixture'] = {
       'sourceKind': 'generated',
-      'pageCount': fixture.pdfReaderCase.pageCount,
+      'pageCount': fixture.pageCount,
       'sourcePath': source.path,
       'copyPath': copy.path,
       'sha256': before,
@@ -503,7 +501,7 @@ class _MultiWindowProbe {
       _readers.add(reader);
       _unreadyTabs.remove(tab);
       await _navigate(reader, page);
-      fixture.pdfReaderCase.verifyPageCount(
+      fixture.verifyPageCount(
         reader.owners.capture('openSecondary:ready').document.pages.length,
       );
       return reader;
@@ -572,14 +570,14 @@ class _MultiWindowProbe {
     final record = _record('concurrentWork');
     final operations = <String, Object?>{};
     record['submittedOperations'] = operations;
-    final clock = Stopwatch()..start();
+    var sequence = 0;
     Future<void> observed(String name, Future<void> Function() action) async {
-      final interval = <String, Object?>{'startUs': clock.elapsedMicroseconds};
+      final interval = <String, Object?>{'startOrder': ++sequence};
       operations[name] = interval;
       try {
         await action();
       } finally {
-        interval['endUs'] = clock.elapsedMicroseconds;
+        interval['endOrder'] = ++sequence;
       }
     }
 
@@ -609,7 +607,7 @@ class _MultiWindowProbe {
           'searchResults': searchResults,
         };
         for (final page in [2, 4]) {
-          final query = 'PDF preview fixture - page $page';
+          final query = installedPdfPageToken(page);
           // Exercise the UI's search path, including the engine's query
           // normalization, with the original PDF text unchanged.
           final hits = await const SearchRepository()
@@ -699,15 +697,15 @@ class _MultiWindowProbe {
         'Wrong output sheet size.',
       );
       final text = await page.loadStructuredText();
-      final right = text.fullText.indexOf('PDF preview fixture - page 2');
-      final left = text.fullText.indexOf('PDF preview fixture - page 3');
+      final right = text.fullText.indexOf(installedPdfPageToken(2));
+      final left = text.fullText.indexOf(installedPdfPageToken(3));
       _require(
         right >= 0 && left >= 0,
         'Selected text was lost during export.',
       );
       _require(
-        !text.fullText.contains('PDF preview fixture - page 1') &&
-            !text.fullText.contains('PDF preview fixture - page 4'),
+        !text.fullText.contains(installedPdfPageToken(1)) &&
+            !text.fullText.contains(installedPdfPageToken(4)),
         'Unselected source pages entered the vector output.',
       );
       _require(
@@ -759,7 +757,7 @@ class _MultiWindowProbe {
       width > 0 && height > 0 && pixels.length == width * height * 4,
       'Invalid native raster dimensions or byte count.',
     );
-    final ink = perfPdfInkPixelsOnWhite(
+    final ink = pdfInkPixelsOnWhite(
       pixels,
       premultipliedAlpha: premultipliedAlpha,
     );
@@ -789,39 +787,40 @@ class _MultiWindowProbe {
     }
   }
 
-  Future<void> _duringRaster(
-    String name,
-    Future<void> Function() transition,
-  ) => _step(name, () async {
-    final record = _record(name);
-    final primaryOwner = _OwnerOperation(
-      _primary!.owners,
-      'primary-during-$name',
-    );
-    final clock = Stopwatch()..start();
-    Future<void> observed(String key, Future<void> Function() action) async {
-      final interval = <String, Object?>{'startUs': clock.elapsedMicroseconds};
-      record[key] = interval;
-      try {
-        await action();
-      } finally {
-        interval['endUs'] = clock.elapsedMicroseconds;
-      }
-    }
-
-    await Future.wait([
-      observed('rasterInterval', () async {
-        record['raster'] = await _tracked(
-          _renderNativePage(),
-          'Native PDF raster during $name',
+  Future<void> _duringRaster(String name, Future<void> Function() transition) =>
+      _step(name, () async {
+        final record = _record(name);
+        final primaryOwner = _OwnerOperation(
+          _primary!.owners,
+          'primary-during-$name',
         );
-      }),
-      observed('transitionInterval', transition),
-    ]);
-    record['primaryDuringTransition'] = primaryOwner.finish();
-    record['primaryAfter'] = await _snapshot(_primary!, 3);
-    record['primaryUnchanged'] = true;
-  });
+        var sequence = 0;
+        Future<void> observed(
+          String key,
+          Future<void> Function() action,
+        ) async {
+          final interval = <String, Object?>{'startOrder': ++sequence};
+          record[key] = interval;
+          try {
+            await action();
+          } finally {
+            interval['endOrder'] = ++sequence;
+          }
+        }
+
+        await Future.wait([
+          observed('rasterEvents', () async {
+            record['raster'] = await _tracked(
+              _renderNativePage(),
+              'Native PDF raster during $name',
+            );
+          }),
+          observed('transitionEvents', transition),
+        ]);
+        record['primaryDuringTransition'] = primaryOwner.finish();
+        record['primaryAfter'] = await _snapshot(_primary!, 3);
+        record['primaryUnchanged'] = true;
+      });
 
   Future<Map<String, Object?>> _close(_Reader reader) async {
     final entry = reader.entry;
