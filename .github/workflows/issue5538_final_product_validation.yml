@@ -1,0 +1,91 @@
+name: PDF 5538 final measured product integration gates
+permissions:
+  contents: read
+concurrency:
+  group: pdf-5538-final-product-${{ github.sha }}
+  cancel-in-progress: false
+env:
+  CI: 'true'
+  FLUTTER_SUPPRESS_ANALYTICS: 'true'
+  DART_SUPPRESS_ANALYTICS: 'true'
+  OTZARIA_REQUIRE_SEARCH_ENGINE: '1'
+jobs:
+  product:
+    name: Full analysis and PDF product regressions / ${{ matrix.os }}
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+        - ubuntu-24.04
+        - windows-2022
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: false
+    - name: Support long paths in pinned Git dependencies on Windows
+      if: runner.os == 'Windows'
+      run: git config --global core.longpaths true
+    - uses: ./.github/actions/setup-flutter
+      with:
+        flutter-version: 3.47.7
+    - uses: dtolnay/rust-toolchain@stable
+    - name: Resolve the exact committed dependencies
+      run: 'set -euo pipefail
+
+        flutter --version
+
+        flutter --version --machine > "$RUNNER_TEMP/pdf-product-sdk.json"
+
+        git rev-parse HEAD > "$RUNNER_TEMP/pdf-product-source.txt"
+
+        flutter pub get --enforce-lockfile
+
+        git diff --exit-code -- pubspec.yaml pubspec.lock
+
+        '
+    - name: Require complete analysis with no diagnostics
+      run: 'set -euo pipefail
+
+        flutter analyze --no-pub 2>&1 | tee "$RUNNER_TEMP/pdf-product-analyze.log"
+
+        '
+    - name: Verify geometry, document ownership, fonts, indexing and highlighting
+      run: "set -euo pipefail\nflutter test --no-pub --concurrency=1 --reporter expanded \\\n  --file-reporter \"\
+        json:$RUNNER_TEMP/pdf-product-tests.json\" \\\n  test/pdf_book/book_view_layout_memo_test.dart \\\n  test/pdf_book/book_view_layout_scale_test.dart\
+        \ \\\n  test/pdf_book/pdf_spread_layout_test.dart \\\n  test/pdf_book/pdf_per_book_layout_zoom_test.dart\
+        \ \\\n  test/pdf_book/pdf_book_view_current_page_test.dart \\\n  test/pdf_book/pdf_search_highlight_pattern_test.dart\
+        \ \\\n  test/pdf_book/pdf_search_no_text_layer_test.dart \\\n  test/pdf_book/pdf_page_highlights_test.dart\
+        \ \\\n  test/pdf_book/pdf_document_font_recovery_test.dart \\\n  test/pdf_book/pdf_font_fallback_lifecycle_test.dart\
+        \ \\\n  test/pdf_book/pdf_font_fallback_test.dart \\\n  test/pdf_book/pdf_native_owner_tracker_test.dart\
+        \ \\\n  test/tool/perf_probe/pdf_multi_window_test.dart \\\n  test/indexing/utils/pdf_indexing_document_test.dart\
+        \ 2>&1 | tee \"$RUNNER_TEMP/pdf-product-tests.log\"\ngit diff --exit-code -- pubspec.yaml pubspec.lock lib\
+        \ test\n"
+    - name: Preserve complete or failed validation evidence
+      if: always()
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: pdf-5538-product-validation-${{ runner.os }}
+        retention-days: 90
+        if-no-files-found: error
+        path: '${{ runner.temp }}/pdf-product-sdk.json
+
+          ${{ runner.temp }}/pdf-product-source.txt
+
+          ${{ runner.temp }}/pdf-product-analyze.log
+
+          ${{ runner.temp }}/pdf-product-tests.json
+
+          ${{ runner.temp }}/pdf-product-tests.log
+
+          '
+'on':
+  push:
+    branches:
+    - ci/5538-final-product-20261124
+  workflow_dispatch: null
