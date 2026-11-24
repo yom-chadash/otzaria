@@ -11,6 +11,9 @@ import traceback
 import internal_upstream_run as upstream
 
 
+Q01_SOURCE_SHA = 'e567d27ce513845b5aebedb2fe66e7c5e4132ea5'
+
+
 def dart_execution(text):
     events = []
     for line in text.splitlines():
@@ -37,7 +40,7 @@ def dart_execution(text):
 
 def viewer_pdfium(source, system=None):
     """Reuse the actual native-test module for upstream's explicit PDFIUM_PATH gate."""
-    name = {'Linux': 'libpdfium.so', 'Darwin': 'libpdfium.dylib',
+    name = {'Linux': 'libpdfium.so', 'Darwin': 'libpdfium_dart.dylib',
             'Windows': 'pdfium.dll'}[system or platform.system()]
     candidates = sorted(p for p in (source / '.dart_tool/hooks_runner/shared/pdfium_dart/build').rglob(name)
                         if p.is_file() and not p.is_symlink())
@@ -87,12 +90,14 @@ def main():
         # The immutable-source receipt compares file bytes with git-show on every OS.
         upstream.run(['git', 'config', '--local', 'core.autocrlf', 'false'],
                      source, output / 'git-line-endings.log')
+        upstream.run(['git', 'config', '--local', 'core.eol', 'lf'],
+                     source, output / 'git-eol.log')
         upstream.run(['git', 'remote', 'add', 'origin', 'https://github.com/espresso3389/pdfrx.git'],
                      source, output / 'git-remote.log')
-        upstream.run(['git', 'fetch', '--depth=1', 'origin', upstream.UPSTREAM_SHA], source, output / 'git-fetch.log')
+        upstream.run(['git', 'fetch', '--depth=1', 'origin', Q01_SOURCE_SHA], source, output / 'git-fetch.log')
         upstream.run(['git', 'checkout', '--detach', 'FETCH_HEAD'], source, output / 'git-checkout.log')
         upstream.require(upstream.run(['git', 'rev-parse', 'HEAD'], source, output / 'upstream-sha.log').strip()
-                         == upstream.UPSTREAM_SHA, 'Upstream source changed')
+                         == Q01_SOURCE_SHA, 'Upstream Q01 candidate source changed')
         upstream.run([args.flutter, 'pub', 'get'], source, output / 'pub-get.log')
         upstream.run([args.flutter, 'pub', 'get', '--enforce-lockfile'], source, output / 'pub-get-enforced.log')
         frozen = upstream.freeze_resolved_source(source, output)
@@ -123,7 +128,10 @@ def main():
                 'node': (viewer, ['node', '--test', '--test-reporter=tap', *node_tests]),
             })
         upstream.write_json(output / 'provenance.json', {
-            'forkCommit': fork_sha, 'upstreamCommit': upstream.UPSTREAM_SHA, 'flutter': sdk,
+            'forkCommit': fork_sha, 'upstreamCommit': Q01_SOURCE_SHA, 'flutter': sdk,
+            'upstreamBaselineCommit': upstream.UPSTREAM_SHA,
+            'sourceRole': 'Q01 PR874 candidate: CI, test fixtures and documentation only; no runtime or SDK constraint changes.',
+            'sourcePullRequest': 'https://github.com/espresso3389/pdfrx/pull/874',
             'canary': args.canary, 'appSdkChanged': False, 'performanceComparison': False,
             'platform': platform.system(), 'architecture': platform.machine(),
             'nativeOnly': args.native_only, 'omittedSuites': omitted,
@@ -164,7 +172,9 @@ def main():
         upstream.require(native_assets, 'Missing identity for the tested native PDFium')
         upstream.require(not failures, 'Failed upstream suites: ' + ', '.join(failures))
         upstream.write_json(output / 'summary.json', {'status': 'passed', 'canary': args.canary,
-                                                     'upstreamCommit': upstream.UPSTREAM_SHA, 'suites': receipts,
+                                                     'upstreamCommit': Q01_SOURCE_SHA, 'suites': receipts,
+                                                     'upstreamBaselineCommit': upstream.UPSTREAM_SHA,
+                                                     'sourcePullRequest': 'https://github.com/espresso3389/pdfrx/pull/874',
                                                      'platform': platform.system(), 'nativeOnly': args.native_only,
                                                      'omittedSuites': omitted,
                                                      'appAdoptionProven': False})

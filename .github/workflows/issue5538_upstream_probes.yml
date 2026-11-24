@@ -1,11 +1,5 @@
 name: PDF 5538 remaining upstream probes in fork
 'on':
-  push:
-    branches:
-    - perf/5538-final-measurements-20261124
-    paths:
-    - .github/workflows/issue5538_upstream_probes.yml
-    - tool/issue5538_ci/internal_upstream_*
   workflow_dispatch: null
 permissions:
   contents: read

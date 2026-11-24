@@ -50,8 +50,12 @@ def freeze_resolved_source(upstream, output):
         cwd=upstream, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=60, check=True)
     patch_path = output / "pub-get-generated.patch"
     patch_path.write_bytes(patch.stdout)
-    status = run(["git", "diff", "--name-status", "--no-renames", "-z", "HEAD"],
-                 upstream, output / "pub-get-tracked-changes.log")
+    status_result = subprocess.run(
+        ["git", "diff", "--name-status", "--no-renames", "-z", "HEAD"],
+        cwd=upstream, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=60, check=True)
+    (output / "pub-get-tracked-changes.log").write_bytes(status_result.stdout)
+    (output / "pub-get-tracked-changes.stderr.log").write_bytes(status_result.stderr)
+    status = status_result.stdout.decode("utf-8")
     fields = status.split("\0")[:-1] if status else []
     require((not status or status.endswith("\0")) and len(fields) % 2 == 0,
             "Malformed generated-source change list")
