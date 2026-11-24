@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/issue5538_upstream_suites.yml'
       - 'tool/issue5538_ci/upstream_suites.py'
+      - 'tool/issue5538_ci/internal_upstream_run.py'
   workflow_dispatch:
 permissions:
   contents: read

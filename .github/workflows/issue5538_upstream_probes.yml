@@ -1,0 +1,73 @@
+name: PDF 5538 remaining upstream probes in fork
+'on':
+  push:
+    branches:
+    - perf/5538-final-measurements-20261124
+    paths:
+    - .github/workflows/issue5538_upstream_probes.yml
+    - tool/issue5538_ci/internal_upstream_*
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: pdf-5538-upstream-probes-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  CI: 'true'
+  FLUTTER_SUPPRESS_ANALYTICS: 'true'
+  DART_SUPPRESS_ANALYTICS: 'true'
+  PYTHONUNBUFFERED: '1'
+  PYTHONDONTWRITEBYTECODE: '1'
+jobs:
+  upstream:
+    name: Isolated upstream failures and existing suites / Flutter 3.50
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: false
+    - uses: actions/setup-node@v5
+      with:
+        node-version: '24'
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        flutter-version: 3.50.0
+        cache: false
+    - uses: actions/download-artifact@v8.0.2
+      with:
+        name: pdf-5538-component-corpus
+        path: ${{ runner.temp }}/pdf-5538-inputs
+        run-id: 45389994425
+        repository: yom-chadash/otzaria
+        github-token: ${{ github.token }}
+    - name: Run real native and browser probes with immutable upstream sources
+      shell: bash
+      run: "set -euo pipefail\npython3 tool/issue5538_ci/internal_upstream_run.py --flutter \"$FLUTTER_ROOT/bin/flutter\"\
+        \ \\\n  --chrome \"$(command -v google-chrome)\" \\\n  --corpus-manifest \"$RUNNER_TEMP/pdf-5538-inputs/pdf-5538-corpus/corpus.json\"\
+        \ \\\n  --output \"$RUNNER_TEMP/pdf-5538-upstream\"\n"
+    - name: Preserve complete and partial upstream receipts
+      if: always()
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: pdf-5538-upstream
+        retention-days: 90
+        if-no-files-found: warn
+        path: '${{ runner.temp }}/pdf-5538-upstream/*.json
+
+          ${{ runner.temp }}/pdf-5538-upstream/*.jsonl
+
+          ${{ runner.temp }}/pdf-5538-upstream/*.log
+
+          ${{ runner.temp }}/pdf-5538-upstream/*.tap
+
+          ${{ runner.temp }}/pdf-5538-upstream/*.patch
+
+          ${{ runner.temp }}/pdf-5538-upstream/*.lock
+
+          ${{ runner.temp }}/pdf-5538-upstream/web-probes/**
+
+          '
