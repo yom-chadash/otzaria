@@ -15,6 +15,10 @@ import traceback
 UPSTREAM_SHA = "683df93e986af19bbcefd22606a417083116847b"
 FLUTTER_SHA = "ab2912035e160d9cad6306df307576da6128ebdb"
 ENGINE_SHA = "371f77202a73e8dff57a8b3bff75bca55c090aee"
+GENERATED_REGISTRANTS = (
+    "example/pdf_combine/windows/flutter/generated_plugin_registrant.cc",
+    "example/pdf_combine/windows/flutter/generated_plugins.cmake",
+)
 
 
 def require(value, message):
@@ -38,6 +42,56 @@ def run(command, cwd, log, timeout=900, extra_env=None):
     log.write_text(result.stdout)
     require(result.returncode == 0, f"Command exited {result.returncode}: {command}\n{result.stdout[-5000:]}")
     return result.stdout
+
+
+def freeze_resolved_source(upstream, output):
+    patch = subprocess.run(
+        ["git", "diff", "--binary", "--full-index", "--no-ext-diff", "--no-renames", "HEAD"],
+        cwd=upstream, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=60, check=True)
+    patch_path = output / "pub-get-generated.patch"
+    patch_path.write_bytes(patch.stdout)
+    status = run(["git", "diff", "--name-status", "--no-renames", "-z", "HEAD"],
+                 upstream, output / "pub-get-tracked-changes.log")
+    fields = status.split("\0")[:-1] if status else []
+    require((not status or status.endswith("\0")) and len(fields) % 2 == 0,
+            "Malformed generated-source change list")
+    changes = [{"status": fields[i], "path": fields[i + 1]} for i in range(0, len(fields), 2)]
+    receipt_path = output / "pub-get-generated-receipt.json"
+    receipt = {"allowedPaths": list(GENERATED_REGISTRANTS), "trackedChanges": changes,
+               "patchSha256": digest(patch_path), "files": {}, "restored": False}
+    write_json(receipt_path, receipt)
+    require(all(item["status"] == "M" and item["path"] in GENERATED_REGISTRANTS for item in changes),
+            "Dependency resolution changed tracked source outside the two known generated registrants")
+    run(["git", "diff", "--cached", "--exit-code"], upstream, output / "pub-get-index.log")
+    for item in changes:
+        name = item["path"]
+        path = upstream / name
+        require(path.is_file() and not path.is_symlink(), "Generated registrant is not a regular file")
+        committed = subprocess.check_output(["git", "show", "HEAD:" + name], cwd=upstream, timeout=60)
+        receipt["files"][name] = {"committedSha256": hashlib.sha256(committed).hexdigest(),
+                                  "resolvedSha256": digest(path)}
+    write_json(receipt_path, receipt)
+    if changes:
+        run(["git", "restore", "--source=HEAD", "--worktree", "--", *[item["path"] for item in changes]],
+            upstream, output / "pub-get-generated-restore.log")
+    run(["git", "diff", "--exit-code", "HEAD"], upstream, output / "source-frozen.log")
+    for name, hashes in receipt["files"].items():
+        hashes["restoredSha256"] = digest(upstream / name)
+        require(hashes["restoredSha256"] == hashes["committedSha256"], "Generated source was not restored exactly")
+    receipt["restored"] = True
+    receipt["trackedSourceClean"] = True
+    receipt["resolvedFiles"] = {
+        name: digest(upstream / name)
+        for name in ("pubspec.lock", ".dart_tool/package_config.json", ".dart_tool/package_graph.json")
+    }
+    write_json(receipt_path, receipt)
+    return receipt
+
+
+def verify_frozen_source(upstream, output, receipt, phase):
+    run(["git", "diff", "--exit-code", "HEAD"], upstream, output / f"source-{phase}.log")
+    require(all(digest(upstream / name) == expected for name, expected in receipt["resolvedFiles"].items()),
+            "Resolved dependencies changed after source freeze")
 
 
 def json_test_receipt(text):
@@ -184,6 +238,8 @@ def main():
         lock = upstream / "pubspec.lock"
         shutil.copyfile(lock, output / "upstream-pubspec.lock")
         run([args.flutter, "pub", "get", "--enforce-lockfile"], upstream, output / "pub-get-enforced.log")
+        require(digest(lock) == digest(output / "upstream-pubspec.lock"), "Enforced resolution changed the lockfile")
+        frozen_source = freeze_resolved_source(upstream, output)
         dart = args.flutter.resolve().parent / "cache/dart-sdk/bin/dart"
         engine = upstream / "packages/pdfrx_engine"
         viewer = upstream / "packages/pdfrx"
@@ -196,11 +252,12 @@ def main():
         engine_log = run([dart, "test", "--concurrency=1", "--reporter=json", *worker_tests], engine, output / "native-suites.jsonl")
         chrome_tests = sorted(viewer.glob("test/wasm_*_test.dart"))
         require(len(chrome_tests) >= 7, "Expected browser regression suites disappeared")
-        chrome_log = run([args.flutter, "test", "--platform", "chrome", "--concurrency=1", "--reporter=json", *chrome_tests],
+        chrome_log = run([args.flutter, "test", "--no-pub", "--platform", "chrome", "--concurrency=1", "--reporter=json", *chrome_tests],
             viewer, output / "chrome-suites.jsonl", extra_env={"CHROME_EXECUTABLE": str(args.chrome)})
         suites = {"native": json_test_receipt(engine_log), "chrome": json_test_receipt(chrome_log),
                   "node": node_test_receipt(node_log), "nodeFiles": len(node_tests)}
         write_json(output / "suite-receipts.json", suites)
+        verify_frozen_source(upstream, output, frozen_source, "after-suites")
         corpus = json.loads(args.corpus_manifest.read_text())
         by_id = {d["id"]: d for d in corpus["documents"]}
         require(len(by_id) == len(corpus["documents"]), "Duplicate corpus document identity")
@@ -217,12 +274,14 @@ def main():
         run(["node", module / "internal_upstream_node.cjs", "--repo", upstream, "--corpus", paths["mikraot-gedolot-genesis-1859"],
             "--output", output / "web-probes", "--chrome", args.chrome], root, output / "web-probes.log")
         native = save_probe(module, upstream, output, dart, paths["gcc-15_2"])
-        run(["git", "diff", "--exit-code"], upstream, output / "source-after.log")
+        verify_frozen_source(upstream, output, frozen_source, "after")
         native_assets = {str(p.relative_to(upstream)): {"sha256": digest(p), "bytes": p.stat().st_size}
                         for p in (upstream / ".dart_tool").rglob("*") if p.is_file() and p.name in ("libpdfium.so", "libpdfium.dylib", "libpdfium_dart.dylib", "pdfium.dll")}
         require(native_assets, "Missing identity receipt for native PDFium used by build hooks")
         write_json(output / "provenance.json", {"upstreamCommit": UPSTREAM_SHA, "forkCommit": source, "forkDirty": False,
             "flutter": sdk, "canary": args.canary, "upstreamLockSha256": digest(lock), "nativeAssets": native_assets,
+            "resolvedSourceFreeze": {"receiptSha256": digest(output / "pub-get-generated-receipt.json"),
+                                     "patchSha256": digest(output / "pub-get-generated.patch")},
             "corpusManifestSha256": digest(args.corpus_manifest),
             "harnessFiles": {p.name: digest(p) for p in module.glob("internal_upstream_*") if p.is_file()},
             "nodeTests": [str(p.relative_to(upstream)) for p in node_tests],
