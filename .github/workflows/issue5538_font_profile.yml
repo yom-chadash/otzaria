@@ -35,32 +35,18 @@ jobs:
       CARGO_BUILD_JOBS: '2'
     steps:
     - name: Prepare the supported Linux build container
-      run: |
-        set -euo pipefail
-        apt-get update -y
-        apt-get install -y ca-certificates curl git jq unzip xz-utils zstd python3 python3-venv nodejs \
-          build-essential clang-14 cmake libblkid1 libcurl4-openssl-dev libglib2.0-dev \
-          libgtk-3-dev liblzma5 liblzma-dev libsecret-1-dev libsoup-3.0-dev \
-          libwebkit2gtk-4.1-dev libxkbcommon-dev ninja-build openjdk-17-jdk-headless \
-          pkg-config xvfb xauth binutils dbus dbus-x11 openbox wmctrl x11-utils \
-          x11-xserver-utils libgl1-mesa-dri libegl1 libglx-mesa0 mesa-utils
-        update-alternatives --install /usr/bin/clang clang /usr/bin/clang-14 100
-        update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-14 100
-        git config --global --add safe.directory '*'
-        {
-          echo "RUSTUP_HOME=$RUNNER_TEMP/pdf-5538-rustup"
-          echo "CARGO_HOME=$RUNNER_TEMP/pdf-5538-cargo"
-          echo 'JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64'
-          echo 'WPE_SDK=/opt/wpe-sdk'
-          echo 'PKG_CONFIG_PATH=/opt/wpe-sdk/lib/pkgconfig'
-          echo 'LD_LIBRARY_PATH=/opt/wpe-sdk/lib'
-          echo 'LIBRARY_PATH=/opt/wpe-sdk/lib'
-          echo 'CC=clang'
-          echo 'CXX=clang++'
-          echo 'CFLAGS=-Wno-error=unknown-warning-option'
-          echo 'CXXFLAGS=-Wno-error=unknown-warning-option'
-          echo 'LIBGL_ALWAYS_SOFTWARE=1'
-        } >> "$GITHUB_ENV"
+      run: "set -euo pipefail\napt-get update -y\napt-get install -y ca-certificates curl git jq unzip xz-utils\
+        \ zstd python3 python3-venv nodejs \\\n  build-essential clang-14 cmake libblkid1 libcurl4-openssl-dev libglib2.0-dev\
+        \ \\\n  libgtk-3-dev liblzma5 liblzma-dev libsecret-1-dev libsoup-3.0-dev \\\n  libwebkit2gtk-4.1-dev libxkbcommon-dev\
+        \ ninja-build openjdk-17-jdk-headless \\\n  pkg-config xvfb xauth binutils dbus dbus-x11 openbox wmctrl\
+        \ x11-utils \\\n  x11-xserver-utils libgl1-mesa-dri libegl1 libglx-mesa0 mesa-utils\nupdate-alternatives\
+        \ --install /usr/bin/clang clang /usr/bin/clang-14 100\nupdate-alternatives --install /usr/bin/clang++ clang++\
+        \ /usr/bin/clang++-14 100\ngit config --global --add safe.directory '*'\n{\n  echo \"RUSTUP_HOME=$RUNNER_TEMP/pdf-5538-rustup\"\
+        \n  echo \"CARGO_HOME=$RUNNER_TEMP/pdf-5538-cargo\"\n  echo 'JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64'\n\
+        \  echo 'WPE_SDK=/opt/wpe-sdk'\n  echo 'PKG_CONFIG_PATH=/opt/wpe-sdk/lib/pkgconfig'\n  echo 'LD_LIBRARY_PATH=/opt/wpe-sdk/lib'\n\
+        \  echo 'LIBRARY_PATH=/opt/wpe-sdk/lib'\n  echo 'CC=clang'\n  echo 'CXX=clang++'\n  echo 'CFLAGS=-Wno-error=unknown-warning-option'\n\
+        \  echo 'CXXFLAGS=-Wno-error=unknown-warning-option'\n  echo 'LIBGL_ALWAYS_SOFTWARE=1'\n} >> \"$GITHUB_ENV\"\
+        \n"
     - uses: actions/checkout@v7.0.1
       with:
         persist-credentials: 'false'
@@ -73,38 +59,37 @@ jobs:
     - name: Install the pinned Linux WPE runtime
       env:
         WPE_RUNTIME_SHA256: ca7e706c0ec2f66623fede2c369e3e13339448843e125f2ccd1553f4a3c4bcaf
-      run: |
-        set -euo pipefail
+      run: 'set -euo pipefail
+
         echo "$CARGO_HOME/bin" >> "$GITHUB_PATH"
+
         asset=wpe-runtime-2.48.7-linux-x86_64.tar.zst
+
         base=https://github.com/Otzaria/otzaria-wpe-runtime/releases/download/wpe-2.48.7-print-to-pdf
+
         curl -fSL --retry 3 --retry-delay 5 --max-time 300 -o "$RUNNER_TEMP/$asset" "$base/$asset"
-        printf '%s  %s\n' "$WPE_RUNTIME_SHA256" "$RUNNER_TEMP/$asset" | sha256sum -c -
+
+        printf ''%s  %s\n'' "$WPE_RUNTIME_SHA256" "$RUNNER_TEMP/$asset" | sha256sum -c -
+
         tar -C /opt -I zstd -xf "$RUNNER_TEMP/$asset"
+
         pkg-config --print-errors --exists wpe-webkit-2.0 wpe-platform-2.0 wpe-platform-headless-2.0 wpe-1.0
+
+        '
     - name: Verify shared harness, frozen sources and native producer
-      run: |
-        set -euo pipefail
-        python3 -m venv "$RUNNER_TEMP/pdf-5538-font-python"
-        "$RUNNER_TEMP/pdf-5538-font-python/bin/python" -m pip install PyYAML==6.0.3 Pillow==13.0.0 pypdf==6.21.4
-        echo "$RUNNER_TEMP/pdf-5538-font-python/bin" >> "$GITHUB_PATH"
-        "$RUNNER_TEMP/pdf-5538-font-python/bin/python" -B -m unittest discover -s tool/issue5538_ci -p 'font_fallback_profile_test.py'
-        while IFS= read -r revision; do
-          git fetch --no-tags https://github.com/yom-chadash/otzaria.git "$revision"
-        done < <(python3 -c 'import json; print("\n".join(json.load(open("tool/issue5538_ci/font_profile_plan.json")).values()))')
-        mkdir -p "$RUNNER_TEMP/pdf-5538-font-preflight"
-        flutter pub get --enforce-lockfile 2>&1 | tee "$RUNNER_TEMP/pdf-5538-font-preflight/resolve.log"
-        flutter analyze --no-pub 2>&1 | tee "$RUNNER_TEMP/pdf-5538-font-preflight/analyze.log"
-        python3 tool/issue5538_ci/prepare_native_inputs.py --output "$RUNNER_TEMP/pdf-5538-native"
-    - name: Measure actual font recovery with three reusable AOT builds
-      run: |
-        set -euo pipefail
-        bash tool/issue5538_ci/run_linux_desktop.sh "$RUNNER_TEMP/pdf-5538-font-session" \
-          python3 tool/issue5538_ci/run_font_fallback_profile.py \
-          --plan tool/issue5538_ci/font_profile_plan.json \
-          --pdfium "$RUNNER_TEMP/pdf-5538-native/libpdfium.so" \
-          --output "$RUNNER_TEMP/pdf-5538-font-profile" \
-          --flutter "$FLUTTER_ROOT/bin/flutter"
+      run: "set -euo pipefail\npython3 -m venv \"$RUNNER_TEMP/pdf-5538-font-python\"\n\"$RUNNER_TEMP/pdf-5538-font-python/bin/python\"\
+        \ -m pip install PyYAML==6.0.3 Pillow==13.0.0 pypdf==6.21.4\necho \"$RUNNER_TEMP/pdf-5538-font-python/bin\"\
+        \ >> \"$GITHUB_PATH\"\n\"$RUNNER_TEMP/pdf-5538-font-python/bin/python\" -B -m unittest discover -s tool/issue5538_ci\
+        \ -p 'font_fallback_profile_test.py'\nwhile IFS= read -r revision; do\n  git fetch --no-tags https://github.com/yom-chadash/otzaria.git\
+        \ \"$revision\"\ndone < <(python3 -c 'import json; print(\"\\n\".join(json.load(open(\"tool/issue5538_ci/font_profile_plan.json\"\
+        )).values()))')\nmkdir -p \"$RUNNER_TEMP/pdf-5538-font-preflight\"\nflutter pub get --enforce-lockfile 2>&1\
+        \ | tee \"$RUNNER_TEMP/pdf-5538-font-preflight/resolve.log\"\nflutter analyze --no-pub 2>&1 | tee \"$RUNNER_TEMP/pdf-5538-font-preflight/analyze.log\"\
+        \npython3 tool/issue5538_ci/prepare_native_inputs.py --output \"$RUNNER_TEMP/pdf-5538-native\"\n"
+    - name: Complete replacement scenario with fresh full A/B and B/C blocks
+      run: "set -euo pipefail\nbash tool/issue5538_ci/run_linux_desktop.sh \"$RUNNER_TEMP/pdf-5538-font-session\"\
+        \ \\\n  python3 tool/issue5538_ci/run_font_fallback_profile.py \\\n  --plan tool/issue5538_ci/font_profile_plan.json\
+        \ \\\n  --scenarios replace-pending-font \\\n  --pdfium \"$RUNNER_TEMP/pdf-5538-native/libpdfium.so\" \\\
+        \n  --output \"$RUNNER_TEMP/pdf-5538-font-profile\" \\\n  --flutter \"$FLUTTER_ROOT/bin/flutter\"\n"
     - name: Locate evidence inside the active runner environment
       if: always()
       id: evidence-root
@@ -116,11 +101,18 @@ jobs:
         name: pdf-5538-font-profile-abc-linux-x64
         retention-days: 90
         if-no-files-found: warn
-        path: |
-          ${{ steps.evidence-root.outputs.root }}/pdf-5538-font-profile/**/*.json
+        path: '${{ steps.evidence-root.outputs.root }}/pdf-5538-font-profile/**/*.json
+
           ${{ steps.evidence-root.outputs.root }}/pdf-5538-font-profile/**/*.log
+
           ${{ steps.evidence-root.outputs.root }}/pdf-5538-font-profile/**/*.png
+
           ${{ steps.evidence-root.outputs.root }}/pdf-5538-font-profile/**/*.pdf
+
           ${{ steps.evidence-root.outputs.root }}/pdf-5538-font-session/**
+
           ${{ steps.evidence-root.outputs.root }}/pdf-5538-font-preflight/**
+
           ${{ steps.evidence-root.outputs.root }}/pdf-5538-native/*.json
+
+          '
