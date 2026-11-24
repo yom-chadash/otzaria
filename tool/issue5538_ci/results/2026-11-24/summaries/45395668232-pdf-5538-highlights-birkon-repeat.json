@@ -1,0 +1,2267 @@
+{
+  "status": "validated",
+  "runId": 45395668232,
+  "jobId": 138450659192,
+  "url": "https://github.com/yom-chadash/otzaria/actions/runs/45395668232/job/138450659192",
+  "artifact": {
+    "artifact": {
+      "id": 14921013768,
+      "name": "pdf-5538-highlights-birkon-repeat",
+      "size_in_bytes": 4257961,
+      "url": "https://api.github.com/repos/yom-chadash/otzaria/actions/artifacts/14921013768",
+      "archive_download_url": "https://api.github.com/repos/yom-chadash/otzaria/actions/artifacts/14921013768/zip",
+      "expired": false,
+      "created_at": "2026-11-24T12:55:14Z",
+      "expires_at": "2027-02-22T12:39:44Z",
+      "updated_at": "2026-11-24T12:55:14Z",
+      "digest": "sha256:fce661e08966f652a589cf619114dffa455335a6c8afcaab9d475299726aca6c",
+      "workflow_run": {
+        "id": 45395668232,
+        "repository_id": 1461454132,
+        "head_repository_id": 1461454132,
+        "head_branch": "perf/5538-final-measurements-20261124",
+        "head_sha": "ac0237f34011d823a856117834a18cf02a64b774"
+      }
+    },
+    "verifiedArchiveSha256": "fce661e08966f652a589cf619114dffa455335a6c8afcaab9d475299726aca6c",
+    "verifiedArchiveBytes": 4257961,
+    "safeZipMembers": 149,
+    "uncompressedBytes": 18143913
+  },
+  "artifactId": 14921013768,
+  "archiveSha256": "fce661e08966f652a589cf619114dffa455335a6c8afcaab9d475299726aca6c",
+  "workflowSourceCommit": "ac0237f34011d823a856117834a18cf02a64b774",
+  "sourcePair": {
+    "baseline": "c038e878b19dc9fc1f04e08520c3e21e03c9d6e7",
+    "candidate": "329f198b2c2c2bc21b292905ae54785d1d28f016"
+  },
+  "inputSha256": "7e9d3f6af17b68da9400d575cd8b62913344a862490c75133b2c9b72b7783436",
+  "host": {
+    "name": "f8cc38e2d9cc",
+    "operatingSystem": "linux",
+    "operatingSystemVersion": "Linux 7.0.0-1014-aws #14~24.04.1-Ubuntu SMP PREEMPT Fri Sep 18 21:24:59 UTC 2026",
+    "processors": 4
+  },
+  "blocks": [
+    {
+      "label": "round-1",
+      "root": "pdf-5538-ci-evidence/pdf-5538-highlights-birkon-repeat/pdf-5538-highlights-repeat/round-1",
+      "host": {
+        "name": "f8cc38e2d9cc",
+        "operatingSystem": "linux",
+        "operatingSystemVersion": "Linux 7.0.0-1014-aws #14~24.04.1-Ubuntu SMP PREEMPT Fri Sep 18 21:24:59 UTC 2026",
+        "processors": 4
+      },
+      "processes": [
+        {
+          "block": "round-1",
+          "launch": 1,
+          "side": "baseline",
+          "report": "birkon-3_0/1-baseline/native/report.json",
+          "reportSha256": "a6db123475c1add9b4e5c6639e6b1e30e04d567919d085f606ecba209de76011",
+          "queries": {
+            "literal_alef": {
+              "completePassUs": [
+                3192,
+                1327,
+                2115,
+                1004,
+                992,
+                1007,
+                1012
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 992,
+                "median": 1012,
+                "mean": 1521.2857142857142,
+                "max": 3192,
+                "sampleStandardDeviation": 841.9342243282655
+              },
+              "untimedScheduledMicrotasks": 395,
+              "matchesPerPass": 389
+            },
+            "hebrew_combining_marks": {
+              "completePassUs": [
+                23617,
+                11560,
+                12442,
+                12024,
+                8047,
+                8592,
+                8060
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 8047,
+                "median": 11560,
+                "mean": 12048.857142857143,
+                "max": 23617,
+                "sampleStandardDeviation": 5448.115773016436
+              },
+              "untimedScheduledMicrotasks": 3954,
+              "matchesPerPass": 3948
+            },
+            "result_lines_alef_bet": {
+              "completePassUs": [
+                3553,
+                2113,
+                3105,
+                3562,
+                3331,
+                3316,
+                2016
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 2016,
+                "median": 3316,
+                "mean": 2999.4285714285716,
+                "max": 3562,
+                "sampleStandardDeviation": 657.9156118993927
+              },
+              "untimedScheduledMicrotasks": 450,
+              "matchesPerPass": 444
+            }
+          }
+        },
+        {
+          "block": "round-1",
+          "launch": 2,
+          "side": "candidate",
+          "report": "birkon-3_0/2-candidate/native/report.json",
+          "reportSha256": "ce38ecbbece635b1265d71b838a03217ee8be41921ca2a0af3540f024d559b9f",
+          "queries": {
+            "literal_alef": {
+              "completePassUs": [
+                3040,
+                866,
+                1942,
+                813,
+                855,
+                888,
+                833
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 813,
+                "median": 866,
+                "mean": 1319.5714285714287,
+                "max": 3040,
+                "sampleStandardDeviation": 861.052235570498
+              },
+              "untimedScheduledMicrotasks": 4,
+              "matchesPerPass": 389
+            },
+            "hebrew_combining_marks": {
+              "completePassUs": [
+                9561,
+                13090,
+                8751,
+                9182,
+                8188,
+                7619,
+                7590
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 7590,
+                "median": 8751,
+                "mean": 9140.142857142857,
+                "max": 13090,
+                "sampleStandardDeviation": 1895.39225742953
+              },
+              "untimedScheduledMicrotasks": 4,
+              "matchesPerPass": 3948
+            },
+            "result_lines_alef_bet": {
+              "completePassUs": [
+                3054,
+                1819,
+                1856,
+                1851,
+                3151,
+                5846,
+                1886
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 1819,
+                "median": 1886,
+                "mean": 2780.4285714285716,
+                "max": 5846,
+                "sampleStandardDeviation": 1474.9376096570838
+              },
+              "untimedScheduledMicrotasks": 4,
+              "matchesPerPass": 444
+            }
+          }
+        },
+        {
+          "block": "round-1",
+          "launch": 3,
+          "side": "candidate",
+          "report": "birkon-3_0/3-candidate/native/report.json",
+          "reportSha256": "604d43c581939ac3ecf3502892b13e59bccba173c72481fe8f166aea6d528002",
+          "queries": {
+            "literal_alef": {
+              "completePassUs": [
+                3188,
+                1912,
+                820,
+                825,
+                853,
+                854,
+                818
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 818,
+                "median": 853,
+                "mean": 1324.2857142857142,
+                "max": 3188,
+                "sampleStandardDeviation": 914.8800858192135
+              },
+              "untimedScheduledMicrotasks": 4,
+              "matchesPerPass": 389
+            },
+            "hebrew_combining_marks": {
+              "completePassUs": [
+                17782,
+                9880,
+                10372,
+                8668,
+                8711,
+                7627,
+                7598
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 7598,
+                "median": 8711,
+                "mean": 10091.142857142857,
+                "max": 17782,
+                "sampleStandardDeviation": 3547.079476065318
+              },
+              "untimedScheduledMicrotasks": 4,
+              "matchesPerPass": 3948
+            },
+            "result_lines_alef_bet": {
+              "completePassUs": [
+                2948,
+                2928,
+                1840,
+                3143,
+                1882,
+                3255,
+                1865
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 1840,
+                "median": 2928,
+                "mean": 2551.5714285714284,
+                "max": 3255,
+                "sampleStandardDeviation": 654.4073291008838
+              },
+              "untimedScheduledMicrotasks": 4,
+              "matchesPerPass": 444
+            }
+          }
+        },
+        {
+          "block": "round-1",
+          "launch": 4,
+          "side": "baseline",
+          "report": "birkon-3_0/4-baseline/native/report.json",
+          "reportSha256": "4f02236b22600a8322d0f7e977b35286eedd4681ecd06267d1320fd5482667c3",
+          "queries": {
+            "literal_alef": {
+              "completePassUs": [
+                1046,
+                2114,
+                1040,
+                993,
+                1038,
+                1022,
+                974
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 974,
+                "median": 1038,
+                "mean": 1175.2857142857142,
+                "max": 2114,
+                "sampleStandardDeviation": 414.78697917755096
+              },
+              "untimedScheduledMicrotasks": 395,
+              "matchesPerPass": 389
+            },
+            "hebrew_combining_marks": {
+              "completePassUs": [
+                14115,
+                11976,
+                11888,
+                11245,
+                9269,
+                11829,
+                9513
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 9269,
+                "median": 11829,
+                "mean": 11405,
+                "max": 14115,
+                "sampleStandardDeviation": 1645.7503860954532
+              },
+              "untimedScheduledMicrotasks": 3954,
+              "matchesPerPass": 3948
+            },
+            "result_lines_alef_bet": {
+              "completePassUs": [
+                3113,
+                3163,
+                2085,
+                2020,
+                3313,
+                2035,
+                1985
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 1985,
+                "median": 2085,
+                "mean": 2530.5714285714284,
+                "max": 3313,
+                "sampleStandardDeviation": 626.343850490782
+              },
+              "untimedScheduledMicrotasks": 450,
+              "matchesPerPass": 444
+            }
+          }
+        }
+      ],
+      "sourceFiles": {
+        "baseline": {
+          "integration_test/pdf_highlight_profile_test.dart": "ab8fb552a43b37bdc1d3d1e7d7d42463be5c911e631c052b98dad5eca3833a49",
+          "test_driver/integration_test.dart": "2f80a384a6d27eaff7c355e92644a0ab171504857103a4d53579236e8ecdb05f",
+          "tool/perf_probe/run_pdf_highlight_pair.py": "edc5cc81c0b2075ebaca3d1af86c27e85205180cdcc0f94df235841cac996d79",
+          "tool/perf_probe/validate_pdf_highlight_profile.py": "06ec67ea3d50b742de00fa42bb62e150e1c0babaa59afb9e92ee4eed986cb418",
+          "tool/perf_probe/run_pdf_text_profile.py": "a82e3df439351d815be4a5cdbcc56be21df66a2d3d067182fdaed8f2ba46eddd",
+          "lib/pdf_book/utils/pdf_book_layout.dart": "206b183c79434013da5c95185a5e7b87ad7c635bbec77d1123170729090e397e",
+          "pubspec.yaml": "f4158510da054310dc399b5536e17363b173138fecd551c2d38f0daef5ec6656",
+          "pubspec.lock": "9064ae492eb76ddfcaaaf6ba072dc1d8e41b6b217e724ae0a5b017a7468a6d17",
+          "lib/pdf_book/utils/result_lines_highlight_pattern.dart": "30dd69a8aadabc0fcf5928e486efb3321a656b99424091ab1d8447f9d5ec1ff9",
+          "lib/pdf_book/utils/proximity_highlight_pattern.dart": "b6c9828927addc10016c3fb3e9c3bf8e9f01730abbdae7ab13d8a0a6aa120162",
+          "lib/pdf_book/utils/pdf_page_highlights.dart": "bd5052ffabbf0ff8e94244bd93cc0c75949c75c8365918d34585996e865ca9e5"
+        },
+        "candidate": {
+          "integration_test/pdf_highlight_profile_test.dart": "ab8fb552a43b37bdc1d3d1e7d7d42463be5c911e631c052b98dad5eca3833a49",
+          "test_driver/integration_test.dart": "2f80a384a6d27eaff7c355e92644a0ab171504857103a4d53579236e8ecdb05f",
+          "tool/perf_probe/run_pdf_highlight_pair.py": "edc5cc81c0b2075ebaca3d1af86c27e85205180cdcc0f94df235841cac996d79",
+          "tool/perf_probe/validate_pdf_highlight_profile.py": "06ec67ea3d50b742de00fa42bb62e150e1c0babaa59afb9e92ee4eed986cb418",
+          "tool/perf_probe/run_pdf_text_profile.py": "a82e3df439351d815be4a5cdbcc56be21df66a2d3d067182fdaed8f2ba46eddd",
+          "lib/pdf_book/utils/pdf_book_layout.dart": "206b183c79434013da5c95185a5e7b87ad7c635bbec77d1123170729090e397e",
+          "pubspec.yaml": "f4158510da054310dc399b5536e17363b173138fecd551c2d38f0daef5ec6656",
+          "pubspec.lock": "9064ae492eb76ddfcaaaf6ba072dc1d8e41b6b217e724ae0a5b017a7468a6d17",
+          "lib/pdf_book/utils/result_lines_highlight_pattern.dart": "30dd69a8aadabc0fcf5928e486efb3321a656b99424091ab1d8447f9d5ec1ff9",
+          "lib/pdf_book/utils/proximity_highlight_pattern.dart": "b6c9828927addc10016c3fb3e9c3bf8e9f01730abbdae7ab13d8a0a6aa120162",
+          "lib/pdf_book/utils/pdf_page_highlights.dart": "d02baf432dd12f87d3b07e814a11c6497a79794eaaa7aa38230a25b4928fbb70"
+        }
+      },
+      "toolchain": {
+        "flutterSha256": "7d486c33b30a0cf1ea5146231c68bb8f966cdb4e087c5cd8b37e14513f536e7d",
+        "dartSha256": "85261d86cfb808e762d7b951f2d9745d8746eb9f1f2f62547d87753fd001ea89",
+        "pdfiumSha256": "1c251efce460d67437a4c76d4be9033ae2f17bf5603f5bff1af10209b94ca723",
+        "sdk": {
+          "dartVersionOutput": "Dart SDK version: 3.13.5 (stable) (Tue Sep 29 01:00:52 2026 -0700) on \"linux_x64\"",
+          "flutter": {
+            "frameworkVersion": "3.47.7",
+            "channel": "stable",
+            "repositoryUrl": "https://github.com/flutter/flutter.git",
+            "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+            "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+            "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+            "engineCommitDate": "2026-10-07 17:09:12.000Z",
+            "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+            "engineBuildDate": "2026-10-07 10:51:44.552",
+            "dartSdkVersion": "3.13.5",
+            "devToolsVersion": "2.60.0",
+            "flutterVersion": "3.47.7",
+            "flutterRoot": "/__t/flutter/stable-3.47.7-x64/flutter"
+          }
+        }
+      },
+      "queries": {
+        "literal_alef": {
+          "baselineProcessMediansUs": [
+            1012,
+            1038
+          ],
+          "candidateProcessMediansUs": [
+            866,
+            853
+          ],
+          "adjacentPairs": [
+            {
+              "order": "AB",
+              "baselineLaunch": 1,
+              "candidateLaunch": 2,
+              "baselineProcessMedianUs": 1012,
+              "candidateProcessMedianUs": 866,
+              "candidateToBaselineRatio": 0.8557312252964426,
+              "changePercent": -14.426877470355738,
+              "changeUs": -146
+            },
+            {
+              "order": "BA",
+              "baselineLaunch": 4,
+              "candidateLaunch": 3,
+              "baselineProcessMedianUs": 1038,
+              "candidateProcessMedianUs": 853,
+              "candidateToBaselineRatio": 0.8217726396917149,
+              "changePercent": -17.822736030828512,
+              "changeUs": -185
+            }
+          ],
+          "balancedBlockRatio": 0.8385800545436811,
+          "balancedBlockChangePercent": -16.14199454563189,
+          "pooledPassComparisonDescriptiveOnly": {
+            "p50BeforeUs": 1022,
+            "p50AfterUs": 854,
+            "p50ChangePercent": -16.438356164383563,
+            "microtasksBefore": 395,
+            "microtasksAfter": 4,
+            "matchesPerPass": 389
+          }
+        },
+        "hebrew_combining_marks": {
+          "baselineProcessMediansUs": [
+            11560,
+            11829
+          ],
+          "candidateProcessMediansUs": [
+            8751,
+            8711
+          ],
+          "adjacentPairs": [
+            {
+              "order": "AB",
+              "baselineLaunch": 1,
+              "candidateLaunch": 2,
+              "baselineProcessMedianUs": 11560,
+              "candidateProcessMedianUs": 8751,
+              "candidateToBaselineRatio": 0.7570069204152249,
+              "changePercent": -24.299307958477513,
+              "changeUs": -2809
+            },
+            {
+              "order": "BA",
+              "baselineLaunch": 4,
+              "candidateLaunch": 3,
+              "baselineProcessMedianUs": 11829,
+              "candidateProcessMedianUs": 8711,
+              "candidateToBaselineRatio": 0.7364105165271789,
+              "changePercent": -26.35894834728211,
+              "changeUs": -3118
+            }
+          ],
+          "balancedBlockRatio": 0.7466377014842104,
+          "balancedBlockChangePercent": -25.336229851578963,
+          "pooledPassComparisonDescriptiveOnly": {
+            "p50BeforeUs": 11560,
+            "p50AfterUs": 8711,
+            "p50ChangePercent": -24.64532871972318,
+            "microtasksBefore": 3954,
+            "microtasksAfter": 4,
+            "matchesPerPass": 3948
+          }
+        },
+        "result_lines_alef_bet": {
+          "baselineProcessMediansUs": [
+            3316,
+            2085
+          ],
+          "candidateProcessMediansUs": [
+            1886,
+            2928
+          ],
+          "adjacentPairs": [
+            {
+              "order": "AB",
+              "baselineLaunch": 1,
+              "candidateLaunch": 2,
+              "baselineProcessMedianUs": 3316,
+              "candidateProcessMedianUs": 1886,
+              "candidateToBaselineRatio": 0.5687575392038601,
+              "changePercent": -43.12424607961399,
+              "changeUs": -1430
+            },
+            {
+              "order": "BA",
+              "baselineLaunch": 4,
+              "candidateLaunch": 3,
+              "baselineProcessMedianUs": 2085,
+              "candidateProcessMedianUs": 2928,
+              "candidateToBaselineRatio": 1.40431654676259,
+              "changePercent": 40.431654676259,
+              "changeUs": 843
+            }
+          ],
+          "balancedBlockRatio": 0.8937089142444273,
+          "balancedBlockChangePercent": -10.629108575557266,
+          "pooledPassComparisonDescriptiveOnly": {
+            "p50BeforeUs": 3105,
+            "p50AfterUs": 1886,
+            "p50ChangePercent": -39.25925925925926,
+            "microtasksBefore": 450,
+            "microtasksAfter": 4,
+            "matchesPerPass": 444
+          }
+        }
+      },
+      "validation": {
+        "completeReportParity": true,
+        "rawJsonlEqualsReports": true,
+        "reportSha256Verified": true,
+        "recomputedPublishedComparison": true,
+        "timingObservations": 192,
+        "layoutObservations": 896
+      }
+    },
+    {
+      "label": "round-2",
+      "root": "pdf-5538-ci-evidence/pdf-5538-highlights-birkon-repeat/pdf-5538-highlights-repeat/round-2",
+      "host": {
+        "name": "f8cc38e2d9cc",
+        "operatingSystem": "linux",
+        "operatingSystemVersion": "Linux 7.0.0-1014-aws #14~24.04.1-Ubuntu SMP PREEMPT Fri Sep 18 21:24:59 UTC 2026",
+        "processors": 4
+      },
+      "processes": [
+        {
+          "block": "round-2",
+          "launch": 1,
+          "side": "baseline",
+          "report": "birkon-3_0/1-baseline/native/report.json",
+          "reportSha256": "cc56c544139f4baa4554e24261ada588f5b04b9c68e568e16dbdb8456f8c3c22",
+          "queries": {
+            "literal_alef": {
+              "completePassUs": [
+                1031,
+                2135,
+                1050,
+                1031,
+                998,
+                1044,
+                997
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 997,
+                "median": 1031,
+                "mean": 1183.7142857142858,
+                "max": 2135,
+                "sampleStandardDeviation": 419.9879816874583
+              },
+              "untimedScheduledMicrotasks": 395,
+              "matchesPerPass": 389
+            },
+            "hebrew_combining_marks": {
+              "completePassUs": [
+                13777,
+                12069,
+                11974,
+                11214,
+                9691,
+                10102,
+                8154
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 8154,
+                "median": 11214,
+                "mean": 10997.285714285714,
+                "max": 13777,
+                "sampleStandardDeviation": 1847.0025910725117
+              },
+              "untimedScheduledMicrotasks": 3954,
+              "matchesPerPass": 3948
+            },
+            "result_lines_alef_bet": {
+              "completePassUs": [
+                3159,
+                3308,
+                2035,
+                2107,
+                3328,
+                2085,
+                3470
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 2035,
+                "median": 3159,
+                "mean": 2784.5714285714284,
+                "max": 3470,
+                "sampleStandardDeviation": 669.5348776433924
+              },
+              "untimedScheduledMicrotasks": 450,
+              "matchesPerPass": 444
+            }
+          }
+        },
+        {
+          "block": "round-2",
+          "launch": 2,
+          "side": "candidate",
+          "report": "birkon-3_0/2-candidate/native/report.json",
+          "reportSha256": "f89b7f5a3f5e11a2a0c40b35402c99e9b5bcf65369dbdf8a9300161c5b758873",
+          "queries": {
+            "literal_alef": {
+              "completePassUs": [
+                1355,
+                951,
+                828,
+                852,
+                812,
+                887,
+                876
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 812,
+                "median": 876,
+                "mean": 937.2857142857143,
+                "max": 1355,
+                "sampleStandardDeviation": 189.680181960508
+              },
+              "untimedScheduledMicrotasks": 4,
+              "matchesPerPass": 389
+            },
+            "hebrew_combining_marks": {
+              "completePassUs": [
+                15785,
+                9738,
+                8677,
+                7408,
+                7993,
+                7856,
+                7820
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 7408,
+                "median": 7993,
+                "mean": 9325.285714285714,
+                "max": 15785,
+                "sampleStandardDeviation": 2949.4115635883322
+              },
+              "untimedScheduledMicrotasks": 4,
+              "matchesPerPass": 3948
+            },
+            "result_lines_alef_bet": {
+              "completePassUs": [
+                3410,
+                2114,
+                3282,
+                3120,
+                3250,
+                1917,
+                1898
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 1898,
+                "median": 3120,
+                "mean": 2713,
+                "max": 3410,
+                "sampleStandardDeviation": 697.6424585702908
+              },
+              "untimedScheduledMicrotasks": 4,
+              "matchesPerPass": 444
+            }
+          }
+        },
+        {
+          "block": "round-2",
+          "launch": 3,
+          "side": "candidate",
+          "report": "birkon-3_0/3-candidate/native/report.json",
+          "reportSha256": "571f7501dc39835bd13e00c3457d2dbf39f7e8b70da9549d330263fb1aaaf4c2",
+          "queries": {
+            "literal_alef": {
+              "completePassUs": [
+                1639,
+                940,
+                1948,
+                813,
+                852,
+                834,
+                870
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 813,
+                "median": 870,
+                "mean": 1128,
+                "max": 1948,
+                "sampleStandardDeviation": 464.98494599287835
+              },
+              "untimedScheduledMicrotasks": 4,
+              "matchesPerPass": 389
+            },
+            "hebrew_combining_marks": {
+              "completePassUs": [
+                15416,
+                9802,
+                11192,
+                8689,
+                6695,
+                6285,
+                6494
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 6285,
+                "median": 8689,
+                "mean": 9224.714285714286,
+                "max": 15416,
+                "sampleStandardDeviation": 3299.511464559853
+              },
+              "untimedScheduledMicrotasks": 4,
+              "matchesPerPass": 3948
+            },
+            "result_lines_alef_bet": {
+              "completePassUs": [
+                3310,
+                2496,
+                1857,
+                3160,
+                3134,
+                3329,
+                2031
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 1857,
+                "median": 3134,
+                "mean": 2759.5714285714284,
+                "max": 3329,
+                "sampleStandardDeviation": 624.8575456701731
+              },
+              "untimedScheduledMicrotasks": 4,
+              "matchesPerPass": 444
+            }
+          }
+        },
+        {
+          "block": "round-2",
+          "launch": 4,
+          "side": "baseline",
+          "report": "birkon-3_0/4-baseline/native/report.json",
+          "reportSha256": "59948ee3b9eb8b84b72a1d1a5685f547ac33951d3ae1e511160c75389719c883",
+          "queries": {
+            "literal_alef": {
+              "completePassUs": [
+                1096,
+                2154,
+                1071,
+                1049,
+                1026,
+                1041,
+                1012
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 1012,
+                "median": 1049,
+                "mean": 1207,
+                "max": 2154,
+                "sampleStandardDeviation": 418.51563093071366
+              },
+              "untimedScheduledMicrotasks": 395,
+              "matchesPerPass": 389
+            },
+            "hebrew_combining_marks": {
+              "completePassUs": [
+                18088,
+                11062,
+                10781,
+                11151,
+                9922,
+                10024,
+                9766
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 9766,
+                "median": 10781,
+                "mean": 11542,
+                "max": 18088,
+                "sampleStandardDeviation": 2940.958403876759
+              },
+              "untimedScheduledMicrotasks": 3954,
+              "matchesPerPass": 3948
+            },
+            "result_lines_alef_bet": {
+              "completePassUs": [
+                2058,
+                3312,
+                2062,
+                2100,
+                2052,
+                2085,
+                2066
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 2052,
+                "median": 2066,
+                "mean": 2247.8571428571427,
+                "max": 3312,
+                "sampleStandardDeviation": 469.53964283165294
+              },
+              "untimedScheduledMicrotasks": 450,
+              "matchesPerPass": 444
+            }
+          }
+        }
+      ],
+      "sourceFiles": {
+        "baseline": {
+          "integration_test/pdf_highlight_profile_test.dart": "ab8fb552a43b37bdc1d3d1e7d7d42463be5c911e631c052b98dad5eca3833a49",
+          "test_driver/integration_test.dart": "2f80a384a6d27eaff7c355e92644a0ab171504857103a4d53579236e8ecdb05f",
+          "tool/perf_probe/run_pdf_highlight_pair.py": "edc5cc81c0b2075ebaca3d1af86c27e85205180cdcc0f94df235841cac996d79",
+          "tool/perf_probe/validate_pdf_highlight_profile.py": "06ec67ea3d50b742de00fa42bb62e150e1c0babaa59afb9e92ee4eed986cb418",
+          "tool/perf_probe/run_pdf_text_profile.py": "a82e3df439351d815be4a5cdbcc56be21df66a2d3d067182fdaed8f2ba46eddd",
+          "lib/pdf_book/utils/pdf_book_layout.dart": "206b183c79434013da5c95185a5e7b87ad7c635bbec77d1123170729090e397e",
+          "pubspec.yaml": "f4158510da054310dc399b5536e17363b173138fecd551c2d38f0daef5ec6656",
+          "pubspec.lock": "9064ae492eb76ddfcaaaf6ba072dc1d8e41b6b217e724ae0a5b017a7468a6d17",
+          "lib/pdf_book/utils/result_lines_highlight_pattern.dart": "30dd69a8aadabc0fcf5928e486efb3321a656b99424091ab1d8447f9d5ec1ff9",
+          "lib/pdf_book/utils/proximity_highlight_pattern.dart": "b6c9828927addc10016c3fb3e9c3bf8e9f01730abbdae7ab13d8a0a6aa120162",
+          "lib/pdf_book/utils/pdf_page_highlights.dart": "bd5052ffabbf0ff8e94244bd93cc0c75949c75c8365918d34585996e865ca9e5"
+        },
+        "candidate": {
+          "integration_test/pdf_highlight_profile_test.dart": "ab8fb552a43b37bdc1d3d1e7d7d42463be5c911e631c052b98dad5eca3833a49",
+          "test_driver/integration_test.dart": "2f80a384a6d27eaff7c355e92644a0ab171504857103a4d53579236e8ecdb05f",
+          "tool/perf_probe/run_pdf_highlight_pair.py": "edc5cc81c0b2075ebaca3d1af86c27e85205180cdcc0f94df235841cac996d79",
+          "tool/perf_probe/validate_pdf_highlight_profile.py": "06ec67ea3d50b742de00fa42bb62e150e1c0babaa59afb9e92ee4eed986cb418",
+          "tool/perf_probe/run_pdf_text_profile.py": "a82e3df439351d815be4a5cdbcc56be21df66a2d3d067182fdaed8f2ba46eddd",
+          "lib/pdf_book/utils/pdf_book_layout.dart": "206b183c79434013da5c95185a5e7b87ad7c635bbec77d1123170729090e397e",
+          "pubspec.yaml": "f4158510da054310dc399b5536e17363b173138fecd551c2d38f0daef5ec6656",
+          "pubspec.lock": "9064ae492eb76ddfcaaaf6ba072dc1d8e41b6b217e724ae0a5b017a7468a6d17",
+          "lib/pdf_book/utils/result_lines_highlight_pattern.dart": "30dd69a8aadabc0fcf5928e486efb3321a656b99424091ab1d8447f9d5ec1ff9",
+          "lib/pdf_book/utils/proximity_highlight_pattern.dart": "b6c9828927addc10016c3fb3e9c3bf8e9f01730abbdae7ab13d8a0a6aa120162",
+          "lib/pdf_book/utils/pdf_page_highlights.dart": "d02baf432dd12f87d3b07e814a11c6497a79794eaaa7aa38230a25b4928fbb70"
+        }
+      },
+      "toolchain": {
+        "flutterSha256": "7d486c33b30a0cf1ea5146231c68bb8f966cdb4e087c5cd8b37e14513f536e7d",
+        "dartSha256": "85261d86cfb808e762d7b951f2d9745d8746eb9f1f2f62547d87753fd001ea89",
+        "pdfiumSha256": "1c251efce460d67437a4c76d4be9033ae2f17bf5603f5bff1af10209b94ca723",
+        "sdk": {
+          "dartVersionOutput": "Dart SDK version: 3.13.5 (stable) (Tue Sep 29 01:00:52 2026 -0700) on \"linux_x64\"",
+          "flutter": {
+            "frameworkVersion": "3.47.7",
+            "channel": "stable",
+            "repositoryUrl": "https://github.com/flutter/flutter.git",
+            "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+            "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+            "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+            "engineCommitDate": "2026-10-07 17:09:12.000Z",
+            "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+            "engineBuildDate": "2026-10-07 10:51:44.552",
+            "dartSdkVersion": "3.13.5",
+            "devToolsVersion": "2.60.0",
+            "flutterVersion": "3.47.7",
+            "flutterRoot": "/__t/flutter/stable-3.47.7-x64/flutter"
+          }
+        }
+      },
+      "queries": {
+        "literal_alef": {
+          "baselineProcessMediansUs": [
+            1031,
+            1049
+          ],
+          "candidateProcessMediansUs": [
+            876,
+            870
+          ],
+          "adjacentPairs": [
+            {
+              "order": "AB",
+              "baselineLaunch": 1,
+              "candidateLaunch": 2,
+              "baselineProcessMedianUs": 1031,
+              "candidateProcessMedianUs": 876,
+              "candidateToBaselineRatio": 0.8496605237633366,
+              "changePercent": -15.033947623666343,
+              "changeUs": -155
+            },
+            {
+              "order": "BA",
+              "baselineLaunch": 4,
+              "candidateLaunch": 3,
+              "baselineProcessMedianUs": 1049,
+              "candidateProcessMedianUs": 870,
+              "candidateToBaselineRatio": 0.8293612964728313,
+              "changePercent": -17.06387035271687,
+              "changeUs": -179
+            }
+          ],
+          "balancedBlockRatio": 0.8394495539043104,
+          "balancedBlockChangePercent": -16.05504460956896,
+          "pooledPassComparisonDescriptiveOnly": {
+            "p50BeforeUs": 1041,
+            "p50AfterUs": 870,
+            "p50ChangePercent": -16.42651296829971,
+            "microtasksBefore": 395,
+            "microtasksAfter": 4,
+            "matchesPerPass": 389
+          }
+        },
+        "hebrew_combining_marks": {
+          "baselineProcessMediansUs": [
+            11214,
+            10781
+          ],
+          "candidateProcessMediansUs": [
+            7993,
+            8689
+          ],
+          "adjacentPairs": [
+            {
+              "order": "AB",
+              "baselineLaunch": 1,
+              "candidateLaunch": 2,
+              "baselineProcessMedianUs": 11214,
+              "candidateProcessMedianUs": 7993,
+              "candidateToBaselineRatio": 0.7127697520955948,
+              "changePercent": -28.723024790440522,
+              "changeUs": -3221
+            },
+            {
+              "order": "BA",
+              "baselineLaunch": 4,
+              "candidateLaunch": 3,
+              "baselineProcessMedianUs": 10781,
+              "candidateProcessMedianUs": 8689,
+              "candidateToBaselineRatio": 0.8059549206938131,
+              "changePercent": -19.404507930618685,
+              "changeUs": -2092
+            }
+          ],
+          "balancedBlockRatio": 0.7579315859780181,
+          "balancedBlockChangePercent": -24.206841402198187,
+          "pooledPassComparisonDescriptiveOnly": {
+            "p50BeforeUs": 10781,
+            "p50AfterUs": 7993,
+            "p50ChangePercent": -25.86030980428532,
+            "microtasksBefore": 3954,
+            "microtasksAfter": 4,
+            "matchesPerPass": 3948
+          }
+        },
+        "result_lines_alef_bet": {
+          "baselineProcessMediansUs": [
+            3159,
+            2066
+          ],
+          "candidateProcessMediansUs": [
+            3120,
+            3134
+          ],
+          "adjacentPairs": [
+            {
+              "order": "AB",
+              "baselineLaunch": 1,
+              "candidateLaunch": 2,
+              "baselineProcessMedianUs": 3159,
+              "candidateProcessMedianUs": 3120,
+              "candidateToBaselineRatio": 0.9876543209876543,
+              "changePercent": -1.2345679012345734,
+              "changeUs": -39
+            },
+            {
+              "order": "BA",
+              "baselineLaunch": 4,
+              "candidateLaunch": 3,
+              "baselineProcessMedianUs": 2066,
+              "candidateProcessMedianUs": 3134,
+              "candidateToBaselineRatio": 1.516940948693127,
+              "changePercent": 51.69409486931269,
+              "changeUs": 1068
+            }
+          ],
+          "balancedBlockRatio": 1.2240152297499727,
+          "balancedBlockChangePercent": 22.401522974997267,
+          "pooledPassComparisonDescriptiveOnly": {
+            "p50BeforeUs": 2085,
+            "p50AfterUs": 3120,
+            "p50ChangePercent": 49.64028776978417,
+            "microtasksBefore": 450,
+            "microtasksAfter": 4,
+            "matchesPerPass": 444
+          }
+        }
+      },
+      "validation": {
+        "completeReportParity": true,
+        "rawJsonlEqualsReports": true,
+        "reportSha256Verified": true,
+        "recomputedPublishedComparison": true,
+        "timingObservations": 192,
+        "layoutObservations": 896
+      }
+    },
+    {
+      "label": "round-3",
+      "root": "pdf-5538-ci-evidence/pdf-5538-highlights-birkon-repeat/pdf-5538-highlights-repeat/round-3",
+      "host": {
+        "name": "f8cc38e2d9cc",
+        "operatingSystem": "linux",
+        "operatingSystemVersion": "Linux 7.0.0-1014-aws #14~24.04.1-Ubuntu SMP PREEMPT Fri Sep 18 21:24:59 UTC 2026",
+        "processors": 4
+      },
+      "processes": [
+        {
+          "block": "round-3",
+          "launch": 1,
+          "side": "baseline",
+          "report": "birkon-3_0/1-baseline/native/report.json",
+          "reportSha256": "6fe8605c0dd7d69939ef83e455d398a5ec44e8b4d8ec3be265ee39548432b8b1",
+          "queries": {
+            "literal_alef": {
+              "completePassUs": [
+                1036,
+                988,
+                1027,
+                993,
+                1002,
+                1056,
+                1239
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 988,
+                "median": 1027,
+                "mean": 1048.7142857142858,
+                "max": 1239,
+                "sampleStandardDeviation": 87.43323983801257
+              },
+              "untimedScheduledMicrotasks": 395,
+              "matchesPerPass": 389
+            },
+            "hebrew_combining_marks": {
+              "completePassUs": [
+                18225,
+                12416,
+                10301,
+                9606,
+                10398,
+                9813,
+                9490
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 9490,
+                "median": 10301,
+                "mean": 11464.142857142857,
+                "max": 18225,
+                "sampleStandardDeviation": 3140.620715111979
+              },
+              "untimedScheduledMicrotasks": 3954,
+              "matchesPerPass": 3948
+            },
+            "result_lines_alef_bet": {
+              "completePassUs": [
+                3126,
+                2038,
+                3281,
+                3477,
+                3303,
+                2014,
+                2063
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 2014,
+                "median": 3126,
+                "mean": 2757.4285714285716,
+                "max": 3477,
+                "sampleStandardDeviation": 680.4285064435148
+              },
+              "untimedScheduledMicrotasks": 450,
+              "matchesPerPass": 444
+            }
+          }
+        },
+        {
+          "block": "round-3",
+          "launch": 2,
+          "side": "candidate",
+          "report": "birkon-3_0/2-candidate/native/report.json",
+          "reportSha256": "0e55688dc16be214eed24487939485f60405daec21f29b436987739c4df7c4fd",
+          "queries": {
+            "literal_alef": {
+              "completePassUs": [
+                1666,
+                917,
+                827,
+                810,
+                874,
+                925,
+                822
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 810,
+                "median": 874,
+                "mean": 977.2857142857143,
+                "max": 1666,
+                "sampleStandardDeviation": 307.1501881738608
+              },
+              "untimedScheduledMicrotasks": 4,
+              "matchesPerPass": 389
+            },
+            "hebrew_combining_marks": {
+              "completePassUs": [
+                16148,
+                9817,
+                8674,
+                9765,
+                7934,
+                7637,
+                7690
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 7637,
+                "median": 8674,
+                "mean": 9666.42857142857,
+                "max": 16148,
+                "sampleStandardDeviation": 3001.506002944903
+              },
+              "untimedScheduledMicrotasks": 4,
+              "matchesPerPass": 3948
+            },
+            "result_lines_alef_bet": {
+              "completePassUs": [
+                3325,
+                2699,
+                3127,
+                3145,
+                1859,
+                1960,
+                1865
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 1859,
+                "median": 2699,
+                "mean": 2568.5714285714284,
+                "max": 3325,
+                "sampleStandardDeviation": 658.5554537882787
+              },
+              "untimedScheduledMicrotasks": 4,
+              "matchesPerPass": 444
+            }
+          }
+        },
+        {
+          "block": "round-3",
+          "launch": 3,
+          "side": "candidate",
+          "report": "birkon-3_0/3-candidate/native/report.json",
+          "reportSha256": "3f49523efe2d352eb6d9adb7b15e865154828a16f8b4f2a33988ba2eef62135e",
+          "queries": {
+            "literal_alef": {
+              "completePassUs": [
+                1284,
+                1940,
+                1913,
+                821,
+                854,
+                814,
+                845
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 814,
+                "median": 854,
+                "mean": 1210.142857142857,
+                "max": 1940,
+                "sampleStandardDeviation": 516.5079633369423
+              },
+              "untimedScheduledMicrotasks": 4,
+              "matchesPerPass": 389
+            },
+            "hebrew_combining_marks": {
+              "completePassUs": [
+                11933,
+                9833,
+                9153,
+                9073,
+                9172,
+                7752,
+                7424
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 7424,
+                "median": 9153,
+                "mean": 9191.42857142857,
+                "max": 11933,
+                "sampleStandardDeviation": 1479.8347719867081
+              },
+              "untimedScheduledMicrotasks": 4,
+              "matchesPerPass": 3948
+            },
+            "result_lines_alef_bet": {
+              "completePassUs": [
+                3004,
+                2044,
+                1859,
+                1896,
+                1870,
+                1874,
+                1892
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 1859,
+                "median": 1892,
+                "mean": 2062.714285714286,
+                "max": 3004,
+                "sampleStandardDeviation": 419.8327898444468
+              },
+              "untimedScheduledMicrotasks": 4,
+              "matchesPerPass": 444
+            }
+          }
+        },
+        {
+          "block": "round-3",
+          "launch": 4,
+          "side": "baseline",
+          "report": "birkon-3_0/4-baseline/native/report.json",
+          "reportSha256": "4a2c190cc0fe2b6ddbd74bd7229ba33295b7e51d422b63135a7a9d3e62c13c58",
+          "queries": {
+            "literal_alef": {
+              "completePassUs": [
+                1027,
+                2110,
+                1018,
+                977,
+                2312,
+                987,
+                1027
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 977,
+                "median": 1027,
+                "mean": 1351.142857142857,
+                "max": 2312,
+                "sampleStandardDeviation": 590.5950187653772
+              },
+              "untimedScheduledMicrotasks": 395,
+              "matchesPerPass": 389
+            },
+            "hebrew_combining_marks": {
+              "completePassUs": [
+                13818,
+                15296,
+                11911,
+                9588,
+                11119,
+                9504,
+                9257
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 9257,
+                "median": 11119,
+                "mean": 11499,
+                "max": 15296,
+                "sampleStandardDeviation": 2336.936170858474
+              },
+              "untimedScheduledMicrotasks": 3954,
+              "matchesPerPass": 3948
+            },
+            "result_lines_alef_bet": {
+              "completePassUs": [
+                3094,
+                2029,
+                3296,
+                2243,
+                2073,
+                3376,
+                2009
+              ],
+              "withinProcess": {
+                "n": 7,
+                "min": 2009,
+                "median": 2243,
+                "mean": 2588.5714285714284,
+                "max": 3376,
+                "sampleStandardDeviation": 633.7998782851616
+              },
+              "untimedScheduledMicrotasks": 450,
+              "matchesPerPass": 444
+            }
+          }
+        }
+      ],
+      "sourceFiles": {
+        "baseline": {
+          "integration_test/pdf_highlight_profile_test.dart": "ab8fb552a43b37bdc1d3d1e7d7d42463be5c911e631c052b98dad5eca3833a49",
+          "test_driver/integration_test.dart": "2f80a384a6d27eaff7c355e92644a0ab171504857103a4d53579236e8ecdb05f",
+          "tool/perf_probe/run_pdf_highlight_pair.py": "edc5cc81c0b2075ebaca3d1af86c27e85205180cdcc0f94df235841cac996d79",
+          "tool/perf_probe/validate_pdf_highlight_profile.py": "06ec67ea3d50b742de00fa42bb62e150e1c0babaa59afb9e92ee4eed986cb418",
+          "tool/perf_probe/run_pdf_text_profile.py": "a82e3df439351d815be4a5cdbcc56be21df66a2d3d067182fdaed8f2ba46eddd",
+          "lib/pdf_book/utils/pdf_book_layout.dart": "206b183c79434013da5c95185a5e7b87ad7c635bbec77d1123170729090e397e",
+          "pubspec.yaml": "f4158510da054310dc399b5536e17363b173138fecd551c2d38f0daef5ec6656",
+          "pubspec.lock": "9064ae492eb76ddfcaaaf6ba072dc1d8e41b6b217e724ae0a5b017a7468a6d17",
+          "lib/pdf_book/utils/result_lines_highlight_pattern.dart": "30dd69a8aadabc0fcf5928e486efb3321a656b99424091ab1d8447f9d5ec1ff9",
+          "lib/pdf_book/utils/proximity_highlight_pattern.dart": "b6c9828927addc10016c3fb3e9c3bf8e9f01730abbdae7ab13d8a0a6aa120162",
+          "lib/pdf_book/utils/pdf_page_highlights.dart": "bd5052ffabbf0ff8e94244bd93cc0c75949c75c8365918d34585996e865ca9e5"
+        },
+        "candidate": {
+          "integration_test/pdf_highlight_profile_test.dart": "ab8fb552a43b37bdc1d3d1e7d7d42463be5c911e631c052b98dad5eca3833a49",
+          "test_driver/integration_test.dart": "2f80a384a6d27eaff7c355e92644a0ab171504857103a4d53579236e8ecdb05f",
+          "tool/perf_probe/run_pdf_highlight_pair.py": "edc5cc81c0b2075ebaca3d1af86c27e85205180cdcc0f94df235841cac996d79",
+          "tool/perf_probe/validate_pdf_highlight_profile.py": "06ec67ea3d50b742de00fa42bb62e150e1c0babaa59afb9e92ee4eed986cb418",
+          "tool/perf_probe/run_pdf_text_profile.py": "a82e3df439351d815be4a5cdbcc56be21df66a2d3d067182fdaed8f2ba46eddd",
+          "lib/pdf_book/utils/pdf_book_layout.dart": "206b183c79434013da5c95185a5e7b87ad7c635bbec77d1123170729090e397e",
+          "pubspec.yaml": "f4158510da054310dc399b5536e17363b173138fecd551c2d38f0daef5ec6656",
+          "pubspec.lock": "9064ae492eb76ddfcaaaf6ba072dc1d8e41b6b217e724ae0a5b017a7468a6d17",
+          "lib/pdf_book/utils/result_lines_highlight_pattern.dart": "30dd69a8aadabc0fcf5928e486efb3321a656b99424091ab1d8447f9d5ec1ff9",
+          "lib/pdf_book/utils/proximity_highlight_pattern.dart": "b6c9828927addc10016c3fb3e9c3bf8e9f01730abbdae7ab13d8a0a6aa120162",
+          "lib/pdf_book/utils/pdf_page_highlights.dart": "d02baf432dd12f87d3b07e814a11c6497a79794eaaa7aa38230a25b4928fbb70"
+        }
+      },
+      "toolchain": {
+        "flutterSha256": "7d486c33b30a0cf1ea5146231c68bb8f966cdb4e087c5cd8b37e14513f536e7d",
+        "dartSha256": "85261d86cfb808e762d7b951f2d9745d8746eb9f1f2f62547d87753fd001ea89",
+        "pdfiumSha256": "1c251efce460d67437a4c76d4be9033ae2f17bf5603f5bff1af10209b94ca723",
+        "sdk": {
+          "dartVersionOutput": "Dart SDK version: 3.13.5 (stable) (Tue Sep 29 01:00:52 2026 -0700) on \"linux_x64\"",
+          "flutter": {
+            "frameworkVersion": "3.47.7",
+            "channel": "stable",
+            "repositoryUrl": "https://github.com/flutter/flutter.git",
+            "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+            "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+            "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+            "engineCommitDate": "2026-10-07 17:09:12.000Z",
+            "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+            "engineBuildDate": "2026-10-07 10:51:44.552",
+            "dartSdkVersion": "3.13.5",
+            "devToolsVersion": "2.60.0",
+            "flutterVersion": "3.47.7",
+            "flutterRoot": "/__t/flutter/stable-3.47.7-x64/flutter"
+          }
+        }
+      },
+      "queries": {
+        "literal_alef": {
+          "baselineProcessMediansUs": [
+            1027,
+            1027
+          ],
+          "candidateProcessMediansUs": [
+            874,
+            854
+          ],
+          "adjacentPairs": [
+            {
+              "order": "AB",
+              "baselineLaunch": 1,
+              "candidateLaunch": 2,
+              "baselineProcessMedianUs": 1027,
+              "candidateProcessMedianUs": 874,
+              "candidateToBaselineRatio": 0.8510223953261928,
+              "changePercent": -14.897760467380717,
+              "changeUs": -153
+            },
+            {
+              "order": "BA",
+              "baselineLaunch": 4,
+              "candidateLaunch": 3,
+              "baselineProcessMedianUs": 1027,
+              "candidateProcessMedianUs": 854,
+              "candidateToBaselineRatio": 0.8315481986368062,
+              "changePercent": -16.84518013631938,
+              "changeUs": -173
+            }
+          ],
+          "balancedBlockRatio": 0.8412289461455041,
+          "balancedBlockChangePercent": -15.877105385449585,
+          "pooledPassComparisonDescriptiveOnly": {
+            "p50BeforeUs": 1027,
+            "p50AfterUs": 854,
+            "p50ChangePercent": -16.845180136319378,
+            "microtasksBefore": 395,
+            "microtasksAfter": 4,
+            "matchesPerPass": 389
+          }
+        },
+        "hebrew_combining_marks": {
+          "baselineProcessMediansUs": [
+            10301,
+            11119
+          ],
+          "candidateProcessMediansUs": [
+            8674,
+            9153
+          ],
+          "adjacentPairs": [
+            {
+              "order": "AB",
+              "baselineLaunch": 1,
+              "candidateLaunch": 2,
+              "baselineProcessMedianUs": 10301,
+              "candidateProcessMedianUs": 8674,
+              "candidateToBaselineRatio": 0.842054169498107,
+              "changePercent": -15.794583050189303,
+              "changeUs": -1627
+            },
+            {
+              "order": "BA",
+              "baselineLaunch": 4,
+              "candidateLaunch": 3,
+              "baselineProcessMedianUs": 11119,
+              "candidateProcessMedianUs": 9153,
+              "candidateToBaselineRatio": 0.8231855382678298,
+              "changePercent": -17.68144617321702,
+              "changeUs": -1966
+            }
+          ],
+          "balancedBlockRatio": 0.8325664026184155,
+          "balancedBlockChangePercent": -16.743359738158446,
+          "pooledPassComparisonDescriptiveOnly": {
+            "p50BeforeUs": 10301,
+            "p50AfterUs": 9073,
+            "p50ChangePercent": -11.921172701679449,
+            "microtasksBefore": 3954,
+            "microtasksAfter": 4,
+            "matchesPerPass": 3948
+          }
+        },
+        "result_lines_alef_bet": {
+          "baselineProcessMediansUs": [
+            3126,
+            2243
+          ],
+          "candidateProcessMediansUs": [
+            2699,
+            1892
+          ],
+          "adjacentPairs": [
+            {
+              "order": "AB",
+              "baselineLaunch": 1,
+              "candidateLaunch": 2,
+              "baselineProcessMedianUs": 3126,
+              "candidateProcessMedianUs": 2699,
+              "candidateToBaselineRatio": 0.86340371081254,
+              "changePercent": -13.659628918746003,
+              "changeUs": -427
+            },
+            {
+              "order": "BA",
+              "baselineLaunch": 4,
+              "candidateLaunch": 3,
+              "baselineProcessMedianUs": 2243,
+              "candidateProcessMedianUs": 1892,
+              "candidateToBaselineRatio": 0.8435131520285332,
+              "changePercent": -15.648684797146684,
+              "changeUs": -351
+            }
+          ],
+          "balancedBlockRatio": 0.853400483700717,
+          "balancedBlockChangePercent": -14.659951629928303,
+          "pooledPassComparisonDescriptiveOnly": {
+            "p50BeforeUs": 2243,
+            "p50AfterUs": 1896,
+            "p50ChangePercent": -15.470352206865805,
+            "microtasksBefore": 450,
+            "microtasksAfter": 4,
+            "matchesPerPass": 444
+          }
+        }
+      },
+      "validation": {
+        "completeReportParity": true,
+        "rawJsonlEqualsReports": true,
+        "reportSha256Verified": true,
+        "recomputedPublishedComparison": true,
+        "timingObservations": 192,
+        "layoutObservations": 896
+      }
+    }
+  ],
+  "queries": {
+    "literal_alef": {
+      "baselineIndependentProcessMediansUs": {
+        "n": 6,
+        "min": 1012,
+        "median": 1029.0,
+        "mean": 1030.6666666666667,
+        "max": 1049,
+        "sampleStandardDeviation": 12.372011423639515
+      },
+      "candidateIndependentProcessMediansUs": {
+        "n": 6,
+        "min": 853,
+        "median": 868.0,
+        "mean": 865.5,
+        "max": 876,
+        "sampleStandardDeviation": 9.91463564635635
+      },
+      "medianOfProcessMediansChangePercent": -15.646258503401356,
+      "baselineIndependentProcessValuesUs": [
+        1012,
+        1038,
+        1031,
+        1049,
+        1027,
+        1027
+      ],
+      "candidateIndependentProcessValuesUs": [
+        866,
+        853,
+        876,
+        870,
+        874,
+        854
+      ],
+      "adjacentPairedChangesPercent": [
+        -14.426877470355738,
+        -17.822736030828512,
+        -15.033947623666343,
+        -17.06387035271687,
+        -14.897760467380717,
+        -16.84518013631938
+      ],
+      "pairedDirectionCounts": {
+        "faster": 6,
+        "slower": 0
+      },
+      "balancedBlockChangesPercent": [
+        -16.14199454563189,
+        -16.05504460956896,
+        -15.877105385449585
+      ],
+      "geometricMeanBalancedBlockChangePercent": -16.024787190592814,
+      "independentProcessesPerSide": 6,
+      "pairedBlocksOnOneHost": 3,
+      "dependentPassesPerProcess": 7,
+      "untimedMicrotasks": {
+        "baseline": [
+          395
+        ],
+        "candidate": [
+          4
+        ]
+      },
+      "matchesPerPass": 389,
+      "initialCampaignSeparately": {
+        "baselineProcessMediansUs": [
+          1321,
+          1014
+        ],
+        "candidateProcessMediansUs": [
+          855,
+          879
+        ],
+        "adjacentPairs": [
+          {
+            "order": "AB",
+            "baselineLaunch": 1,
+            "candidateLaunch": 2,
+            "baselineProcessMedianUs": 1321,
+            "candidateProcessMedianUs": 855,
+            "candidateToBaselineRatio": 0.6472369417108251,
+            "changePercent": -35.27630582891749,
+            "changeUs": -466
+          },
+          {
+            "order": "BA",
+            "baselineLaunch": 4,
+            "candidateLaunch": 3,
+            "baselineProcessMedianUs": 1014,
+            "candidateProcessMedianUs": 879,
+            "candidateToBaselineRatio": 0.8668639053254438,
+            "changePercent": -13.313609467455622,
+            "changeUs": -135
+          }
+        ],
+        "balancedBlockRatio": 0.7490436188649781,
+        "balancedBlockChangePercent": -25.095638113502194,
+        "pooledPassComparisonDescriptiveOnly": {
+          "p50BeforeUs": 1018,
+          "p50AfterUs": 856,
+          "p50ChangePercent": -15.913555992141454,
+          "microtasksBefore": 395,
+          "microtasksAfter": 4,
+          "matchesPerPass": 389
+        }
+      },
+      "sensitivityUsingProcessMeans": {
+        "processMeanUs": {
+          "baseline": [
+            1521.2857142857142,
+            1175.2857142857142,
+            1183.7142857142858,
+            1207,
+            1048.7142857142858,
+            1351.142857142857
+          ],
+          "candidate": [
+            1319.5714285714287,
+            1324.2857142857142,
+            937.2857142857143,
+            1128,
+            977.2857142857143,
+            1210.142857142857
+          ]
+        },
+        "balancedBlockChangesPercent": [
+          -1.1378213889437494,
+          -13.977220866838314,
+          -8.641308812215831
+        ],
+        "geometricMeanBalancedBlockChangePercent": -8.068466408056896
+      }
+    },
+    "hebrew_combining_marks": {
+      "baselineIndependentProcessMediansUs": {
+        "n": 6,
+        "min": 10301,
+        "median": 11166.5,
+        "mean": 11134,
+        "max": 11829,
+        "sampleStandardDeviation": 545.8248803416715
+      },
+      "candidateIndependentProcessMediansUs": {
+        "n": 6,
+        "min": 7993,
+        "median": 8700.0,
+        "mean": 8661.833333333334,
+        "max": 9153,
+        "sampleStandardDeviation": 374.12212800991426
+      },
+      "medianOfProcessMediansChangePercent": -22.088389378945948,
+      "baselineIndependentProcessValuesUs": [
+        11560,
+        11829,
+        11214,
+        10781,
+        10301,
+        11119
+      ],
+      "candidateIndependentProcessValuesUs": [
+        8751,
+        8711,
+        7993,
+        8689,
+        8674,
+        9153
+      ],
+      "adjacentPairedChangesPercent": [
+        -24.299307958477513,
+        -26.35894834728211,
+        -28.723024790440522,
+        -19.404507930618685,
+        -15.794583050189303,
+        -17.68144617321702
+      ],
+      "pairedDirectionCounts": {
+        "faster": 6,
+        "slower": 0
+      },
+      "balancedBlockChangesPercent": [
+        -25.336229851578963,
+        -24.206841402198187,
+        -16.743359738158446
+      ],
+      "geometricMeanBalancedBlockChangePercent": -22.186861130910252,
+      "independentProcessesPerSide": 6,
+      "pairedBlocksOnOneHost": 3,
+      "dependentPassesPerProcess": 7,
+      "untimedMicrotasks": {
+        "baseline": [
+          3954
+        ],
+        "candidate": [
+          4
+        ]
+      },
+      "matchesPerPass": 3948,
+      "initialCampaignSeparately": {
+        "baselineProcessMediansUs": [
+          10672,
+          10982
+        ],
+        "candidateProcessMediansUs": [
+          9587,
+          8954
+        ],
+        "adjacentPairs": [
+          {
+            "order": "AB",
+            "baselineLaunch": 1,
+            "candidateLaunch": 2,
+            "baselineProcessMedianUs": 10672,
+            "candidateProcessMedianUs": 9587,
+            "candidateToBaselineRatio": 0.898332083958021,
+            "changePercent": -10.1667916041979,
+            "changeUs": -1085
+          },
+          {
+            "order": "BA",
+            "baselineLaunch": 4,
+            "candidateLaunch": 3,
+            "baselineProcessMedianUs": 10982,
+            "candidateProcessMedianUs": 8954,
+            "candidateToBaselineRatio": 0.8153341832088873,
+            "changePercent": -18.466581679111272,
+            "changeUs": -2028
+          }
+        ],
+        "balancedBlockRatio": 0.8558275853957096,
+        "balancedBlockChangePercent": -14.417241460429043,
+        "pooledPassComparisonDescriptiveOnly": {
+          "p50BeforeUs": 10672,
+          "p50AfterUs": 8954,
+          "p50ChangePercent": -16.098200899550225,
+          "microtasksBefore": 3954,
+          "microtasksAfter": 4,
+          "matchesPerPass": 3948
+        }
+      },
+      "sensitivityUsingProcessMeans": {
+        "processMeanUs": {
+          "baseline": [
+            12048.857142857143,
+            11405,
+            10997.285714285714,
+            11542,
+            11464.142857142857,
+            11499
+          ],
+          "candidate": [
+            9140.142857142857,
+            10091.142857142857,
+            9325.285714285714,
+            9224.714285714286,
+            9666.42857142857,
+            9191.42857142857
+          ]
+        },
+        "balancedBlockChangesPercent": [
+          -18.073180259856635,
+          -17.67642040558095,
+          -17.903678186284765
+        ],
+        "geometricMeanBalancedBlockChangePercent": -17.884587128122508
+      }
+    },
+    "result_lines_alef_bet": {
+      "baselineIndependentProcessMediansUs": {
+        "n": 6,
+        "min": 2066,
+        "median": 2684.5,
+        "mean": 2665.8333333333335,
+        "max": 3316,
+        "sampleStandardDeviation": 592.2227340001958
+      },
+      "candidateIndependentProcessMediansUs": {
+        "n": 6,
+        "min": 1886,
+        "median": 2813.5,
+        "mean": 2609.8333333333335,
+        "max": 3134,
+        "sampleStandardDeviation": 580.2449195526547
+      },
+      "medianOfProcessMediansChangePercent": 4.805364127398026,
+      "baselineIndependentProcessValuesUs": [
+        3316,
+        2085,
+        3159,
+        2066,
+        3126,
+        2243
+      ],
+      "candidateIndependentProcessValuesUs": [
+        1886,
+        2928,
+        3120,
+        3134,
+        2699,
+        1892
+      ],
+      "adjacentPairedChangesPercent": [
+        -43.12424607961399,
+        40.431654676259,
+        -1.2345679012345734,
+        51.69409486931269,
+        -13.659628918746003,
+        -15.648684797146684
+      ],
+      "pairedDirectionCounts": {
+        "faster": 4,
+        "slower": 2
+      },
+      "balancedBlockChangesPercent": [
+        -10.629108575557266,
+        22.401522974997267,
+        -14.659951629928303
+      ],
+      "geometricMeanBalancedBlockChangePercent": -2.266091895002653,
+      "independentProcessesPerSide": 6,
+      "pairedBlocksOnOneHost": 3,
+      "dependentPassesPerProcess": 7,
+      "untimedMicrotasks": {
+        "baseline": [
+          450
+        ],
+        "candidate": [
+          4
+        ]
+      },
+      "matchesPerPass": 444,
+      "initialCampaignSeparately": {
+        "baselineProcessMediansUs": [
+          2025,
+          3259
+        ],
+        "candidateProcessMediansUs": [
+          3137,
+          3078
+        ],
+        "adjacentPairs": [
+          {
+            "order": "AB",
+            "baselineLaunch": 1,
+            "candidateLaunch": 2,
+            "baselineProcessMedianUs": 2025,
+            "candidateProcessMedianUs": 3137,
+            "candidateToBaselineRatio": 1.5491358024691357,
+            "changePercent": 54.913580246913575,
+            "changeUs": 1112
+          },
+          {
+            "order": "BA",
+            "baselineLaunch": 4,
+            "candidateLaunch": 3,
+            "baselineProcessMedianUs": 3259,
+            "candidateProcessMedianUs": 3078,
+            "candidateToBaselineRatio": 0.9444614912549862,
+            "changePercent": -5.553850874501376,
+            "changeUs": -181
+          }
+        ],
+        "balancedBlockRatio": 1.2095863384465326,
+        "balancedBlockChangePercent": 20.958633844653264,
+        "pooledPassComparisonDescriptiveOnly": {
+          "p50BeforeUs": 2173,
+          "p50AfterUs": 3078,
+          "p50ChangePercent": 41.64749194661758,
+          "microtasksBefore": 450,
+          "microtasksAfter": 4,
+          "matchesPerPass": 444
+        }
+      },
+      "sensitivityUsingProcessMeans": {
+        "processMeanUs": {
+          "baseline": [
+            2999.4285714285716,
+            2530.5714285714284,
+            2784.5714285714284,
+            2247.8571428571427,
+            2757.4285714285716,
+            2588.5714285714284
+          ],
+          "candidate": [
+            2780.4285714285716,
+            2551.5714285714284,
+            2713,
+            2759.5714285714284,
+            2568.5714285714284,
+            2062.714285714286
+          ]
+        },
+        "balancedBlockChangesPercent": [
+          -3.321217110831076,
+          9.365963104245534,
+          -13.844471751109921
+        ],
+        "geometricMeanBalancedBlockChangePercent": -3.0609330555807612
+      }
+    }
+  },
+  "independentProcesses": 12,
+  "independentHosts": 1,
+  "freshDesktopSessions": 3,
+  "timingObservationsValidated": 576,
+  "layoutObservationsValidated": 2688,
+  "initialCampaign": {
+    "runId": 45392015952,
+    "jobId": 138441654238,
+    "artifactId": 14921060122,
+    "archiveSha256": "7365b7d83fba973a193f176346c05964114924514ef8557539b26823913c4178",
+    "host": {
+      "name": "cb8e8507df30",
+      "operatingSystem": "linux",
+      "operatingSystemVersion": "Linux 7.0.0-1014-aws #14~24.04.1-Ubuntu SMP PREEMPT Fri Sep 18 21:24:59 UTC 2026",
+      "processors": 4
+    },
+    "processes": [
+      {
+        "block": "initial-campaign",
+        "launch": 1,
+        "side": "baseline",
+        "report": "birkon-3_0/1-baseline/native/report.json",
+        "reportSha256": "77613cfcda167991cbf8a41aed5b2f3d63724c701a3908827522581fa30ad4bb",
+        "queries": {
+          "literal_alef": {
+            "completePassUs": [
+              1005,
+              2350,
+              1321,
+              997,
+              1328,
+              1018,
+              1361
+            ],
+            "withinProcess": {
+              "n": 7,
+              "min": 997,
+              "median": 1321,
+              "mean": 1340,
+              "max": 2350,
+              "sampleStandardDeviation": 475.1498009400123
+            },
+            "untimedScheduledMicrotasks": 395,
+            "matchesPerPass": 389
+          },
+          "hebrew_combining_marks": {
+            "completePassUs": [
+              11567,
+              12743,
+              9165,
+              12004,
+              9588,
+              10672,
+              8125
+            ],
+            "withinProcess": {
+              "n": 7,
+              "min": 8125,
+              "median": 10672,
+              "mean": 10552,
+              "max": 12743,
+              "sampleStandardDeviation": 1668.1728527543742
+            },
+            "untimedScheduledMicrotasks": 3954,
+            "matchesPerPass": 3948
+          },
+          "result_lines_alef_bet": {
+            "completePassUs": [
+              2050,
+              2018,
+              3301,
+              2009,
+              2025,
+              3366,
+              2001
+            ],
+            "withinProcess": {
+              "n": 7,
+              "min": 2001,
+              "median": 2025,
+              "mean": 2395.714285714286,
+              "max": 3366,
+              "sampleStandardDeviation": 641.0875432382368
+            },
+            "untimedScheduledMicrotasks": 450,
+            "matchesPerPass": 444
+          }
+        }
+      },
+      {
+        "block": "initial-campaign",
+        "launch": 2,
+        "side": "candidate",
+        "report": "birkon-3_0/2-candidate/native/report.json",
+        "reportSha256": "d48d068218499970fe0c3c0239df823c3e95f7e2264f34baa462ea5f6071f52c",
+        "queries": {
+          "literal_alef": {
+            "completePassUs": [
+              930,
+              1970,
+              855,
+              823,
+              818,
+              832,
+              856
+            ],
+            "withinProcess": {
+              "n": 7,
+              "min": 818,
+              "median": 855,
+              "mean": 1012,
+              "max": 1970,
+              "sampleStandardDeviation": 424.1127994610239
+            },
+            "untimedScheduledMicrotasks": 4,
+            "matchesPerPass": 389
+          },
+          "hebrew_combining_marks": {
+            "completePassUs": [
+              12231,
+              9873,
+              10058,
+              8659,
+              9587,
+              7776,
+              7733
+            ],
+            "withinProcess": {
+              "n": 7,
+              "min": 7733,
+              "median": 9587,
+              "mean": 9416.714285714286,
+              "max": 12231,
+              "sampleStandardDeviation": 1563.6289749900939
+            },
+            "untimedScheduledMicrotasks": 4,
+            "matchesPerPass": 3948
+          },
+          "result_lines_alef_bet": {
+            "completePassUs": [
+              3329,
+              3137,
+              1900,
+              3177,
+              1874,
+              3240,
+              1920
+            ],
+            "withinProcess": {
+              "n": 7,
+              "min": 1874,
+              "median": 3137,
+              "mean": 2653.8571428571427,
+              "max": 3329,
+              "sampleStandardDeviation": 709.6373319218366
+            },
+            "untimedScheduledMicrotasks": 4,
+            "matchesPerPass": 444
+          }
+        }
+      },
+      {
+        "block": "initial-campaign",
+        "launch": 3,
+        "side": "candidate",
+        "report": "birkon-3_0/3-candidate/native/report.json",
+        "reportSha256": "cdfdb0200da1fe0da0528f495b381f90a17f22e093f6f1a48a3a3c7196d9a2f0",
+        "queries": {
+          "literal_alef": {
+            "completePassUs": [
+              833,
+              2212,
+              912,
+              843,
+              879,
+              879,
+              1219
+            ],
+            "withinProcess": {
+              "n": 7,
+              "min": 833,
+              "median": 879,
+              "mean": 1111,
+              "max": 2212,
+              "sampleStandardDeviation": 503.3590501156539
+            },
+            "untimedScheduledMicrotasks": 4,
+            "matchesPerPass": 389
+          },
+          "hebrew_combining_marks": {
+            "completePassUs": [
+              13332,
+              10160,
+              10133,
+              8796,
+              8954,
+              8730,
+              6353
+            ],
+            "withinProcess": {
+              "n": 7,
+              "min": 6353,
+              "median": 8954,
+              "mean": 9494,
+              "max": 13332,
+              "sampleStandardDeviation": 2113.8630513824683
+            },
+            "untimedScheduledMicrotasks": 4,
+            "matchesPerPass": 3948
+          },
+          "result_lines_alef_bet": {
+            "completePassUs": [
+              3057,
+              3078,
+              2280,
+              3366,
+              1950,
+              3318,
+              3302
+            ],
+            "withinProcess": {
+              "n": 7,
+              "min": 1950,
+              "median": 3078,
+              "mean": 2907.285714285714,
+              "max": 3366,
+              "sampleStandardDeviation": 562.1899780577482
+            },
+            "untimedScheduledMicrotasks": 4,
+            "matchesPerPass": 444
+          }
+        }
+      },
+      {
+        "block": "initial-campaign",
+        "launch": 4,
+        "side": "baseline",
+        "report": "birkon-3_0/4-baseline/native/report.json",
+        "reportSha256": "46064faedbce749b09a4996ec57e0792dc004d1a005ade3d136aead5948821ba",
+        "queries": {
+          "literal_alef": {
+            "completePassUs": [
+              1139,
+              1009,
+              2103,
+              975,
+              1007,
+              1014,
+              1580
+            ],
+            "withinProcess": {
+              "n": 7,
+              "min": 975,
+              "median": 1014,
+              "mean": 1261,
+              "max": 2103,
+              "sampleStandardDeviation": 427.4798240853011
+            },
+            "untimedScheduledMicrotasks": 395,
+            "matchesPerPass": 389
+          },
+          "hebrew_combining_marks": {
+            "completePassUs": [
+              16382,
+              12370,
+              9080,
+              10982,
+              13051,
+              9949,
+              8090
+            ],
+            "withinProcess": {
+              "n": 7,
+              "min": 8090,
+              "median": 10982,
+              "mean": 11414.857142857143,
+              "max": 16382,
+              "sampleStandardDeviation": 2801.9072330926915
+            },
+            "untimedScheduledMicrotasks": 3954,
+            "matchesPerPass": 3948
+          },
+          "result_lines_alef_bet": {
+            "completePassUs": [
+              3259,
+              2173,
+              3458,
+              2322,
+              3466,
+              2121,
+              3452
+            ],
+            "withinProcess": {
+              "n": 7,
+              "min": 2121,
+              "median": 3259,
+              "mean": 2893,
+              "max": 3466,
+              "sampleStandardDeviation": 649.9251238924886
+            },
+            "untimedScheduledMicrotasks": 450,
+            "matchesPerPass": 444
+          }
+        }
+      }
+    ]
+  },
+  "causalScope": {
+    "resultLinesIsNegativeControl": false,
+    "explanation": "The ResultLines pattern builder is identical, but the timed PdfPageHighlights.ensurePage consumer changed from stream/await iteration to synchronous iteration. ResultLines is a treatment workload.",
+    "sourceIdentity": {
+      "lib/pdf_book/utils/pdf_page_highlights.dart": {
+        "baseline": "bd5052ffabbf0ff8e94244bd93cc0c75949c75c8365918d34585996e865ca9e5",
+        "candidate": "d02baf432dd12f87d3b07e814a11c6497a79794eaaa7aa38230a25b4928fbb70"
+      },
+      "lib/pdf_book/utils/result_lines_highlight_pattern.dart": {
+        "baseline": "30dd69a8aadabc0fcf5928e486efb3321a656b99424091ab1d8447f9d5ec1ff9",
+        "candidate": "30dd69a8aadabc0fcf5928e486efb3321a656b99424091ab1d8447f9d5ec1ff9"
+      },
+      "lib/pdf_book/utils/pdf_book_layout.dart": {
+        "baseline": "206b183c79434013da5c95185a5e7b87ad7c635bbec77d1123170729090e397e",
+        "candidate": "206b183c79434013da5c95185a5e7b87ad7c635bbec77d1123170729090e397e"
+      },
+      "integration_test/pdf_highlight_profile_test.dart": {
+        "baseline": "ab8fb552a43b37bdc1d3d1e7d7d42463be5c911e631c052b98dad5eca3833a49",
+        "candidate": "ab8fb552a43b37bdc1d3d1e7d7d42463be5c911e631c052b98dad5eca3833a49"
+      }
+    },
+    "layoutSourceChanged": false,
+    "buildPdfSearchResultLinesMeasuredIndependently": false
+  },
+  "method": {
+    "processStatistic": "Median of seven complete two-page passes, after one discarded warmup pass.",
+    "pairs": "Adjacent process medians, AB launches 1/2 and BA launches 4/3 within each block.",
+    "blockEffect": "Geometric mean of the two candidate/baseline ratios; negative percent means faster.",
+    "overallEffect": "Geometric mean of the three block ratios, each block weighted equally.",
+    "rawPassesAreIndependentProcesses": false,
+    "historicalBlockPooledWithFollowup": false,
+    "confidenceIntervalComputed": false
+  },
+  "assessment": {
+    "literalAndMarks": "All six adjacent pairs and all three balanced blocks are faster for both workloads; the overall and block-level direction also agree when each process is represented by its mean instead of its median.",
+    "resultLines": "Mixed direction across blocks and pairs. The initial +41.65% pooled-pass p50 slowdown does not recur consistently, but these observations do not establish an improvement or prove non-regression.",
+    "resultLinesEstimatorSensitivity": "Balanced geometric block effect is -2.27%; ratio of the two groups' medians of process medians is +4.81%. Both are small relative to process variation and do not justify choosing a favorable direction.",
+    "resultLinesDispersion": "Baseline process medians range 2.066-3.316 ms; candidate process medians range 1.886-3.134 ms. Individual passes show substantial variation within the same process.",
+    "microtasks": "ResultLines scheduled microtasks are reproducibly 450 to 4 per two-page audit, with 444 matches unchanged. This is a deterministic work reduction, separately observed from elapsed time.",
+    "productClaimRecommendation": "Claim reproducible literal/marks helper timing improvements and exact microtask reductions; disclose the mixed ResultLines elapsed times. Do not claim universal search speedup or UI latency improvement.",
+    "moreMeasurementsTriggeredAutomatically": false
+  },
+  "limitations": [
+    "Only three follow-up ABBA blocks on one CI host; there is no general hardware-population estimate.",
+    "Seven repeated passes within a process are dependent observations, not seven independent launches.",
+    "The original campaign used another host and is shown separately, not pooled into the follow-up effect.",
+    "Actual app helper with preloaded real text; extraction and UI frame latency are excluded.",
+    "Timing and untimed microtask audits are separate; reduced microtasks do not prove lower elapsed time.",
+    "ResultLines uses the modified consumer and cannot be dismissed as a negative control."
+  ],
+  "analysisScriptSha256": "5fce595625c112f022c9f061e5f26c6d33cf2847d1b3dea3fe2d163d4a1b12fd"
+}

@@ -1,0 +1,3107 @@
+{
+  "schemaVersion": 1,
+  "analysisComplete": true,
+  "generatedUtc": "2026-11-24T12:23:24.749677+00:00",
+  "title": "Issue 5538 locked-engine Linux internals observations",
+  "ci": {
+    "runId": 45389994425,
+    "jobId": 138432215506,
+    "artifactId": 14919615066,
+    "runUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45389994425",
+    "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45389994425/job/138432215506",
+    "artifactName": "pdf-5538-internals-linux-x64",
+    "artifactZipSha256": "5423fd037062a304ba41f79282ed60c7f31b888b7a9fe0c081c58d2550e550ae",
+    "artifactZipBytes": 7817126,
+    "measurementJobConclusion": "success",
+    "wholeWorkflowConclusion": "failure",
+    "wholeWorkflowFailureDoesNotInvalidateSuccessfulIndependentJob": true,
+    "verifiedJob": {
+      "apiUrl": "https://api.github.com/repos/yom-chadash/otzaria/actions/runs/45389994425/jobs?per_page=30",
+      "id": 138432215506,
+      "name": "AOT scheduler, HTTP ranges and font fallback",
+      "headSha": "b83d51a08fdc3eab12259ca134166743fc17e2b7",
+      "status": "completed",
+      "conclusion": "success",
+      "startedAt": "2026-11-24T12:06:51Z",
+      "completedAt": "2026-11-24T12:11:04Z"
+    }
+  },
+  "method": {
+    "order": [
+      "control",
+      "instrumented",
+      "instrumented",
+      "control"
+    ],
+    "runs": 4,
+    "unmodifiedControlProcesses": 2,
+    "instrumentedProcesses": 2,
+    "rowsPerRun": 33,
+    "totalRawObservations": 132,
+    "warmupRows": 4,
+    "nonWarmupObservations": 128,
+    "sectionsRawRows": {
+      "M01": 36,
+      "E10": 72,
+      "S02": 24
+    },
+    "executionMode": "dart-aot",
+    "processors": 4,
+    "statistics": "Arithmetic median (mean of two ordered values for n=2), observed min and max; no confidence intervals or significance claims.",
+    "timingPopulation": "Only run-1-control and run-4-control. Instrumented diagnostic times are kept separately and are not product performance.",
+    "counterPopulation": "Instrumented runs 2 and 3; external HTTP/font/correctness counts checked across all four runs.",
+    "productImprovementTested": false,
+    "controlEnginePatched": false,
+    "cpuResolutionUs": 10000,
+    "uiLatencyCollected": false,
+    "osCacheCleared": false,
+    "physicalDevice": false,
+    "processWideGate": false,
+    "limits": [
+      "One GitHub-hosted Linux x64 machine; only two control process launches per configuration.",
+      "Conditions run in a fixed order inside each process. Per-task and per-document samples are correlated, not independent process replications.",
+      "First native-PDF pass follows the no-op scheduler burst sequence and is not a fresh OS-cache or fresh-engine cold start.",
+      "Process CPU includes the harness, native worker, and loopback HTTP server where applicable; 10 ms ticks cannot isolate short scheduler CPU costs.",
+      "Queue ages and selection/execute wall times are instrumented observations, not UI latency or unmodified product times.",
+      "Measurements of first 384 px raster do not establish first visible sharp frame, responsiveness, viewport quality or GPU cost."
+    ]
+  },
+  "identity": {
+    "sourceCommit": "b83d51a08fdc3eab12259ca134166743fc17e2b7",
+    "cleanSource": true,
+    "sdk": {
+      "frameworkVersion": "3.47.7",
+      "channel": "stable",
+      "repositoryUrl": "https://github.com/flutter/flutter.git",
+      "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+      "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+      "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+      "engineCommitDate": "2026-10-07 17:09:12.000Z",
+      "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+      "engineBuildDate": "2026-10-07 10:51:44.552",
+      "dartSdkVersion": "3.13.5",
+      "devToolsVersion": "2.60.0",
+      "flutterVersion": "3.47.7",
+      "flutterRoot": "/opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter"
+    },
+    "pdfiumSha256": "1c251efce460d67437a4c76d4be9033ae2f17bf5603f5bff1af10209b94ca723",
+    "enginePackage": "pdfrx_engine 0.9.3",
+    "engineArchiveSha256": "001090d220b2773747ce396f2bcda3d6ac9389d87f937ef12d64ed3a9e80e8b0",
+    "inputFiles": {
+      "/home/runner/work/_temp/pdf-5538-inputs/pdf-5538-corpus/uxlc-genesis.pdf": {
+        "sha256": "ce28c3ed6f052b633a943d545f766be88d935c71d71b0b4c23ee172fca71af2e",
+        "bytes": 1662040
+      },
+      "/home/runner/work/_temp/pdf-5538-inputs/pdf-5538-corpus/gcc-15_2.pdf": {
+        "sha256": "d3513df690840932cc1cdc73f9ea8aab4c4bde1306669750024e0cc135d14a75",
+        "bytes": 3304571
+      },
+      "/home/runner/work/_temp/pdf-5538-inputs/pdf-5538-corpus/gcc-15_2-linearized.pdf": {
+        "sha256": "12ba7537a5f673d76571a35d5e5f10107fd5bf867af4c427bc0ff4854983d468",
+        "bytes": 3542626
+      },
+      "/home/runner/work/otzaria/otzaria/fonts/Tinos-Regular.ttf": {
+        "sha256": "054f3f97a338070c3558a9ce7e302565be85c7436b10bb0a01cf6a41f0782e61",
+        "bytes": 454852
+      },
+      "/home/runner/work/_temp/pdf-5538-native/libpdfium.so": {
+        "sha256": "1c251efce460d67437a4c76d4be9033ae2f17bf5603f5bff1af10209b94ca723",
+        "bytes": 8049768
+      }
+    },
+    "controlExecutableSha256": "dd67b3c91ce56908857351f63fa07fb31d214b38cf6389a465d89e3b7003e03c",
+    "instrumentedExecutableSha256": "26f4cfd37feb7745fea3e7160f7087861d1b9e6e4c299d7e93c683727ccd1de7"
+  },
+  "integrity": {
+    "reportDigestsMatchSummary": true,
+    "jsonlEqualsReportObservations": true,
+    "allReportsCompleteAndCleanupErrorsEmpty": true,
+    "sameBinaryUsedForEachRepeatedVariant": true,
+    "controlPatchMapEmpty": true,
+    "instrumentationOnlyChangesWorkerAndPdfiumDart": true,
+    "sourceFiles": [
+      {
+        "path": "provenance.json",
+        "sha256": "bf66c8b840b8a886712d69af2ce0071bf211ad2b3a77ff7d7a0f32b8f50a3f94"
+      },
+      {
+        "path": "summary.json",
+        "sha256": "30620122237da271a01da4118b9380c2b12acb0779fa9be1dc32f60090d738b1"
+      },
+      {
+        "path": "control/patches.json",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "path": "instrumented/patches.json",
+        "sha256": "d89cb4ccbbad97044a0eb6bd6d3f6715e091cdf761a9854ec5d6b1264c95f50a"
+      },
+      {
+        "path": "control/compiler-inputs.json",
+        "sha256": "f48687d507463750fc9c19837364c28259556cd2d52aff14e909aeed776703a3"
+      },
+      {
+        "path": "instrumented/compiler-inputs.json",
+        "sha256": "c2c6e58b571f3741b8a3ad4bf37a1258e286b18da0f05273514e97b0271b2409"
+      },
+      {
+        "path": "control/compile-command.json",
+        "sha256": "0479dc7c84296e7a640f6c5098d47edff0fe55e262bae270c80ad601ed3eaa5f"
+      },
+      {
+        "path": "instrumented/compile-command.json",
+        "sha256": "9ad6706383e22548a7fc476b8733ac8f3858d829ab0969f7c80f7fcd5ecbd982"
+      },
+      {
+        "path": "run-1-control/report.json",
+        "sha256": "2f6284857dfdafb43282b919953202c97ca8d7ac1c65e3f675fc10e7c7a51e2e"
+      },
+      {
+        "path": "run-1-control/observations.jsonl",
+        "sha256": "2979bc0696e18ece33af5e0349182de159a536437f3bc23e2a53bfeeac928032"
+      },
+      {
+        "path": "run-1-control/cache-files.json",
+        "sha256": "2f79f2fb2214bedcd1adfaefe6c9f97f3ffabeac03582a777f6373f92cd94b94"
+      },
+      {
+        "path": "run-2-instrumented/report.json",
+        "sha256": "918969f0c06994a0078a72c3d56e5ffe150847c55a51d7e735e66ca396feffb2"
+      },
+      {
+        "path": "run-2-instrumented/observations.jsonl",
+        "sha256": "10b594f64da6478cb69ce7db8f2f57186b2c756be02c255a06a9f9f4c983250d"
+      },
+      {
+        "path": "run-2-instrumented/cache-files.json",
+        "sha256": "1069b3ab2cc1ae836c31d423bba14dd3e40833ffdedca506eee7c4e1699e0c80"
+      },
+      {
+        "path": "run-3-instrumented/report.json",
+        "sha256": "04a2d3a4ca031e263a1823d97a042fa1bc9236b49d683030fd7d4b25327f6870"
+      },
+      {
+        "path": "run-3-instrumented/observations.jsonl",
+        "sha256": "31d16f227335a5a36bca484bc3865db8507cca9a7b9404b22cf30558b4ff0903"
+      },
+      {
+        "path": "run-3-instrumented/cache-files.json",
+        "sha256": "2c30a8935b12f8d0500cb2ef8745996c1cc6b6e19093540373fdc10e23f1f167"
+      },
+      {
+        "path": "run-4-control/report.json",
+        "sha256": "1e6455634a709bc0d8b556bebe7292e91ee31581e912c41e1f97105688406972"
+      },
+      {
+        "path": "run-4-control/observations.jsonl",
+        "sha256": "4f121dc467bdda2924ae28988c8e7fd0bff7cf80e1a3eab2382f655168c1c4ee"
+      },
+      {
+        "path": "run-4-control/cache-files.json",
+        "sha256": "b955478b8132d4739d7436c2444a18917cc66e4977014b1e3b807255e81e8c71"
+      }
+    ]
+  },
+  "M01": {
+    "syntheticWorkerBursts": [
+      {
+        "tasks": 64,
+        "controlWall": {
+          "n": 2,
+          "values": [
+            0.564,
+            0.597
+          ],
+          "min": 0.564,
+          "median": 0.5805,
+          "max": 0.597,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlProcessCpu": {
+          "n": 2,
+          "values": [
+            0.0,
+            0.0
+          ],
+          "min": 0.0,
+          "median": 0.0,
+          "max": 0.0,
+          "unit": "ms"
+        },
+        "controlTaskLatencyUs": [
+          {
+            "n": 64,
+            "values": null,
+            "min": 387,
+            "median": 431.0,
+            "max": 488,
+            "unit": "us"
+          },
+          {
+            "n": 64,
+            "values": null,
+            "min": 334,
+            "median": 412.5,
+            "max": 509,
+            "unit": "us"
+          }
+        ],
+        "instrumentedDiagnostic": [
+          {
+            "run": "run-2-instrumented",
+            "counters": {
+              "executeWallUsInstrumented": 108,
+              "enqueued": 65,
+              "maxQueueDepth": 38,
+              "selections": 65,
+              "canceledProbes": 1327,
+              "readyProbes": 65,
+              "selectionWallUsInstrumented": 24
+            },
+            "queueAgeUs": {
+              "n": 65,
+              "values": null,
+              "min": 1,
+              "median": 139,
+              "max": 205,
+              "unit": "us"
+            },
+            "callerCounters": {},
+            "measurementCommandsIncluded": 1
+          },
+          {
+            "run": "run-3-instrumented",
+            "counters": {
+              "executeWallUsInstrumented": 146,
+              "enqueued": 65,
+              "maxQueueDepth": 42,
+              "selections": 65,
+              "canceledProbes": 1454,
+              "readyProbes": 65,
+              "selectionWallUsInstrumented": 37
+            },
+            "queueAgeUs": {
+              "n": 65,
+              "values": null,
+              "min": 1,
+              "median": 176,
+              "max": 255,
+              "unit": "us"
+            },
+            "callerCounters": {},
+            "measurementCommandsIncluded": 1
+          }
+        ],
+        "controlSources": [
+          "run-1-control/report.json#/observations/1",
+          "run-4-control/report.json#/observations/1"
+        ],
+        "instrumentedSources": [
+          "run-2-instrumented/report.json#/observations/1",
+          "run-3-instrumented/report.json#/observations/1"
+        ]
+      },
+      {
+        "tasks": 256,
+        "controlWall": {
+          "n": 2,
+          "values": [
+            3.339,
+            3.631
+          ],
+          "min": 3.339,
+          "median": 3.485,
+          "max": 3.631,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlProcessCpu": {
+          "n": 2,
+          "values": [
+            0.0,
+            0.0
+          ],
+          "min": 0.0,
+          "median": 0.0,
+          "max": 0.0,
+          "unit": "ms"
+        },
+        "controlTaskLatencyUs": [
+          {
+            "n": 256,
+            "values": null,
+            "min": 2840,
+            "median": 2955.5,
+            "max": 3085,
+            "unit": "us"
+          },
+          {
+            "n": 256,
+            "values": null,
+            "min": 2936,
+            "median": 2997.0,
+            "max": 3385,
+            "unit": "us"
+          }
+        ],
+        "instrumentedDiagnostic": [
+          {
+            "run": "run-2-instrumented",
+            "counters": {
+              "executeWallUsInstrumented": 386,
+              "enqueued": 257,
+              "maxQueueDepth": 115,
+              "selections": 257,
+              "canceledProbes": 13621,
+              "readyProbes": 257,
+              "selectionWallUsInstrumented": 142
+            },
+            "queueAgeUs": {
+              "n": 257,
+              "values": null,
+              "min": 3,
+              "median": 395,
+              "max": 970,
+              "unit": "us"
+            },
+            "callerCounters": {},
+            "measurementCommandsIncluded": 1
+          },
+          {
+            "run": "run-3-instrumented",
+            "counters": {
+              "executeWallUsInstrumented": 540,
+              "enqueued": 257,
+              "maxQueueDepth": 168,
+              "selections": 257,
+              "canceledProbes": 20865,
+              "readyProbes": 257,
+              "selectionWallUsInstrumented": 224
+            },
+            "queueAgeUs": {
+              "n": 257,
+              "values": null,
+              "min": 2,
+              "median": 1068,
+              "max": 1448,
+              "unit": "us"
+            },
+            "callerCounters": {},
+            "measurementCommandsIncluded": 1
+          }
+        ],
+        "controlSources": [
+          "run-1-control/report.json#/observations/2",
+          "run-4-control/report.json#/observations/2"
+        ],
+        "instrumentedSources": [
+          "run-2-instrumented/report.json#/observations/2",
+          "run-3-instrumented/report.json#/observations/2"
+        ]
+      },
+      {
+        "tasks": 1024,
+        "controlWall": {
+          "n": 2,
+          "values": [
+            10.861,
+            12.372
+          ],
+          "min": 10.861,
+          "median": 11.6165,
+          "max": 12.372,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlProcessCpu": {
+          "n": 2,
+          "values": [
+            20.0,
+            30.0
+          ],
+          "min": 20.0,
+          "median": 25.0,
+          "max": 30.0,
+          "unit": "ms"
+        },
+        "controlTaskLatencyUs": [
+          {
+            "n": 1024,
+            "values": null,
+            "min": 8331,
+            "median": 9923.5,
+            "max": 10246,
+            "unit": "us"
+          },
+          {
+            "n": 1024,
+            "values": null,
+            "min": 8234,
+            "median": 8823.5,
+            "max": 11798,
+            "unit": "us"
+          }
+        ],
+        "instrumentedDiagnostic": [
+          {
+            "run": "run-2-instrumented",
+            "counters": {
+              "executeWallUsInstrumented": 1925,
+              "enqueued": 1025,
+              "maxQueueDepth": 664,
+              "selections": 1025,
+              "canceledProbes": 315385,
+              "readyProbes": 1025,
+              "selectionWallUsInstrumented": 2180
+            },
+            "queueAgeUs": {
+              "n": 1025,
+              "values": null,
+              "min": 4,
+              "median": 4918,
+              "max": 7045,
+              "unit": "us"
+            },
+            "callerCounters": {},
+            "measurementCommandsIncluded": 1
+          },
+          {
+            "run": "run-3-instrumented",
+            "counters": {
+              "executeWallUsInstrumented": 1470,
+              "enqueued": 1025,
+              "maxQueueDepth": 477,
+              "selections": 1025,
+              "canceledProbes": 222252,
+              "readyProbes": 1025,
+              "selectionWallUsInstrumented": 1369
+            },
+            "queueAgeUs": {
+              "n": 1025,
+              "values": null,
+              "min": 2,
+              "median": 2473,
+              "max": 4674,
+              "unit": "us"
+            },
+            "callerCounters": {},
+            "measurementCommandsIncluded": 1
+          }
+        ],
+        "controlSources": [
+          "run-1-control/report.json#/observations/3",
+          "run-4-control/report.json#/observations/3"
+        ],
+        "instrumentedSources": [
+          "run-2-instrumented/report.json#/observations/3",
+          "run-3-instrumented/report.json#/observations/3"
+        ]
+      },
+      {
+        "tasks": 4096,
+        "controlWall": {
+          "n": 2,
+          "values": [
+            57.737,
+            49.523
+          ],
+          "min": 49.523,
+          "median": 53.63,
+          "max": 57.737,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlProcessCpu": {
+          "n": 2,
+          "values": [
+            110.0,
+            100.0
+          ],
+          "min": 100.0,
+          "median": 105.0,
+          "max": 110.0,
+          "unit": "ms"
+        },
+        "controlTaskLatencyUs": [
+          {
+            "n": 4096,
+            "values": null,
+            "min": 32912,
+            "median": 39465.5,
+            "max": 55014,
+            "unit": "us"
+          },
+          {
+            "n": 4096,
+            "values": null,
+            "min": 35130,
+            "median": 42402.5,
+            "max": 46941,
+            "unit": "us"
+          }
+        ],
+        "instrumentedDiagnostic": [
+          {
+            "run": "run-2-instrumented",
+            "counters": {
+              "executeWallUsInstrumented": 16775,
+              "enqueued": 4097,
+              "maxQueueDepth": 2752,
+              "selections": 4097,
+              "canceledProbes": 4939415,
+              "readyProbes": 4097,
+              "selectionWallUsInstrumented": 26577
+            },
+            "queueAgeUs": {
+              "n": 4097,
+              "values": null,
+              "min": 4,
+              "median": 28122,
+              "max": 37313,
+              "unit": "us"
+            },
+            "callerCounters": {},
+            "measurementCommandsIncluded": 1
+          },
+          {
+            "run": "run-3-instrumented",
+            "counters": {
+              "executeWallUsInstrumented": 7780,
+              "enqueued": 4097,
+              "maxQueueDepth": 2936,
+              "selections": 4097,
+              "canceledProbes": 5298792,
+              "readyProbes": 4097,
+              "selectionWallUsInstrumented": 26411
+            },
+            "queueAgeUs": {
+              "n": 4097,
+              "values": null,
+              "min": 3,
+              "median": 30015,
+              "max": 38061,
+              "unit": "us"
+            },
+            "callerCounters": {},
+            "measurementCommandsIncluded": 1
+          }
+        ],
+        "controlSources": [
+          "run-1-control/report.json#/observations/4",
+          "run-4-control/report.json#/observations/4"
+        ],
+        "instrumentedSources": [
+          "run-2-instrumented/report.json#/observations/4",
+          "run-3-instrumented/report.json#/observations/4"
+        ]
+      }
+    ],
+    "nativeMixedPdf": [
+      {
+        "document": "uxlc-genesis",
+        "pdfSha256": "ce28c3ed6f052b633a943d545f766be88d935c71d71b0b4c23ee172fca71af2e",
+        "pageCount": 54,
+        "processPass": 0,
+        "controlWall": {
+          "n": 2,
+          "values": [
+            362.819,
+            368.392
+          ],
+          "min": 362.819,
+          "median": 365.6055,
+          "max": 368.392,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlProcessCpu": {
+          "n": 2,
+          "values": [
+            380.0,
+            390.0
+          ],
+          "min": 380.0,
+          "median": 385.0,
+          "max": 390.0,
+          "unit": "ms"
+        },
+        "correctness": {
+          "textPages": 32,
+          "rasterRequests": 8,
+          "cancelRequested": 4,
+          "cancelledRequestsReturningImage": 0,
+          "uncancelledRequestsReturningImage": 4,
+          "returnedPixels": 761856,
+          "documentDisposed": true
+        },
+        "allFourReportsHaveSameTextAndPixelHashes": true,
+        "instrumentedDiagnostic": [
+          {
+            "run": "run-2-instrumented",
+            "counters": {
+              "executeWallUsInstrumented": 359068,
+              "enqueued": 61,
+              "maxQueueDepth": 40,
+              "selections": 61,
+              "canceledProbes": 1011,
+              "readyProbes": 57,
+              "selectionWallUsInstrumented": 161
+            },
+            "queueAgeUs": {
+              "n": 61,
+              "values": null,
+              "min": 2,
+              "median": 30784,
+              "max": 198955,
+              "unit": "us"
+            },
+            "callerCounters": {
+              "rawTextCalls": 32
+            },
+            "measurementCommandsIncluded": 1
+          },
+          {
+            "run": "run-3-instrumented",
+            "counters": {
+              "executeWallUsInstrumented": 352547,
+              "enqueued": 61,
+              "maxQueueDepth": 40,
+              "selections": 61,
+              "canceledProbes": 1011,
+              "readyProbes": 57,
+              "selectionWallUsInstrumented": 133
+            },
+            "queueAgeUs": {
+              "n": 61,
+              "values": null,
+              "min": 2,
+              "median": 30591,
+              "max": 193299,
+              "unit": "us"
+            },
+            "callerCounters": {
+              "rawTextCalls": 32
+            },
+            "measurementCommandsIncluded": 1
+          }
+        ],
+        "controlSources": [
+          "run-1-control/report.json#/observations/5",
+          "run-4-control/report.json#/observations/5"
+        ],
+        "allSources": [
+          "run-1-control/report.json#/observations/5",
+          "run-2-instrumented/report.json#/observations/5",
+          "run-3-instrumented/report.json#/observations/5",
+          "run-4-control/report.json#/observations/5"
+        ]
+      },
+      {
+        "document": "uxlc-genesis",
+        "pdfSha256": "ce28c3ed6f052b633a943d545f766be88d935c71d71b0b4c23ee172fca71af2e",
+        "pageCount": 54,
+        "processPass": 1,
+        "controlWall": {
+          "n": 2,
+          "values": [
+            378.225,
+            365.97
+          ],
+          "min": 365.97,
+          "median": 372.0975,
+          "max": 378.225,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlProcessCpu": {
+          "n": 2,
+          "values": [
+            410.0,
+            380.0
+          ],
+          "min": 380.0,
+          "median": 395.0,
+          "max": 410.0,
+          "unit": "ms"
+        },
+        "correctness": {
+          "textPages": 32,
+          "rasterRequests": 8,
+          "cancelRequested": 4,
+          "cancelledRequestsReturningImage": 0,
+          "uncancelledRequestsReturningImage": 4,
+          "returnedPixels": 761856,
+          "documentDisposed": true
+        },
+        "allFourReportsHaveSameTextAndPixelHashes": true,
+        "instrumentedDiagnostic": [
+          {
+            "run": "run-2-instrumented",
+            "counters": {
+              "executeWallUsInstrumented": 362774,
+              "enqueued": 61,
+              "maxQueueDepth": 40,
+              "selections": 61,
+              "canceledProbes": 1011,
+              "readyProbes": 57,
+              "selectionWallUsInstrumented": 178
+            },
+            "queueAgeUs": {
+              "n": 61,
+              "values": null,
+              "min": 2,
+              "median": 28886,
+              "max": 202236,
+              "unit": "us"
+            },
+            "callerCounters": {
+              "rawTextCalls": 32
+            },
+            "measurementCommandsIncluded": 1
+          },
+          {
+            "run": "run-3-instrumented",
+            "counters": {
+              "executeWallUsInstrumented": 357437,
+              "enqueued": 61,
+              "maxQueueDepth": 39,
+              "selections": 61,
+              "canceledProbes": 989,
+              "readyProbes": 57,
+              "selectionWallUsInstrumented": 157
+            },
+            "queueAgeUs": {
+              "n": 61,
+              "values": null,
+              "min": 1,
+              "median": 27970,
+              "max": 192419,
+              "unit": "us"
+            },
+            "callerCounters": {
+              "rawTextCalls": 32
+            },
+            "measurementCommandsIncluded": 1
+          }
+        ],
+        "controlSources": [
+          "run-1-control/report.json#/observations/6",
+          "run-4-control/report.json#/observations/6"
+        ],
+        "allSources": [
+          "run-1-control/report.json#/observations/6",
+          "run-2-instrumented/report.json#/observations/6",
+          "run-3-instrumented/report.json#/observations/6",
+          "run-4-control/report.json#/observations/6"
+        ]
+      },
+      {
+        "document": "gcc-15_2",
+        "pdfSha256": "d3513df690840932cc1cdc73f9ea8aab4c4bde1306669750024e0cc135d14a75",
+        "pageCount": 1230,
+        "processPass": 0,
+        "controlWall": {
+          "n": 2,
+          "values": [
+            385.528,
+            387.2
+          ],
+          "min": 385.528,
+          "median": 386.36400000000003,
+          "max": 387.2,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlProcessCpu": {
+          "n": 2,
+          "values": [
+            400.0,
+            400.0
+          ],
+          "min": 400.0,
+          "median": 400.0,
+          "max": 400.0,
+          "unit": "ms"
+        },
+        "correctness": {
+          "textPages": 32,
+          "rasterRequests": 8,
+          "cancelRequested": 4,
+          "cancelledRequestsReturningImage": 0,
+          "uncancelledRequestsReturningImage": 4,
+          "returnedPixels": 761856,
+          "documentDisposed": true
+        },
+        "allFourReportsHaveSameTextAndPixelHashes": true,
+        "instrumentedDiagnostic": [
+          {
+            "run": "run-2-instrumented",
+            "counters": {
+              "executeWallUsInstrumented": 369839,
+              "enqueued": 69,
+              "maxQueueDepth": 40,
+              "selections": 69,
+              "canceledProbes": 1014,
+              "readyProbes": 65,
+              "selectionWallUsInstrumented": 124
+            },
+            "queueAgeUs": {
+              "n": 69,
+              "values": null,
+              "min": 2,
+              "median": 1133,
+              "max": 51709,
+              "unit": "us"
+            },
+            "callerCounters": {
+              "rawTextCalls": 32
+            },
+            "measurementCommandsIncluded": 1
+          },
+          {
+            "run": "run-3-instrumented",
+            "counters": {
+              "executeWallUsInstrumented": 370737,
+              "enqueued": 69,
+              "maxQueueDepth": 40,
+              "selections": 69,
+              "canceledProbes": 1014,
+              "readyProbes": 65,
+              "selectionWallUsInstrumented": 3644
+            },
+            "queueAgeUs": {
+              "n": 69,
+              "values": null,
+              "min": 2,
+              "median": 1124,
+              "max": 49359,
+              "unit": "us"
+            },
+            "callerCounters": {
+              "rawTextCalls": 32
+            },
+            "measurementCommandsIncluded": 1
+          }
+        ],
+        "controlSources": [
+          "run-1-control/report.json#/observations/7",
+          "run-4-control/report.json#/observations/7"
+        ],
+        "allSources": [
+          "run-1-control/report.json#/observations/7",
+          "run-2-instrumented/report.json#/observations/7",
+          "run-3-instrumented/report.json#/observations/7",
+          "run-4-control/report.json#/observations/7"
+        ]
+      },
+      {
+        "document": "gcc-15_2",
+        "pdfSha256": "d3513df690840932cc1cdc73f9ea8aab4c4bde1306669750024e0cc135d14a75",
+        "pageCount": 1230,
+        "processPass": 1,
+        "controlWall": {
+          "n": 2,
+          "values": [
+            396.13,
+            380.131
+          ],
+          "min": 380.131,
+          "median": 388.1305,
+          "max": 396.13,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlProcessCpu": {
+          "n": 2,
+          "values": [
+            400.0,
+            390.0
+          ],
+          "min": 390.0,
+          "median": 395.0,
+          "max": 400.0,
+          "unit": "ms"
+        },
+        "correctness": {
+          "textPages": 32,
+          "rasterRequests": 8,
+          "cancelRequested": 4,
+          "cancelledRequestsReturningImage": 0,
+          "uncancelledRequestsReturningImage": 4,
+          "returnedPixels": 761856,
+          "documentDisposed": true
+        },
+        "allFourReportsHaveSameTextAndPixelHashes": true,
+        "instrumentedDiagnostic": [
+          {
+            "run": "run-2-instrumented",
+            "counters": {
+              "executeWallUsInstrumented": 379942,
+              "enqueued": 69,
+              "maxQueueDepth": 39,
+              "selections": 69,
+              "canceledProbes": 971,
+              "readyProbes": 65,
+              "selectionWallUsInstrumented": 144
+            },
+            "queueAgeUs": {
+              "n": 69,
+              "values": null,
+              "min": 2,
+              "median": 931,
+              "max": 50999,
+              "unit": "us"
+            },
+            "callerCounters": {
+              "rawTextCalls": 32
+            },
+            "measurementCommandsIncluded": 1
+          },
+          {
+            "run": "run-3-instrumented",
+            "counters": {
+              "executeWallUsInstrumented": 368870,
+              "enqueued": 69,
+              "maxQueueDepth": 39,
+              "selections": 69,
+              "canceledProbes": 992,
+              "readyProbes": 65,
+              "selectionWallUsInstrumented": 138
+            },
+            "queueAgeUs": {
+              "n": 69,
+              "values": null,
+              "min": 2,
+              "median": 932,
+              "max": 47587,
+              "unit": "us"
+            },
+            "callerCounters": {
+              "rawTextCalls": 32
+            },
+            "measurementCommandsIncluded": 1
+          }
+        ],
+        "controlSources": [
+          "run-1-control/report.json#/observations/8",
+          "run-4-control/report.json#/observations/8"
+        ],
+        "allSources": [
+          "run-1-control/report.json#/observations/8",
+          "run-2-instrumented/report.json#/observations/8",
+          "run-3-instrumented/report.json#/observations/8",
+          "run-4-control/report.json#/observations/8"
+        ]
+      }
+    ],
+    "findings": [
+      "No-op bursts demonstrate excess canceledOnly queue scanning: at 4096 tasks the instrumented worker made 4,939,415–5,298,792 canceled probes for 4,097 selections (one selection is a measurement command).",
+      "Actual mixed PDF workloads peaked at queue depth 39–40, much below the artificial 2,752–2,936 burst peak. 32 extracted pages and eight raster submissions completed per workload.",
+      "Every workload returned four uncancelled images totaling 761,856 pixels; all four immediately cancelled raster requests returned no image. This does not count internal cancelled render work or prove zero native work.",
+      "Control mixed-workload times are about 363–396 ms. Instrumented UXLC queue-age maxima are 192–202 ms; GCC maxima are 48–52 ms. These are separate instrumented diagnostic observations, not product/UI latencies.",
+      "The scan implementation is an upstream worker concern. These data justify bounding submitted background work and exploring the upstream queue, but do not establish an app performance gain from a queue rewrite."
+    ],
+    "limits": [
+      "Returned pixels are output-buffer pixels, not total native rendered/abandoned pixels.",
+      "No scheduler-only unmodified CPU measurement was collected.",
+      "The instrumentation adds one worker metrics command per row.",
+      "Cancellation is immediate after submission, not mid-frame interaction."
+    ]
+  },
+  "E10": {
+    "firstRasterDefinition": "Elapsed backend time from pdfDocumentFromUri start through a completed 384px-wide first-page raster; no Flutter frame/viewport. useProgressiveLoading is left at false.",
+    "httpCases": [
+      {
+        "configuration": {
+          "linearized": false,
+          "blockSize": 65536,
+          "latencyMs": 0,
+          "bytesPerSecond": 0,
+          "forceHttp200": false,
+          "warmCache": false,
+          "inputBytes": 3304571,
+          "pageCount": 1230,
+          "pdfSha256": "d3513df690840932cc1cdc73f9ea8aab4c4bde1306669750024e0cc135d14a75"
+        },
+        "controlOpen": {
+          "n": 2,
+          "values": [
+            480.705,
+            577.453
+          ],
+          "min": 480.705,
+          "median": 529.079,
+          "max": 577.453,
+          "unit": "ms",
+          "sourceField": "openUs",
+          "independentProcesses": 2
+        },
+        "controlFirstRaster384px": {
+          "n": 2,
+          "values": [
+            481.749,
+            578.93
+          ],
+          "min": 481.749,
+          "median": 530.3395,
+          "max": 578.93,
+          "unit": "ms",
+          "sourceField": "firstRasterUs",
+          "independentProcesses": 2
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            493.113,
+            588.927
+          ],
+          "min": 493.113,
+          "median": 541.02,
+          "max": 588.927,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlRequestCount": {
+          "n": 2,
+          "values": [
+            51,
+            51
+          ],
+          "min": 51,
+          "median": 51.0,
+          "max": 51
+        },
+        "controlPayloadBytes": {
+          "n": 2,
+          "values": [
+            3304571,
+            3304571
+          ],
+          "min": 3304571,
+          "median": 3304571.0,
+          "max": 3304571,
+          "unit": "bytes"
+        },
+        "fractionOfInputTransferred": {
+          "n": 2,
+          "values": [
+            1.0,
+            1.0
+          ],
+          "min": 1.0,
+          "median": 1.0,
+          "max": 1.0
+        },
+        "maxConcurrentServerRequestsAllRuns": [
+          1
+        ],
+        "requestsAndPayloadIdenticalAcrossFourRuns": true,
+        "allFourReportsHaveSamePixelHash": true,
+        "pixelSha256": "5181866e7de6de7857db6f69fe50e9810b55eeb92438ebe0a66499bb6e529f64",
+        "sources": [
+          "run-1-control/report.json#/observations/9",
+          "run-2-instrumented/report.json#/observations/9",
+          "run-3-instrumented/report.json#/observations/9",
+          "run-4-control/report.json#/observations/9"
+        ]
+      },
+      {
+        "configuration": {
+          "linearized": false,
+          "blockSize": 65536,
+          "latencyMs": 0,
+          "bytesPerSecond": 0,
+          "forceHttp200": false,
+          "warmCache": true,
+          "inputBytes": 3304571,
+          "pageCount": 1230,
+          "pdfSha256": "d3513df690840932cc1cdc73f9ea8aab4c4bde1306669750024e0cc135d14a75"
+        },
+        "controlOpen": {
+          "n": 2,
+          "values": [
+            660.275,
+            595.248
+          ],
+          "min": 595.248,
+          "median": 627.7615000000001,
+          "max": 660.275,
+          "unit": "ms",
+          "sourceField": "openUs",
+          "independentProcesses": 2
+        },
+        "controlFirstRaster384px": {
+          "n": 2,
+          "values": [
+            661.514,
+            597.024
+          ],
+          "min": 597.024,
+          "median": 629.269,
+          "max": 661.514,
+          "unit": "ms",
+          "sourceField": "firstRasterUs",
+          "independentProcesses": 2
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            671.199,
+            607.696
+          ],
+          "min": 607.696,
+          "median": 639.4475,
+          "max": 671.199,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlRequestCount": {
+          "n": 2,
+          "values": [
+            51,
+            51
+          ],
+          "min": 51,
+          "median": 51.0,
+          "max": 51
+        },
+        "controlPayloadBytes": {
+          "n": 2,
+          "values": [
+            3304571,
+            3304571
+          ],
+          "min": 3304571,
+          "median": 3304571.0,
+          "max": 3304571,
+          "unit": "bytes"
+        },
+        "fractionOfInputTransferred": {
+          "n": 2,
+          "values": [
+            1.0,
+            1.0
+          ],
+          "min": 1.0,
+          "median": 1.0,
+          "max": 1.0
+        },
+        "maxConcurrentServerRequestsAllRuns": [
+          1
+        ],
+        "requestsAndPayloadIdenticalAcrossFourRuns": true,
+        "allFourReportsHaveSamePixelHash": true,
+        "pixelSha256": "5181866e7de6de7857db6f69fe50e9810b55eeb92438ebe0a66499bb6e529f64",
+        "sources": [
+          "run-1-control/report.json#/observations/10",
+          "run-2-instrumented/report.json#/observations/10",
+          "run-3-instrumented/report.json#/observations/10",
+          "run-4-control/report.json#/observations/10"
+        ]
+      },
+      {
+        "configuration": {
+          "linearized": false,
+          "blockSize": 1048576,
+          "latencyMs": 0,
+          "bytesPerSecond": 0,
+          "forceHttp200": false,
+          "warmCache": false,
+          "inputBytes": 3304571,
+          "pageCount": 1230,
+          "pdfSha256": "d3513df690840932cc1cdc73f9ea8aab4c4bde1306669750024e0cc135d14a75"
+        },
+        "controlOpen": {
+          "n": 2,
+          "values": [
+            495.386,
+            463.844
+          ],
+          "min": 463.844,
+          "median": 479.615,
+          "max": 495.386,
+          "unit": "ms",
+          "sourceField": "openUs",
+          "independentProcesses": 2
+        },
+        "controlFirstRaster384px": {
+          "n": 2,
+          "values": [
+            496.578,
+            465.086
+          ],
+          "min": 465.086,
+          "median": 480.832,
+          "max": 496.578,
+          "unit": "ms",
+          "sourceField": "firstRasterUs",
+          "independentProcesses": 2
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            506.293,
+            473.136
+          ],
+          "min": 473.136,
+          "median": 489.71450000000004,
+          "max": 506.293,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlRequestCount": {
+          "n": 2,
+          "values": [
+            4,
+            4
+          ],
+          "min": 4,
+          "median": 4.0,
+          "max": 4
+        },
+        "controlPayloadBytes": {
+          "n": 2,
+          "values": [
+            3304571,
+            3304571
+          ],
+          "min": 3304571,
+          "median": 3304571.0,
+          "max": 3304571,
+          "unit": "bytes"
+        },
+        "fractionOfInputTransferred": {
+          "n": 2,
+          "values": [
+            1.0,
+            1.0
+          ],
+          "min": 1.0,
+          "median": 1.0,
+          "max": 1.0
+        },
+        "maxConcurrentServerRequestsAllRuns": [
+          1
+        ],
+        "requestsAndPayloadIdenticalAcrossFourRuns": true,
+        "allFourReportsHaveSamePixelHash": true,
+        "pixelSha256": "5181866e7de6de7857db6f69fe50e9810b55eeb92438ebe0a66499bb6e529f64",
+        "sources": [
+          "run-1-control/report.json#/observations/11",
+          "run-2-instrumented/report.json#/observations/11",
+          "run-3-instrumented/report.json#/observations/11",
+          "run-4-control/report.json#/observations/11"
+        ]
+      },
+      {
+        "configuration": {
+          "linearized": false,
+          "blockSize": 1048576,
+          "latencyMs": 0,
+          "bytesPerSecond": 0,
+          "forceHttp200": false,
+          "warmCache": true,
+          "inputBytes": 3304571,
+          "pageCount": 1230,
+          "pdfSha256": "d3513df690840932cc1cdc73f9ea8aab4c4bde1306669750024e0cc135d14a75"
+        },
+        "controlOpen": {
+          "n": 2,
+          "values": [
+            542.105,
+            550.04
+          ],
+          "min": 542.105,
+          "median": 546.0725,
+          "max": 550.04,
+          "unit": "ms",
+          "sourceField": "openUs",
+          "independentProcesses": 2
+        },
+        "controlFirstRaster384px": {
+          "n": 2,
+          "values": [
+            543.106,
+            551.383
+          ],
+          "min": 543.106,
+          "median": 547.2445,
+          "max": 551.383,
+          "unit": "ms",
+          "sourceField": "firstRasterUs",
+          "independentProcesses": 2
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            554.24,
+            562.749
+          ],
+          "min": 554.24,
+          "median": 558.4945,
+          "max": 562.749,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlRequestCount": {
+          "n": 2,
+          "values": [
+            4,
+            4
+          ],
+          "min": 4,
+          "median": 4.0,
+          "max": 4
+        },
+        "controlPayloadBytes": {
+          "n": 2,
+          "values": [
+            3304571,
+            3304571
+          ],
+          "min": 3304571,
+          "median": 3304571.0,
+          "max": 3304571,
+          "unit": "bytes"
+        },
+        "fractionOfInputTransferred": {
+          "n": 2,
+          "values": [
+            1.0,
+            1.0
+          ],
+          "min": 1.0,
+          "median": 1.0,
+          "max": 1.0
+        },
+        "maxConcurrentServerRequestsAllRuns": [
+          1
+        ],
+        "requestsAndPayloadIdenticalAcrossFourRuns": true,
+        "allFourReportsHaveSamePixelHash": true,
+        "pixelSha256": "5181866e7de6de7857db6f69fe50e9810b55eeb92438ebe0a66499bb6e529f64",
+        "sources": [
+          "run-1-control/report.json#/observations/12",
+          "run-2-instrumented/report.json#/observations/12",
+          "run-3-instrumented/report.json#/observations/12",
+          "run-4-control/report.json#/observations/12"
+        ]
+      },
+      {
+        "configuration": {
+          "linearized": false,
+          "blockSize": 65536,
+          "latencyMs": 15,
+          "bytesPerSecond": 8388608,
+          "forceHttp200": false,
+          "warmCache": false,
+          "inputBytes": 3304571,
+          "pageCount": 1230,
+          "pdfSha256": "d3513df690840932cc1cdc73f9ea8aab4c4bde1306669750024e0cc135d14a75"
+        },
+        "controlOpen": {
+          "n": 2,
+          "values": [
+            1524.671,
+            1466.413
+          ],
+          "min": 1466.413,
+          "median": 1495.542,
+          "max": 1524.671,
+          "unit": "ms",
+          "sourceField": "openUs",
+          "independentProcesses": 2
+        },
+        "controlFirstRaster384px": {
+          "n": 2,
+          "values": [
+            1525.797,
+            1467.669
+          ],
+          "min": 1467.669,
+          "median": 1496.7330000000002,
+          "max": 1525.797,
+          "unit": "ms",
+          "sourceField": "firstRasterUs",
+          "independentProcesses": 2
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            1536.774,
+            1476.609
+          ],
+          "min": 1476.609,
+          "median": 1506.6915,
+          "max": 1536.774,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlRequestCount": {
+          "n": 2,
+          "values": [
+            51,
+            51
+          ],
+          "min": 51,
+          "median": 51.0,
+          "max": 51
+        },
+        "controlPayloadBytes": {
+          "n": 2,
+          "values": [
+            3304571,
+            3304571
+          ],
+          "min": 3304571,
+          "median": 3304571.0,
+          "max": 3304571,
+          "unit": "bytes"
+        },
+        "fractionOfInputTransferred": {
+          "n": 2,
+          "values": [
+            1.0,
+            1.0
+          ],
+          "min": 1.0,
+          "median": 1.0,
+          "max": 1.0
+        },
+        "maxConcurrentServerRequestsAllRuns": [
+          1
+        ],
+        "requestsAndPayloadIdenticalAcrossFourRuns": true,
+        "allFourReportsHaveSamePixelHash": true,
+        "pixelSha256": "5181866e7de6de7857db6f69fe50e9810b55eeb92438ebe0a66499bb6e529f64",
+        "sources": [
+          "run-1-control/report.json#/observations/13",
+          "run-2-instrumented/report.json#/observations/13",
+          "run-3-instrumented/report.json#/observations/13",
+          "run-4-control/report.json#/observations/13"
+        ]
+      },
+      {
+        "configuration": {
+          "linearized": false,
+          "blockSize": 65536,
+          "latencyMs": 15,
+          "bytesPerSecond": 8388608,
+          "forceHttp200": false,
+          "warmCache": true,
+          "inputBytes": 3304571,
+          "pageCount": 1230,
+          "pdfSha256": "d3513df690840932cc1cdc73f9ea8aab4c4bde1306669750024e0cc135d14a75"
+        },
+        "controlOpen": {
+          "n": 2,
+          "values": [
+            1452.734,
+            1458.761
+          ],
+          "min": 1452.734,
+          "median": 1455.7475,
+          "max": 1458.761,
+          "unit": "ms",
+          "sourceField": "openUs",
+          "independentProcesses": 2
+        },
+        "controlFirstRaster384px": {
+          "n": 2,
+          "values": [
+            1453.864,
+            1460.052
+          ],
+          "min": 1453.864,
+          "median": 1456.958,
+          "max": 1460.052,
+          "unit": "ms",
+          "sourceField": "firstRasterUs",
+          "independentProcesses": 2
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            1465.964,
+            1469.422
+          ],
+          "min": 1465.964,
+          "median": 1467.693,
+          "max": 1469.422,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlRequestCount": {
+          "n": 2,
+          "values": [
+            51,
+            51
+          ],
+          "min": 51,
+          "median": 51.0,
+          "max": 51
+        },
+        "controlPayloadBytes": {
+          "n": 2,
+          "values": [
+            3304571,
+            3304571
+          ],
+          "min": 3304571,
+          "median": 3304571.0,
+          "max": 3304571,
+          "unit": "bytes"
+        },
+        "fractionOfInputTransferred": {
+          "n": 2,
+          "values": [
+            1.0,
+            1.0
+          ],
+          "min": 1.0,
+          "median": 1.0,
+          "max": 1.0
+        },
+        "maxConcurrentServerRequestsAllRuns": [
+          1
+        ],
+        "requestsAndPayloadIdenticalAcrossFourRuns": true,
+        "allFourReportsHaveSamePixelHash": true,
+        "pixelSha256": "5181866e7de6de7857db6f69fe50e9810b55eeb92438ebe0a66499bb6e529f64",
+        "sources": [
+          "run-1-control/report.json#/observations/14",
+          "run-2-instrumented/report.json#/observations/14",
+          "run-3-instrumented/report.json#/observations/14",
+          "run-4-control/report.json#/observations/14"
+        ]
+      },
+      {
+        "configuration": {
+          "linearized": false,
+          "blockSize": 65536,
+          "latencyMs": 15,
+          "bytesPerSecond": 8388608,
+          "forceHttp200": true,
+          "warmCache": false,
+          "inputBytes": 3304571,
+          "pageCount": 1230,
+          "pdfSha256": "d3513df690840932cc1cdc73f9ea8aab4c4bde1306669750024e0cc135d14a75"
+        },
+        "controlOpen": {
+          "n": 2,
+          "values": [
+            736.753,
+            736.566
+          ],
+          "min": 736.566,
+          "median": 736.6595,
+          "max": 736.753,
+          "unit": "ms",
+          "sourceField": "openUs",
+          "independentProcesses": 2
+        },
+        "controlFirstRaster384px": {
+          "n": 2,
+          "values": [
+            737.65,
+            737.75
+          ],
+          "min": 737.65,
+          "median": 737.7,
+          "max": 737.75,
+          "unit": "ms",
+          "sourceField": "firstRasterUs",
+          "independentProcesses": 2
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            745.8,
+            746.36
+          ],
+          "min": 745.8,
+          "median": 746.0799999999999,
+          "max": 746.36,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlRequestCount": {
+          "n": 2,
+          "values": [
+            1,
+            1
+          ],
+          "min": 1,
+          "median": 1.0,
+          "max": 1
+        },
+        "controlPayloadBytes": {
+          "n": 2,
+          "values": [
+            3304571,
+            3304571
+          ],
+          "min": 3304571,
+          "median": 3304571.0,
+          "max": 3304571,
+          "unit": "bytes"
+        },
+        "fractionOfInputTransferred": {
+          "n": 2,
+          "values": [
+            1.0,
+            1.0
+          ],
+          "min": 1.0,
+          "median": 1.0,
+          "max": 1.0
+        },
+        "maxConcurrentServerRequestsAllRuns": [
+          1
+        ],
+        "requestsAndPayloadIdenticalAcrossFourRuns": true,
+        "allFourReportsHaveSamePixelHash": true,
+        "pixelSha256": "5181866e7de6de7857db6f69fe50e9810b55eeb92438ebe0a66499bb6e529f64",
+        "sources": [
+          "run-1-control/report.json#/observations/15",
+          "run-2-instrumented/report.json#/observations/15",
+          "run-3-instrumented/report.json#/observations/15",
+          "run-4-control/report.json#/observations/15"
+        ]
+      },
+      {
+        "configuration": {
+          "linearized": false,
+          "blockSize": 65536,
+          "latencyMs": 15,
+          "bytesPerSecond": 8388608,
+          "forceHttp200": true,
+          "warmCache": true,
+          "inputBytes": 3304571,
+          "pageCount": 1230,
+          "pdfSha256": "d3513df690840932cc1cdc73f9ea8aab4c4bde1306669750024e0cc135d14a75"
+        },
+        "controlOpen": {
+          "n": 2,
+          "values": [
+            739.592,
+            736.829
+          ],
+          "min": 736.829,
+          "median": 738.2104999999999,
+          "max": 739.592,
+          "unit": "ms",
+          "sourceField": "openUs",
+          "independentProcesses": 2
+        },
+        "controlFirstRaster384px": {
+          "n": 2,
+          "values": [
+            740.645,
+            737.739
+          ],
+          "min": 737.739,
+          "median": 739.192,
+          "max": 740.645,
+          "unit": "ms",
+          "sourceField": "firstRasterUs",
+          "independentProcesses": 2
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            748.796,
+            748.085
+          ],
+          "min": 748.085,
+          "median": 748.4405,
+          "max": 748.796,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlRequestCount": {
+          "n": 2,
+          "values": [
+            1,
+            1
+          ],
+          "min": 1,
+          "median": 1.0,
+          "max": 1
+        },
+        "controlPayloadBytes": {
+          "n": 2,
+          "values": [
+            3304571,
+            3304571
+          ],
+          "min": 3304571,
+          "median": 3304571.0,
+          "max": 3304571,
+          "unit": "bytes"
+        },
+        "fractionOfInputTransferred": {
+          "n": 2,
+          "values": [
+            1.0,
+            1.0
+          ],
+          "min": 1.0,
+          "median": 1.0,
+          "max": 1.0
+        },
+        "maxConcurrentServerRequestsAllRuns": [
+          1
+        ],
+        "requestsAndPayloadIdenticalAcrossFourRuns": true,
+        "allFourReportsHaveSamePixelHash": true,
+        "pixelSha256": "5181866e7de6de7857db6f69fe50e9810b55eeb92438ebe0a66499bb6e529f64",
+        "sources": [
+          "run-1-control/report.json#/observations/16",
+          "run-2-instrumented/report.json#/observations/16",
+          "run-3-instrumented/report.json#/observations/16",
+          "run-4-control/report.json#/observations/16"
+        ]
+      },
+      {
+        "configuration": {
+          "linearized": true,
+          "blockSize": 65536,
+          "latencyMs": 0,
+          "bytesPerSecond": 0,
+          "forceHttp200": false,
+          "warmCache": false,
+          "inputBytes": 3542626,
+          "pageCount": 1230,
+          "pdfSha256": "12ba7537a5f673d76571a35d5e5f10107fd5bf867af4c427bc0ff4854983d468"
+        },
+        "controlOpen": {
+          "n": 2,
+          "values": [
+            602.212,
+            612.493
+          ],
+          "min": 602.212,
+          "median": 607.3525,
+          "max": 612.493,
+          "unit": "ms",
+          "sourceField": "openUs",
+          "independentProcesses": 2
+        },
+        "controlFirstRaster384px": {
+          "n": 2,
+          "values": [
+            603.369,
+            613.773
+          ],
+          "min": 603.369,
+          "median": 608.571,
+          "max": 613.773,
+          "unit": "ms",
+          "sourceField": "firstRasterUs",
+          "independentProcesses": 2
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            615.698,
+            624.935
+          ],
+          "min": 615.698,
+          "median": 620.3164999999999,
+          "max": 624.935,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlRequestCount": {
+          "n": 2,
+          "values": [
+            54,
+            54
+          ],
+          "min": 54,
+          "median": 54.0,
+          "max": 54
+        },
+        "controlPayloadBytes": {
+          "n": 2,
+          "values": [
+            3477090,
+            3477090
+          ],
+          "min": 3477090,
+          "median": 3477090.0,
+          "max": 3477090,
+          "unit": "bytes"
+        },
+        "fractionOfInputTransferred": {
+          "n": 2,
+          "values": [
+            0.9815007285555969,
+            0.9815007285555969
+          ],
+          "min": 0.9815007285555969,
+          "median": 0.9815007285555969,
+          "max": 0.9815007285555969
+        },
+        "maxConcurrentServerRequestsAllRuns": [
+          1
+        ],
+        "requestsAndPayloadIdenticalAcrossFourRuns": true,
+        "allFourReportsHaveSamePixelHash": true,
+        "pixelSha256": "5181866e7de6de7857db6f69fe50e9810b55eeb92438ebe0a66499bb6e529f64",
+        "sources": [
+          "run-1-control/report.json#/observations/17",
+          "run-2-instrumented/report.json#/observations/17",
+          "run-3-instrumented/report.json#/observations/17",
+          "run-4-control/report.json#/observations/17"
+        ]
+      },
+      {
+        "configuration": {
+          "linearized": true,
+          "blockSize": 65536,
+          "latencyMs": 0,
+          "bytesPerSecond": 0,
+          "forceHttp200": false,
+          "warmCache": true,
+          "inputBytes": 3542626,
+          "pageCount": 1230,
+          "pdfSha256": "12ba7537a5f673d76571a35d5e5f10107fd5bf867af4c427bc0ff4854983d468"
+        },
+        "controlOpen": {
+          "n": 2,
+          "values": [
+            580.118,
+            548.84
+          ],
+          "min": 548.84,
+          "median": 564.479,
+          "max": 580.118,
+          "unit": "ms",
+          "sourceField": "openUs",
+          "independentProcesses": 2
+        },
+        "controlFirstRaster384px": {
+          "n": 2,
+          "values": [
+            581.156,
+            549.889
+          ],
+          "min": 549.889,
+          "median": 565.5225,
+          "max": 581.156,
+          "unit": "ms",
+          "sourceField": "firstRasterUs",
+          "independentProcesses": 2
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            591.488,
+            562.1
+          ],
+          "min": 562.1,
+          "median": 576.7940000000001,
+          "max": 591.488,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlRequestCount": {
+          "n": 2,
+          "values": [
+            54,
+            54
+          ],
+          "min": 54,
+          "median": 54.0,
+          "max": 54
+        },
+        "controlPayloadBytes": {
+          "n": 2,
+          "values": [
+            3477090,
+            3477090
+          ],
+          "min": 3477090,
+          "median": 3477090.0,
+          "max": 3477090,
+          "unit": "bytes"
+        },
+        "fractionOfInputTransferred": {
+          "n": 2,
+          "values": [
+            0.9815007285555969,
+            0.9815007285555969
+          ],
+          "min": 0.9815007285555969,
+          "median": 0.9815007285555969,
+          "max": 0.9815007285555969
+        },
+        "maxConcurrentServerRequestsAllRuns": [
+          1
+        ],
+        "requestsAndPayloadIdenticalAcrossFourRuns": true,
+        "allFourReportsHaveSamePixelHash": true,
+        "pixelSha256": "5181866e7de6de7857db6f69fe50e9810b55eeb92438ebe0a66499bb6e529f64",
+        "sources": [
+          "run-1-control/report.json#/observations/18",
+          "run-2-instrumented/report.json#/observations/18",
+          "run-3-instrumented/report.json#/observations/18",
+          "run-4-control/report.json#/observations/18"
+        ]
+      },
+      {
+        "configuration": {
+          "linearized": true,
+          "blockSize": 1048576,
+          "latencyMs": 0,
+          "bytesPerSecond": 0,
+          "forceHttp200": false,
+          "warmCache": false,
+          "inputBytes": 3542626,
+          "pageCount": 1230,
+          "pdfSha256": "12ba7537a5f673d76571a35d5e5f10107fd5bf867af4c427bc0ff4854983d468"
+        },
+        "controlOpen": {
+          "n": 2,
+          "values": [
+            544.467,
+            472.176
+          ],
+          "min": 472.176,
+          "median": 508.3215,
+          "max": 544.467,
+          "unit": "ms",
+          "sourceField": "openUs",
+          "independentProcesses": 2
+        },
+        "controlFirstRaster384px": {
+          "n": 2,
+          "values": [
+            545.631,
+            473.241
+          ],
+          "min": 473.241,
+          "median": 509.436,
+          "max": 545.631,
+          "unit": "ms",
+          "sourceField": "firstRasterUs",
+          "independentProcesses": 2
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            557.265,
+            483.988
+          ],
+          "min": 483.988,
+          "median": 520.6265,
+          "max": 557.265,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlRequestCount": {
+          "n": 2,
+          "values": [
+            4,
+            4
+          ],
+          "min": 4,
+          "median": 4.0,
+          "max": 4
+        },
+        "controlPayloadBytes": {
+          "n": 2,
+          "values": [
+            3542626,
+            3542626
+          ],
+          "min": 3542626,
+          "median": 3542626.0,
+          "max": 3542626,
+          "unit": "bytes"
+        },
+        "fractionOfInputTransferred": {
+          "n": 2,
+          "values": [
+            1.0,
+            1.0
+          ],
+          "min": 1.0,
+          "median": 1.0,
+          "max": 1.0
+        },
+        "maxConcurrentServerRequestsAllRuns": [
+          1
+        ],
+        "requestsAndPayloadIdenticalAcrossFourRuns": true,
+        "allFourReportsHaveSamePixelHash": true,
+        "pixelSha256": "5181866e7de6de7857db6f69fe50e9810b55eeb92438ebe0a66499bb6e529f64",
+        "sources": [
+          "run-1-control/report.json#/observations/19",
+          "run-2-instrumented/report.json#/observations/19",
+          "run-3-instrumented/report.json#/observations/19",
+          "run-4-control/report.json#/observations/19"
+        ]
+      },
+      {
+        "configuration": {
+          "linearized": true,
+          "blockSize": 1048576,
+          "latencyMs": 0,
+          "bytesPerSecond": 0,
+          "forceHttp200": false,
+          "warmCache": true,
+          "inputBytes": 3542626,
+          "pageCount": 1230,
+          "pdfSha256": "12ba7537a5f673d76571a35d5e5f10107fd5bf867af4c427bc0ff4854983d468"
+        },
+        "controlOpen": {
+          "n": 2,
+          "values": [
+            517.24,
+            445.794
+          ],
+          "min": 445.794,
+          "median": 481.517,
+          "max": 517.24,
+          "unit": "ms",
+          "sourceField": "openUs",
+          "independentProcesses": 2
+        },
+        "controlFirstRaster384px": {
+          "n": 2,
+          "values": [
+            518.301,
+            446.847
+          ],
+          "min": 446.847,
+          "median": 482.574,
+          "max": 518.301,
+          "unit": "ms",
+          "sourceField": "firstRasterUs",
+          "independentProcesses": 2
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            529.632,
+            455.736
+          ],
+          "min": 455.736,
+          "median": 492.68399999999997,
+          "max": 529.632,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlRequestCount": {
+          "n": 2,
+          "values": [
+            4,
+            4
+          ],
+          "min": 4,
+          "median": 4.0,
+          "max": 4
+        },
+        "controlPayloadBytes": {
+          "n": 2,
+          "values": [
+            3542626,
+            3542626
+          ],
+          "min": 3542626,
+          "median": 3542626.0,
+          "max": 3542626,
+          "unit": "bytes"
+        },
+        "fractionOfInputTransferred": {
+          "n": 2,
+          "values": [
+            1.0,
+            1.0
+          ],
+          "min": 1.0,
+          "median": 1.0,
+          "max": 1.0
+        },
+        "maxConcurrentServerRequestsAllRuns": [
+          1
+        ],
+        "requestsAndPayloadIdenticalAcrossFourRuns": true,
+        "allFourReportsHaveSamePixelHash": true,
+        "pixelSha256": "5181866e7de6de7857db6f69fe50e9810b55eeb92438ebe0a66499bb6e529f64",
+        "sources": [
+          "run-1-control/report.json#/observations/20",
+          "run-2-instrumented/report.json#/observations/20",
+          "run-3-instrumented/report.json#/observations/20",
+          "run-4-control/report.json#/observations/20"
+        ]
+      },
+      {
+        "configuration": {
+          "linearized": true,
+          "blockSize": 65536,
+          "latencyMs": 15,
+          "bytesPerSecond": 8388608,
+          "forceHttp200": false,
+          "warmCache": false,
+          "inputBytes": 3542626,
+          "pageCount": 1230,
+          "pdfSha256": "12ba7537a5f673d76571a35d5e5f10107fd5bf867af4c427bc0ff4854983d468"
+        },
+        "controlOpen": {
+          "n": 2,
+          "values": [
+            1528.61,
+            1546.729
+          ],
+          "min": 1528.61,
+          "median": 1537.6695,
+          "max": 1546.729,
+          "unit": "ms",
+          "sourceField": "openUs",
+          "independentProcesses": 2
+        },
+        "controlFirstRaster384px": {
+          "n": 2,
+          "values": [
+            1529.608,
+            1547.869
+          ],
+          "min": 1529.608,
+          "median": 1538.7385,
+          "max": 1547.869,
+          "unit": "ms",
+          "sourceField": "firstRasterUs",
+          "independentProcesses": 2
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            1540.214,
+            1559.463
+          ],
+          "min": 1540.214,
+          "median": 1549.8384999999998,
+          "max": 1559.463,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlRequestCount": {
+          "n": 2,
+          "values": [
+            54,
+            54
+          ],
+          "min": 54,
+          "median": 54.0,
+          "max": 54
+        },
+        "controlPayloadBytes": {
+          "n": 2,
+          "values": [
+            3477090,
+            3477090
+          ],
+          "min": 3477090,
+          "median": 3477090.0,
+          "max": 3477090,
+          "unit": "bytes"
+        },
+        "fractionOfInputTransferred": {
+          "n": 2,
+          "values": [
+            0.9815007285555969,
+            0.9815007285555969
+          ],
+          "min": 0.9815007285555969,
+          "median": 0.9815007285555969,
+          "max": 0.9815007285555969
+        },
+        "maxConcurrentServerRequestsAllRuns": [
+          1
+        ],
+        "requestsAndPayloadIdenticalAcrossFourRuns": true,
+        "allFourReportsHaveSamePixelHash": true,
+        "pixelSha256": "5181866e7de6de7857db6f69fe50e9810b55eeb92438ebe0a66499bb6e529f64",
+        "sources": [
+          "run-1-control/report.json#/observations/21",
+          "run-2-instrumented/report.json#/observations/21",
+          "run-3-instrumented/report.json#/observations/21",
+          "run-4-control/report.json#/observations/21"
+        ]
+      },
+      {
+        "configuration": {
+          "linearized": true,
+          "blockSize": 65536,
+          "latencyMs": 15,
+          "bytesPerSecond": 8388608,
+          "forceHttp200": false,
+          "warmCache": true,
+          "inputBytes": 3542626,
+          "pageCount": 1230,
+          "pdfSha256": "12ba7537a5f673d76571a35d5e5f10107fd5bf867af4c427bc0ff4854983d468"
+        },
+        "controlOpen": {
+          "n": 2,
+          "values": [
+            1545.697,
+            1494.357
+          ],
+          "min": 1494.357,
+          "median": 1520.027,
+          "max": 1545.697,
+          "unit": "ms",
+          "sourceField": "openUs",
+          "independentProcesses": 2
+        },
+        "controlFirstRaster384px": {
+          "n": 2,
+          "values": [
+            1546.784,
+            1495.678
+          ],
+          "min": 1495.678,
+          "median": 1521.2310000000002,
+          "max": 1546.784,
+          "unit": "ms",
+          "sourceField": "firstRasterUs",
+          "independentProcesses": 2
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            1558.151,
+            1506.812
+          ],
+          "min": 1506.812,
+          "median": 1532.4814999999999,
+          "max": 1558.151,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlRequestCount": {
+          "n": 2,
+          "values": [
+            54,
+            54
+          ],
+          "min": 54,
+          "median": 54.0,
+          "max": 54
+        },
+        "controlPayloadBytes": {
+          "n": 2,
+          "values": [
+            3477090,
+            3477090
+          ],
+          "min": 3477090,
+          "median": 3477090.0,
+          "max": 3477090,
+          "unit": "bytes"
+        },
+        "fractionOfInputTransferred": {
+          "n": 2,
+          "values": [
+            0.9815007285555969,
+            0.9815007285555969
+          ],
+          "min": 0.9815007285555969,
+          "median": 0.9815007285555969,
+          "max": 0.9815007285555969
+        },
+        "maxConcurrentServerRequestsAllRuns": [
+          1
+        ],
+        "requestsAndPayloadIdenticalAcrossFourRuns": true,
+        "allFourReportsHaveSamePixelHash": true,
+        "pixelSha256": "5181866e7de6de7857db6f69fe50e9810b55eeb92438ebe0a66499bb6e529f64",
+        "sources": [
+          "run-1-control/report.json#/observations/22",
+          "run-2-instrumented/report.json#/observations/22",
+          "run-3-instrumented/report.json#/observations/22",
+          "run-4-control/report.json#/observations/22"
+        ]
+      },
+      {
+        "configuration": {
+          "linearized": true,
+          "blockSize": 65536,
+          "latencyMs": 15,
+          "bytesPerSecond": 8388608,
+          "forceHttp200": true,
+          "warmCache": false,
+          "inputBytes": 3542626,
+          "pageCount": 1230,
+          "pdfSha256": "12ba7537a5f673d76571a35d5e5f10107fd5bf867af4c427bc0ff4854983d468"
+        },
+        "controlOpen": {
+          "n": 2,
+          "values": [
+            770.518,
+            771.859
+          ],
+          "min": 770.518,
+          "median": 771.1885,
+          "max": 771.859,
+          "unit": "ms",
+          "sourceField": "openUs",
+          "independentProcesses": 2
+        },
+        "controlFirstRaster384px": {
+          "n": 2,
+          "values": [
+            771.417,
+            772.94
+          ],
+          "min": 771.417,
+          "median": 772.1785,
+          "max": 772.94,
+          "unit": "ms",
+          "sourceField": "firstRasterUs",
+          "independentProcesses": 2
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            780.021,
+            782.425
+          ],
+          "min": 780.021,
+          "median": 781.223,
+          "max": 782.425,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlRequestCount": {
+          "n": 2,
+          "values": [
+            1,
+            1
+          ],
+          "min": 1,
+          "median": 1.0,
+          "max": 1
+        },
+        "controlPayloadBytes": {
+          "n": 2,
+          "values": [
+            3542626,
+            3542626
+          ],
+          "min": 3542626,
+          "median": 3542626.0,
+          "max": 3542626,
+          "unit": "bytes"
+        },
+        "fractionOfInputTransferred": {
+          "n": 2,
+          "values": [
+            1.0,
+            1.0
+          ],
+          "min": 1.0,
+          "median": 1.0,
+          "max": 1.0
+        },
+        "maxConcurrentServerRequestsAllRuns": [
+          1
+        ],
+        "requestsAndPayloadIdenticalAcrossFourRuns": true,
+        "allFourReportsHaveSamePixelHash": true,
+        "pixelSha256": "5181866e7de6de7857db6f69fe50e9810b55eeb92438ebe0a66499bb6e529f64",
+        "sources": [
+          "run-1-control/report.json#/observations/23",
+          "run-2-instrumented/report.json#/observations/23",
+          "run-3-instrumented/report.json#/observations/23",
+          "run-4-control/report.json#/observations/23"
+        ]
+      },
+      {
+        "configuration": {
+          "linearized": true,
+          "blockSize": 65536,
+          "latencyMs": 15,
+          "bytesPerSecond": 8388608,
+          "forceHttp200": true,
+          "warmCache": true,
+          "inputBytes": 3542626,
+          "pageCount": 1230,
+          "pdfSha256": "12ba7537a5f673d76571a35d5e5f10107fd5bf867af4c427bc0ff4854983d468"
+        },
+        "controlOpen": {
+          "n": 2,
+          "values": [
+            768.479,
+            774.671
+          ],
+          "min": 768.479,
+          "median": 771.575,
+          "max": 774.671,
+          "unit": "ms",
+          "sourceField": "openUs",
+          "independentProcesses": 2
+        },
+        "controlFirstRaster384px": {
+          "n": 2,
+          "values": [
+            769.399,
+            775.609
+          ],
+          "min": 769.399,
+          "median": 772.504,
+          "max": 775.609,
+          "unit": "ms",
+          "sourceField": "firstRasterUs",
+          "independentProcesses": 2
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            780.08,
+            784.793
+          ],
+          "min": 780.08,
+          "median": 782.4365,
+          "max": 784.793,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "controlRequestCount": {
+          "n": 2,
+          "values": [
+            1,
+            1
+          ],
+          "min": 1,
+          "median": 1.0,
+          "max": 1
+        },
+        "controlPayloadBytes": {
+          "n": 2,
+          "values": [
+            3542626,
+            3542626
+          ],
+          "min": 3542626,
+          "median": 3542626.0,
+          "max": 3542626,
+          "unit": "bytes"
+        },
+        "fractionOfInputTransferred": {
+          "n": 2,
+          "values": [
+            1.0,
+            1.0
+          ],
+          "min": 1.0,
+          "median": 1.0,
+          "max": 1.0
+        },
+        "maxConcurrentServerRequestsAllRuns": [
+          1
+        ],
+        "requestsAndPayloadIdenticalAcrossFourRuns": true,
+        "allFourReportsHaveSamePixelHash": true,
+        "pixelSha256": "5181866e7de6de7857db6f69fe50e9810b55eeb92438ebe0a66499bb6e529f64",
+        "sources": [
+          "run-1-control/report.json#/observations/24",
+          "run-2-instrumented/report.json#/observations/24",
+          "run-3-instrumented/report.json#/observations/24",
+          "run-4-control/report.json#/observations/24"
+        ]
+      }
+    ],
+    "all64NativeHttpRastersHaveSameHash": true,
+    "overlappingReads": {
+      "requestedReads": 20,
+      "requestedBytesPerRead": 4096,
+      "missingBlockBytes": 65536,
+      "requestsAllFourRuns": {
+        "n": 4,
+        "values": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "min": 20,
+        "median": 20.0,
+        "max": 20
+      },
+      "payloadBytesAllFourRuns": {
+        "n": 4,
+        "values": [
+          1310720,
+          1310720,
+          1310720,
+          1310720
+        ],
+        "min": 1310720,
+        "median": 1310720.0,
+        "max": 1310720,
+        "unit": "bytes"
+      },
+      "allReadsCorrect": true,
+      "singleFlightObserved": false,
+      "duplicateRequestFactor": 20,
+      "avoidableDuplicatePayloadBytesPerRunIfSingleFlightWorks": 1245184,
+      "controlWall": {
+        "n": 2,
+        "values": [
+          245.433,
+          244.238
+        ],
+        "min": 244.238,
+        "median": 244.8355,
+        "max": 245.433,
+        "unit": "ms",
+        "sourceField": "wallUs",
+        "independentProcesses": 2
+      },
+      "maxConcurrentServerRequestsAllRuns": [
+        1
+      ],
+      "nativePdfiumUsedInThisSubcase": false,
+      "sources": [
+        "run-1-control/report.json#/observations/25",
+        "run-2-instrumented/report.json#/observations/25",
+        "run-3-instrumented/report.json#/observations/25",
+        "run-4-control/report.json#/observations/25"
+      ]
+    },
+    "diskCache": {
+      "quotaConfigured": false,
+      "eightAdditionalDocumentsRetainEightCacheFiles": true,
+      "logicalBytesAddedPerAdditionalDocument": 65687,
+      "logicalBytesAddedForEightDocuments": 525496,
+      "growthSnapshots": [
+        {
+          "completedDocuments": 1,
+          "files": 10,
+          "logicalBytes": 27586894
+        },
+        {
+          "completedDocuments": 2,
+          "files": 11,
+          "logicalBytes": 27652581
+        },
+        {
+          "completedDocuments": 3,
+          "files": 12,
+          "logicalBytes": 27718268
+        },
+        {
+          "completedDocuments": 4,
+          "files": 13,
+          "logicalBytes": 27783955
+        },
+        {
+          "completedDocuments": 5,
+          "files": 14,
+          "logicalBytes": 27849642
+        },
+        {
+          "completedDocuments": 6,
+          "files": 15,
+          "logicalBytes": 27915329
+        },
+        {
+          "completedDocuments": 7,
+          "files": 16,
+          "logicalBytes": 27981016
+        },
+        {
+          "completedDocuments": 8,
+          "files": 17,
+          "logicalBytes": 28046703
+        }
+      ],
+      "authIdentitiesHaveDistinctPathsInAllRuns": true,
+      "finalInventory": [
+        {
+          "run": "run-1-control",
+          "pdfCacheFiles": 17,
+          "pdfCacheLogicalBytes": 28046703,
+          "pdfCacheAllocatedBytes": 27963392,
+          "fontCacheFiles": 1,
+          "fontCacheLogicalBytes": 454852,
+          "totalLogicalBytes": 28501555,
+          "totalAllocatedBytes": 28422144
+        },
+        {
+          "run": "run-2-instrumented",
+          "pdfCacheFiles": 17,
+          "pdfCacheLogicalBytes": 28046703,
+          "pdfCacheAllocatedBytes": 27963392,
+          "fontCacheFiles": 1,
+          "fontCacheLogicalBytes": 454852,
+          "totalLogicalBytes": 28501555,
+          "totalAllocatedBytes": 28422144
+        },
+        {
+          "run": "run-3-instrumented",
+          "pdfCacheFiles": 17,
+          "pdfCacheLogicalBytes": 28046703,
+          "pdfCacheAllocatedBytes": 27963392,
+          "fontCacheFiles": 1,
+          "fontCacheLogicalBytes": 454852,
+          "totalLogicalBytes": 28501555,
+          "totalAllocatedBytes": 28422144
+        },
+        {
+          "run": "run-4-control",
+          "pdfCacheFiles": 17,
+          "pdfCacheLogicalBytes": 28046703,
+          "pdfCacheAllocatedBytes": 27963392,
+          "fontCacheFiles": 1,
+          "fontCacheLogicalBytes": 454852,
+          "totalLogicalBytes": 28501555,
+          "totalAllocatedBytes": 28422144
+        }
+      ],
+      "sources": [
+        "run-1-control/report.json#/observations/26",
+        "run-2-instrumented/report.json#/observations/26",
+        "run-3-instrumented/report.json#/observations/26",
+        "run-4-control/report.json#/observations/26"
+      ],
+      "longTermDiskBoundEstablished": false
+    },
+    "findings": [
+      "At 64KiB ranges the original GCC document needed 51 requests and 3,304,571 bytes; the linearized file needed 54 requests and 3,477,090 bytes (98.15% of its file), in both initial and repeat opens.",
+      "At 1MiB ranges both files needed four requests. On the zero-delay loopback condition the control initial first-raster medians were 480.832 ms (original) and 509.436 ms (linearized), versus 530.3395 and 608.571 ms with 64KiB ranges. The sample is too small for a general recommendation.",
+      "With 15ms delay per request and 8MiB/s server pacing, 64KiB-range control initial first-raster medians were 1496.733 ms (original) and 1538.7385 ms (linearized). A server responding HTTP200 once yielded 737.700 and 772.1785 ms, respectively. This compares server response modes, not an app patch.",
+      "Repeat opens downloaded the same bytes and request counts. The fixture advertises public,max-age=3600 and a fixed ETag, but never returns304. This establishes behavior only against this server; it does not measure successful304 cache reuse.",
+      "Twenty concurrent reads of one missing block produced twenty serialized requests (1,310,720 bytes), not one. Read bytes were correct. This is direct evidence of missing same-block single-flight in the tested reader.",
+      "Eight retained URLs added eight 65,687-byte cache files; dispose did not evict them in this finite workload. Authentication identities had distinct cache paths. No global long-term quota was tested."
+    ],
+    "limits": [
+      "Real internet transport, TLS, HTTP304, failures/retries and progressive-loading=true were not exercised.",
+      "The original and linearized files contain the same pages but differ in byte size.",
+      "The input PDF is already resident in the local server process.",
+      "Overlap/quota subcases capture the real cache reader through a stub document entry and do not execute native PDFium."
+    ],
+    "sourceExplanation": {
+      "file": "pdfrx_engine-0.9.3.tar.gz::lib/src/native/pdf_file_cache.dart",
+      "freshnessConditionLines": [
+        379,
+        380
+      ],
+      "revalidationInvalidatesOnNon304Lines": [
+        534,
+        536
+      ],
+      "interpretation": "The locked code skips revalidation only when mustRevalidate&&isFresh. Our fixture has max-age but no must-revalidate; its non304 response invalidates existing cached blocks. This source reading explains the observed repeat downloads without claiming a measured fix."
+    }
+  },
+  "S02": {
+    "missingFontEventCases": [
+      {
+        "progressive": false,
+        "sharedFace": true,
+        "correctnessAllFourRuns": {
+          "documents": 10,
+          "documentsReportingOwnMissingFace": 1,
+          "foreignFixtureFaces": 0,
+          "documentsWithForeignFixtureFaces": [],
+          "nonFixtureFaces": [
+            "Helvetica"
+          ],
+          "documentsContainingHebrewWord": 0,
+          "inkPixels": [
+            0
+          ]
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            71.956,
+            72.096
+          ],
+          "min": 71.956,
+          "median": 72.02600000000001,
+          "max": 72.096,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "sources": [
+          "run-1-control/report.json#/observations/27",
+          "run-2-instrumented/report.json#/observations/27",
+          "run-3-instrumented/report.json#/observations/27",
+          "run-4-control/report.json#/observations/27"
+        ]
+      },
+      {
+        "progressive": false,
+        "sharedFace": false,
+        "correctnessAllFourRuns": {
+          "documents": 10,
+          "documentsReportingOwnMissingFace": 1,
+          "foreignFixtureFaces": 9,
+          "documentsWithForeignFixtureFaces": [
+            0
+          ],
+          "nonFixtureFaces": [
+            "Helvetica"
+          ],
+          "documentsContainingHebrewWord": 0,
+          "inkPixels": [
+            0
+          ]
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            70.753,
+            70.753
+          ],
+          "min": 70.753,
+          "median": 70.753,
+          "max": 70.753,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "sources": [
+          "run-1-control/report.json#/observations/28",
+          "run-2-instrumented/report.json#/observations/28",
+          "run-3-instrumented/report.json#/observations/28",
+          "run-4-control/report.json#/observations/28"
+        ]
+      },
+      {
+        "progressive": true,
+        "sharedFace": true,
+        "correctnessAllFourRuns": {
+          "documents": 10,
+          "documentsReportingOwnMissingFace": 1,
+          "foreignFixtureFaces": 0,
+          "documentsWithForeignFixtureFaces": [],
+          "nonFixtureFaces": [
+            "Helvetica"
+          ],
+          "documentsContainingHebrewWord": 0,
+          "inkPixels": [
+            0
+          ]
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            69.356,
+            69.721
+          ],
+          "min": 69.356,
+          "median": 69.5385,
+          "max": 69.721,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "sources": [
+          "run-1-control/report.json#/observations/29",
+          "run-2-instrumented/report.json#/observations/29",
+          "run-3-instrumented/report.json#/observations/29",
+          "run-4-control/report.json#/observations/29"
+        ]
+      },
+      {
+        "progressive": true,
+        "sharedFace": false,
+        "correctnessAllFourRuns": {
+          "documents": 10,
+          "documentsReportingOwnMissingFace": 1,
+          "foreignFixtureFaces": 9,
+          "documentsWithForeignFixtureFaces": [
+            0
+          ],
+          "nonFixtureFaces": [
+            "Helvetica"
+          ],
+          "documentsContainingHebrewWord": 0,
+          "inkPixels": [
+            0
+          ]
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            71.249,
+            69.704
+          ],
+          "min": 69.704,
+          "median": 70.47649999999999,
+          "max": 71.249,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "sources": [
+          "run-1-control/report.json#/observations/30",
+          "run-2-instrumented/report.json#/observations/30",
+          "run-3-instrumented/report.json#/observations/30",
+          "run-4-control/report.json#/observations/30"
+        ]
+      }
+    ],
+    "explicitManagerCases": [
+      {
+        "warmRegisteredFace": false,
+        "documents": 10,
+        "controlLoad": {
+          "n": 2,
+          "values": [
+            15.831,
+            15.279
+          ],
+          "min": 15.279,
+          "median": 15.555,
+          "max": 15.831,
+          "unit": "ms",
+          "sourceField": "loadUs",
+          "independentProcesses": 2
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            86.544,
+            87.44
+          ],
+          "min": 86.544,
+          "median": 86.99199999999999,
+          "max": 87.44,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "resolverCallsAllRuns": {
+          "n": 4,
+          "values": [
+            10,
+            10,
+            10,
+            10
+          ],
+          "min": 10,
+          "median": 10.0,
+          "max": 10
+        },
+        "payloadLoadsAllRuns": {
+          "n": 4,
+          "values": [
+            10,
+            10,
+            10,
+            10
+          ],
+          "min": 10,
+          "median": 10.0,
+          "max": 10
+        },
+        "fontRegisterDataInstrumentedRuns": {
+          "n": 2,
+          "values": [
+            10,
+            10
+          ],
+          "min": 10,
+          "median": 10.0,
+          "max": 10
+        },
+        "fontReloadInstrumentedRuns": {
+          "n": 2,
+          "values": [
+            10,
+            10
+          ],
+          "min": 10,
+          "median": 10.0,
+          "max": 10
+        },
+        "all40DocumentObservationsContainHebrew": true,
+        "textHashes": [
+          "b7ac0398ef74193ab738b21df0912329303df10d868c2bac37a84a59d12c0e2f"
+        ],
+        "pixelHashes": [
+          "3dda18a678ce54286a8fe87139535f3a5e27b4e2c26c581c00d7beb10f0980ee"
+        ],
+        "inkPixels": [
+          155
+        ],
+        "sources": [
+          "run-1-control/report.json#/observations/31",
+          "run-2-instrumented/report.json#/observations/31",
+          "run-3-instrumented/report.json#/observations/31",
+          "run-4-control/report.json#/observations/31"
+        ]
+      },
+      {
+        "warmRegisteredFace": true,
+        "documents": 10,
+        "controlLoad": {
+          "n": 2,
+          "values": [
+            0.037,
+            0.034
+          ],
+          "min": 0.034,
+          "median": 0.035500000000000004,
+          "max": 0.037,
+          "unit": "ms",
+          "sourceField": "loadUs",
+          "independentProcesses": 2
+        },
+        "controlWall": {
+          "n": 2,
+          "values": [
+            69.878,
+            70.926
+          ],
+          "min": 69.878,
+          "median": 70.402,
+          "max": 70.926,
+          "unit": "ms",
+          "sourceField": "wallUs",
+          "independentProcesses": 2
+        },
+        "resolverCallsAllRuns": {
+          "n": 4,
+          "values": [
+            10,
+            10,
+            10,
+            10
+          ],
+          "min": 10,
+          "median": 10.0,
+          "max": 10
+        },
+        "payloadLoadsAllRuns": {
+          "n": 4,
+          "values": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "min": 0,
+          "median": 0.0,
+          "max": 0
+        },
+        "fontRegisterDataInstrumentedRuns": {
+          "n": 2,
+          "values": [
+            0,
+            0
+          ],
+          "min": 0,
+          "median": 0.0,
+          "max": 0
+        },
+        "fontReloadInstrumentedRuns": {
+          "n": 2,
+          "values": [
+            0,
+            0
+          ],
+          "min": 0,
+          "median": 0.0,
+          "max": 0
+        },
+        "all40DocumentObservationsContainHebrew": true,
+        "textHashes": [
+          "b7ac0398ef74193ab738b21df0912329303df10d868c2bac37a84a59d12c0e2f"
+        ],
+        "pixelHashes": [
+          "3dda18a678ce54286a8fe87139535f3a5e27b4e2c26c581c00d7beb10f0980ee"
+        ],
+        "inkPixels": [
+          155
+        ],
+        "sources": [
+          "run-1-control/report.json#/observations/32",
+          "run-2-instrumented/report.json#/observations/32",
+          "run-3-instrumented/report.json#/observations/32",
+          "run-4-control/report.json#/observations/32"
+        ]
+      }
+    ],
+    "findings": [
+      "With ten distinct missing face names, each run and both eager/progressive modes reported nine foreign fixture faces on document0; only one of ten documents reported its own expected face within the observation window.",
+      "The shared-face case also reported its common name for one of ten documents, but cannot identify cross-document affinity because every document requests the same name.",
+      "Ten explicit concurrent identical PdfFontManager requests performed ten resolver calls and ten payload loads when cold. Instrumentation recorded ten registrations and ten reloads. Repeating with the registered face kept ten resolver calls but performed zero payload loads, registrations and reloads.",
+      "The control manager-loading interval was 15.279–15.831ms cold (median15.555ms) and0.034–0.037ms registered (median0.0355ms). These are cache-state observations of the same manager, not a measured app optimization.",
+      "All ten explicit-manager document results in every run extracted the expected Hebrew word and produced identical nonempty raster hashes (155 ink pixels)."
+    ],
+    "limits": [
+      "Missing-font fixtures are synthetic and deliberately unembedded; automatic application fallback was disabled for event-attribution cases.",
+      "Only events delivered during the harness window are counted. Some native render missing-font notifications are asynchronous; this does not prove that other documents never receive later events.",
+      "The explicit-manager subcase is separate from automatic application fallback/event routing.",
+      "A Hebrew string and nonempty identical pixel hashes do not prove glyph appearance, layout fidelity or absence of tofu.",
+      "The common face name cannot expose foreign-face affinity by construction."
+    ],
+    "applicationCandidate": {
+      "status": "hypothesis-supported-by-duplicate-work; not-yet-product-benchmarked",
+      "action": "Coalesce concurrent identical font loads/registrations and share the immutable bundled Tinos payload, while preserving per-query fallback/style behavior and retry after failure.",
+      "reason": "Cold duplicate resolver/payload/registration/reload work is directly counted; current application fallback uses a shared manager but does not itself coalesce identical pending calls.",
+      "requiredProof": "Measure PdfFontFallback itself under concurrent PDF opens with text/pixel parity, event-loss/retry behavior, and no regression for distinct faces or styles."
+    }
+  },
+  "practicalDisposition": [
+    {
+      "item": "S02 concurrent identical font loads",
+      "ownership": "application candidate plus upstream PdfFontManager",
+      "supportedNow": "Duplicate cold payload/registration work is measured.",
+      "notEstablished": "Product UI speedup or safe universal event-serialization policy."
+    },
+    {
+      "item": "S02 per-document missing-font event affinity",
+      "ownership": "upstream locked pdfrx_engine",
+      "supportedNow": "Distinct fixture faces are attributed to document0 in both modes.",
+      "applicationAction": "Keep existing real-font fallback; avoid broad semantic changes without a product reproduction/parity test."
+    },
+    {
+      "item": "M01 canceledOnly queue scan",
+      "ownership": "upstream locked pdfrx_engine",
+      "supportedNow": "Large artificial bursts require millions of cancellation probes; actual mixed PDF depth is about40.",
+      "applicationAction": "Retain bounded/coalesced background submission and existing cancellation; no queue rewrite speedup claimed."
+    },
+    {
+      "item": "E10 HTTP block single-flight/freshness/quota",
+      "ownership": "upstream engine; no measured application HTTP-open change",
+      "supportedNow": "Duplicate block transfers, repeated downloads against this non304 server, and finite retained-cache growth are observed.",
+      "applicationAction": "Do not change app download block sizes or impose destructive eviction from these two local runs alone."
+    }
+  ]
+}

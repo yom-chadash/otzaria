@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "runId": 45392759336,
+  "jobId": 138440491671,
+  "artifactId": 14918584407,
+  "runUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45392759336",
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45392759336/job/138440491671",
+  "artifactName": "pdf-5538-upstream-suites-fixed-3.50.0",
+  "artifactSha256": "014ed5187d9467b4b71a351e69f00905124339b0027202084d9fa34a640c60b5",
+  "artifactSha256Verified": true,
+  "forkCommit": "dc700936532ff990c8112a3a57ff5957cf1b3ae6",
+  "upstreamCommit": "683df93e986af19bbcefd22606a417083116847b",
+  "scopes": [
+    "Q01-fixed"
+  ],
+  "sdk": {
+    "frameworkVersion": "3.50.0",
+    "frameworkRevision": "ab2912035e160d9cad6306df307576da6128ebdb",
+    "engineRevision": "371f77202a73e8dff57a8b3bff75bca55c090aee",
+    "dartSdkVersion": "3.14.0"
+  },
+  "status": "blocked-before-tests-and-probes",
+  "completedSuites": {},
+  "executedTests": 0,
+  "rawMeasurementRows": 0,
+  "measurementClaimsSupported": [],
+  "failure": {
+    "type": "measurement-harness-source-path-mismatch",
+    "stage": "freeze_resolved_source",
+    "expectedAllowlist": [
+      "example/pdf_combine/windows/flutter/generated_plugin_registrant.cc",
+      "example/pdf_combine/windows/flutter/generated_plugins.cmake"
+    ],
+    "actualTrackedChanges": [
+      {
+        "status": "M",
+        "path": "packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugin_registrant.cc"
+      },
+      {
+        "status": "M",
+        "path": "packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugins.cmake"
+      }
+    ],
+    "generatedPatchSha256": "4e369b913d9b158f40405c32cb0df4014ffb865d6b892db526fc1b1b9a9b7043",
+    "reason": "Allowlist was relative to packages/pdfrx; git diff emitted workspace-root-relative paths."
+  },
+  "correction": {
+    "file": "tool/issue5538_ci/internal_upstream_run.py",
+    "change": "Prefix the two exact allowlisted generated file paths with packages/pdfrx/.",
+    "correctedFileSha256": "dca8a647409e877d81e68b7548e2089db7cf331d8cc4774c07241f2ae792a438",
+    "guardRegressionTestsPassed": 8,
+    "preFixNestedPathFailureReproduced": true,
+    "requiresNewCIExecution": true
+  },
+  "limitations": [
+    "These failures are harness failures, not failures of upstream product tests.",
+    "No R01/R10/S15 results or Q01 suite execution may be inferred from these artifacts.",
+    "Initial run 45389994425 is separate evidence and is not aggregated into these empty runs."
+  ],
+  "generatedAtUtc": "2026-11-24T12:28:29.823338+00:00"
+}

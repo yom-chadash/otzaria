@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "status": "partial-correctness-failed-measurement",
+  "runId": 45389994425,
+  "jobId": 138432215296,
+  "artifactId": 14917654912,
+  "sourceCommit": "b83d51a08fdc3eab12259ca134166743fc17e2b7",
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45389994425/job/138432215296",
+  "completedSuites": {
+    "native": {
+      "executed": 35,
+      "skipped": 0,
+      "events": 87
+    },
+    "chrome": {
+      "executed": 59,
+      "skipped": 0,
+      "events": 181
+    },
+    "node": {
+      "tests": 164,
+      "pass": 164,
+      "fail": 0,
+      "skipped": 0
+    },
+    "nodeFiles": 10
+  },
+  "measurementProbesCompleted": false,
+  "productImprovementClaim": false,
+  "failure": {
+    "measurementComplete": false,
+    "error": "Traceback (most recent call last):\n  File \"/home/runner/work/otzaria/otzaria/tool/issue5538_ci/internal_upstream_run.py\", line 217, in main\n    run([\"node\", module / \"internal_upstream_node.cjs\", \"--repo\", upstream, \"--corpus\", paths[\"mikraot-gedolot-genesis-1859\"],\n  File \"/home/runner/work/otzaria/otzaria/tool/issue5538_ci/internal_upstream_run.py\", line 39, in run\n    require(result.returncode == 0, f\"Command exited {result.returncode}: {command}\\n{result.stdout[-5000:]}\")\n  File \"/home/runner/work/otzaria/otzaria/tool/issue5538_ci/internal_upstream_run.py\", line 22, in require\n    raise ValueError(message)\nValueError: Command exited 1: ['node', PosixPath('/home/runner/work/otzaria/otzaria/tool/issue5538_ci/internal_upstream_node.cjs'), '--repo', PosixPath('/home/runner/work/_temp/pdf-5538-upstream/upstream'), '--corpus', PosixPath('/home/runner/work/_temp/pdf-5538-inputs/pdf-5538-corpus/mikraot-gedolot-genesis-1859.pdf'), '--output', PosixPath('/home/runner/work/_temp/pdf-5538-upstream/web-probes'), '--chrome', PosixPath('/usr/bin/google-chrome')]\n    at Object.<anonymous> (/home/runner/work/otzaria/otzaria/tool/issue5538_ci/internal_upstream_node.cjs:138:1)\n    at Module._compile (node:internal/modules/cjs/loader:1929:14)\n    at Object..js (node:internal/modules/cjs/loader:2060:10)\n    at Module.load (node:internal/modules/cjs/loader:1651:32)\n    at Module._load (node:internal/modules/cjs/loader:1443:12) {\n  status: 1,\n  signal: null,\n  output: [\n    null,\n    'diff --git a/packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugin_registrant.cc b/packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugin_registrant.cc\\n' +\n      'index 2db4d5a..5ebb3c2 100644\\n' +\n      '--- a/packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugin_registrant.cc\\n' +\n      '+++ b/packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugin_registrant.cc\\n' +\n      '@@ -8,16 +8,16 @@\\n' +\n      ' \\n' +\n      ' #include <desktop_drop/desktop_drop_plugin.h>\\n' +\n      ' #include <file_selector_windows/file_selector_windows.h>\\n' +\n      '-#include <share_plus/share_plus_windows_plugin_c_api.h>\\n' +\n      ' #include <url_launcher_windows/url_launcher_windows.h>\\n' +\n      '+#include <share_plus/share_plus_windows_plugin_c_api.h>\\n' +\n      ' \\n' +\n      ' void RegisterPlugins(flutter::PluginRegistry* registry) {\\n' +\n      '   DesktopDropPluginRegisterWithRegistrar(\\n' +\n      '       registry->GetRegistrarForPlugin(\"DesktopDropPlugin\"));\\n' +\n      '   FileSelectorWindowsRegisterWithRegistrar(\\n' +\n      '       registry->GetRegistrarForPlugin(\"FileSelectorWindows\"));\\n' +\n      '-  SharePlusWindowsPluginCApiRegisterWithRegistrar(\\n' +\n      '-      registry->GetRegistrarForPlugin(\"SharePlusWindowsPluginCApi\"));\\n' +\n      '   UrlLauncherWindowsRegisterWithRegistrar(\\n' +\n      '       registry->GetRegistrarForPlugin(\"UrlLauncherWindows\"));\\n' +\n      '+  SharePlusWindowsPluginCApiRegisterWithRegistrar(\\n' +\n      '+      registry->GetRegistrarForPlugin(\"SharePlusWindowsPluginCApi\"));\\n' +\n      ' }\\n' +\n      'diff --git a/packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugins.cmake b/packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugins.cmake\\n' +\n      'index 718c066..7001901 100644\\n' +\n      '--- a/packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugins.cmake\\n' +\n      '+++ b/packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugins.cmake\\n' +\n      '@@ -5,8 +5,8 @@\\n' +\n      ' list(APPEND FLUTTER_PLUGIN_LIST\\n' +\n      '   desktop_drop\\n' +\n      '   file_selector_windows\\n' +\n      '-  share_plus\\n' +\n      '   url_launcher_windows\\n' +\n      '+  share_plus\\n' +\n      ' )\\n' +\n      ' \\n' +\n      ' list(APPEND FLUTTER_FFI_PLUGIN_LIST\\n',\n    ''\n  ],\n  pid: 3384,\n  stdout: 'diff --git a/packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugin_registrant.cc b/packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugin_registrant.cc\\n' +\n    'index 2db4d5a..5ebb3c2 100644\\n' +\n    '--- a/packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugin_registrant.cc\\n' +\n    '+++ b/packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugin_registrant.cc\\n' +\n    '@@ -8,16 +8,16 @@\\n' +\n    ' \\n' +\n    ' #include <desktop_drop/desktop_drop_plugin.h>\\n' +\n    ' #include <file_selector_windows/file_selector_windows.h>\\n' +\n    '-#include <share_plus/share_plus_windows_plugin_c_api.h>\\n' +\n    ' #include <url_launcher_windows/url_launcher_windows.h>\\n' +\n    '+#include <share_plus/share_plus_windows_plugin_c_api.h>\\n' +\n    ' \\n' +\n    ' void RegisterPlugins(flutter::PluginRegistry* registry) {\\n' +\n    '   DesktopDropPluginRegisterWithRegistrar(\\n' +\n    '       registry->GetRegistrarForPlugin(\"DesktopDropPlugin\"));\\n' +\n    '   FileSelectorWindowsRegisterWithRegistrar(\\n' +\n    '       registry->GetRegistrarForPlugin(\"FileSelectorWindows\"));\\n' +\n    '-  SharePlusWindowsPluginCApiRegisterWithRegistrar(\\n' +\n    '-      registry->GetRegistrarForPlugin(\"SharePlusWindowsPluginCApi\"));\\n' +\n    '   UrlLauncherWindowsRegisterWithRegistrar(\\n' +\n    '       registry->GetRegistrarForPlugin(\"UrlLauncherWindows\"));\\n' +\n    '+  SharePlusWindowsPluginCApiRegisterWithRegistrar(\\n' +\n    '+      registry->GetRegistrarForPlugin(\"SharePlusWindowsPluginCApi\"));\\n' +\n    ' }\\n' +\n    'diff --git a/packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugins.cmake b/packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugins.cmake\\n' +\n    'index 718c066..7001901 100644\\n' +\n    '--- a/packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugins.cmake\\n' +\n    '+++ b/packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugins.cmake\\n' +\n    '@@ -5,8 +5,8 @@\\n' +\n    ' list(APPEND FLUTTER_PLUGIN_LIST\\n' +\n    '   desktop_drop\\n' +\n    '   file_selector_windows\\n' +\n    '-  share_plus\\n' +\n    '   url_launcher_windows\\n' +\n    '+  share_plus\\n' +\n    ' )\\n' +\n    ' \\n' +\n    ' list(APPEND FLUTTER_FFI_PLUGIN_LIST\\n',\n  stderr: ''\n}\n\n"
+  },
+  "interpretationHe": "בדיקות native, Chrome ו־Node הסתיימו, ואז source guard נכשל על registrants שנוצרו. הפרובים לא רצו; זה אינו סבב מדידות שהושלם.",
+  "rawEvidence": [
+    "suite-receipts.json",
+    "native-suites.jsonl",
+    "chrome-suites.jsonl",
+    "node-suites.log",
+    "failure.json"
+  ]
+}

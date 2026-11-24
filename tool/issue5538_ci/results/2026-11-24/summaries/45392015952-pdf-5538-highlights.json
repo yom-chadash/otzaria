@@ -1,0 +1,624 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "runId": 45392015952,
+  "jobId": 138441654238,
+  "artifactId": 14921060122,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45392015952/job/138441654238",
+  "artifactUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45392015952/artifacts/14921060122",
+  "artifactSha256": "7365b7d83fba973a193f176346c05964114924514ef8557539b26823913c4178",
+  "sources": {
+    "baseline": "c038e878b19dc9fc1f04e08520c3e21e03c9d6e7",
+    "candidate": "329f198b2c2c2bc21b292905ae54785d1d28f016"
+  },
+  "executionMode": "flutter-profile",
+  "sdk": {
+    "frameworkVersion": "3.47.7",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "engineCommitDate": "2026-10-07 17:09:12.000Z",
+    "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+    "engineBuildDate": "2026-10-07 10:51:44.552",
+    "dartSdkVersion": "3.13.5",
+    "devToolsVersion": "2.60.0",
+    "flutterVersion": "3.47.7",
+    "flutterRoot": "/__t/flutter/stable-3.47.7-x64/flutter"
+  },
+  "corpora": {
+    "uxlc-genesis": {
+      "pages": 54,
+      "inputSha256": "ce28c3ed6f052b633a943d545f766be88d935c71d71b0b4c23ee172fca71af2e",
+      "host": {
+        "name": "cb8e8507df30",
+        "operatingSystem": "linux",
+        "operatingSystemVersion": "Linux 7.0.0-1014-aws #14~24.04.1-Ubuntu SMP PREEMPT Fri Sep 18 21:24:59 UTC 2026",
+        "processors": 4
+      },
+      "allObservations": 5184,
+      "allTextContextGeometryAndMatchSignaturesEqual": true,
+      "layoutGeometryAndGetterCountsEqualAcrossSources": true,
+      "changes": {
+        "literal_alef": {
+          "p50BeforeUs": 18104,
+          "p50AfterUs": 15579,
+          "p50ChangePercent": -13.947193990278391,
+          "microtasksBefore": 7801,
+          "microtasksAfter": 108,
+          "matchesPerPass": 7639,
+          "absoluteP50DeltaMs": -2.525,
+          "baselineProcessMediansUs": [
+            17243,
+            19573
+          ],
+          "candidateProcessMediansUs": [
+            15477,
+            15641
+          ],
+          "adjacentABBAProcessMedianChangesPercent": [
+            -10.241837267296871,
+            -20.088897971695708
+          ]
+        },
+        "hebrew_combining_marks": {
+          "p50BeforeUs": 197704,
+          "p50AfterUs": 145988,
+          "p50ChangePercent": -26.15829725245822,
+          "microtasksBefore": 84867,
+          "microtasksAfter": 108,
+          "matchesPerPass": 84705,
+          "absoluteP50DeltaMs": -51.716,
+          "baselineProcessMediansUs": [
+            193698,
+            208110
+          ],
+          "candidateProcessMediansUs": [
+            147602,
+            145575
+          ],
+          "adjacentABBAProcessMedianChangesPercent": [
+            -23.797870912451348,
+            -30.04901254144443
+          ]
+        },
+        "result_lines_alef_bet": {
+          "p50BeforeUs": 30819,
+          "p50AfterUs": 27825,
+          "p50ChangePercent": -9.7147863331062,
+          "microtasksBefore": 9073,
+          "microtasksAfter": 108,
+          "matchesPerPass": 8911,
+          "absoluteP50DeltaMs": -2.994,
+          "baselineProcessMediansUs": [
+            30819,
+            31306
+          ],
+          "candidateProcessMediansUs": [
+            28518,
+            27448
+          ],
+          "adjacentABBAProcessMedianChangesPercent": [
+            -7.466173464421299,
+            -12.323516258864121
+          ]
+        }
+      },
+      "launches": [
+        {
+          "index": 1,
+          "side": "baseline",
+          "queries": {
+            "literal_alef": {
+              "passesUs": [
+                18302,
+                17237,
+                17771,
+                16997,
+                17116,
+                17856,
+                17243
+              ],
+              "medianUs": 17243,
+              "untimedMicrotasks": 7801
+            },
+            "hebrew_combining_marks": {
+              "passesUs": [
+                202867,
+                191686,
+                188423,
+                194615,
+                184218,
+                203991,
+                193698
+              ],
+              "medianUs": 193698,
+              "untimedMicrotasks": 84867
+            },
+            "result_lines_alef_bet": {
+              "passesUs": [
+                34053,
+                30769,
+                34401,
+                32425,
+                30702,
+                28671,
+                30819
+              ],
+              "medianUs": 30819,
+              "untimedMicrotasks": 9073
+            }
+          }
+        },
+        {
+          "index": 2,
+          "side": "candidate",
+          "queries": {
+            "literal_alef": {
+              "passesUs": [
+                16062,
+                15059,
+                15477,
+                15883,
+                16509,
+                14843,
+                14793
+              ],
+              "medianUs": 15477,
+              "untimedMicrotasks": 108
+            },
+            "hebrew_combining_marks": {
+              "passesUs": [
+                149646,
+                154329,
+                147659,
+                146741,
+                140581,
+                140914,
+                147602
+              ],
+              "medianUs": 147602,
+              "untimedMicrotasks": 108
+            },
+            "result_lines_alef_bet": {
+              "passesUs": [
+                28518,
+                27825,
+                26508,
+                29062,
+                29920,
+                30439,
+                27749
+              ],
+              "medianUs": 28518,
+              "untimedMicrotasks": 108
+            }
+          }
+        },
+        {
+          "index": 3,
+          "side": "candidate",
+          "queries": {
+            "literal_alef": {
+              "passesUs": [
+                17024,
+                17993,
+                16047,
+                15641,
+                15579,
+                15579,
+                15559
+              ],
+              "medianUs": 15641,
+              "untimedMicrotasks": 108
+            },
+            "hebrew_combining_marks": {
+              "passesUs": [
+                160874,
+                148396,
+                142149,
+                145988,
+                145575,
+                143302,
+                144835
+              ],
+              "medianUs": 145575,
+              "untimedMicrotasks": 108
+            },
+            "result_lines_alef_bet": {
+              "passesUs": [
+                29458,
+                27448,
+                28280,
+                25532,
+                24465,
+                26827,
+                28945
+              ],
+              "medianUs": 27448,
+              "untimedMicrotasks": 108
+            }
+          }
+        },
+        {
+          "index": 4,
+          "side": "baseline",
+          "queries": {
+            "literal_alef": {
+              "passesUs": [
+                21490,
+                23955,
+                19204,
+                20199,
+                18104,
+                19573,
+                19003
+              ],
+              "medianUs": 19573,
+              "untimedMicrotasks": 7801
+            },
+            "hebrew_combining_marks": {
+              "passesUs": [
+                214889,
+                208786,
+                208110,
+                199756,
+                191792,
+                197704,
+                215518
+              ],
+              "medianUs": 208110,
+              "untimedMicrotasks": 84867
+            },
+            "result_lines_alef_bet": {
+              "passesUs": [
+                32532,
+                33238,
+                31306,
+                34366,
+                29022,
+                30068,
+                30255
+              ],
+              "medianUs": 31306,
+              "untimedMicrotasks": 9073
+            }
+          }
+        }
+      ],
+      "layoutCounters": {
+        "realMetadataPages": 54,
+        "derivedRepeatedMetadataAndSyntheticSizes": [
+          100,
+          1000,
+          10000
+        ],
+        "widthPlusHeightReads": {
+          "cold": "2*N",
+          "cache_hit": "2*N",
+          "params_change": "2*N",
+          "dimensions_change": "4*N"
+        },
+        "tenThousandIsOriginalDocument": false,
+        "layoutCodeChangedBetweenSources": false
+      }
+    },
+    "birkon-3_0": {
+      "pages": 2,
+      "inputSha256": "7e9d3f6af17b68da9400d575cd8b62913344a862490c75133b2c9b72b7783436",
+      "host": {
+        "name": "cb8e8507df30",
+        "operatingSystem": "linux",
+        "operatingSystemVersion": "Linux 7.0.0-1014-aws #14~24.04.1-Ubuntu SMP PREEMPT Fri Sep 18 21:24:59 UTC 2026",
+        "processors": 4
+      },
+      "allObservations": 192,
+      "allTextContextGeometryAndMatchSignaturesEqual": true,
+      "layoutGeometryAndGetterCountsEqualAcrossSources": true,
+      "changes": {
+        "literal_alef": {
+          "p50BeforeUs": 1018,
+          "p50AfterUs": 856,
+          "p50ChangePercent": -15.913555992141454,
+          "microtasksBefore": 395,
+          "microtasksAfter": 4,
+          "matchesPerPass": 389,
+          "absoluteP50DeltaMs": -0.162,
+          "baselineProcessMediansUs": [
+            1321,
+            1014
+          ],
+          "candidateProcessMediansUs": [
+            855,
+            879
+          ],
+          "adjacentABBAProcessMedianChangesPercent": [
+            -35.27630582891749,
+            -13.313609467455622
+          ]
+        },
+        "hebrew_combining_marks": {
+          "p50BeforeUs": 10672,
+          "p50AfterUs": 8954,
+          "p50ChangePercent": -16.098200899550225,
+          "microtasksBefore": 3954,
+          "microtasksAfter": 4,
+          "matchesPerPass": 3948,
+          "absoluteP50DeltaMs": -1.718,
+          "baselineProcessMediansUs": [
+            10672,
+            10982
+          ],
+          "candidateProcessMediansUs": [
+            9587,
+            8954
+          ],
+          "adjacentABBAProcessMedianChangesPercent": [
+            -10.1667916041979,
+            -18.466581679111272
+          ]
+        },
+        "result_lines_alef_bet": {
+          "p50BeforeUs": 2173,
+          "p50AfterUs": 3078,
+          "p50ChangePercent": 41.64749194661758,
+          "microtasksBefore": 450,
+          "microtasksAfter": 4,
+          "matchesPerPass": 444,
+          "absoluteP50DeltaMs": 0.905,
+          "baselineProcessMediansUs": [
+            2025,
+            3259
+          ],
+          "candidateProcessMediansUs": [
+            3137,
+            3078
+          ],
+          "adjacentABBAProcessMedianChangesPercent": [
+            54.913580246913575,
+            -5.553850874501376
+          ]
+        }
+      },
+      "launches": [
+        {
+          "index": 1,
+          "side": "baseline",
+          "queries": {
+            "literal_alef": {
+              "passesUs": [
+                1005,
+                2350,
+                1321,
+                997,
+                1328,
+                1018,
+                1361
+              ],
+              "medianUs": 1321,
+              "untimedMicrotasks": 395
+            },
+            "hebrew_combining_marks": {
+              "passesUs": [
+                11567,
+                12743,
+                9165,
+                12004,
+                9588,
+                10672,
+                8125
+              ],
+              "medianUs": 10672,
+              "untimedMicrotasks": 3954
+            },
+            "result_lines_alef_bet": {
+              "passesUs": [
+                2050,
+                2018,
+                3301,
+                2009,
+                2025,
+                3366,
+                2001
+              ],
+              "medianUs": 2025,
+              "untimedMicrotasks": 450
+            }
+          }
+        },
+        {
+          "index": 2,
+          "side": "candidate",
+          "queries": {
+            "literal_alef": {
+              "passesUs": [
+                930,
+                1970,
+                855,
+                823,
+                818,
+                832,
+                856
+              ],
+              "medianUs": 855,
+              "untimedMicrotasks": 4
+            },
+            "hebrew_combining_marks": {
+              "passesUs": [
+                12231,
+                9873,
+                10058,
+                8659,
+                9587,
+                7776,
+                7733
+              ],
+              "medianUs": 9587,
+              "untimedMicrotasks": 4
+            },
+            "result_lines_alef_bet": {
+              "passesUs": [
+                3329,
+                3137,
+                1900,
+                3177,
+                1874,
+                3240,
+                1920
+              ],
+              "medianUs": 3137,
+              "untimedMicrotasks": 4
+            }
+          }
+        },
+        {
+          "index": 3,
+          "side": "candidate",
+          "queries": {
+            "literal_alef": {
+              "passesUs": [
+                833,
+                2212,
+                912,
+                843,
+                879,
+                879,
+                1219
+              ],
+              "medianUs": 879,
+              "untimedMicrotasks": 4
+            },
+            "hebrew_combining_marks": {
+              "passesUs": [
+                13332,
+                10160,
+                10133,
+                8796,
+                8954,
+                8730,
+                6353
+              ],
+              "medianUs": 8954,
+              "untimedMicrotasks": 4
+            },
+            "result_lines_alef_bet": {
+              "passesUs": [
+                3057,
+                3078,
+                2280,
+                3366,
+                1950,
+                3318,
+                3302
+              ],
+              "medianUs": 3078,
+              "untimedMicrotasks": 4
+            }
+          }
+        },
+        {
+          "index": 4,
+          "side": "baseline",
+          "queries": {
+            "literal_alef": {
+              "passesUs": [
+                1139,
+                1009,
+                2103,
+                975,
+                1007,
+                1014,
+                1580
+              ],
+              "medianUs": 1014,
+              "untimedMicrotasks": 395
+            },
+            "hebrew_combining_marks": {
+              "passesUs": [
+                16382,
+                12370,
+                9080,
+                10982,
+                13051,
+                9949,
+                8090
+              ],
+              "medianUs": 10982,
+              "untimedMicrotasks": 3954
+            },
+            "result_lines_alef_bet": {
+              "passesUs": [
+                3259,
+                2173,
+                3458,
+                2322,
+                3466,
+                2121,
+                3452
+              ],
+              "medianUs": 3259,
+              "untimedMicrotasks": 450
+            }
+          }
+        }
+      ],
+      "layoutCounters": {
+        "realMetadataPages": 2,
+        "derivedRepeatedMetadataAndSyntheticSizes": [
+          100,
+          1000,
+          10000
+        ],
+        "widthPlusHeightReads": {
+          "cold": "2*N",
+          "cache_hit": "2*N",
+          "params_change": "2*N",
+          "dimensions_change": "4*N"
+        },
+        "tenThousandIsOriginalDocument": false,
+        "layoutCodeChangedBetweenSources": false
+      }
+    }
+  },
+  "interpretationHe": [
+    "השינוי מבודד שני קבצי c59 מעל baseline שכבר כולל #5945. הרתמה, SDK, PDFium, הקורפוסים וקוד layout משותפים.",
+    "ב-UXLC זמני p50 של literal, marks ו-ResultLines ירדו בכ-14%,26%,10% בהתאמה. גם חציוני שני התהליכים מצביעים לאותו כיוון.",
+    "ב-Birkon literal ו-marks ירדו בכ-16%; ResultLines עלה מ-2.173ms ל-3.078ms ב-p50 המאוחד. אסור לטעון שיפור בכל תרחיש.",
+    "ב-ResultLines של Birkon יש שונות בין התהליכים והכיוון מתהפך בין שני זוגות ABBA; מספר התהליכים קטן להכרעה על רגרסיה עקבית.",
+    "הירידה במספר microtasks הוכחה בספירה נפרדת שאינה חלק מתזמון הביצועים. ב-UXLC marks ירדו 84,867 ל-108; ב-Birkon 3,954 ל-4.",
+    "כל חתימות התוצאות, ההקשרים, הגאומטריה ומוני הפריסה נשמרו זהים. זו ראיה לשיפור רכיב ההדגשות בחלק מהתרחישים, לא למדידת זמן תגובה של ממשק מלא.",
+    "ResultLines אינו בקרת אפס: הדפוס זהה, אך PdfPageHighlights הצורך אותו השתנה גם עבור Pattern מותאם. אין לסווג את העלייה ב-Birkon כרעש מוכח; הדגימות מעטות והכיוון אינו עקבי. בקרת המקור שאינו משתנה היא הפריסה."
+  ],
+  "limitations": [
+    "Two fresh processes per source per corpus, seven measured passes inside each process; the 14 passes are not 14 independent process samples.",
+    "Published p50 follows the validator nearest-rank convention; process medians and all raw pass totals are included separately.",
+    "Structured text is preloaded. Native extraction, cold document open, UI paint and complete interactive search latency are excluded.",
+    "Microtasks are audited untimed in a separate Zone; no Dart heap-allocation or native-memory saving is measured.",
+    "Short Birkon ResultLines timings vary by about one millisecond; the data do not establish the cause of that variation.",
+    "Do not attribute B-to-C layout timing variation to the highlight patch: layout source and exact getter counts are unchanged.",
+    "100/1000/10000-page layout rows use repeated real metadata or synthetic sizes, not original documents of those lengths.",
+    "No confidence interval or broad platform/user-population speedup claim from this Linux-host experiment."
+  ],
+  "causalScope": {
+    "resultLinesIsNegativeControl": false,
+    "resultLinesWhy": "ResultLinesHighlightPattern itself is byte-identical, but the timed PdfPageHighlights.ensurePage consumer changes from Stream.fromIterable/await-for to synchronous Pattern iteration for custom patterns as well.",
+    "buildPdfSearchResultLinesMeasuredSeparately": false,
+    "layoutIsUnchangedSourceControl": true,
+    "sourceFileSha256": {
+      "lib/pdf_book/utils/pdf_page_highlights.dart": {
+        "baseline": "bd5052ffabbf0ff8e94244bd93cc0c75949c75c8365918d34585996e865ca9e5",
+        "candidate": "d02baf432dd12f87d3b07e814a11c6497a79794eaaa7aa38230a25b4928fbb70"
+      },
+      "lib/pdf_book/utils/result_lines_highlight_pattern.dart": {
+        "both": "30dd69a8aadabc0fcf5928e486efb3321a656b99424091ab1d8447f9d5ec1ff9"
+      },
+      "lib/pdf_book/utils/pdf_book_layout.dart": {
+        "both": "206b183c79434013da5c95185a5e7b87ad7c635bbec77d1123170729090e397e"
+      },
+      "integration_test/pdf_highlight_profile_test.dart": {
+        "both": "ab8fb552a43b37bdc1d3d1e7d7d42463be5c911e631c052b98dad5eca3833a49"
+      }
+    }
+  }
+}

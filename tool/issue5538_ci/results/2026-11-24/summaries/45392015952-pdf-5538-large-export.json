@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "status": "verified",
+  "runId": 45392015952,
+  "jobId": 138441654345,
+  "artifactId": 14918954604,
+  "runUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45392015952/job/138441654345",
+  "archiveSha256": "b81fc300ba8d4febe5878c354006cfa11034747e4385d097c5634d6c56a0f793",
+  "reportSha256": "0a827f3ee21d75a576f47a222a4de244fa238bc36cd468809fb29d847418f3d5",
+  "source": {
+    "commit": "27e662d2e64db076d19f9ccc22c9b52a8619ea45",
+    "tree": "356b274eb28d2db1dd41c540cf088dc0d76c6d65"
+  },
+  "sdk": {
+    "frameworkVersion": "3.47.7",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "engineCommitDate": "2026-10-07 17:09:12.000Z",
+    "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+    "engineBuildDate": "2026-10-07 10:51:44.552",
+    "dartSdkVersion": "3.13.5",
+    "devToolsVersion": "2.60.0",
+    "flutterVersion": "3.47.7",
+    "flutterRoot": "/__t/flutter/stable-3.47.7-x64/flutter"
+  },
+  "measurementDesign": {
+    "build": "profile",
+    "host": "Linux hosted CI",
+    "warmupProcesses": 2,
+    "measuredProcessesPerVariant": 6,
+    "order": [
+      "bytes",
+      "file",
+      "file",
+      "bytes",
+      "bytes",
+      "file",
+      "file",
+      "bytes",
+      "bytes",
+      "file",
+      "file",
+      "bytes"
+    ],
+    "comparison": "Two existing production export APIs in one identical app binary; confirms previously merged file-backed export, not a new PR speedup"
+  },
+  "input": {
+    "pages": 374,
+    "bytes": 41990345,
+    "sha256": "92a145512e33c4a3c8f1b1c92d2d79c4db91a49cc921a316201be81bfa85040d"
+  },
+  "output": {
+    "pages": 94,
+    "bytes": 41605801,
+    "nUp": 4
+  },
+  "parity": {
+    "allOutputPageTextsEqual": true,
+    "textPages": 94,
+    "firstMiddleLastRastersEqual": true,
+    "rasterPages": [
+      1,
+      48,
+      94
+    ],
+    "pdfByteEqualityClaimed": false
+  },
+  "variants": {
+    "bytes": {
+      "composeUs": {
+        "median": 2340083.0,
+        "min": 2314652,
+        "max": 2372029
+      },
+      "bytesResultWriteUs": {
+        "median": 56444.0,
+        "min": 55422,
+        "max": 60694
+      },
+      "sampledRssPeakBytes": {
+        "median": 498581504.0,
+        "min": 498409472,
+        "max": 498769920
+      },
+      "rssBeforeBytes": {
+        "median": 239173632.0,
+        "min": 238960640,
+        "max": 239513600
+      },
+      "rssAfterComposeBytes": {
+        "median": 498601984.0,
+        "min": 498425856,
+        "max": 498786304
+      },
+      "outputBytes": {
+        "median": 41605801.0,
+        "min": 41605801,
+        "max": 41605801
+      },
+      "retainedDartOutputBytes": {
+        "median": 41605801.0,
+        "min": 41605801,
+        "max": 41605801
+      },
+      "composeAndDiskWriteMs": {
+        "median": 2396.3945000000003
+      }
+    },
+    "file": {
+      "composeUs": {
+        "median": 2313573.5,
+        "min": 2301550,
+        "max": 2337633
+      },
+      "bytesResultWriteUs": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "sampledRssPeakBytes": {
+        "median": 389984256.0,
+        "min": 389496832,
+        "max": 390447104
+      },
+      "rssBeforeBytes": {
+        "median": 239497216.0,
+        "min": 239116288,
+        "max": 240087040
+      },
+      "rssAfterComposeBytes": {
+        "median": 390000640.0,
+        "min": 389513216,
+        "max": 390459392
+      },
+      "outputBytes": {
+        "median": 41605801.0,
+        "min": 41605801,
+        "max": 41605801
+      },
+      "retainedDartOutputBytes": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "composeAndDiskWriteMs": {
+        "median": 2313.5735
+      }
+    }
+  },
+  "sampledPeakRssDifference": {
+    "bytes": 108597248.0,
+    "MiB": 103.56640625,
+    "percent": 21.781242811606585
+  },
+  "failures": [
+    {
+      "variant": "cancel",
+      "status": "passed",
+      "expectedFailure": "cancelled",
+      "composeUs": 55127,
+      "partialFileBytes": 0,
+      "sourceStillUsable": true
+    },
+    {
+      "variant": "write-failure",
+      "status": "passed",
+      "expectedFailure": "write-failed",
+      "composeUs": 1746871,
+      "partialFileBytes": 0,
+      "sourceStillUsable": true
+    }
+  ],
+  "limitations": [
+    "Hosted Linux VM; not physical device or end-user printer performance.",
+    "Profile standalone production export calls; no claim about full reader navigation.",
+    "Peak RSS samples are lower bounds. Whole-process high-water mark includes validation.",
+    "Six process launches per variant; exploratory medians, no p99 or broad noise gate.",
+    "No exact Dart/native allocations. Full-page visual comparison was not performed; only text covers all 94 output pages.",
+    "Cancellation duration is one observed invocation, not a latency distribution."
+  ]
+}

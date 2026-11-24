@@ -1,0 +1,383 @@
+{
+  "schemaVersion": 1,
+  "runId": 45394319381,
+  "jobId": 138445906919,
+  "artifactId": 14920466763,
+  "runUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45394319381",
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45394319381/job/138445906919",
+  "artifactSha256": "2b31046e04fea228a330da13ffc81f746bbae22111e0e8f5de2c10f109bd884a",
+  "artifactSha256Verified": true,
+  "forkCommit": "fc81d39cfe5f50f38c26a1341fd8fae86330ad20",
+  "upstreamCommit": "683df93e986af19bbcefd22606a417083116847b",
+  "sdk": {
+    "frameworkVersion": "3.50.0",
+    "frameworkRevision": "ab2912035e160d9cad6306df307576da6128ebdb",
+    "engineRevision": "371f77202a73e8dff57a8b3bff75bca55c090aee",
+    "dartSdkVersion": "3.14.0"
+  },
+  "nativeAssets": {
+    ".dart_tool/hooks_runner/shared/pdfium_dart/build/chromium_8125/linux-x64/libpdfium.so": {
+      "sha256": "1c251efce460d67437a4c76d4be9033ae2f17bf5603f5bff1af10209b94ca723",
+      "bytes": 8049768
+    }
+  },
+  "runtimes": {
+    "node": "v24.22.3",
+    "chrome": {
+      "protocolVersion": "1.3",
+      "product": "Chrome/157.0.8103.78",
+      "revision": "@4b3d0dabb8250b6f152d2d85d79e7706e309d087",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "jsVersion": "15.7.112.43"
+    }
+  },
+  "suites": {
+    "native": {
+      "executed": 35,
+      "skipped": 0,
+      "events": 87
+    },
+    "chrome": {
+      "executed": 59,
+      "skipped": 0,
+      "events": 181
+    },
+    "node": {
+      "tests": 164,
+      "pass": 164,
+      "fail": 0,
+      "skipped": 0
+    },
+    "nodeFiles": 10
+  },
+  "suiteExecutions": 258,
+  "suiteSkips": 0,
+  "R01": {
+    "casesPerRuntime": 6,
+    "wrongPasswordAttemptsPerRuntime": 25,
+    "runtimeResults": {
+      "node": [
+        {
+          "fixture": "small-encrypted",
+          "mode": "legacy-data",
+          "inputBytes": 1328,
+          "wrongPasswordAttempts": 5,
+          "finalOwnedResources": {
+            "liveInputAllocations": 5,
+            "liveWrapperBytes": 6640,
+            "virtualFiles": 0,
+            "pendingSources": 0
+          }
+        },
+        {
+          "fixture": "small-encrypted",
+          "mode": "registered-data",
+          "inputBytes": 1328,
+          "wrongPasswordAttempts": 5,
+          "finalOwnedResources": {
+            "liveInputAllocations": 0,
+            "liveWrapperBytes": 0,
+            "virtualFiles": 0,
+            "pendingSources": 0
+          }
+        },
+        {
+          "fixture": "large-encrypted",
+          "mode": "legacy-data",
+          "inputBytes": 2098480,
+          "wrongPasswordAttempts": 5,
+          "finalOwnedResources": {
+            "liveInputAllocations": 0,
+            "liveWrapperBytes": 0,
+            "virtualFiles": 1,
+            "pendingSources": 0
+          }
+        },
+        {
+          "fixture": "large-encrypted",
+          "mode": "registered-data",
+          "inputBytes": 2098480,
+          "wrongPasswordAttempts": 5,
+          "finalOwnedResources": {
+            "liveInputAllocations": 0,
+            "liveWrapperBytes": 0,
+            "virtualFiles": 0,
+            "pendingSources": 0
+          }
+        },
+        {
+          "fixture": null,
+          "mode": "real-http-200-fallback",
+          "inputBytes": 1328,
+          "wrongPasswordAttempts": 5,
+          "finalOwnedResources": {
+            "liveInputAllocations": 5,
+            "liveWrapperBytes": 6640,
+            "virtualFiles": 0,
+            "pendingSources": 0
+          }
+        },
+        {
+          "fixture": null,
+          "mode": "registered-correct-password-control",
+          "inputBytes": null,
+          "wrongPasswordAttempts": 0,
+          "finalOwnedResources": {
+            "liveInputAllocations": 0,
+            "liveWrapperBytes": 0,
+            "virtualFiles": 0,
+            "pendingSources": 0
+          }
+        }
+      ],
+      "chrome": [
+        {
+          "fixture": "small-encrypted",
+          "mode": "legacy-data",
+          "inputBytes": 1328,
+          "wrongPasswordAttempts": 5,
+          "finalOwnedResources": {
+            "liveInputAllocations": 5,
+            "liveWrapperBytes": 6640,
+            "virtualFiles": 0,
+            "pendingSources": 0
+          }
+        },
+        {
+          "fixture": "small-encrypted",
+          "mode": "registered-data",
+          "inputBytes": 1328,
+          "wrongPasswordAttempts": 5,
+          "finalOwnedResources": {
+            "liveInputAllocations": 0,
+            "liveWrapperBytes": 0,
+            "virtualFiles": 0,
+            "pendingSources": 0
+          }
+        },
+        {
+          "fixture": "large-encrypted",
+          "mode": "legacy-data",
+          "inputBytes": 2098480,
+          "wrongPasswordAttempts": 5,
+          "finalOwnedResources": {
+            "liveInputAllocations": 0,
+            "liveWrapperBytes": 0,
+            "virtualFiles": 1,
+            "pendingSources": 0
+          }
+        },
+        {
+          "fixture": "large-encrypted",
+          "mode": "registered-data",
+          "inputBytes": 2098480,
+          "wrongPasswordAttempts": 5,
+          "finalOwnedResources": {
+            "liveInputAllocations": 0,
+            "liveWrapperBytes": 0,
+            "virtualFiles": 0,
+            "pendingSources": 0
+          }
+        },
+        {
+          "fixture": null,
+          "mode": "real-http-200-fallback",
+          "inputBytes": 1328,
+          "wrongPasswordAttempts": 5,
+          "finalOwnedResources": {
+            "liveInputAllocations": 5,
+            "liveWrapperBytes": 6640,
+            "virtualFiles": 0,
+            "pendingSources": 0
+          }
+        },
+        {
+          "fixture": null,
+          "mode": "registered-correct-password-control",
+          "inputBytes": null,
+          "wrongPasswordAttempts": 0,
+          "finalOwnedResources": {
+            "liveInputAllocations": 0,
+            "liveWrapperBytes": 0,
+            "virtualFiles": 0,
+            "pendingSources": 0
+          }
+        }
+      ]
+    },
+    "finding": "Legacy data and actual HTTP 200 fallback retain 5 input allocations totaling 6640 bytes after five small wrong-password opens. Legacy large input retains one virtual file. Registered ownership releases both small/large input resources after abandonment and after successful close."
+  },
+  "R10": {
+    "unmodifiedControls": 3,
+    "instrumentedSuccessfulControls": 3,
+    "injectedNativeFailures": 6,
+    "failedNativeSavesReturnedNormally": 6,
+    "returnedLengthsOnFailure": [
+      0,
+      32768
+    ],
+    "allFaultCallbacksClosedExactlyOnce": true,
+    "allSuccessfulControlsReopenedPages": 1230,
+    "inputSha256": "d3513df690840932cc1cdc73f9ea8aab4c4bde1306669750024e0cc135d14a75",
+    "faultPatchSha256": "32535d28c4829ac84632d25ecc34bbacfa2b03daa635d2feae030243996f070d",
+    "finding": "FPDF_SaveAsCopy returned 0 for every injected writer failure, but encodePdf returned normally with empty or partial bytes."
+  },
+  "S15": {
+    "runtimeResults": {
+      "node": {
+        "rows": 18,
+        "readCalls": 5370,
+        "allByteParityPassed": true,
+        "instrumentedCounts": [
+          {
+            "blocks": 128,
+            "order": "sequential",
+            "reads": 128,
+            "chunkPredicateChecks": 8256,
+            "retainedPayloadBytes": 8388608
+          },
+          {
+            "blocks": 128,
+            "order": "permuted",
+            "reads": 128,
+            "chunkPredicateChecks": 8256,
+            "retainedPayloadBytes": 8388608
+          },
+          {
+            "blocks": 128,
+            "order": "cross-boundary",
+            "reads": 127,
+            "chunkPredicateChecks": 16383,
+            "retainedPayloadBytes": 8388608
+          },
+          {
+            "blocks": 256,
+            "order": "sequential",
+            "reads": 256,
+            "chunkPredicateChecks": 32896,
+            "retainedPayloadBytes": 16777216
+          },
+          {
+            "blocks": 256,
+            "order": "permuted",
+            "reads": 256,
+            "chunkPredicateChecks": 32896,
+            "retainedPayloadBytes": 16777216
+          },
+          {
+            "blocks": 256,
+            "order": "cross-boundary",
+            "reads": 255,
+            "chunkPredicateChecks": 65535,
+            "retainedPayloadBytes": 16777216
+          },
+          {
+            "blocks": 512,
+            "order": "sequential",
+            "reads": 512,
+            "chunkPredicateChecks": 131328,
+            "retainedPayloadBytes": 33554432
+          },
+          {
+            "blocks": 512,
+            "order": "permuted",
+            "reads": 512,
+            "chunkPredicateChecks": 131328,
+            "retainedPayloadBytes": 33554432
+          },
+          {
+            "blocks": 512,
+            "order": "cross-boundary",
+            "reads": 511,
+            "chunkPredicateChecks": 262143,
+            "retainedPayloadBytes": 33554432
+          }
+        ]
+      },
+      "chrome": {
+        "rows": 18,
+        "readCalls": 5370,
+        "allByteParityPassed": true,
+        "instrumentedCounts": [
+          {
+            "blocks": 128,
+            "order": "sequential",
+            "reads": 128,
+            "chunkPredicateChecks": 8256,
+            "retainedPayloadBytes": 8388608
+          },
+          {
+            "blocks": 128,
+            "order": "permuted",
+            "reads": 128,
+            "chunkPredicateChecks": 8256,
+            "retainedPayloadBytes": 8388608
+          },
+          {
+            "blocks": 128,
+            "order": "cross-boundary",
+            "reads": 127,
+            "chunkPredicateChecks": 16383,
+            "retainedPayloadBytes": 8388608
+          },
+          {
+            "blocks": 256,
+            "order": "sequential",
+            "reads": 256,
+            "chunkPredicateChecks": 32896,
+            "retainedPayloadBytes": 16777216
+          },
+          {
+            "blocks": 256,
+            "order": "permuted",
+            "reads": 256,
+            "chunkPredicateChecks": 32896,
+            "retainedPayloadBytes": 16777216
+          },
+          {
+            "blocks": 256,
+            "order": "cross-boundary",
+            "reads": 255,
+            "chunkPredicateChecks": 65535,
+            "retainedPayloadBytes": 16777216
+          },
+          {
+            "blocks": 512,
+            "order": "sequential",
+            "reads": 512,
+            "chunkPredicateChecks": 131328,
+            "retainedPayloadBytes": 33554432
+          },
+          {
+            "blocks": 512,
+            "order": "permuted",
+            "reads": 512,
+            "chunkPredicateChecks": 131328,
+            "retainedPayloadBytes": 33554432
+          },
+          {
+            "blocks": 512,
+            "order": "cross-boundary",
+            "reads": 511,
+            "chunkPredicateChecks": 262143,
+            "retainedPayloadBytes": 33554432
+          }
+        ]
+      }
+    },
+    "totalObservedRows": 36,
+    "totalByteCheckedReadCalls": 10740,
+    "finding": "The old PdfRangeCache performs triangular chunk scans for point reads and N^2-1 scans for cross-boundary reads; Node and real Chrome worker agree. All copied bytes match real Mikraot 1859 PDF content."
+  },
+  "limitations": [
+    "This is the unchanged upstream 683df93 baseline plus explicitly recorded fault/counter instrumentation, not proof that later upstream PRs are fixed or adopted by Otzaria.",
+    "The green job means the diagnostic observations and correctness checks completed; R01/R10 defects are deliberately observed, not claimed fixed.",
+    "R01 tracks wrapper-owned allocations and virtual files, not process RSS or total WASM heap.",
+    "S15 reads the real cache class directly using real PDF content; it does not measure whole-document load or application UI speed.",
+    "S15 contains a single observation per size/order/variant/runtime. Counter instrumentation and JIT/warmup differences prohibit before/after timing claims.",
+    "R10 writer rejection after threshold 1 occurs after one accepted 32768-byte chunk, not after exactly one byte.",
+    "R10 exercises incremental/removeSecurity flags on an unencrypted real GCC PDF; it is not proof of encrypted-output security behavior.",
+    "Q01 here is only the targeted 35 native/59 Chrome/164 Node executions. Full 27-file engine, 45-file viewer, eight browser-file suites and platform lanes are separate runs."
+  ],
+  "generatedAtUtc": "2026-11-24T12:38:21.891951+00:00"
+}

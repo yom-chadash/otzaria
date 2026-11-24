@@ -1,0 +1,315 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "evidence": {
+    "runId": 45389994425,
+    "jobId": 138432215508,
+    "artifactId": 14919056683,
+    "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45389994425/job/138432215508",
+    "artifactUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45389994425/artifacts/14919056683",
+    "artifactSha256": "823d8acbcbb731ad9204fe2175ebffc68985201398dccf87f48adbb4edf7876b",
+    "sourceCommit": "b83d51a08fdc3eab12259ca134166743fc17e2b7",
+    "reportSha256": "0f3223ec0aa7aa19bb224ca54f65a428dafb236b2bafb055dfab3a95ff7d2917",
+    "pdfiumSha256": "1c251efce460d67437a4c76d4be9033ae2f17bf5603f5bff1af10209b94ca723",
+    "executionMode": "dart-aot",
+    "flutter": "3.47.7",
+    "dart": "3.13.5 (stable) (Tue Sep 29 01:00:52 2026 -0700) on \"linux_x64\""
+  },
+  "corpus": {
+    "id": "mikraot-gedolot-genesis-1859",
+    "sha256": "92a145512e33c4a3c8f1b1c92d2d79c4db91a49cc921a316201be81bfa85040d",
+    "pages": 374,
+    "textPages": 368,
+    "emptyPages": [
+      1,
+      3,
+      4,
+      371,
+      372,
+      374
+    ],
+    "utf16CodeUnits": 2333854,
+    "characterRects": 2333854,
+    "fragments": 903851,
+    "hebrewCombiningMarks": 125187
+  },
+  "verification": {
+    "allObservations": 6732,
+    "measuredObservations": 5610,
+    "allPageTextGeometryAndQuerySignaturesEqual": true,
+    "all374TextFilesSha256Verified": true,
+    "jsonlEqualsReportObservations": true,
+    "completeUniqueObservationGrid": true,
+    "sourceBeforeEqualsAfter": true,
+    "independentAnalysisOfStoredTextQueryCountsMatchesNative": true
+  },
+  "phases": {
+    "pipeline": {
+      "measuredPasses": 5,
+      "pagesPerPass": 374,
+      "rawLoadCallsMeasured": 1870,
+      "rawLoadCallsEachPass": [
+        374,
+        374,
+        374,
+        374,
+        374
+      ],
+      "p50Milliseconds": {
+        "rawLoadMs": 2477.694,
+        "formatMs": 666.091,
+        "cacheLoadMs": null,
+        "matchingMs": 178.096,
+        "rectsMs": 109.672,
+        "totalProfiledMs": 3431.553
+      },
+      "fullPassTotalsMicroseconds": [
+        {
+          "rawLoadUs": 2406880,
+          "formatUs": 652839,
+          "cacheLoadUs": null,
+          "matchingUs": 177497,
+          "rectsUs": 107803,
+          "iteration": 1,
+          "rawLoadCalls": 374,
+          "totalProfiledUs": 3345019
+        },
+        {
+          "rawLoadUs": 2437950,
+          "formatUs": 661933,
+          "cacheLoadUs": null,
+          "matchingUs": 177897,
+          "rectsUs": 108955,
+          "iteration": 2,
+          "rawLoadCalls": 374,
+          "totalProfiledUs": 3386735
+        },
+        {
+          "rawLoadUs": 2477694,
+          "formatUs": 666091,
+          "cacheLoadUs": null,
+          "matchingUs": 178096,
+          "rectsUs": 109672,
+          "iteration": 3,
+          "rawLoadCalls": 374,
+          "totalProfiledUs": 3431553
+        },
+        {
+          "rawLoadUs": 2527245,
+          "formatUs": 670745,
+          "cacheLoadUs": null,
+          "matchingUs": 178436,
+          "rectsUs": 110853,
+          "iteration": 4,
+          "rawLoadCalls": 374,
+          "totalProfiledUs": 3487279
+        },
+        {
+          "rawLoadUs": 2585174,
+          "formatUs": 681562,
+          "cacheLoadUs": null,
+          "matchingUs": 179651,
+          "rectsUs": 111829,
+          "iteration": 5,
+          "rawLoadCalls": 374,
+          "totalProfiledUs": 3558216
+        }
+      ],
+      "cachePagesObservedMax": 0,
+      "cacheEstimatedBytesObservedMax": 0
+    },
+    "cacheFirst": {
+      "measuredPasses": 5,
+      "pagesPerPass": 374,
+      "rawLoadCallsMeasured": 1870,
+      "rawLoadCallsEachPass": [
+        374,
+        374,
+        374,
+        374,
+        374
+      ],
+      "p50Milliseconds": {
+        "rawLoadMs": 2608.575,
+        "formatMs": null,
+        "cacheLoadMs": 3342.422,
+        "matchingMs": 184.836,
+        "rectsMs": 118.191,
+        "totalProfiledMs": 3643.591
+      },
+      "fullPassTotalsMicroseconds": [
+        {
+          "rawLoadUs": 2459848,
+          "formatUs": null,
+          "cacheLoadUs": 3173036,
+          "matchingUs": 181338,
+          "rectsUs": 118191,
+          "iteration": 1,
+          "rawLoadCalls": 374,
+          "totalProfiledUs": 3472565
+        },
+        {
+          "rawLoadUs": 2608575,
+          "formatUs": null,
+          "cacheLoadUs": 3342422,
+          "matchingUs": 184194,
+          "rectsUs": 116975,
+          "iteration": 2,
+          "rawLoadCalls": 374,
+          "totalProfiledUs": 3643591
+        },
+        {
+          "rawLoadUs": 2562214,
+          "formatUs": null,
+          "cacheLoadUs": 3279652,
+          "matchingUs": 186691,
+          "rectsUs": 114578,
+          "iteration": 3,
+          "rawLoadCalls": 374,
+          "totalProfiledUs": 3580921
+        },
+        {
+          "rawLoadUs": 2648611,
+          "formatUs": null,
+          "cacheLoadUs": 3452536,
+          "matchingUs": 187401,
+          "rectsUs": 118243,
+          "iteration": 4,
+          "rawLoadCalls": 374,
+          "totalProfiledUs": 3758180
+        },
+        {
+          "rawLoadUs": 2747366,
+          "formatUs": null,
+          "cacheLoadUs": 3529447,
+          "matchingUs": 184836,
+          "rectsUs": 124929,
+          "iteration": 5,
+          "rawLoadCalls": 374,
+          "totalProfiledUs": 3839212
+        }
+      ],
+      "cachePagesObservedMax": 16,
+      "cacheEstimatedBytesObservedMax": 8383966
+    },
+    "cacheRepeat": {
+      "measuredPasses": 5,
+      "pagesPerPass": 374,
+      "rawLoadCallsMeasured": 1870,
+      "rawLoadCallsEachPass": [
+        374,
+        374,
+        374,
+        374,
+        374
+      ],
+      "p50Milliseconds": {
+        "rawLoadMs": 2655.534,
+        "formatMs": null,
+        "cacheLoadMs": 3412.079,
+        "matchingMs": 182.004,
+        "rectsMs": 119.883,
+        "totalProfiledMs": 3713.966
+      },
+      "fullPassTotalsMicroseconds": [
+        {
+          "rawLoadUs": 2529245,
+          "formatUs": null,
+          "cacheLoadUs": 3243897,
+          "matchingUs": 184911,
+          "rectsUs": 114221,
+          "iteration": 1,
+          "rawLoadCalls": 374,
+          "totalProfiledUs": 3543029
+        },
+        {
+          "rawLoadUs": 2677259,
+          "formatUs": null,
+          "cacheLoadUs": 3412079,
+          "matchingUs": 182004,
+          "rectsUs": 119883,
+          "iteration": 2,
+          "rawLoadCalls": 374,
+          "totalProfiledUs": 3713966
+        },
+        {
+          "rawLoadUs": 2628614,
+          "formatUs": null,
+          "cacheLoadUs": 3358230,
+          "matchingUs": 181378,
+          "rectsUs": 115096,
+          "iteration": 3,
+          "rawLoadCalls": 374,
+          "totalProfiledUs": 3654704
+        },
+        {
+          "rawLoadUs": 2655534,
+          "formatUs": null,
+          "cacheLoadUs": 3426379,
+          "matchingUs": 184761,
+          "rectsUs": 124020,
+          "iteration": 4,
+          "rawLoadCalls": 374,
+          "totalProfiledUs": 3735160
+        },
+        {
+          "rawLoadUs": 2773888,
+          "formatUs": null,
+          "cacheLoadUs": 3590367,
+          "matchingUs": 181299,
+          "rectsUs": 125218,
+          "iteration": 5,
+          "rawLoadCalls": 374,
+          "totalProfiledUs": 3896884
+        }
+      ],
+      "cachePagesObservedMax": 16,
+      "cacheEstimatedBytesObservedMax": 8383966
+    }
+  },
+  "queryMatchesPerCompletePass": {
+    "literal_elohim": 253,
+    "pointed_elohim": 382,
+    "hebrew_combining_marks": 125187,
+    "no_match": 0,
+    "zero_length": 0
+  },
+  "additionalPointedMatches": 129,
+  "pointedExamples": [
+    {
+      "pageNumber": 10,
+      "matchedText": "אֶלְהִים",
+      "excerpt": "ּ בּקָשוּ מַעַל סָפָר הִאֶלְהִים וּקְרְאו .\nכִּי פָעָמִי"
+    },
+    {
+      "pageNumber": 14,
+      "matchedText": "אֶלהים",
+      "excerpt": "ראשית א \n *ראשית בְּרָא אֶלהים את השמים \nואת 5ב' רבתי "
+    },
+    {
+      "pageNumber": 18,
+      "matchedText": "אָלהים",
+      "excerpt": "ִשָךּ עליפגו |תקום רוח \nאָלהים מְרְחָפֶרת עלַיפּני הַמ"
+    }
+  ],
+  "pipelineRawAndFormatShareOfSummedMeasuredStages": 0.916281853902439,
+  "findingsHe": [
+    "בכל אחד מחמשת המעברים החוזרים בוצעו מחדש 374 חילוצים גולמיים: 1,870/1,870. מטמון LRU של 16 עמודים אינו חוסך חילוץ בסריקה חוזרת מתחילת מסמך בן 374 עמודים.",
+    "הטקסט, הגאומטריה ותוצאות כל השאילתות נשמרו זהים בכל 6,732 התצפיות, כולל החימום ושלושת המסלולים.",
+    "בחיפוש אלהים נמצאו 253 התאמות מילוליות מול 382 בהתאמה המתירה סימני ניקוד בין האותיות: 129 התאמות נוספות. זוהי השוואת דפוסי שאילתה, לא הוכחת דיוק OCR.",
+    "החילוץ הגולמי והעיצוב מהווים כ-92% מסכום זמני השלבים בפרופיל הזה; האבחנה מצביעה על מסלול החילוץ/העיצוב כעלות העיקרית, בלי הוכחה לקיצור זמן ממשק המשתמש.",
+    "הבדיקה הבלתי תלויה מול Poppler והחילוץ ללא נרמול בוצעו בעמוד 1 הריק. הן אינן בוחנות את נרמול הטקסט בעמודי ה-OCR בעלי התוכן.",
+    "אין כאן שינוי מוצר שנמדד לפני ואחרי; שיפור ההדגשות צריך להישפט בנפרד על פי ריצת ה-profile המזווגת."
+  ],
+  "limitations": [
+    "One AOT process, one warmup and five measured passes; no independent-process replication or statistical tail claims.",
+    "Untimed corpus inventory reads every page before timing. Structured cache is reset per iteration; OS/native cold-start state is not established.",
+    "rawLoadUs includes native extraction, Hebrew transforms, scheduling and transfer; those costs are not separated.",
+    "cacheLoadUs includes rawLoadUs; they must not be added together.",
+    "Matching covers all five probe queries, including a combining-mark query with 125,187 results; it is not one typical user search.",
+    "No UI latency, OCR ground truth, RSS or Dart-allocation measurement in this artifact.",
+    "Page 1 independent/raw-normalization reference is blank, so it provides no evidence about spacing in content pages.",
+    "Parity is reproducibility across pipeline/cache paths, not proof that the OCR transcription is semantically accurate.",
+    "No source-PDF encoded-space claim or automatic whitespace-removal recommendation."
+  ]
+}

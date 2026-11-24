@@ -1,0 +1,279 @@
+{
+  "schemaVersion": 1,
+  "status": "verified",
+  "runId": 45389994425,
+  "jobId": 138432215536,
+  "artifactId": 14917533590,
+  "runUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45389994425/job/138432215536",
+  "archiveSha256": "dc88b4af983e425e7144a7e22b737e96f9f5457d34bfc5d5a9cadf6bc12cab02",
+  "archiveBytes": 4817115,
+  "reportSha256": "daebf086e732a4fc01c855cd2a1b11a91f1d94ffa39cdd3383874e4b50e20dbd",
+  "source": {
+    "commit": "b83d51a08fdc3eab12259ca134166743fc17e2b7",
+    "tree": "cbbe21179d79755c8de1e7d5e7efd2bb41816251",
+    "parents": [
+      "8ec48b70823de857ce28410d7de5b5bbcbb15641"
+    ],
+    "files": {
+      "pubspec.yaml": "f4158510da054310dc399b5536e17363b173138fecd551c2d38f0daef5ec6656",
+      "pubspec.lock": "9064ae492eb76ddfcaaaf6ba072dc1d8e41b6b217e724ae0a5b017a7468a6d17",
+      "lib/main.dart": "2d2452d258592d69fb28624eda5a9f39ec71204b5563ae9a2082fdfa71d46a69",
+      "tool/perf_probe/run_pdf_external_text_profile.dart": "5ad04f654362635787723d7fdf20f44f7e9467029f307b5ee28f8213948dbe2c",
+      "tool/perf_probe/run_pdf_external_text_profile.py": "1e0b717f20b853d0c4f87437f0b319e5dff5a35a9594a02148de449789d76413",
+      "tool/perf_probe/run_pdf_text_profile.py": "a82e3df439351d815be4a5cdbcc56be21df66a2d3d067182fdaed8f2ba46eddd",
+      "tool/perf_probe/src/pdf_text_profile.dart": "ab7641f320ea91cd1fe73688392ce398d846912d9498c6fe402ee5eb7479e086",
+      "tool/perf_probe/src/pdf_text_profile_report.dart": "9d63b6d7b2e3a44cd9f85bdcd4509e705c59fd61bdb706f474967af6534e86db",
+      "tool/perf_probe/src/report.dart": "0ab67ea4ca1ec3f80f823d6d7d33b8a7364e8586ebbe17bfc22c59ca9cada0aa",
+      "tool/perf_probe/src/pdf_image_budget.dart": "81067f2477b70829bc07182ccd40247b4b87b0a2a33fcf771fe3f188ce3657ca"
+    },
+    "blobs": {
+      "lib/main.dart": "923a9ba2837418b8585ae8c0cf3837d140e72022",
+      "pubspec.lock": "74032bfb6108690ed3235a90afaffe53342d3887",
+      "pubspec.yaml": "0e84e566c2322fff52e03635ccc99a6ea577c15d",
+      "tool/perf_probe/run_pdf_external_text_profile.dart": "c1893c7488d2b130dedb22bf3fa40b6fedf0dee3",
+      "tool/perf_probe/run_pdf_external_text_profile.py": "e68be54f55cde1ff5ad117571b78534992d388e3",
+      "tool/perf_probe/run_pdf_text_profile.py": "adae1ae0929f433d90d29da09ef7d67064bdb4a0",
+      "tool/perf_probe/src/pdf_image_budget.dart": "6988bfe4cb8cf09e65bddbf593e68910d1c28bb7",
+      "tool/perf_probe/src/pdf_text_profile.dart": "cbba3ff3008fcb1ee50f8b6369d7972a0457cd33",
+      "tool/perf_probe/src/pdf_text_profile_report.dart": "ceab660ab92c8306ba55ae4509c252d93fec90c5",
+      "tool/perf_probe/src/report.dart": "91ef95de83f11c95f1827447a30884da68147a62"
+    }
+  },
+  "sdk": {
+    "dartVersionOutput": "Dart SDK version: 3.13.5 (stable) (Tue Sep 29 01:00:52 2026 -0700) on \"linux_x64\"",
+    "flutter": {
+      "frameworkVersion": "3.47.7",
+      "channel": "stable",
+      "repositoryUrl": "https://github.com/flutter/flutter.git",
+      "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+      "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+      "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+      "engineCommitDate": "2026-10-07 17:09:12.000Z",
+      "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+      "engineBuildDate": "2026-10-07 10:51:44.552",
+      "dartSdkVersion": "3.13.5",
+      "devToolsVersion": "2.60.0",
+      "flutterVersion": "3.47.7",
+      "flutterRoot": "/opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter"
+    }
+  },
+  "corpus": {
+    "kind": "external-pdf",
+    "label": "uxlc-genesis",
+    "sha256": "ce28c3ed6f052b633a943d545f766be88d935c71d71b0b4c23ee172fca71af2e",
+    "bytes": 1662040,
+    "pageCount": 54
+  },
+  "measurementDesign": {
+    "mode": "Dart AOT native text pipeline",
+    "processes": 1,
+    "warmupPasses": 1,
+    "measuredPasses": 7,
+    "pagePhaseObservations": 1296,
+    "phases": 3,
+    "cacheMaximumPages": 16,
+    "cacheMaximumBytes": 8388608,
+    "osCacheFlushed": false
+  },
+  "stageSummaryMicroseconds": {
+    "pipeline": {
+      "rawLoadUs": {
+        "count": 7,
+        "min": 324485.0,
+        "mean": 338098.85714285716,
+        "p50": 336788.0,
+        "p95": 354608.0,
+        "p99": 354608.0,
+        "max": 354608.0
+      },
+      "formatUs": {
+        "count": 7,
+        "min": 119464.0,
+        "mean": 124920.14285714286,
+        "p50": 124641.0,
+        "p95": 133961.0,
+        "p99": 133961.0,
+        "max": 133961.0
+      },
+      "cacheLoadUs": null,
+      "matchingUs": {
+        "count": 7,
+        "min": 41515.0,
+        "mean": 43445.42857142857,
+        "p50": 43514.0,
+        "p95": 44881.0,
+        "p99": 44881.0,
+        "max": 44881.0
+      },
+      "rectsUs": {
+        "count": 7,
+        "min": 89044.0,
+        "mean": 93125.28571428571,
+        "p50": 93363.0,
+        "p95": 95775.0,
+        "p99": 95775.0,
+        "max": 95775.0
+      },
+      "rawLoadCalls": 378
+    },
+    "cacheFirst": {
+      "rawLoadUs": {
+        "count": 7,
+        "min": 335390.0,
+        "mean": 350598.0,
+        "p50": 347463.0,
+        "p95": 372098.0,
+        "p99": 372098.0,
+        "max": 372098.0
+      },
+      "formatUs": null,
+      "cacheLoadUs": {
+        "count": 7,
+        "min": 477978.0,
+        "mean": 489728.14285714284,
+        "p50": 487974.0,
+        "p95": 511181.0,
+        "p99": 511181.0,
+        "max": 511181.0
+      },
+      "matchingUs": {
+        "count": 7,
+        "min": 41710.0,
+        "mean": 46401.42857142857,
+        "p50": 47673.0,
+        "p95": 48694.0,
+        "p99": 48694.0,
+        "max": 48694.0
+      },
+      "rectsUs": {
+        "count": 7,
+        "min": 90982.0,
+        "mean": 96229.57142857143,
+        "p50": 92683.0,
+        "p95": 108931.0,
+        "p99": 108931.0,
+        "max": 108931.0
+      },
+      "rawLoadCalls": 378
+    },
+    "cacheRepeat": {
+      "rawLoadUs": {
+        "count": 7,
+        "min": 346959.0,
+        "mean": 358581.28571428574,
+        "p50": 354700.0,
+        "p95": 378273.0,
+        "p99": 378273.0,
+        "max": 378273.0
+      },
+      "formatUs": null,
+      "cacheLoadUs": {
+        "count": 7,
+        "min": 479086.0,
+        "mean": 496512.0,
+        "p50": 491145.0,
+        "p95": 521635.0,
+        "p99": 521635.0,
+        "max": 521635.0
+      },
+      "matchingUs": {
+        "count": 7,
+        "min": 41605.0,
+        "mean": 45981.71428571428,
+        "p50": 46321.0,
+        "p95": 49373.0,
+        "p99": 49373.0,
+        "max": 49373.0
+      },
+      "rectsUs": {
+        "count": 7,
+        "min": 92749.0,
+        "mean": 95048.28571428571,
+        "p50": 93609.0,
+        "p95": 98751.0,
+        "p99": 98751.0,
+        "max": 98751.0
+      },
+      "rawLoadCalls": 378
+    }
+  },
+  "textObservations": {
+    "queryMatchesPerCompletePass": {
+      "literal_elohim": 0,
+      "pointed_elohim": 0,
+      "hebrew_combining_marks": 84705,
+      "no_match": 0,
+      "zero_length": 0
+    },
+    "structuredPage1Excerpt": "Genesis 1 Unicode/XML Leningrad Codex\nGenesis\nבראשית\n1 בְּ רֵ שאִׁ֖ ית בָּ רָ֣א אֱ לֹהִ֑ ים אֵ֥ ת הַ שָּׁ מַ֖ יִם וְאֵ֥ ת\nהָ אָֽרֶ ץ׃ \n 2\nוְהָ אָ֗ רֶ ץ הָ יְתָ֥ ה תֹ֙ והּ֙ וָ בֹ֔ הּו וְחֹ֖ שֶׁ ְך עַ ל־\nפְּ נֵ֣י תְ ה֑ ֹום וְ ר֣ ּחוַ אֱ לֹהִ֔ ים מְ רַ חֶ֖ פֶ ת עַ פ־לְּ נֵ֥י\nהַ מָּֽיִם׃ \n 3\nוַ יֹּ֥מאֶ ר אֱ לֹהִ֖ ים יְהִ֣ י א֑ ֹור וַֽיְהִ א־יֹֽור׃\n 4\nו",
+    "rawBeforeHebrewNormalization": {
+      "pageNumber": 1,
+      "normalizeHebrewText": false,
+      "decodeLegacyHebrewText": false,
+      "hasRawText": true,
+      "timed": false,
+      "scope": "PdfPage.loadText before Hebrew transforms; PDFium extraction and inferred spacing remain",
+      "file": "text/raw-page-1-before-hebrew-normalization.txt",
+      "sha256": "8f1ecf4c84fb263b8eeab5909c3b8b76224ba1ea4329f832d326645f283f452a",
+      "characters": 4137,
+      "excerpt": "Genesis 1 Unicode/XML Leningrad Codex\r\nGenesis\r\nבראשית\r\n1 בְּ רֵ שאִׁ֖ ית בָּ רָ֣א אֱ לֹהִ֑ ים אֵ֥ ת הַ שָּׁ מַ֖ יִם וְאֵ֥ ת\r\nהָ אָֽרֶ ץ׃ \r\n 2\r\nוְהָ אָ֗ רֶ ץ הָ יְתָ֥ ה תֹ֙ והּ֙ וָ בֹ֔ הּו וְחֹ֖ שֶׁ ְך עַ ל־\r\nפְּ נֵ֣י תְ ה֑ ֹום וְ ר֣ ּחוַ אֱ לֹהִ֔ ים מְ רַ חֶ֖ פֶ ת עַ פ־לְּ נֵ֥י\r\nהַ מָּֽיִם׃ \r\n 3\r\nוַ יֹּ֥מאֶ ר אֱ לֹהִ֖ ים יְהִ֣ י א֑ ֹור וַֽיְהִ א־י"
+    },
+    "sourcePdfEncodedSpaceClaims": false
+  },
+  "independentExtraction": {
+    "status": "passed",
+    "binarySha256": "46e5639c4096edd4bb06963cc7219401f9b91e0390fe40b3ba1482d1b5386c63",
+    "version": "pdftotext version 24.02.0",
+    "scope": "Independent Poppler extraction of page 1; no whitespace or bidi control removal",
+    "sourcePdfEncodedSpaceClaims": false,
+    "references": {
+      "raw": {
+        "file": "pdftotext-page-1-raw.txt",
+        "sha256": "d8e15193bb929aca95ec6843c72e92252d9d01750d41949860651655233315d9",
+        "characters": 6308,
+        "excerpt": "Genesis 1 Unicode/XML Leningrad Codex\nGenesis\n‫בראשית‬\n1\n‫ת‬ ‫ֵ֥א‬‫ְו‬ ‫ם‬‫ִי‬ ‫ַ֖מ‬ ‫ָּׁש‬ ‫ַה‬ ‫ת‬ ‫ֵ֥א‬ ‫ים‬ ‫ֹלִ֑ה‬ ‫ֱא‬ ‫א‬‫ָ֣ר‬ ‫ָּב‬ ‫ית‬ ‫ִׁ֖ש‬‫א‬ ‫ֵר‬ ‫ְּב‬\n‫ץ׃‬ ‫ֶר‬ ‫ָֽא‬ ‫ָה‬\n2\n‫ל־‬ ‫ַע‬ ‫ְך‬ ‫ֶׁש‬ ‫ֹ֖ח‬‫ְו‬ ‫הּו‬ ‫ֹ֔ב‬‫ָו‬ ‫ּ֙ו‬‫ה‬ ‫ֹ֙ת‬ ‫ה‬ ‫ָ֥ת‬‫ְי‬ ‫ָה‬ ‫ץ‬ ‫ֶר‬ ‫ָ֗א‬ ‫ָה‬‫ְו‬\n‫ֵ֥ני‬ ‫ְּפ‬‫־‬‫ל‬ ‫ַע‬ ‫ת‬ ‫ֶפ‬ ‫ֶ֖ח‬ ‫ַר‬ ‫ְמ‬ ‫ים‬ ‫֔",
+        "command": [
+          "/usr/bin/pdftotext",
+          "-raw",
+          "-f",
+          "1",
+          "-l",
+          "1",
+          "/home/runner/work/_temp/pdf-5538-inputs/pdf-5538-corpus/uxlc-genesis.pdf",
+          "/home/runner/work/_temp/pdf-5538-text/pdftotext-page-1-raw.txt"
+        ]
+      },
+      "layout": {
+        "file": "pdftotext-page-1-layout.txt",
+        "sha256": "683ab4303e2fe2774a14cda095953b3b25bedcf5ea73348471664cb257ae6458",
+        "characters": 7910,
+        "excerpt": "‫‪Genesis 1‬‬                                                  ‫‪Unicode/XML Leningrad Codex‬‬\n\n ‫ְל ַה ְב ִּ֕ד יל ֵּ֥ב ין ַה ּ֖י ֹום ּוֵ֣ב ין ַה ָּ֑ל ְי ָל ה ְו ָה ֤י ּו ְל ֹאֹת֙ת‬\n                                ‫‪15‬‬\n                                                                                                                            ‫‪Gen",
+        "command": [
+          "/usr/bin/pdftotext",
+          "-layout",
+          "-f",
+          "1",
+          "-l",
+          "1",
+          "/home/runner/work/_temp/pdf-5538-inputs/pdf-5538-corpus/uxlc-genesis.pdf",
+          "/home/runner/work/_temp/pdf-5538-text/pdftotext-page-1-layout.txt"
+        ]
+      }
+    }
+  },
+  "validatedPageTextFiles": 54,
+  "textGeometryMatchParity": true,
+  "rawLoadCallsPerPhase": {
+    "pipeline": 378,
+    "cacheFirst": 378,
+    "cacheRepeat": 378
+  },
+  "limitations": [
+    "rawLoad includes PDFium extraction, native normalization, queueing and transfer; these are not separated in this original run.",
+    "Repeated scans exceed the 16-page cache and re-load all 54 pages; this is not a product before/after experiment.",
+    "One AOT process and seven passes; p95/p99 are descriptive upper samples, not reliable population tails.",
+    "UI latency and GPU/native heap allocations were not measured.",
+    "Intra-word whitespace remains before both Hebrew transforms; independent Poppler also fragments words. This does not establish whether spaces are PDF encoded or inferred by extractors.",
+    "No OCR/text accuracy ground truth; no destructive whitespace normalization justified."
+  ]
+}

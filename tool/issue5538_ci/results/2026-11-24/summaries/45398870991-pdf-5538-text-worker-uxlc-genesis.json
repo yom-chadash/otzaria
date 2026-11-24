@@ -1,0 +1,927 @@
+{
+  "status": "validated",
+  "section": "E03",
+  "runId": 45398870991,
+  "jobId": 138461890810,
+  "url": "https://github.com/yom-chadash/otzaria/actions/runs/45398870991/job/138461890810",
+  "artifactId": 14922632154,
+  "archiveSha256": "c30ed10917dc0b246b010a805e14d68b5cff3bdc929a3bddd6dda3ea31337183",
+  "archiveBytes": 6698207,
+  "sourceCommit": "4d668424f97f10a3fdb8822f3ba53c0b2e4aaab6",
+  "document": {
+    "id": "uxlc-genesis",
+    "title": "UXLC Genesis, Hebrew Bible with niqqud and cantillation",
+    "sourceUrl": "https://www.tanach.us/PDFFiles/Genesis.pdf",
+    "sha256": "ce28c3ed6f052b633a943d545f766be88d935c71d71b0b4c23ee172fca71af2e",
+    "sizeBytes": 1662040,
+    "pageCount": 54,
+    "classification": "real born-digital Hebrew biblical text",
+    "attribution": "Unicode/XML Leningrad Codex, tanach.us",
+    "license": "The source permits copying the biblical text in any format without restriction",
+    "licenseUrl": "https://www.tanach.us/License.html"
+  },
+  "sourceFiles": {
+    "pubspec.yaml": "f4158510da054310dc399b5536e17363b173138fecd551c2d38f0daef5ec6656",
+    "pubspec.lock": "9064ae492eb76ddfcaaaf6ba072dc1d8e41b6b217e724ae0a5b017a7468a6d17",
+    "tool/issue5538_ci/internal_run.py": "499dbec863149f7e44deb9f45018df8bc8559cf98cd49f3b1d4eabd78d1daabd",
+    "tool/issue5538_ci/internal_text_run.py": "3c0de9f042c6b354d7b02d3d17a081fc527e2c6004eac4722802872807f61de7",
+    "tool/issue5538_ci/internal_text_probe.dart": "8481009a94421864fd676e351e406aa73e6610b820fd1a23ca6d47d219d541f3",
+    "tool/issue5538_ci/internal_text_metrics.dart": "b4303c5c2e0c2f7cb491e5189e2f27c0337c8e4bb747993d37d7753046e5bde4",
+    "tool/issue5538_ci/internal_text_access.dart": "33c9488853081771f2c42bfee546e477a6863dc271da883ecd32809badb25880",
+    "tool/issue5538_ci/corpus_sources.json": "e785babb4c9ba86c486f5f14c7de3ef72727872ea4635b1bce651f7a32823141"
+  },
+  "engineArchiveSha256": "001090d220b2773747ce396f2bcda3d6ac9389d87f937ef12d64ed3a9e80e8b0",
+  "pdfiumSha256": "1c251efce460d67437a4c76d4be9033ae2f17bf5603f5bff1af10209b94ca723",
+  "sourceCleanBeforeAfter": true,
+  "validation": {
+    "allPageTextAndGeometryHashesIdentical": true,
+    "allReportsAndRawJsonlHashesVerified": true,
+    "aotExecutableHashesVerified": true,
+    "originalEngineFilesVerified": 83,
+    "instrumentedPatchMatchesDeclaredGenerator": true,
+    "preservedCompilerInputFilesVerified": 93,
+    "externalCompilerDependencyReceiptsIdentical": true,
+    "externalDependencyFilesRehashedAfterDownload": false,
+    "nativeGeometryCoordinatesArchived": false,
+    "geometryVerification": "Compare complete-coordinate hashes computed inside each native producer, across every page/pass/process; no coordinate sampling.",
+    "referenceFileBytesAndUtf16CountsRecomputed": true,
+    "observationsIncludingWarmup": 864,
+    "measuredObservations": 648
+  },
+  "textPerCompletePass": {
+    "utf16CodeUnits": 244621,
+    "characterRects": 244621,
+    "pagesWithText": 54,
+    "scope": "PdfPageRawText before structured formatting; not comparable to earlier PdfPageText formatted-text character totals"
+  },
+  "independentProcessesPerVariant": 2,
+  "passesPerProcess": {
+    "warmup": 1,
+    "measured": 3
+  },
+  "processes": [
+    {
+      "launch": 1,
+      "variant": "control",
+      "measuredPassCallerUs": [
+        298874,
+        300612,
+        303760
+      ],
+      "processMedianCallerUs": 300612,
+      "processMeanCallerUs": 301082
+    },
+    {
+      "launch": 2,
+      "variant": "instrumented",
+      "measuredPassCallerUs": [
+        301829,
+        299304,
+        304229
+      ],
+      "processMedianCallerUs": 301829,
+      "processMeanCallerUs": 301787.3333333333
+    },
+    {
+      "launch": 3,
+      "variant": "instrumented",
+      "measuredPassCallerUs": [
+        296974,
+        297071,
+        299733
+      ],
+      "processMedianCallerUs": 297071,
+      "processMeanCallerUs": 297926
+    },
+    {
+      "launch": 4,
+      "variant": "control",
+      "measuredPassCallerUs": [
+        302404,
+        304592,
+        309322
+      ],
+      "processMedianCallerUs": 304592,
+      "processMeanCallerUs": 305439.3333333333
+    }
+  ],
+  "controlInstrumentedCalibration": {
+    "adjacentPairs": [
+      {
+        "controlLaunch": 1,
+        "instrumentedLaunch": 2,
+        "observedInstrumentedCallerChangePercent": 0.40484079145211016
+      },
+      {
+        "controlLaunch": 4,
+        "instrumentedLaunch": 3,
+        "observedInstrumentedCallerChangePercent": -2.4692047066239398
+      }
+    ],
+    "balancedObservedInstrumentedCallerChangePercent": -1.0426153655265114,
+    "observerOverheadIsolated": false,
+    "productImprovementClaim": false
+  },
+  "instrumentedComponents": {
+    "workerRawBuildUs": {
+      "meanCompletePassMs": 221.06966666666665,
+      "fractionOfMeasuredCallerTimePercent": 73.7251131095968,
+      "completePassUs": {
+        "count": 6,
+        "min": 219324,
+        "median": 220584.0,
+        "mean": 221069.66666666666,
+        "max": 223215
+      }
+    },
+    "workerNormalizationUs": {
+      "meanCompletePassMs": 31.19183333333333,
+      "fractionOfMeasuredCallerTimePercent": 10.40224774058717,
+      "completePassUs": {
+        "count": 6,
+        "min": 31001,
+        "median": 31109.0,
+        "mean": 31191.833333333332,
+        "max": 31426
+      }
+    },
+    "workerCleanupUs": {
+      "meanCompletePassMs": 15.418,
+      "fractionOfMeasuredCallerTimePercent": 5.141789966317241,
+      "completePassUs": {
+        "count": 6,
+        "min": 14773,
+        "median": 15547.0,
+        "mean": 15418,
+        "max": 15795
+      }
+    },
+    "workerUnattributedUs": {
+      "meanCompletePassMs": 0.0245,
+      "fractionOfMeasuredCallerTimePercent": 0.008170570383627734,
+      "completePassUs": {
+        "count": 6,
+        "min": 21,
+        "median": 24.0,
+        "mean": 24.5,
+        "max": 29
+      }
+    },
+    "outsideMeasuredWorkerBodyUs": {
+      "meanCompletePassMs": 32.15266666666667,
+      "fractionOfMeasuredCallerTimePercent": 10.722678613115155,
+      "completePassUs": {
+        "count": 6,
+        "min": 31191,
+        "median": 31572.0,
+        "mean": 32152.666666666668,
+        "max": 33981
+      }
+    }
+  },
+  "instrumentedMeanCompletePassCallerMs": 299.8566666666667,
+  "componentAggregation": "Sum each component over six measured complete passes, then divide by six; percentage uses the same summed caller denominator so components add to 100%.",
+  "referenceComparison": {
+    "pageNumber": 1,
+    "timed": false,
+    "popplerVersion": "pdftotext version 24.02.0\nCopyright 2005-2024 The Poppler Developers - http://poppler.freedesktop.org\nCopyright 1996-2011, 2022 Glyph & Cog, LLC",
+    "popplerExecutable": "/usr/bin/pdftotext",
+    "popplerExecutableSha256": "46e5639c4096edd4bb06963cc7219401f9b91e0390fe40b3ba1482d1b5386c63",
+    "commands": [
+      [
+        "/usr/bin/pdftotext",
+        "-f",
+        "1",
+        "-l",
+        "1",
+        "-raw",
+        "-enc",
+        "UTF-8",
+        "-nopgbrk",
+        "/home/runner/work/_temp/pdf-5538-inputs/pdf-5538-corpus/uxlc-genesis.pdf",
+        "/home/runner/work/_temp/pdf-5538-text-worker/reference/poppler-raw.txt"
+      ],
+      [
+        "/usr/bin/pdftotext",
+        "-f",
+        "1",
+        "-l",
+        "1",
+        "-layout",
+        "-enc",
+        "UTF-8",
+        "-nopgbrk",
+        "/home/runner/work/_temp/pdf-5538-inputs/pdf-5538-corpus/uxlc-genesis.pdf",
+        "/home/runner/work/_temp/pdf-5538-text-worker/reference/poppler-layout.txt"
+      ]
+    ],
+    "outputs": {
+      "poppler-raw": {
+        "sha256": "a8d20be7ec91e4a4ed46886e271e8cdf72ad70b04060c1a0cad01f6db10badd7",
+        "utf16CodeUnits": 6307,
+        "utf8Bytes": 13889,
+        "hebrewLetters": 1392,
+        "hebrewMarks": 1438,
+        "literalQuery": "אלהים",
+        "literalHits": 0,
+        "niqqudInsensitiveHits": 0,
+        "niqqudInsensitiveExamples": [],
+        "firstHebrewContext": "Codex\nGenesis\n‫בראשית‬\n1\n‫ת‬ ‫ֵ֥א‬‫ְו‬ ‫ם‬‫ִי‬ ‫ַ֖מ‬ ‫ָּׁש‬ ‫ַה‬ ‫ת‬ ‫ֵ֥א‬ ‫ים‬ ‫ֹלִ֑ה‬ ‫ֱא‬ ‫א‬‫ָ֣ר‬ ‫ָּב‬ ‫ית‬ ‫ִׁ֖ש‬‫א‬ ‫ֵ",
+        "queryRemovesWhitespace": false
+      },
+      "poppler-layout": {
+        "sha256": "6ef62e18f0e1c830029edf02468fc2ceab8d0ef0129979800ce3660c880fb957",
+        "utf16CodeUnits": 7909,
+        "utf8Bytes": 11363,
+        "hebrewLetters": 1392,
+        "hebrewMarks": 1438,
+        "literalQuery": "אלהים",
+        "literalHits": 0,
+        "niqqudInsensitiveHits": 0,
+        "niqqudInsensitiveExamples": [],
+        "firstHebrewContext": "ad Codex‬‬\n\n ‫ְל ַה ְב ִּ֕ד יל ֵּ֥ב ין ַה ּ֖י ֹום ּוֵ֣ב ין ַה ָּ֑ל ְי ָל ה ְו ָה ֤י ּו ְל ֹאֹת֙ת‬\n                           ",
+        "queryRemovesWhitespace": false
+      },
+      "pdfium-normalized": {
+        "sha256": "8f1ecf4c84fb263b8eeab5909c3b8b76224ba1ea4329f832d326645f283f452a",
+        "utf16CodeUnits": 4137,
+        "utf8Bytes": 7081,
+        "hebrewLetters": 1392,
+        "hebrewMarks": 1438,
+        "literalQuery": "אלהים",
+        "literalHits": 0,
+        "niqqudInsensitiveHits": 0,
+        "niqqudInsensitiveExamples": [],
+        "firstHebrewContext": "odex\r\nGenesis\r\nבראשית\r\n1 בְּ רֵ שאִׁ֖ ית בָּ רָ֣א אֱ לֹהִ֑ ים אֵ֥ ת הַ שָּׁ מַ֖ יִם וְאֵ֥ ת\r\nהָ אָֽרֶ ץ׃ \r\n 2\r\nוְהָ אָ֗ רֶ ץ ",
+        "queryRemovesWhitespace": false
+      },
+      "pdfium-before-normalization": {
+        "sha256": "8f1ecf4c84fb263b8eeab5909c3b8b76224ba1ea4329f832d326645f283f452a",
+        "utf16CodeUnits": 4137,
+        "utf8Bytes": 7081,
+        "hebrewLetters": 1392,
+        "hebrewMarks": 1438,
+        "literalQuery": "אלהים",
+        "literalHits": 0,
+        "niqqudInsensitiveHits": 0,
+        "niqqudInsensitiveExamples": [],
+        "firstHebrewContext": "odex\r\nGenesis\r\nבראשית\r\n1 בְּ רֵ שאִׁ֖ ית בָּ רָ֣א אֱ לֹהִ֑ ים אֵ֥ ת הַ שָּׁ מַ֖ יִם וְאֵ֥ ת\r\nהָ אָֽרֶ ץ׃ \r\n 2\r\nוְהָ אָ֗ רֶ ץ ",
+        "queryRemovesWhitespace": false
+      }
+    },
+    "normalizationChangedText": false,
+    "allExtractorsHaveIdenticalBytes": false,
+    "limitations": [
+      "Poppler is an independent extractor, not OCR ground truth.",
+      "PDFium with both Hebrew flags off can still infer spacing; this does not identify PDF object bytes.",
+      "The query retains whitespace and only permits Hebrew marks between letters."
+    ]
+  },
+  "referenceNormalizedVersusFlagsOff": {
+    "textBytesIdentical": true,
+    "fullGeometryHashIdentical": true,
+    "pageNumber": 1,
+    "proof": {
+      "pageNumber": 1,
+      "timed": false,
+      "normalized": {
+        "hasRawText": true,
+        "utf16CodeUnits": 4137,
+        "characterRects": 4137,
+        "textSha256": "8f1ecf4c84fb263b8eeab5909c3b8b76224ba1ea4329f832d326645f283f452a",
+        "geometrySha256": "9257aabe611aab5fa77cc5247b89350398cb36b1687a648636c2034be7cff045",
+        "hebrewMarks": 1438
+      },
+      "beforeHebrewTransforms": {
+        "hasRawText": true,
+        "utf16CodeUnits": 4137,
+        "characterRects": 4137,
+        "textSha256": "8f1ecf4c84fb263b8eeab5909c3b8b76224ba1ea4329f832d326645f283f452a",
+        "geometrySha256": "9257aabe611aab5fa77cc5247b89350398cb36b1687a648636c2034be7cff045",
+        "hebrewMarks": 1438
+      },
+      "scope": "PDFium extraction including inferred spacing; not raw PDF object bytes",
+      "sourcePdfEncodedSpaceClaim": false
+    }
+  },
+  "pages": [
+    {
+      "pageNumber": 1,
+      "hasRawText": true,
+      "utf16CodeUnits": 4137,
+      "characterRects": 4137,
+      "textSha256": "8f1ecf4c84fb263b8eeab5909c3b8b76224ba1ea4329f832d326645f283f452a",
+      "geometrySha256": "9257aabe611aab5fa77cc5247b89350398cb36b1687a648636c2034be7cff045",
+      "instrumentedCallerMedianUs": 5002.5,
+      "instrumentedRawBuildMedianUs": 3737.5,
+      "instrumentedNormalizationMedianUs": 507.5
+    },
+    {
+      "pageNumber": 2,
+      "hasRawText": true,
+      "utf16CodeUnits": 4409,
+      "characterRects": 4409,
+      "textSha256": "303557f8ed55d1274b802504602668eda36d6ee998e64edaed9d5e83c24e0718",
+      "geometrySha256": "32a9f2e2a6e3dce6b7ab6e3fe73f7e356bc1d5a9cf2df7027ed6dfecabdf93cd",
+      "instrumentedCallerMedianUs": 5392.0,
+      "instrumentedRawBuildMedianUs": 3957.0,
+      "instrumentedNormalizationMedianUs": 560.0
+    },
+    {
+      "pageNumber": 3,
+      "hasRawText": true,
+      "utf16CodeUnits": 4475,
+      "characterRects": 4475,
+      "textSha256": "5adfd158e3a39164ad3eacb6515e6739e4b6afe2baf406191f5c13c0d430a92d",
+      "geometrySha256": "279b12f15c373d494e4be13fe28541aa42b9664f1109b6ed6577d45241a9e960",
+      "instrumentedCallerMedianUs": 5484.5,
+      "instrumentedRawBuildMedianUs": 4071.0,
+      "instrumentedNormalizationMedianUs": 577.5
+    },
+    {
+      "pageNumber": 4,
+      "hasRawText": true,
+      "utf16CodeUnits": 4443,
+      "characterRects": 4443,
+      "textSha256": "2504718b663f38b4eadbd149e536c6a77e4077c2266b5ecdc7705ad913f94ac4",
+      "geometrySha256": "e539def4bb400423a4e20df9b52166c93e1e74e1847c026a47ffe78fbd9732ef",
+      "instrumentedCallerMedianUs": 5418.0,
+      "instrumentedRawBuildMedianUs": 4024.5,
+      "instrumentedNormalizationMedianUs": 549.0
+    },
+    {
+      "pageNumber": 5,
+      "hasRawText": true,
+      "utf16CodeUnits": 4360,
+      "characterRects": 4360,
+      "textSha256": "8b0311d33c156e47e76c082077efec85b5524f7a992545707a7c43097acdec06",
+      "geometrySha256": "897e30ca2085ccdd1f7ac8da52b570be8c5f30a37f16f11bea96a0b93389320c",
+      "instrumentedCallerMedianUs": 5178.0,
+      "instrumentedRawBuildMedianUs": 3888.5,
+      "instrumentedNormalizationMedianUs": 483.5
+    },
+    {
+      "pageNumber": 6,
+      "hasRawText": true,
+      "utf16CodeUnits": 4643,
+      "characterRects": 4643,
+      "textSha256": "b3696e60fe516dbef628e8048fb3cbbcbdfbb6657c48966665163770d164a8d8",
+      "geometrySha256": "59378a297cc21e46a6c520b562c48d2962197df8ad3b38134a13c3571787baab",
+      "instrumentedCallerMedianUs": 5591.0,
+      "instrumentedRawBuildMedianUs": 4132.0,
+      "instrumentedNormalizationMedianUs": 549.0
+    },
+    {
+      "pageNumber": 7,
+      "hasRawText": true,
+      "utf16CodeUnits": 4606,
+      "characterRects": 4606,
+      "textSha256": "aa98bf7d11d15677d94c228024ec4017e51dd7c1c36b69bb84f3492865a1ab79",
+      "geometrySha256": "1d83d085782517a5c851620798ff2559f18aa3a326cc9288c9465bc898a34429",
+      "instrumentedCallerMedianUs": 5433.0,
+      "instrumentedRawBuildMedianUs": 4062.5,
+      "instrumentedNormalizationMedianUs": 516.5
+    },
+    {
+      "pageNumber": 8,
+      "hasRawText": true,
+      "utf16CodeUnits": 4633,
+      "characterRects": 4633,
+      "textSha256": "a130895f73ed936b071069f3008d36143521764ddd8748642ab1a07c0d1ddf16",
+      "geometrySha256": "4553023af6fd14e99ab65865feefa9a7746e15b7c84a0888992246d3084d755e",
+      "instrumentedCallerMedianUs": 5818.5,
+      "instrumentedRawBuildMedianUs": 4303.5,
+      "instrumentedNormalizationMedianUs": 597.5
+    },
+    {
+      "pageNumber": 9,
+      "hasRawText": true,
+      "utf16CodeUnits": 4430,
+      "characterRects": 4430,
+      "textSha256": "a087d391fad3e3bb714e755dc5250e8b82d2d2c08ef0d56d9c46398dded86953",
+      "geometrySha256": "2df2ae5f7ec29d9fe189b7e804d711cd8d81a5ef077605422b8a40fca47309a4",
+      "instrumentedCallerMedianUs": 5404.5,
+      "instrumentedRawBuildMedianUs": 4023.0,
+      "instrumentedNormalizationMedianUs": 542.0
+    },
+    {
+      "pageNumber": 10,
+      "hasRawText": true,
+      "utf16CodeUnits": 4437,
+      "characterRects": 4437,
+      "textSha256": "eeb6ee23de8bc8364313b9c1a38ad9504a0bf53941e8fd077c3f992046342c6e",
+      "geometrySha256": "3050e66d36170a17e92ef752a4fd7e021ec24ea4fcbac780c3096226352b4dde",
+      "instrumentedCallerMedianUs": 5476.5,
+      "instrumentedRawBuildMedianUs": 4081.5,
+      "instrumentedNormalizationMedianUs": 535.0
+    },
+    {
+      "pageNumber": 11,
+      "hasRawText": true,
+      "utf16CodeUnits": 4640,
+      "characterRects": 4640,
+      "textSha256": "caa582b1bffb6f1dd38694df6aee6ba2fc62be2c6b070ba39fd2d476a571de40",
+      "geometrySha256": "83461b0587d20d7c028a43709a4053fb80c70c603a1ca687772124036330277c",
+      "instrumentedCallerMedianUs": 5570.0,
+      "instrumentedRawBuildMedianUs": 4102.0,
+      "instrumentedNormalizationMedianUs": 600.0
+    },
+    {
+      "pageNumber": 12,
+      "hasRawText": true,
+      "utf16CodeUnits": 4605,
+      "characterRects": 4605,
+      "textSha256": "31655e2242e72349dc34c0012af0544c9b59f0cb568ae1b1bbc2bccaf4ed59cb",
+      "geometrySha256": "4b34f3003f15bb9372e124aca24556b2f7b048807515d5c6b2e41bb741bc51db",
+      "instrumentedCallerMedianUs": 5492.5,
+      "instrumentedRawBuildMedianUs": 4051.0,
+      "instrumentedNormalizationMedianUs": 593.5
+    },
+    {
+      "pageNumber": 13,
+      "hasRawText": true,
+      "utf16CodeUnits": 4492,
+      "characterRects": 4492,
+      "textSha256": "1f41648447f8ca28c8331e04bb69a9649b3aa2a23912e00c0d540b25bb952cf3",
+      "geometrySha256": "f8b8b5bbaa538b34f478d6cb3f0ffc209e7e10e4547da65fbefc652237ff7838",
+      "instrumentedCallerMedianUs": 5391.0,
+      "instrumentedRawBuildMedianUs": 3990.5,
+      "instrumentedNormalizationMedianUs": 565.5
+    },
+    {
+      "pageNumber": 14,
+      "hasRawText": true,
+      "utf16CodeUnits": 4644,
+      "characterRects": 4644,
+      "textSha256": "deff1c62316ca85756d96da5e6061ec354ac2c449f32a3026aa2caa63ffea4a0",
+      "geometrySha256": "6f525ecb96063ad55d9e0318b2e683b923313cdf217b45ce354b887fe354a8f9",
+      "instrumentedCallerMedianUs": 5893.5,
+      "instrumentedRawBuildMedianUs": 4358.0,
+      "instrumentedNormalizationMedianUs": 611.0
+    },
+    {
+      "pageNumber": 15,
+      "hasRawText": true,
+      "utf16CodeUnits": 4537,
+      "characterRects": 4537,
+      "textSha256": "e1420412eb9387220ecc4e6db71269fe97fe4ae5a518ad43e691c712556a2e53",
+      "geometrySha256": "97129e88c9ab0588831e04e5390b0774c487d7a4f6e895c3505dbfb55a05b109",
+      "instrumentedCallerMedianUs": 5429.0,
+      "instrumentedRawBuildMedianUs": 4003.0,
+      "instrumentedNormalizationMedianUs": 594.0
+    },
+    {
+      "pageNumber": 16,
+      "hasRawText": true,
+      "utf16CodeUnits": 4635,
+      "characterRects": 4635,
+      "textSha256": "528f2b9a156fe4701d4b7938d21c7e78eeb8c2025d417ec01479a0dab3612540",
+      "geometrySha256": "a27aa95d3331442ef461d2eba5e6f28337111f4d354f894a742288c372089685",
+      "instrumentedCallerMedianUs": 5632.5,
+      "instrumentedRawBuildMedianUs": 4121.0,
+      "instrumentedNormalizationMedianUs": 618.0
+    },
+    {
+      "pageNumber": 17,
+      "hasRawText": true,
+      "utf16CodeUnits": 4626,
+      "characterRects": 4626,
+      "textSha256": "ab6250fd26123ea932dc0525dea1e98d4e1a159f2e3525656819c929ac396ef9",
+      "geometrySha256": "05099723408e10e8cdfff900fe3f334e211ad21f8baa2e6d5b54afe6965e7f4c",
+      "instrumentedCallerMedianUs": 5559.5,
+      "instrumentedRawBuildMedianUs": 4078.0,
+      "instrumentedNormalizationMedianUs": 603.5
+    },
+    {
+      "pageNumber": 18,
+      "hasRawText": true,
+      "utf16CodeUnits": 4650,
+      "characterRects": 4650,
+      "textSha256": "b096bce6df5a16304b1fe8c110d003811825344513dcd7d4a5332ba3bf49a1c7",
+      "geometrySha256": "47e0124c8f505854d8b0c141b7cd9765a90fa33ad34684aa8fa5cb1c383a123e",
+      "instrumentedCallerMedianUs": 5605.0,
+      "instrumentedRawBuildMedianUs": 4133.5,
+      "instrumentedNormalizationMedianUs": 608.0
+    },
+    {
+      "pageNumber": 19,
+      "hasRawText": true,
+      "utf16CodeUnits": 4596,
+      "characterRects": 4596,
+      "textSha256": "c6ae5fb31da4ffeaf6a13af16e6cc2867600c0fc214f6080058c87c7129d417f",
+      "geometrySha256": "415202c4d50bfa08e4f4e275537b76119e1a2086d06379b6061b8c319e04e95c",
+      "instrumentedCallerMedianUs": 5517.0,
+      "instrumentedRawBuildMedianUs": 4088.5,
+      "instrumentedNormalizationMedianUs": 573.5
+    },
+    {
+      "pageNumber": 20,
+      "hasRawText": true,
+      "utf16CodeUnits": 4661,
+      "characterRects": 4661,
+      "textSha256": "72e74a57bad1608954ad8df9e0f844ed9d157e272a099a7a1e42ba74ad7e3e4a",
+      "geometrySha256": "09aa3030e80f821270eccd0df5abdf99b5a7d5614de7238f3251dd20ea73bc89",
+      "instrumentedCallerMedianUs": 5656.5,
+      "instrumentedRawBuildMedianUs": 4192.5,
+      "instrumentedNormalizationMedianUs": 589.5
+    },
+    {
+      "pageNumber": 21,
+      "hasRawText": true,
+      "utf16CodeUnits": 4656,
+      "characterRects": 4656,
+      "textSha256": "bc2c3857fcd719d6d6741a99b36134b12835ab83f9be662a70a6acff29133831",
+      "geometrySha256": "dcdf147af585e259c2bf259c447a5512a121107f029c0a040d118b50942f79d5",
+      "instrumentedCallerMedianUs": 5556.5,
+      "instrumentedRawBuildMedianUs": 4113.0,
+      "instrumentedNormalizationMedianUs": 575.5
+    },
+    {
+      "pageNumber": 22,
+      "hasRawText": true,
+      "utf16CodeUnits": 4716,
+      "characterRects": 4716,
+      "textSha256": "26fbb7673f9e5eee9ae504eca4041e40001cbf72a5715e1fde441c7facfdb531",
+      "geometrySha256": "2a829c104262c715da04700089c56254da0ff9a66c4fff72951cc383f36abacf",
+      "instrumentedCallerMedianUs": 5835.5,
+      "instrumentedRawBuildMedianUs": 4296.5,
+      "instrumentedNormalizationMedianUs": 619.0
+    },
+    {
+      "pageNumber": 23,
+      "hasRawText": true,
+      "utf16CodeUnits": 4482,
+      "characterRects": 4482,
+      "textSha256": "b40ce1e9e01ac67d3edade441d47d45d0b1ec78f25c93ae551a1022cef0383f2",
+      "geometrySha256": "f2fd231574052e0a6cdd007023663e3e7598f6d897e6891fdd84940687425be0",
+      "instrumentedCallerMedianUs": 5399.0,
+      "instrumentedRawBuildMedianUs": 4018.5,
+      "instrumentedNormalizationMedianUs": 554.0
+    },
+    {
+      "pageNumber": 24,
+      "hasRawText": true,
+      "utf16CodeUnits": 4647,
+      "characterRects": 4647,
+      "textSha256": "d785dc87844edd5d6957929978068d06f6180a27108c8280f0f01ea796efb880",
+      "geometrySha256": "ab9d7dd6d1e9535d82e9f2e486f8576dac7082e947f6032eb6653abbf2a0caaa",
+      "instrumentedCallerMedianUs": 5681.5,
+      "instrumentedRawBuildMedianUs": 4171.5,
+      "instrumentedNormalizationMedianUs": 567.5
+    },
+    {
+      "pageNumber": 25,
+      "hasRawText": true,
+      "utf16CodeUnits": 4752,
+      "characterRects": 4752,
+      "textSha256": "43c9faadeb0dbf317621da90cd2ea86c09f30160ff7505a47d342ca00b81a111",
+      "geometrySha256": "d9a392cf8823af09eb11355ad4f77448e009650d3ec07a6e7f3eb2072cef0de4",
+      "instrumentedCallerMedianUs": 5712.5,
+      "instrumentedRawBuildMedianUs": 4205.0,
+      "instrumentedNormalizationMedianUs": 625.0
+    },
+    {
+      "pageNumber": 26,
+      "hasRawText": true,
+      "utf16CodeUnits": 4722,
+      "characterRects": 4722,
+      "textSha256": "470a17e2d72d0f74d16c1c4860a2c12ecb5d89d88f13597a1181a5ab00f7d087",
+      "geometrySha256": "7809e5129f7dce6b11f4446c2350207a378f7efcb7bb5fddf385cdb6b97c83ad",
+      "instrumentedCallerMedianUs": 6055.0,
+      "instrumentedRawBuildMedianUs": 4493.5,
+      "instrumentedNormalizationMedianUs": 602.5
+    },
+    {
+      "pageNumber": 27,
+      "hasRawText": true,
+      "utf16CodeUnits": 4736,
+      "characterRects": 4736,
+      "textSha256": "28883f32c78cf2be0f922f21b89f1370abe74437d6e4e6c3fc0657b7276698db",
+      "geometrySha256": "b88b66bda8267d59524af1b7f4c9018b9123ffb831dc2643e104ef45ea4c7ec6",
+      "instrumentedCallerMedianUs": 6143.0,
+      "instrumentedRawBuildMedianUs": 4517.5,
+      "instrumentedNormalizationMedianUs": 585.0
+    },
+    {
+      "pageNumber": 28,
+      "hasRawText": true,
+      "utf16CodeUnits": 4634,
+      "characterRects": 4634,
+      "textSha256": "4441d51a3978ac030e37c40b5a70deb405e949a915ecec950a925b17ab72899e",
+      "geometrySha256": "7b8ea1240d6cc99beda0df694eb47ffe142ebcf42d08cb8df53c03488f910e53",
+      "instrumentedCallerMedianUs": 5818.0,
+      "instrumentedRawBuildMedianUs": 4271.5,
+      "instrumentedNormalizationMedianUs": 616.5
+    },
+    {
+      "pageNumber": 29,
+      "hasRawText": true,
+      "utf16CodeUnits": 4664,
+      "characterRects": 4664,
+      "textSha256": "67a3de34c0c3adc346e789b9376cb3c73bc07648a28d5d927aa5ce698e506abb",
+      "geometrySha256": "5ef76b05941d9b433b7ef578376dd7f5fda3a76274e8bcc1944644bc853f9dc9",
+      "instrumentedCallerMedianUs": 5666.5,
+      "instrumentedRawBuildMedianUs": 4182.0,
+      "instrumentedNormalizationMedianUs": 603.0
+    },
+    {
+      "pageNumber": 30,
+      "hasRawText": true,
+      "utf16CodeUnits": 4696,
+      "characterRects": 4696,
+      "textSha256": "163942898e1d0cfb4e19958317352694a82558427fb0434369f27510105a3d0d",
+      "geometrySha256": "3d8856a865f19284b1a8eab3dce763b7e596af755056bb7f7600540af58a693f",
+      "instrumentedCallerMedianUs": 5760.0,
+      "instrumentedRawBuildMedianUs": 4252.0,
+      "instrumentedNormalizationMedianUs": 595.5
+    },
+    {
+      "pageNumber": 31,
+      "hasRawText": true,
+      "utf16CodeUnits": 4864,
+      "characterRects": 4864,
+      "textSha256": "2f2124e4812da897554a4e5360beae4eb448748e19ae717867e14946ffce5bfd",
+      "geometrySha256": "0a17bbc45c833c3a756ee894d74f1905567bb6d3744a6b780db48f8e6b1c1acd",
+      "instrumentedCallerMedianUs": 5791.5,
+      "instrumentedRawBuildMedianUs": 4281.5,
+      "instrumentedNormalizationMedianUs": 603.0
+    },
+    {
+      "pageNumber": 32,
+      "hasRawText": true,
+      "utf16CodeUnits": 4705,
+      "characterRects": 4705,
+      "textSha256": "87eb6e9ae2d1a5967337dc1ab59ba918437dff2f84ada2bb721458382a615045",
+      "geometrySha256": "48210060920015542cddfeed11b2ba08c504e96a8ff179eb2d37e0d36ccd1279",
+      "instrumentedCallerMedianUs": 5931.0,
+      "instrumentedRawBuildMedianUs": 4376.5,
+      "instrumentedNormalizationMedianUs": 603.0
+    },
+    {
+      "pageNumber": 33,
+      "hasRawText": true,
+      "utf16CodeUnits": 4756,
+      "characterRects": 4756,
+      "textSha256": "125be26ad60556ec0935c9a086a0b16ef7ed0f3c625627e07263fbd63557fae1",
+      "geometrySha256": "9f21d6eba8d374beddfdd15f99ba5f2e646e53a11f4782e6f092737d5434ed5e",
+      "instrumentedCallerMedianUs": 5695.5,
+      "instrumentedRawBuildMedianUs": 4226.5,
+      "instrumentedNormalizationMedianUs": 620.5
+    },
+    {
+      "pageNumber": 34,
+      "hasRawText": true,
+      "utf16CodeUnits": 4650,
+      "characterRects": 4650,
+      "textSha256": "86662267f26bc64e90ce2fe1ab8223e2932a8d21d24bea370045954e257f3a34",
+      "geometrySha256": "6118ea50ec9d7b3669bb925876d590a5733f489b458fd568575570970bec2ece",
+      "instrumentedCallerMedianUs": 5624.5,
+      "instrumentedRawBuildMedianUs": 4162.0,
+      "instrumentedNormalizationMedianUs": 606.0
+    },
+    {
+      "pageNumber": 35,
+      "hasRawText": true,
+      "utf16CodeUnits": 4558,
+      "characterRects": 4558,
+      "textSha256": "905ca63abaa11e12ce183bd61ad9a139f10be64e6da275ed4e1638624194aaaf",
+      "geometrySha256": "7b8a2604818e57ebcb7e38af4f376316f5a701ce06f414a6cedbb2127e0ec01a",
+      "instrumentedCallerMedianUs": 5563.0,
+      "instrumentedRawBuildMedianUs": 4104.5,
+      "instrumentedNormalizationMedianUs": 589.0
+    },
+    {
+      "pageNumber": 36,
+      "hasRawText": true,
+      "utf16CodeUnits": 4603,
+      "characterRects": 4603,
+      "textSha256": "ccf89e5403713c300c65ace86a28e04a358078b9c0df9c24e8aa9c5cf1d50302",
+      "geometrySha256": "30c031ca603a4c8d2b73c6271a497c2f9be8f5f50989cb0f81088217d4932314",
+      "instrumentedCallerMedianUs": 5605.5,
+      "instrumentedRawBuildMedianUs": 4161.0,
+      "instrumentedNormalizationMedianUs": 593.0
+    },
+    {
+      "pageNumber": 37,
+      "hasRawText": true,
+      "utf16CodeUnits": 4568,
+      "characterRects": 4568,
+      "textSha256": "a587d67c63b592b6c5cce09cd796f192617974349c8dd6bb2ae172fefc771b07",
+      "geometrySha256": "9e466ab5a1dcefb74005f6bb15bc3cbc697a1b49f9bfe32d873fed5a7c679a89",
+      "instrumentedCallerMedianUs": 5524.0,
+      "instrumentedRawBuildMedianUs": 4086.0,
+      "instrumentedNormalizationMedianUs": 571.5
+    },
+    {
+      "pageNumber": 38,
+      "hasRawText": true,
+      "utf16CodeUnits": 4692,
+      "characterRects": 4692,
+      "textSha256": "9bc6b28e507c7ed7205d70b50d133926953e9374ecb47d86e046e1c0d7b22bd1",
+      "geometrySha256": "86091f8aff0e0583a4e97ec57f1732a2e7cdaeceeb7af7d20176b9de654ad511",
+      "instrumentedCallerMedianUs": 5656.0,
+      "instrumentedRawBuildMedianUs": 4147.0,
+      "instrumentedNormalizationMedianUs": 629.0
+    },
+    {
+      "pageNumber": 39,
+      "hasRawText": true,
+      "utf16CodeUnits": 4617,
+      "characterRects": 4617,
+      "textSha256": "34c0ea486a3e7f6eac7db7fbdc42406f3db9d41e25d685fec2e47544fa8869e0",
+      "geometrySha256": "412648a2b6bdc13346ede9074361d0dc54a8d2a311ad44719f9de24071b53701",
+      "instrumentedCallerMedianUs": 5740.0,
+      "instrumentedRawBuildMedianUs": 4227.5,
+      "instrumentedNormalizationMedianUs": 605.5
+    },
+    {
+      "pageNumber": 40,
+      "hasRawText": true,
+      "utf16CodeUnits": 4577,
+      "characterRects": 4577,
+      "textSha256": "8955ffe451086b61472527f52eb12d6f3dc71dfcb329baf4f5fb574b1e4fb0c1",
+      "geometrySha256": "1b47b87edd3f2f588d74eb7a37cf5d9616048ac2c5144438635972dfa2eb7982",
+      "instrumentedCallerMedianUs": 5586.0,
+      "instrumentedRawBuildMedianUs": 4102.5,
+      "instrumentedNormalizationMedianUs": 598.5
+    },
+    {
+      "pageNumber": 41,
+      "hasRawText": true,
+      "utf16CodeUnits": 4512,
+      "characterRects": 4512,
+      "textSha256": "306ee173cf46ae1a36d6e89f4a109a3884b082836bbcc539eee58288398d34dc",
+      "geometrySha256": "b5a7f395b1578a26b40e1988ec808199d3a53a96d619826e6c7c08428c803d35",
+      "instrumentedCallerMedianUs": 5428.0,
+      "instrumentedRawBuildMedianUs": 4004.5,
+      "instrumentedNormalizationMedianUs": 572.5
+    },
+    {
+      "pageNumber": 42,
+      "hasRawText": true,
+      "utf16CodeUnits": 4629,
+      "characterRects": 4629,
+      "textSha256": "f328b25a3e157f69787b450f019cf352aeb35e63ccafe89218faad706de2778f",
+      "geometrySha256": "e994bcb01c9c84cf3d2b8856d7f824f04c2c89bcf45e72ff20572e7627af5b0a",
+      "instrumentedCallerMedianUs": 5801.5,
+      "instrumentedRawBuildMedianUs": 4270.5,
+      "instrumentedNormalizationMedianUs": 576.0
+    },
+    {
+      "pageNumber": 43,
+      "hasRawText": true,
+      "utf16CodeUnits": 4565,
+      "characterRects": 4565,
+      "textSha256": "bb63e168d83d18e03e62bef42422831feef9441952690fad1aa25ab31ef8c535",
+      "geometrySha256": "5da71273dd6a66737908f17160af17fa4f6091384c1c8657431b64f764bdde09",
+      "instrumentedCallerMedianUs": 5451.0,
+      "instrumentedRawBuildMedianUs": 4018.5,
+      "instrumentedNormalizationMedianUs": 589.0
+    },
+    {
+      "pageNumber": 44,
+      "hasRawText": true,
+      "utf16CodeUnits": 4725,
+      "characterRects": 4725,
+      "textSha256": "66217f599a9e5a16b7f1cdbdb31e89e3c53681b6cfba53cb96b48fcbec3dc326",
+      "geometrySha256": "c12d037c283a273fde6f2619d8217b186f0e51b8bd0e3f53b4193532f88cd4ad",
+      "instrumentedCallerMedianUs": 5705.0,
+      "instrumentedRawBuildMedianUs": 4223.0,
+      "instrumentedNormalizationMedianUs": 603.0
+    },
+    {
+      "pageNumber": 45,
+      "hasRawText": true,
+      "utf16CodeUnits": 4662,
+      "characterRects": 4662,
+      "textSha256": "127422aa625e3533aa18eca6d1dc6c613dfefa9c030da2f20c42f44657b71d9c",
+      "geometrySha256": "e9cbe62268c283ef80bdfb128c8b5c27cccb74addd8d8b023f75c38060b2e2ee",
+      "instrumentedCallerMedianUs": 5710.0,
+      "instrumentedRawBuildMedianUs": 4208.0,
+      "instrumentedNormalizationMedianUs": 626.5
+    },
+    {
+      "pageNumber": 46,
+      "hasRawText": true,
+      "utf16CodeUnits": 4754,
+      "characterRects": 4754,
+      "textSha256": "ff5948e6c01328007ff1aa2ec4a16e2baf30c5f4842c5afed4540471ca1528b0",
+      "geometrySha256": "a662f7f0a7f02f390c841f915ab27527254f79e7c9fa22a6dad176cdaec81254",
+      "instrumentedCallerMedianUs": 5659.5,
+      "instrumentedRawBuildMedianUs": 4156.5,
+      "instrumentedNormalizationMedianUs": 611.0
+    },
+    {
+      "pageNumber": 47,
+      "hasRawText": true,
+      "utf16CodeUnits": 4609,
+      "characterRects": 4609,
+      "textSha256": "977dc446be6a2c74b8291abc746a426471613bf06ee0f7de51a610b1ae5767cc",
+      "geometrySha256": "2a777d18fce2c4a84d5e7195a3fb97a4f9eb7714f061d70856ea4d1d26a0c831",
+      "instrumentedCallerMedianUs": 5737.5,
+      "instrumentedRawBuildMedianUs": 4234.0,
+      "instrumentedNormalizationMedianUs": 623.0
+    },
+    {
+      "pageNumber": 48,
+      "hasRawText": true,
+      "utf16CodeUnits": 4669,
+      "characterRects": 4669,
+      "textSha256": "f8a18ebc788d30882df888e1c7043b751a78efb968be12a00cdcf4bcc1e0e80b",
+      "geometrySha256": "0dad9e521664bdfe586e993e7af12280a4a8f4de76a6a157bad129ad3fe1eaf1",
+      "instrumentedCallerMedianUs": 5653.5,
+      "instrumentedRawBuildMedianUs": 4192.0,
+      "instrumentedNormalizationMedianUs": 595.5
+    },
+    {
+      "pageNumber": 49,
+      "hasRawText": true,
+      "utf16CodeUnits": 4512,
+      "characterRects": 4512,
+      "textSha256": "700e258fa50e22a7a4cf92c3b6b5259774f57227045ea5de65c0b02b51826f07",
+      "geometrySha256": "a35c5e781ea2a5ba5770d7c62b8b3861665615605595172ad77b2dc66beae5fa",
+      "instrumentedCallerMedianUs": 5512.0,
+      "instrumentedRawBuildMedianUs": 4055.0,
+      "instrumentedNormalizationMedianUs": 595.5
+    },
+    {
+      "pageNumber": 50,
+      "hasRawText": true,
+      "utf16CodeUnits": 4650,
+      "characterRects": 4650,
+      "textSha256": "e334939f9ef8486600b15b250abdceaa8c7afa1ac8db1190decd077db4cb08ae",
+      "geometrySha256": "a889f66361fb4ca92c45a795072247e4e74d74e90ead8e65a7afec21e429e912",
+      "instrumentedCallerMedianUs": 5628.0,
+      "instrumentedRawBuildMedianUs": 4136.5,
+      "instrumentedNormalizationMedianUs": 588.0
+    },
+    {
+      "pageNumber": 51,
+      "hasRawText": true,
+      "utf16CodeUnits": 4596,
+      "characterRects": 4596,
+      "textSha256": "310045f28f394f98ff4eb689ffb72332aba33ab38fbd65f5c17a0a5e9514fe2a",
+      "geometrySha256": "a30c7d6d117ff9d51b48a6582f18d1c0f994cb9f25c4a8012bcbe898d6467048",
+      "instrumentedCallerMedianUs": 5742.5,
+      "instrumentedRawBuildMedianUs": 4211.5,
+      "instrumentedNormalizationMedianUs": 631.0
+    },
+    {
+      "pageNumber": 52,
+      "hasRawText": true,
+      "utf16CodeUnits": 4434,
+      "characterRects": 4434,
+      "textSha256": "d41bb23eb5d847c46c36e1da11cdab7f74820cb10121af1eb94a00b476988b55",
+      "geometrySha256": "7a66786a185d7ae937fcf7e72f123c213d0526a024f64fa73b7f71978c54cfb0",
+      "instrumentedCallerMedianUs": 5824.5,
+      "instrumentedRawBuildMedianUs": 4067.5,
+      "instrumentedNormalizationMedianUs": 579.5
+    },
+    {
+      "pageNumber": 53,
+      "hasRawText": true,
+      "utf16CodeUnits": 3494,
+      "characterRects": 3494,
+      "textSha256": "42f8c0f2df7adffd70f439ff622a613b72dc420b4b8b170aeb1142525c65296e",
+      "geometrySha256": "155143191af6593abd78779f3646c37a78cd912c480bc25091836ded77378659",
+      "instrumentedCallerMedianUs": 4115.5,
+      "instrumentedRawBuildMedianUs": 3080.5,
+      "instrumentedNormalizationMedianUs": 419.0
+    },
+    {
+      "pageNumber": 54,
+      "hasRawText": true,
+      "utf16CodeUnits": 1856,
+      "characterRects": 1856,
+      "textSha256": "629cf210330b9fdda7cc94ba46bffee2a050c6174277f8433154e0670c3bdbe2",
+      "geometrySha256": "4523668efe2d6ba7176562192e9e1eccea95f982aa1e4b0b7dfe381ff8d105d7",
+      "instrumentedCallerMedianUs": 1076.5,
+      "instrumentedRawBuildMedianUs": 807.5,
+      "instrumentedNormalizationMedianUs": 107.5
+    }
+  ],
+  "conclusions": {
+    "dominantMeasuredComponent": "Worker raw-build: PDFium calls plus Dart string/rectangle construction; the observations do not separate native extraction from this Dart construction.",
+    "normalization": "Hebrew normalization accounts for about one tenth of the instrumented caller interval. Two reference pages have unchanged text/geometry when both Hebrew flags are off; this does not establish that normalization is redundant for other pages or encodings.",
+    "residual": "Queue/dispatch/arena/return plus instrumentation bookkeeping remain combined in the outside-worker residual. It is not an isolated transfer measurement or a concurrent-queue measurement.",
+    "overhead": "The uninstrumented controls and instrumented callers are close in these ABBA observations. A small or negative observed difference is not evidence of product acceleration or exact zero observer overhead.",
+    "productAction": "Prioritize avoiding repeated raw extraction or optimizing the upstream raw-text construction contract. The existing app LRU thrash evidence remains relevant; these source-instrumented diagnostics are not an app optimization.",
+    "reference": "UXLC page 1 contains inferred internal spaces, e.g. אֱ לֹהִ֑ ים, before Hebrew normalization as well as after it. Literal and marks-tolerant אלהים both have zero hits in PDFium and the two Poppler layouts. This does not prove how space characters were encoded in PDF objects."
+  },
+  "limitations": [
+    "Worker raw-build includes PDFium calls and Dart text/rectangle construction.",
+    "The outside-worker residual includes queue, dispatch, arena management, return and instrumentation bookkeeping; it is not isolated transfer time.",
+    "Worker counters are read/reset through a separate job outside each timed page interval.",
+    "Serial page calls do not measure a concurrent render/search backlog.",
+    "Instrumented durations include observer overhead and are not a product speedup.",
+    "No native-allocation, Dart-allocation, UI-latency or cold OS-cache claim.",
+    "Two independent processes per variant; repeated passes are not independent processes.",
+    "Hashes are computed between timed loads and can affect later GC or caches in both variants.",
+    "Instrumentation adds clocks and metric bookkeeping; the control is an overhead reference, not a product baseline/candidate.",
+    "Each document uses its own CI job/host; cross-document timings are not paired product effects.",
+    "Only two processes per variant; six measured passes per side are not six independent launches.",
+    "Per-page proof hashes cover all text/geometry, but the artifact does not preserve every page's full coordinate array for independent re-extraction.",
+    "The flag-off comparison covers only one content page per document; it cannot justify disabling Hebrew normalization globally."
+  ],
+  "analysisScriptSha256": "cfee9eb16c9bd133235e56ac8c82def3392257ad903d5fcf63fc65685baf7619"
+}

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "status": "environment-preflight",
+  "runId": 45386082648,
+  "jobId": 138417219879,
+  "artifactId": 14916960335,
+  "sourceCommit": "4c2ec82c2c98d9be61816b80690f8e385c9f7c8c",
+  "pdfMeasurement": false,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45386082648/job/138417219879",
+  "jobConclusion": "success",
+  "runner": "ubuntu-24.04",
+  "jobMetadataSource": "https://api.github.com/repos/yom-chadash/otzaria/actions/runs/45386082648/jobs?per_page=30",
+  "report": {
+    "schemaVersion": 1,
+    "purpose": "CI environment preflight; no PDF measurements",
+    "status": "passed",
+    "repository": "yom-chadash/otzaria",
+    "source": {
+      "commit": "4c2ec82c2c98d9be61816b80690f8e385c9f7c8c",
+      "tree": "e17a658bda30f0981972ec0be97bb44bbb4e4016",
+      "dirty": false
+    },
+    "workflow": {
+      "GITHUB_WORKFLOW_REF": "yom-chadash/otzaria/.github/workflows/issue5538_fork_measurements.yml@refs/heads/perf/5538-final-measurements-20261124",
+      "GITHUB_RUN_ID": "45386082648",
+      "GITHUB_RUN_ATTEMPT": "1",
+      "GITHUB_JOB": "preflight"
+    },
+    "runner": {
+      "system": "Linux",
+      "platform": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39",
+      "architecture": "x86_64",
+      "logicalProcessors": 4,
+      "imageOS": "ubuntu24",
+      "imageVersion": "20261116.376.1",
+      "environment": "github-hosted"
+    },
+    "python": "3.13.18 (main, Oct 26 2026, 14:20:56) [GCC 13.3.0]"
+  }
+}

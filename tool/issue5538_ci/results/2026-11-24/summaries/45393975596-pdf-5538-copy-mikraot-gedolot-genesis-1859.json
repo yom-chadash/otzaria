@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "status": "verified",
+  "runId": 45393975596,
+  "jobId": 138444732077,
+  "artifactId": 14919284300,
+  "runUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45393975596/job/138444732077",
+  "archiveSha256": "64a25629b58365de50f6a8afe55acc36e86ba8cf872b3ce35e3e25977dc14d86",
+  "reportSha256": "2e697741fc250a7630cc02d231e2ed51c232346ac8d81f070c7c3cdc2f25d3f8",
+  "source": {
+    "commit": "467811a97c93aa2b3b8879fc1b443db1b50f2d4e",
+    "tree": "b418f2c7a70e591b6a30555f201fda69b8576715"
+  },
+  "document": {
+    "id": "mikraot-gedolot-genesis-1859",
+    "sha256": "92a145512e33c4a3c8f1b1c92d2d79c4db91a49cc921a316201be81bfa85040d",
+    "sizeBytes": 41990345,
+    "pageCount": 374
+  },
+  "build": "profile",
+  "summary": {
+    "warmupLaunches": 1,
+    "measuredFreshProcesses": 3,
+    "actualNativeClipboardParity": true,
+    "text": {
+      "utf16CodeUnits": 2333854,
+      "utf8Bytes": 4069860,
+      "utf8Sha256": "6b73830da3c77e13ac533b602e7d9cb612461d76ac95ce8c8abc71b49d8d45b5"
+    },
+    "medianSelectAllMs": 259.172,
+    "medianCopyMs": 3985.679,
+    "medianFlutterReadbackMs": 67.998,
+    "medianAfterCopyRssBytes": 454754304,
+    "medianAfterCloseRssBytes": 431128576
+  },
+  "cacheAfterCopy": {
+    "pages": [
+      4
+    ],
+    "estimatedTextAndGeometryBytes": [
+      21268
+    ],
+    "boundaryCharacterRectangles": [
+      162
+    ]
+  },
+  "disposed": {
+    "allFourCacheAndSelectionSnapshotsReleased": true,
+    "nativeClipboardRetainedUntilProcessExit": true
+  },
+  "limitations": [
+    "One production flow with one warmup and three fresh-process observations; no before/after claim.",
+    "OS file cache is not flushed between launches.",
+    "RSS is not Dart heap allocation. Host phase peaks are sampled lower bounds; a short phase may have zero samples.",
+    "Process lifetime peak includes opening, verification copies, UTF-8 hashing and clipboard readbacks.",
+    "The full final string and native clipboard output are required by the actual copy operation.",
+    "Three observations support descriptive medians, not tail-latency or population claims.",
+    "Clipboard matches the app-selected text and a separate X11 reader; no independent OCR ground-truth claim."
+  ]
+}

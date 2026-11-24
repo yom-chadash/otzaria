@@ -1,0 +1,106 @@
+{
+  "runId": 45394319292,
+  "jobId": 138445907008,
+  "source": "fc81d39cfe5f50f38c26a1341fd8fae86330ad20",
+  "upstream": "683df93e986af19bbcefd22606a417083116847b",
+  "sdk": {
+    "frameworkVersion": "3.50.1",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "ae9b586f34a8443573f82ef57c3bf914a908cbf7",
+    "frameworkCommitDate": "2026-11-18 17:01:07 -0800",
+    "engineRevision": "4d35714800b9266b6693a58e1225ecd7e9e45ed7",
+    "engineCommitDate": "2026-11-18 01:50:07.000Z",
+    "engineContentHash": "51379e6df48ea8ee7205623b90fe66491cad8df3",
+    "engineBuildDate": "2026-11-17 23:29:07.499",
+    "dartSdkVersion": "3.14.0",
+    "devToolsVersion": "2.61.0",
+    "flutterVersion": "3.50.1",
+    "flutterRoot": "/opt/hostedtoolcache/flutter/stable-3.50.1-x64/flutter"
+  },
+  "rawCounts": {
+    "native": {
+      "executed": 440,
+      "skipped": [],
+      "failures": [],
+      "lastDone": [
+        {
+          "success": true,
+          "type": "done",
+          "time": 28216
+        }
+      ]
+    },
+    "viewer": {
+      "executed": 636,
+      "skipped": [
+        {
+          "name": "loadPageDimensionsOnDemand off: every page in the document is measured up front",
+          "reason": null
+        },
+        {
+          "name": "loadPageDimensionsOnDemand on: only pages near the viewport are measured",
+          "reason": null
+        },
+        {
+          "name": "loadPageDimensionsOnDemand on: fetches strictly less than the whole file",
+          "reason": null
+        },
+        {
+          "name": "degraded networks server that ignores Range still opens the document",
+          "reason": null
+        },
+        {
+          "name": "degraded networks slow link does not lose the document",
+          "reason": null
+        },
+        {
+          "name": "degraded networks a failing first request surfaces as an error, not a hang",
+          "reason": null
+        }
+      ],
+      "failures": [],
+      "lastDone": [
+        {
+          "success": true,
+          "type": "done",
+          "time": 156781
+        }
+      ]
+    },
+    "chrome": {
+      "executed": 64,
+      "skipped": [],
+      "failures": [],
+      "lastDone": [
+        {
+          "success": true,
+          "type": "done",
+          "time": 55650
+        }
+      ]
+    }
+  },
+  "node": {
+    "tests": 164,
+    "pass": 164,
+    "fail": 0,
+    "skipped": 0
+  },
+  "inventory": {
+    "native": 27,
+    "viewer": 45,
+    "chrome": 8,
+    "node": 10
+  },
+  "nativeAssets": {
+    ".dart_tool/hooks_runner/shared/pdfium_dart/build/chromium_8125/linux-x64/libpdfium.so": {
+      "sha256": "1c251efce460d67437a4c76d4be9033ae2f17bf5603f5bff1af10209b94ca723",
+      "bytes": 8049768
+    }
+  },
+  "limits": [
+    "Upstream correctness suites, not performance or app adoption.",
+    "Windows and macOS lanes run separately; these artifacts are Linux only."
+  ]
+}

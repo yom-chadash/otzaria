@@ -1,0 +1,1619 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "analysisKind": "real HTTP cache behavior, no product code change",
+  "runUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45398871010/job/138461890124",
+  "runId": 45398871010,
+  "jobId": 138461890124,
+  "artifactId": 14923165913,
+  "artifactSha256": "bd15d7f0b6f40abbc77e588d93eadbd9d324e730037e412d40f9563db7f19c50",
+  "sourceCommit": "4d668424f97f10a3fdb8822f3ba53c0b2e4aaab6",
+  "sdk": {
+    "frameworkVersion": "3.47.7",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "engineCommitDate": "2026-10-07 17:09:12.000Z",
+    "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+    "engineBuildDate": "2026-10-07 10:51:44.552",
+    "dartSdkVersion": "3.13.5",
+    "devToolsVersion": "2.60.0",
+    "flutterVersion": "3.47.7",
+    "flutterRoot": "/opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter"
+  },
+  "engineArchiveSha256": "001090d220b2773747ce396f2bcda3d6ac9389d87f937ef12d64ed3a9e80e8b0",
+  "pdfiumSha256": "1c251efce460d67437a4c76d4be9033ae2f17bf5603f5bff1af10209b94ca723",
+  "independentProcesses": 4,
+  "uninstrumentedProcesses": 2,
+  "observations": 256,
+  "exactScenariosPerProcess": 64,
+  "phaseCounts": {
+    "changed": {
+      "observations": 32,
+      "zeroPayload": 0,
+      "noRequests": 0,
+      "with304": 0,
+      "with206": 32,
+      "bytesParityPassed": true,
+      "rasterParityPassed": true
+    },
+    "changed-warm": {
+      "observations": 32,
+      "zeroPayload": 32,
+      "noRequests": 0,
+      "with304": 32,
+      "with206": 0,
+      "bytesParityPassed": true,
+      "rasterParityPassed": true
+    },
+    "cold": {
+      "observations": 64,
+      "zeroPayload": 0,
+      "noRequests": 0,
+      "with304": 0,
+      "with206": 64,
+      "bytesParityPassed": true,
+      "rasterParityPassed": true
+    },
+    "warm": {
+      "observations": 64,
+      "zeroPayload": 64,
+      "noRequests": 16,
+      "with304": 48,
+      "with206": 0,
+      "bytesParityPassed": true,
+      "rasterParityPassed": true
+    },
+    "warm-late-pages": {
+      "observations": 64,
+      "zeroPayload": 32,
+      "noRequests": 8,
+      "with304": 48,
+      "with206": 32,
+      "bytesParityPassed": true,
+      "rasterParityPassed": true
+    }
+  },
+  "verifiedRasterSignatures": 6,
+  "reports": [
+    {
+      "path": "pdf-5538-http-revalidation/run-1-control/report.json",
+      "sha256": "ade0da7bc60d990c13bf5dbf59883b8c380b7b338e81678fc921e6f9ec523717"
+    },
+    {
+      "path": "pdf-5538-http-revalidation/run-2-instrumented/report.json",
+      "sha256": "b3f0afd7a1e0f2ca222453fda9d6aa15a7e4c4db985ace007cb6bd303725d25f"
+    },
+    {
+      "path": "pdf-5538-http-revalidation/run-3-instrumented/report.json",
+      "sha256": "68528c939369a5aaeba63ea31709a0fc5b2e0eaad2b4edb5b9eabd186d4a20de"
+    },
+    {
+      "path": "pdf-5538-http-revalidation/run-4-control/report.json",
+      "sha256": "9c5bec93de5f66011359b31c3b04601e40297909b1c3da96867c1f6f757058e9"
+    }
+  ],
+  "conditions": [
+    {
+      "initialLinearized": false,
+      "progressive": false,
+      "policy": "etag-fresh",
+      "phase": "cold",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        51
+      ],
+      "allFourRunsPayloadBytes": [
+        3304571
+      ],
+      "controlFirstRasterMs": [
+        515.349,
+        516.491
+      ],
+      "controlFirstRasterMedianMs": 515.9200000000001,
+      "cacheResidentBytesBefore": [],
+      "cacheResidentBytesAfter": [
+        3304571
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": false,
+      "policy": "etag-fresh",
+      "phase": "warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        278.143,
+        278.714
+      ],
+      "controlFirstRasterMedianMs": 278.4285,
+      "cacheResidentBytesBefore": [
+        3304571
+      ],
+      "cacheResidentBytesAfter": [
+        3304571
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": false,
+      "policy": "etag-fresh",
+      "phase": "warm-late-pages",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        279.853,
+        316.62
+      ],
+      "controlFirstRasterMedianMs": 298.2365,
+      "cacheResidentBytesBefore": [
+        3304571
+      ],
+      "cacheResidentBytesAfter": [
+        3304571
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": false,
+      "policy": "etag-must-revalidate-fresh",
+      "phase": "cold",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        51
+      ],
+      "allFourRunsPayloadBytes": [
+        3304571
+      ],
+      "controlFirstRasterMs": [
+        515.775,
+        537.528
+      ],
+      "controlFirstRasterMedianMs": 526.6514999999999,
+      "cacheResidentBytesBefore": [],
+      "cacheResidentBytesAfter": [
+        3304571
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": false,
+      "policy": "etag-must-revalidate-fresh",
+      "phase": "warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        0
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        460.715,
+        472.88
+      ],
+      "controlFirstRasterMedianMs": 466.7975,
+      "cacheResidentBytesBefore": [
+        3304571
+      ],
+      "cacheResidentBytesAfter": [
+        3304571
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": false,
+      "policy": "etag-must-revalidate-fresh",
+      "phase": "warm-late-pages",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        0
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        481.243,
+        473.876
+      ],
+      "controlFirstRasterMedianMs": 477.55949999999996,
+      "cacheResidentBytesBefore": [
+        3304571
+      ],
+      "cacheResidentBytesAfter": [
+        3304571
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": false,
+      "policy": "etag-stale",
+      "phase": "changed",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        54
+      ],
+      "allFourRunsPayloadBytes": [
+        3477090
+      ],
+      "controlFirstRasterMs": [
+        521.547,
+        520.48
+      ],
+      "controlFirstRasterMedianMs": 521.0135,
+      "cacheResidentBytesBefore": [
+        3304571
+      ],
+      "cacheResidentBytesAfter": [
+        3477090
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": false,
+      "policy": "etag-stale",
+      "phase": "changed-warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        468.456,
+        475.138
+      ],
+      "controlFirstRasterMedianMs": 471.797,
+      "cacheResidentBytesBefore": [
+        3477090
+      ],
+      "cacheResidentBytesAfter": [
+        3477090
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": false,
+      "policy": "etag-stale",
+      "phase": "cold",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        51
+      ],
+      "allFourRunsPayloadBytes": [
+        3304571
+      ],
+      "controlFirstRasterMs": [
+        516.567,
+        509.372
+      ],
+      "controlFirstRasterMedianMs": 512.9695,
+      "cacheResidentBytesBefore": [],
+      "cacheResidentBytesAfter": [
+        3304571
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": false,
+      "policy": "etag-stale",
+      "phase": "warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        305.386,
+        281.28
+      ],
+      "controlFirstRasterMedianMs": 293.33299999999997,
+      "cacheResidentBytesBefore": [
+        3304571
+      ],
+      "cacheResidentBytesAfter": [
+        3304571
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": false,
+      "policy": "etag-stale",
+      "phase": "warm-late-pages",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        279.908,
+        285.367
+      ],
+      "controlFirstRasterMedianMs": 282.63750000000005,
+      "cacheResidentBytesBefore": [
+        3304571
+      ],
+      "cacheResidentBytesAfter": [
+        3304571
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": false,
+      "policy": "modified-since-stale",
+      "phase": "changed",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        54
+      ],
+      "allFourRunsPayloadBytes": [
+        3477090
+      ],
+      "controlFirstRasterMs": [
+        522.312,
+        538.218
+      ],
+      "controlFirstRasterMedianMs": 530.265,
+      "cacheResidentBytesBefore": [
+        3304571
+      ],
+      "cacheResidentBytesAfter": [
+        3477090
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": false,
+      "policy": "modified-since-stale",
+      "phase": "changed-warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        478.037,
+        478.58
+      ],
+      "controlFirstRasterMedianMs": 478.3085,
+      "cacheResidentBytesBefore": [
+        3477090
+      ],
+      "cacheResidentBytesAfter": [
+        3477090
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": false,
+      "policy": "modified-since-stale",
+      "phase": "cold",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        51
+      ],
+      "allFourRunsPayloadBytes": [
+        3304571
+      ],
+      "controlFirstRasterMs": [
+        518.393,
+        537.718
+      ],
+      "controlFirstRasterMedianMs": 528.0554999999999,
+      "cacheResidentBytesBefore": [],
+      "cacheResidentBytesAfter": [
+        3304571
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": false,
+      "policy": "modified-since-stale",
+      "phase": "warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        274.91,
+        280.814
+      ],
+      "controlFirstRasterMedianMs": 277.862,
+      "cacheResidentBytesBefore": [
+        3304571
+      ],
+      "cacheResidentBytesAfter": [
+        3304571
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": false,
+      "policy": "modified-since-stale",
+      "phase": "warm-late-pages",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        301.709,
+        284.709
+      ],
+      "controlFirstRasterMedianMs": 293.209,
+      "cacheResidentBytesBefore": [
+        3304571
+      ],
+      "cacheResidentBytesAfter": [
+        3304571
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": true,
+      "policy": "etag-fresh",
+      "phase": "cold",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        6
+      ],
+      "allFourRunsPayloadBytes": [
+        355451
+      ],
+      "controlFirstRasterMs": [
+        17.657,
+        11.456
+      ],
+      "controlFirstRasterMedianMs": 14.5565,
+      "cacheResidentBytesBefore": [],
+      "cacheResidentBytesAfter": [
+        355451
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": true,
+      "policy": "etag-fresh",
+      "phase": "warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        6.434,
+        6.781
+      ],
+      "controlFirstRasterMedianMs": 6.6075,
+      "cacheResidentBytesBefore": [
+        355451
+      ],
+      "cacheResidentBytesAfter": [
+        355451
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": true,
+      "policy": "etag-fresh",
+      "phase": "warm-late-pages",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        45
+      ],
+      "allFourRunsPayloadBytes": [
+        2883584
+      ],
+      "controlFirstRasterMs": [
+        6.826,
+        6.696
+      ],
+      "controlFirstRasterMedianMs": 6.760999999999999,
+      "cacheResidentBytesBefore": [
+        355451
+      ],
+      "cacheResidentBytesAfter": [
+        3239035
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": true,
+      "policy": "etag-must-revalidate-fresh",
+      "phase": "cold",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        6
+      ],
+      "allFourRunsPayloadBytes": [
+        355451
+      ],
+      "controlFirstRasterMs": [
+        12.823,
+        16.57
+      ],
+      "controlFirstRasterMedianMs": 14.6965,
+      "cacheResidentBytesBefore": [],
+      "cacheResidentBytesAfter": [
+        355451
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": true,
+      "policy": "etag-must-revalidate-fresh",
+      "phase": "warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        0
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        6.011,
+        6.242
+      ],
+      "controlFirstRasterMedianMs": 6.1265,
+      "cacheResidentBytesBefore": [
+        355451
+      ],
+      "cacheResidentBytesAfter": [
+        355451
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": true,
+      "policy": "etag-must-revalidate-fresh",
+      "phase": "warm-late-pages",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        44
+      ],
+      "allFourRunsPayloadBytes": [
+        2883584
+      ],
+      "controlFirstRasterMs": [
+        6.0,
+        6.63
+      ],
+      "controlFirstRasterMedianMs": 6.3149999999999995,
+      "cacheResidentBytesBefore": [
+        355451
+      ],
+      "cacheResidentBytesAfter": [
+        3239035
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": true,
+      "policy": "etag-stale",
+      "phase": "changed",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        53
+      ],
+      "allFourRunsPayloadBytes": [
+        3411554
+      ],
+      "controlFirstRasterMs": [
+        10.336,
+        11.074
+      ],
+      "controlFirstRasterMedianMs": 10.705,
+      "cacheResidentBytesBefore": [
+        3239035
+      ],
+      "cacheResidentBytesAfter": [
+        3411554
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": true,
+      "policy": "etag-stale",
+      "phase": "changed-warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        6.895,
+        7.481
+      ],
+      "controlFirstRasterMedianMs": 7.188,
+      "cacheResidentBytesBefore": [
+        3411554
+      ],
+      "cacheResidentBytesAfter": [
+        3411554
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": true,
+      "policy": "etag-stale",
+      "phase": "cold",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        6
+      ],
+      "allFourRunsPayloadBytes": [
+        355451
+      ],
+      "controlFirstRasterMs": [
+        13.788,
+        10.97
+      ],
+      "controlFirstRasterMedianMs": 12.379000000000001,
+      "cacheResidentBytesBefore": [],
+      "cacheResidentBytesAfter": [
+        355451
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": true,
+      "policy": "etag-stale",
+      "phase": "warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        6.466,
+        6.9
+      ],
+      "controlFirstRasterMedianMs": 6.683,
+      "cacheResidentBytesBefore": [
+        355451
+      ],
+      "cacheResidentBytesAfter": [
+        355451
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": true,
+      "policy": "etag-stale",
+      "phase": "warm-late-pages",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        45
+      ],
+      "allFourRunsPayloadBytes": [
+        2883584
+      ],
+      "controlFirstRasterMs": [
+        6.544,
+        6.98
+      ],
+      "controlFirstRasterMedianMs": 6.7620000000000005,
+      "cacheResidentBytesBefore": [
+        355451
+      ],
+      "cacheResidentBytesAfter": [
+        3239035
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": true,
+      "policy": "modified-since-stale",
+      "phase": "changed",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        53
+      ],
+      "allFourRunsPayloadBytes": [
+        3411554
+      ],
+      "controlFirstRasterMs": [
+        13.104,
+        12.372
+      ],
+      "controlFirstRasterMedianMs": 12.738,
+      "cacheResidentBytesBefore": [
+        3239035
+      ],
+      "cacheResidentBytesAfter": [
+        3411554
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": true,
+      "policy": "modified-since-stale",
+      "phase": "changed-warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        9.971,
+        6.893
+      ],
+      "controlFirstRasterMedianMs": 8.432,
+      "cacheResidentBytesBefore": [
+        3411554
+      ],
+      "cacheResidentBytesAfter": [
+        3411554
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": true,
+      "policy": "modified-since-stale",
+      "phase": "cold",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        6
+      ],
+      "allFourRunsPayloadBytes": [
+        355451
+      ],
+      "controlFirstRasterMs": [
+        11.173,
+        10.841
+      ],
+      "controlFirstRasterMedianMs": 11.007,
+      "cacheResidentBytesBefore": [],
+      "cacheResidentBytesAfter": [
+        355451
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": true,
+      "policy": "modified-since-stale",
+      "phase": "warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        6.471,
+        6.516
+      ],
+      "controlFirstRasterMedianMs": 6.4935,
+      "cacheResidentBytesBefore": [
+        355451
+      ],
+      "cacheResidentBytesAfter": [
+        355451
+      ]
+    },
+    {
+      "initialLinearized": false,
+      "progressive": true,
+      "policy": "modified-since-stale",
+      "phase": "warm-late-pages",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        45
+      ],
+      "allFourRunsPayloadBytes": [
+        2883584
+      ],
+      "controlFirstRasterMs": [
+        6.421,
+        7.809
+      ],
+      "controlFirstRasterMedianMs": 7.115,
+      "cacheResidentBytesBefore": [
+        355451
+      ],
+      "cacheResidentBytesAfter": [
+        3239035
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": false,
+      "policy": "etag-fresh",
+      "phase": "cold",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        54
+      ],
+      "allFourRunsPayloadBytes": [
+        3477090
+      ],
+      "controlFirstRasterMs": [
+        540.17,
+        531.136
+      ],
+      "controlFirstRasterMedianMs": 535.653,
+      "cacheResidentBytesBefore": [],
+      "cacheResidentBytesAfter": [
+        3477090
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": false,
+      "policy": "etag-fresh",
+      "phase": "warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        472.831,
+        489.742
+      ],
+      "controlFirstRasterMedianMs": 481.28650000000005,
+      "cacheResidentBytesBefore": [
+        3477090
+      ],
+      "cacheResidentBytesAfter": [
+        3477090
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": false,
+      "policy": "etag-fresh",
+      "phase": "warm-late-pages",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        489.874,
+        482.811
+      ],
+      "controlFirstRasterMedianMs": 486.3425,
+      "cacheResidentBytesBefore": [
+        3477090
+      ],
+      "cacheResidentBytesAfter": [
+        3477090
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": false,
+      "policy": "etag-must-revalidate-fresh",
+      "phase": "cold",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        54
+      ],
+      "allFourRunsPayloadBytes": [
+        3477090
+      ],
+      "controlFirstRasterMs": [
+        547.117,
+        521.422
+      ],
+      "controlFirstRasterMedianMs": 534.2695,
+      "cacheResidentBytesBefore": [],
+      "cacheResidentBytesAfter": [
+        3477090
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": false,
+      "policy": "etag-must-revalidate-fresh",
+      "phase": "warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        0
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        481.49,
+        476.415
+      ],
+      "controlFirstRasterMedianMs": 478.9525,
+      "cacheResidentBytesBefore": [
+        3477090
+      ],
+      "cacheResidentBytesAfter": [
+        3477090
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": false,
+      "policy": "etag-must-revalidate-fresh",
+      "phase": "warm-late-pages",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        0
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        491.324,
+        490.85
+      ],
+      "controlFirstRasterMedianMs": 491.087,
+      "cacheResidentBytesBefore": [
+        3477090
+      ],
+      "cacheResidentBytesAfter": [
+        3477090
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": false,
+      "policy": "etag-stale",
+      "phase": "changed",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        51
+      ],
+      "allFourRunsPayloadBytes": [
+        3304571
+      ],
+      "controlFirstRasterMs": [
+        537.202,
+        537.233
+      ],
+      "controlFirstRasterMedianMs": 537.2175,
+      "cacheResidentBytesBefore": [
+        3477090
+      ],
+      "cacheResidentBytesAfter": [
+        3304571
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": false,
+      "policy": "etag-stale",
+      "phase": "changed-warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        285.403,
+        286.527
+      ],
+      "controlFirstRasterMedianMs": 285.96500000000003,
+      "cacheResidentBytesBefore": [
+        3304571
+      ],
+      "cacheResidentBytesAfter": [
+        3304571
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": false,
+      "policy": "etag-stale",
+      "phase": "cold",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        54
+      ],
+      "allFourRunsPayloadBytes": [
+        3477090
+      ],
+      "controlFirstRasterMs": [
+        549.974,
+        529.755
+      ],
+      "controlFirstRasterMedianMs": 539.8645,
+      "cacheResidentBytesBefore": [],
+      "cacheResidentBytesAfter": [
+        3477090
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": false,
+      "policy": "etag-stale",
+      "phase": "warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        506.014,
+        481.614
+      ],
+      "controlFirstRasterMedianMs": 493.81399999999996,
+      "cacheResidentBytesBefore": [
+        3477090
+      ],
+      "cacheResidentBytesAfter": [
+        3477090
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": false,
+      "policy": "etag-stale",
+      "phase": "warm-late-pages",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        488.566,
+        488.326
+      ],
+      "controlFirstRasterMedianMs": 488.446,
+      "cacheResidentBytesBefore": [
+        3477090
+      ],
+      "cacheResidentBytesAfter": [
+        3477090
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": false,
+      "policy": "modified-since-stale",
+      "phase": "changed",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        51
+      ],
+      "allFourRunsPayloadBytes": [
+        3304571
+      ],
+      "controlFirstRasterMs": [
+        514.741,
+        532.92
+      ],
+      "controlFirstRasterMedianMs": 523.8305,
+      "cacheResidentBytesBefore": [
+        3477090
+      ],
+      "cacheResidentBytesAfter": [
+        3304571
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": false,
+      "policy": "modified-since-stale",
+      "phase": "changed-warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        283.352,
+        285.417
+      ],
+      "controlFirstRasterMedianMs": 284.3845,
+      "cacheResidentBytesBefore": [
+        3304571
+      ],
+      "cacheResidentBytesAfter": [
+        3304571
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": false,
+      "policy": "modified-since-stale",
+      "phase": "cold",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        54
+      ],
+      "allFourRunsPayloadBytes": [
+        3477090
+      ],
+      "controlFirstRasterMs": [
+        537.326,
+        535.749
+      ],
+      "controlFirstRasterMedianMs": 536.5375,
+      "cacheResidentBytesBefore": [],
+      "cacheResidentBytesAfter": [
+        3477090
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": false,
+      "policy": "modified-since-stale",
+      "phase": "warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        461.492,
+        469.904
+      ],
+      "controlFirstRasterMedianMs": 465.698,
+      "cacheResidentBytesBefore": [
+        3477090
+      ],
+      "cacheResidentBytesAfter": [
+        3477090
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": false,
+      "policy": "modified-since-stale",
+      "phase": "warm-late-pages",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        491.594,
+        486.047
+      ],
+      "controlFirstRasterMedianMs": 488.82050000000004,
+      "cacheResidentBytesBefore": [
+        3477090
+      ],
+      "cacheResidentBytesAfter": [
+        3477090
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": true,
+      "policy": "etag-fresh",
+      "phase": "cold",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        4
+      ],
+      "allFourRunsPayloadBytes": [
+        200290
+      ],
+      "controlFirstRasterMs": [
+        10.915,
+        15.834
+      ],
+      "controlFirstRasterMedianMs": 13.3745,
+      "cacheResidentBytesBefore": [],
+      "cacheResidentBytesAfter": [
+        200290
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": true,
+      "policy": "etag-fresh",
+      "phase": "warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        7.331,
+        7.093
+      ],
+      "controlFirstRasterMedianMs": 7.212,
+      "cacheResidentBytesBefore": [
+        200290
+      ],
+      "cacheResidentBytesAfter": [
+        200290
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": true,
+      "policy": "etag-fresh",
+      "phase": "warm-late-pages",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        50
+      ],
+      "allFourRunsPayloadBytes": [
+        3211264
+      ],
+      "controlFirstRasterMs": [
+        7.269,
+        6.889
+      ],
+      "controlFirstRasterMedianMs": 7.079000000000001,
+      "cacheResidentBytesBefore": [
+        200290
+      ],
+      "cacheResidentBytesAfter": [
+        3411554
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": true,
+      "policy": "etag-must-revalidate-fresh",
+      "phase": "cold",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        4
+      ],
+      "allFourRunsPayloadBytes": [
+        200290
+      ],
+      "controlFirstRasterMs": [
+        9.964,
+        13.711
+      ],
+      "controlFirstRasterMedianMs": 11.8375,
+      "cacheResidentBytesBefore": [],
+      "cacheResidentBytesAfter": [
+        200290
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": true,
+      "policy": "etag-must-revalidate-fresh",
+      "phase": "warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        0
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        6.675,
+        7.609
+      ],
+      "controlFirstRasterMedianMs": 7.1419999999999995,
+      "cacheResidentBytesBefore": [
+        200290
+      ],
+      "cacheResidentBytesAfter": [
+        200290
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": true,
+      "policy": "etag-must-revalidate-fresh",
+      "phase": "warm-late-pages",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        49
+      ],
+      "allFourRunsPayloadBytes": [
+        3211264
+      ],
+      "controlFirstRasterMs": [
+        6.655,
+        18.142
+      ],
+      "controlFirstRasterMedianMs": 12.3985,
+      "cacheResidentBytesBefore": [
+        200290
+      ],
+      "cacheResidentBytesAfter": [
+        3411554
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": true,
+      "policy": "etag-stale",
+      "phase": "changed",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        50
+      ],
+      "allFourRunsPayloadBytes": [
+        3239035
+      ],
+      "controlFirstRasterMs": [
+        11.947,
+        11.436
+      ],
+      "controlFirstRasterMedianMs": 11.6915,
+      "cacheResidentBytesBefore": [
+        3411554
+      ],
+      "cacheResidentBytesAfter": [
+        3239035
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": true,
+      "policy": "etag-stale",
+      "phase": "changed-warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        9.036,
+        6.524
+      ],
+      "controlFirstRasterMedianMs": 7.779999999999999,
+      "cacheResidentBytesBefore": [
+        3239035
+      ],
+      "cacheResidentBytesAfter": [
+        3239035
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": true,
+      "policy": "etag-stale",
+      "phase": "cold",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        4
+      ],
+      "allFourRunsPayloadBytes": [
+        200290
+      ],
+      "controlFirstRasterMs": [
+        11.828,
+        9.533
+      ],
+      "controlFirstRasterMedianMs": 10.680499999999999,
+      "cacheResidentBytesBefore": [],
+      "cacheResidentBytesAfter": [
+        200290
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": true,
+      "policy": "etag-stale",
+      "phase": "warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        7.082,
+        6.824
+      ],
+      "controlFirstRasterMedianMs": 6.952999999999999,
+      "cacheResidentBytesBefore": [
+        200290
+      ],
+      "cacheResidentBytesAfter": [
+        200290
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": true,
+      "policy": "etag-stale",
+      "phase": "warm-late-pages",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        50
+      ],
+      "allFourRunsPayloadBytes": [
+        3211264
+      ],
+      "controlFirstRasterMs": [
+        6.837,
+        6.75
+      ],
+      "controlFirstRasterMedianMs": 6.7935,
+      "cacheResidentBytesBefore": [
+        200290
+      ],
+      "cacheResidentBytesAfter": [
+        3411554
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": true,
+      "policy": "modified-since-stale",
+      "phase": "changed",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        50
+      ],
+      "allFourRunsPayloadBytes": [
+        3239035
+      ],
+      "controlFirstRasterMs": [
+        12.925,
+        12.602
+      ],
+      "controlFirstRasterMedianMs": 12.7635,
+      "cacheResidentBytesBefore": [
+        3411554
+      ],
+      "cacheResidentBytesAfter": [
+        3239035
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": true,
+      "policy": "modified-since-stale",
+      "phase": "changed-warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        9.645,
+        6.774
+      ],
+      "controlFirstRasterMedianMs": 8.2095,
+      "cacheResidentBytesBefore": [
+        3239035
+      ],
+      "cacheResidentBytesAfter": [
+        3239035
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": true,
+      "policy": "modified-since-stale",
+      "phase": "cold",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        4
+      ],
+      "allFourRunsPayloadBytes": [
+        200290
+      ],
+      "controlFirstRasterMs": [
+        11.141,
+        9.972
+      ],
+      "controlFirstRasterMedianMs": 10.5565,
+      "cacheResidentBytesBefore": [],
+      "cacheResidentBytesAfter": [
+        200290
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": true,
+      "policy": "modified-since-stale",
+      "phase": "warm",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        1
+      ],
+      "allFourRunsPayloadBytes": [
+        0
+      ],
+      "controlFirstRasterMs": [
+        6.995,
+        7.063
+      ],
+      "controlFirstRasterMedianMs": 7.029,
+      "cacheResidentBytesBefore": [
+        200290
+      ],
+      "cacheResidentBytesAfter": [
+        200290
+      ]
+    },
+    {
+      "initialLinearized": true,
+      "progressive": true,
+      "policy": "modified-since-stale",
+      "phase": "warm-late-pages",
+      "independentControlProcesses": 2,
+      "allFourRunsRequestCounts": [
+        50
+      ],
+      "allFourRunsPayloadBytes": [
+        3211264
+      ],
+      "controlFirstRasterMs": [
+        6.916,
+        7.141
+      ],
+      "controlFirstRasterMedianMs": 7.0285,
+      "cacheResidentBytesBefore": [
+        200290
+      ],
+      "cacheResidentBytesAfter": [
+        3411554
+      ]
+    }
+  ],
+  "findings": [
+    "All 96 warm or changed-warm first-page opens transferred zero response bytes: 80 used one real validated HTTP 304 and 16 made no request under fresh must-revalidate.",
+    "Fresh max-age without must-revalidate still caused conditional requests in the locked engine; fresh max-age with must-revalidate skipped revalidation. These are observed old-engine semantics, not an application policy recommendation.",
+    "All 32 changed-resource observations fetched the new bytes with HTTP 206, and every resident cache block and rendered tested page matched the corresponding local version. Changed resources were tested after stale headers, not while a fresh cache entry remained valid.",
+    "Progressive first-page opens cached 355451 bytes in 6 GETs for the original GCC PDF and 200290 bytes in 4 GETs for its linearized version. This differs from the earlier non-progressive test and does not imply UI time-to-sharp.",
+    "Opening later pages after sparse first-page caching fetched missing blocks: 2883584 additional bytes for original GCC and 3211264 for linearized GCC, preserving cache and raster parity.",
+    "The earlier server did not implement 304. Its re-download result cannot establish that warm cached documents always re-download when servers correctly implement conditional requests."
+  ],
+  "limitations": [
+    "Four ABBA processes total; only two uninstrumented observations per exact scenario. Policies and pages are not independent process replicates.",
+    "Loopback server and 384px backend rasters; no WAN or UI latency claim. Local reference PDF was preloaded in the process; OS file cache was not cleared.",
+    "Late-page rendering and cache verification happen outside firstRasterUs; total request/byte counts include those later actions.",
+    "No disk-cache quota, credential lifetime, physical device, or long-term eviction result is implied.",
+    "No performance change to Otzaria or upgrade of its Flutter/pdfrx dependencies is included in this measurement."
+  ]
+}
