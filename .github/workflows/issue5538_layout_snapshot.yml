@@ -1,0 +1,139 @@
+name: PDF 5538 layout work counts and native parity in fork
+'on':
+  push:
+    branches:
+      - perf/5538-final-measurements-20261124
+    paths:
+      - .github/workflows/issue5538_layout_snapshot.yml
+      - tool/issue5538_ci/layout_snapshot_plan.json
+      - tool/issue5538_ci/layout_snapshot_*
+      - tool/issue5538_ci/run_layout_snapshot_probe.py
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: pdf-5538-layout-${{ github.sha }}
+  cancel-in-progress: false
+env:
+  CI: 'true'
+  FLUTTER_SUPPRESS_ANALYTICS: 'true'
+  DART_SUPPRESS_ANALYTICS: 'true'
+  PYTHONUNBUFFERED: '1'
+  PYTHONDONTWRITEBYTECODE: '1'
+jobs:
+  layout:
+    name: Linux debug JIT / pan and zoom counts / native parity
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ubuntu-24.04
+    container: debian:bookworm-slim@sha256:e67eeead736ff7bbe258ef088bff683635c561b1fcfefad0806c1df4ab49ce0e
+    timeout-minutes: 120
+    defaults:
+      run:
+        shell: bash
+    env:
+      CARGO_NET_GIT_FETCH_WITH_CLI: 'true'
+      CARGO_BUILD_JOBS: '2'
+      LIBGL_ALWAYS_SOFTWARE: '1'
+    steps:
+      - name: Prepare the verified Linux container
+        run: |
+          set -euo pipefail
+          apt-get update -y
+          apt-get install -y ca-certificates curl git unzip xz-utils python3 python3-venv \
+            build-essential clang-14 cmake ninja-build pkg-config libgtk-3-dev \
+            libxkbcommon-dev libfontconfig1 libgl1-mesa-dri libegl1
+          update-alternatives --install /usr/bin/clang clang /usr/bin/clang-14 100
+          update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-14 100
+          git config --global --add safe.directory '*'
+          {
+            echo "RUSTUP_HOME=$RUNNER_TEMP/pdf-5538-rustup"
+            echo "CARGO_HOME=$RUNNER_TEMP/pdf-5538-cargo"
+            echo 'CC=clang'
+            echo 'CXX=clang++'
+          } >> "$GITHUB_ENV"
+          mkdir -p "$RUNNER_TEMP/pdf-5538-layout-preflight"
+          cp /etc/os-release "$RUNNER_TEMP/pdf-5538-layout-preflight/os-release.txt"
+          dpkg-query -W > "$RUNNER_TEMP/pdf-5538-layout-preflight/system-packages.txt"
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: 'false'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.7
+          cache: 'false'
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Bootstrap the pinned Flutter SDK explicitly
+        run: |
+          set -euo pipefail
+          echo "$CARGO_HOME/bin" >> "$GITHUB_PATH"
+          flutter --version --machine | tee "$RUNNER_TEMP/pdf-5538-layout-preflight/flutter.json"
+          "$FLUTTER_ROOT/bin/dart" --version 2>&1 | tee "$RUNNER_TEMP/pdf-5538-layout-preflight/dart-version.log"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          sdk = json.loads((Path(os.environ['RUNNER_TEMP']) / 'pdf-5538-layout-preflight/flutter.json').read_text())
+          assert sdk['frameworkVersion'] == '3.47.7'
+          assert sdk['frameworkRevision'] == 'abaf9c523780a608bd46686fd5e53740a07077f8'
+          assert sdk['engineRevision'] == 'deb287481e3ce9468f3434937ced4240a70539ca'
+          assert sdk['dartSdkVersion'].startswith('3.13.5')
+          PY
+      - name: Validate Python contracts and the baseline-compatible target
+        run: |
+          set -euo pipefail
+          python3 -m venv "$RUNNER_TEMP/pdf-5538-layout-python"
+          "$RUNNER_TEMP/pdf-5538-layout-python/bin/python" -m pip install PyYAML==6.0.3 Pillow==13.0.0 pypdf==6.21.4
+          echo "$RUNNER_TEMP/pdf-5538-layout-python/bin" >> "$GITHUB_PATH"
+          "$RUNNER_TEMP/pdf-5538-layout-python/bin/python" -B -m unittest discover \
+            -s tool/issue5538_ci -p layout_snapshot_host_test.py -v 2>&1 | tee "$RUNNER_TEMP/pdf-5538-layout-preflight/python-tests.log"
+          while IFS= read -r revision; do
+            git fetch --no-tags https://github.com/yom-chadash/otzaria.git "$revision"
+          done < <(python3 - <<'PY'
+          import json, re
+          plan = json.load(open('tool/issue5538_ci/layout_snapshot_plan.json'))
+          assert set(plan) == {'baseline', 'candidate'}
+          assert all(re.fullmatch('[0-9a-f]{40}', value) for value in plan.values())
+          print('\n'.join(plan.values()))
+          PY
+          )
+          flutter pub get --enforce-lockfile 2>&1 | tee "$RUNNER_TEMP/pdf-5538-layout-preflight/resolve.log"
+          flutter analyze --no-pub tool/issue5538_ci/layout_snapshot_probe_test.dart \
+            tool/issue5538_ci/layout_snapshot_metrics.dart 2>&1 | tee "$RUNNER_TEMP/pdf-5538-layout-preflight/analyze.log"
+          git diff --exit-code
+      - name: Prepare the existing pinned native library and real corpus
+        run: |
+          set -euo pipefail
+          python3 tool/issue5538_ci/prepare_native_inputs.py --output "$RUNNER_TEMP/pdf-5538-layout-native"
+          python3 tool/issue5538_ci/prepare_corpus.py --output "$RUNNER_TEMP/pdf-5538-layout-corpus" \
+            --document uxlc-genesis --document mikraot-gedolot-genesis-1859 --skip-derived-stress
+      - name: Compare instrumented counts and native correctness on this host
+        run: |
+          set -euo pipefail
+          python3 tool/issue5538_ci/run_layout_snapshot_probe.py \
+            --plan tool/issue5538_ci/layout_snapshot_plan.json \
+            --corpus "$RUNNER_TEMP/pdf-5538-layout-corpus/corpus.json" \
+            --pdfium "$RUNNER_TEMP/pdf-5538-layout-native/libpdfium.so" \
+            --output "$RUNNER_TEMP/pdf-5538-layout-probe" \
+            --flutter "$FLUTTER_ROOT/bin/flutter"
+      - name: Locate complete and partial evidence
+        if: always()
+        id: evidence-root
+        run: echo "root=$RUNNER_TEMP" >> "$GITHUB_OUTPUT"
+      - name: Preserve source, count, native and parity receipts
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pdf-5538-layout-counts-native-linux-x64
+          retention-days: 90
+          if-no-files-found: warn
+          path: |
+            ${{ steps.evidence-root.outputs.root }}/pdf-5538-layout-preflight/**
+            ${{ steps.evidence-root.outputs.root }}/pdf-5538-layout-probe/**/*.json
+            ${{ steps.evidence-root.outputs.root }}/pdf-5538-layout-probe/**/*.log
+            ${{ steps.evidence-root.outputs.root }}/pdf-5538-layout-probe/**/*.png
+            ${{ steps.evidence-root.outputs.root }}/pdf-5538-layout-probe/**/*.pdf
+            ${{ steps.evidence-root.outputs.root }}/pdf-5538-layout-probe/**/*.patch
+            ${{ steps.evidence-root.outputs.root }}/pdf-5538-layout-probe/shared-observer/*.dart
+            ${{ steps.evidence-root.outputs.root }}/pdf-5538-layout-native/*.json
+            ${{ steps.evidence-root.outputs.root }}/pdf-5538-layout-corpus/*.json
