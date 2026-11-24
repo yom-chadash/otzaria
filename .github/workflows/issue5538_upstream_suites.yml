@@ -1,0 +1,71 @@
+name: PDF 5538 upstream complete suites in fork
+on:
+  push:
+    branches: [perf/5538-final-measurements-20261124]
+    paths:
+      - '.github/workflows/issue5538_upstream_suites.yml'
+      - 'tool/issue5538_ci/upstream_suites.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pdf-5538-upstream-suites-${{ github.ref }}
+  cancel-in-progress: false
+env:
+  CI: 'true'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONUNBUFFERED: '1'
+  FLUTTER_SUPPRESS_ANALYTICS: 'true'
+  DART_SUPPRESS_ANALYTICS: 'true'
+jobs:
+  suites:
+    name: Isolated upstream correctness / ${{ matrix.sdk }}
+    if: github.repository == 'yom-chadash/otzaria'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - sdk: fixed-3.50.0
+            version: '3.50.0'
+            canary: ''
+          - sdk: current-stable-canary
+            version: ''
+            canary: '--canary'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ matrix.version }}
+          cache: false
+      - name: Run complete deterministic engine, viewer, browser and Node suites
+        shell: bash
+        env:
+          CANARY_ARGUMENT: ${{ matrix.canary }}
+        run: |
+          set -euo pipefail
+          arguments=(tool/issue5538_ci/upstream_suites.py --flutter "$FLUTTER_ROOT/bin/flutter"
+            --chrome "$(command -v google-chrome)" --output "$RUNNER_TEMP/pdf-5538-upstream-suites")
+          if [ -n "$CANARY_ARGUMENT" ]; then arguments+=(--canary); fi
+          python3 "${arguments[@]}"
+      - name: Preserve every complete or partial suite and source receipt
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pdf-5538-upstream-suites-${{ matrix.sdk }}
+          retention-days: 90
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/pdf-5538-upstream-suites/*.json
+            ${{ runner.temp }}/pdf-5538-upstream-suites/*.jsonl
+            ${{ runner.temp }}/pdf-5538-upstream-suites/*.log
+            ${{ runner.temp }}/pdf-5538-upstream-suites/*.tap
+            ${{ runner.temp }}/pdf-5538-upstream-suites/*.patch
+            ${{ runner.temp }}/pdf-5538-upstream-suites/*.lock
