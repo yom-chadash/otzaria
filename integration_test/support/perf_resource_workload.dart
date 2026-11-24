@@ -67,6 +67,7 @@ import 'perf_fixture.dart';
 import 'perf_pdf_image_budget.dart';
 import 'perf_pdf_reader.dart';
 import 'perf_pdf_book_reader.dart';
+import 'pdf_navigation_trace.dart';
 import 'perf_recorder.dart';
 
 import '../../tool/perf_probe/src/probe_binding.dart';
@@ -561,6 +562,7 @@ class _Scenario {
   final Directory output;
   int iteration = 0;
   bool warmup = false;
+  TracedPdfViewerController? _navigationTrace;
   TabsBloc get tabs => context.read<TabsBloc>();
   IndexingBloc get indexing => context.read<IndexingBloc>();
 
@@ -1121,6 +1123,7 @@ class _Scenario {
   Future<void> _pdfBookView() async {
     final settings = context.read<SettingsBloc>();
     final previous = settings.state.pdfBookViewByDefault;
+    final previousControllerFactory = PdfBookScreen.diagnosticControllerFactory;
     Future<void> setBookView(bool enabled) async {
       settings.add(UpdatePdfBookViewByDefault(enabled));
       await _wait(
@@ -1141,7 +1144,19 @@ class _Scenario {
       await _measurePdfBookView();
     } finally {
       try {
-        await closeTabs();
+        try {
+          final trace = _navigationTrace;
+          _navigationTrace = null;
+          if (trace != null) {
+            await trace.saveAndStop(File(p.join(
+              output.path,
+              'navigation-${warmup ? 'warmup' : 'measured'}-$iteration.json',
+            )));
+          }
+        } finally {
+          PdfBookScreen.diagnosticControllerFactory = previousControllerFactory;
+          await closeTabs();
+        }
       } finally {
         await setBookView(previous);
       }
@@ -1160,6 +1175,48 @@ class _Scenario {
       book: PdfBook(title: perfPdfTitle, path: fixture.pdfPath),
       pageNumber: targets.initialPage,
     )..savedLayoutMode = PdfLayoutMode.bookView;
+    if (Platform.environment['PERF_NAVIGATION_TRACE'] == '1') {
+      late final TracedPdfViewerController traced;
+      traced = TracedPdfViewerController(applicationState: () {
+        final state = _pdfBloc(tab)?.state;
+        return {
+          'tabIsCurrent': identical(tabs.state.currentTab, tab),
+          'controllerOwnerIsCurrent': identical(tab.pdfViewerController, traced),
+          'bookObservation': _bookObservation(tab)?.toJson(),
+          'blocState': state?.runtimeType.toString(),
+          if (state is PdfBookLoaded) ...{
+            'blocCurrentPage': state.currentPageNumber,
+            'showLeftPane': state.showLeftPane,
+            'pinLeftPane': state.pinLeftPane,
+            'layoutMode': state.layoutMode.name,
+          },
+        };
+      });
+      traced.watchedPages.addAll({
+        targets.initialPage, targets.forwardPage, targets.backwardPage, 2,
+      });
+      if (PdfBookScreen.diagnosticControllerFactory != null) {
+        throw StateError('Another PDF diagnostic controller factory is active');
+      }
+      PdfBookScreen.diagnosticControllerFactory = (owner) {
+        if (!identical(owner, tab)) {
+          throw StateError('Diagnostic controller requested by another PDF tab');
+        }
+        traced.trace.record('owner.factory.attached');
+        return traced;
+      };
+      _navigationTrace = traced;
+      rec.write({
+        'type': 'note',
+        'name': 'pdf.navigation.diagnostic_only',
+        'warmup': warmup,
+        'iteration': iteration,
+        'diagnosticOnly': true,
+        'performanceComparable': false,
+        'reason': 'Controller call stacks, layout and future-state observers add overhead; no performance conclusion is allowed.',
+        'semantics': 'Original handlers, destinations, deadlines and Futures are unchanged.',
+      });
+    }
     Future<PdfBookRenderObservation> waitForBook(
       int page, {
       Duration timeout = const Duration(seconds: 45),
@@ -1212,6 +1269,12 @@ class _Scenario {
         },
       );
     }, details: openDetails);
+    final traced = _navigationTrace;
+    if (traced != null &&
+        (!identical(tab.pdfViewerController, traced) || !traced.isReady)) {
+      throw StateError('The real PDF viewer did not attach the diagnostic controller');
+    }
+    traced?.trace.record('owner.attachment.verified');
     final bloc = _pdfBloc(tab)!;
     final controller = tab.pdfViewerController;
     pdfCase.verifyPageCount(controller.pageCount);
@@ -1277,8 +1340,20 @@ class _Scenario {
         'input': 'applicationThumbnailNavigationHandler',
       };
       await phase('pdf.book_view.jump_$direction', () async {
+        final trace = _navigationTrace?.trace;
+        final navigationClock = trace == null ? null : (Stopwatch()..start());
+        trace?.record('application.navigation.request', {'targetPage': page});
         await navigate(page).timeout(const Duration(seconds: 45));
+        if (trace != null) {
+          details['applicationNavigationAwaitMs'] =
+              navigationClock!.elapsedMicroseconds / 1000;
+          trace.record('application.navigation.returned', {
+            'targetPage': page,
+            'applicationNavigationAwaitMs': details['applicationNavigationAwaitMs'],
+          });
+        }
         details['finalObservation'] = (await waitForBook(page)).toJson();
+        trace?.record('application.navigation.final_image', {'targetPage': page});
       }, details: details);
     }
     await phase('pdf.book_view.prepare_reversals', () async {

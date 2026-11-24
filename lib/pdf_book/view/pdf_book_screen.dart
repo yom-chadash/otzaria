@@ -156,6 +156,10 @@ export 'package:otzaria/pdf_book/utils/pdf_viewport_geometry.dart';
 export 'package:otzaria/pdf_book/utils/pdf_rendering_policy.dart';
 
 class PdfBookScreen extends StatefulWidget {
+  // Fork-only navigation diagnostic injection. The application default stays
+  // exactly PdfViewerController(); this hook must not enter a product PR.
+  static PdfViewerController Function(PdfBookTab tab)? diagnosticControllerFactory;
+
   final PdfBookTab tab;
   final bool isInCombinedView;
 
@@ -608,7 +612,9 @@ class _PdfBookScreenState extends State<PdfBookScreen>
       widget.tab.pageNumber = 1;
     }
     _initialPageNumber = widget.tab.pageNumber;
-    pdfController = PdfViewerController();
+    pdfController =
+        PdfBookScreen.diagnosticControllerFactory?.call(widget.tab) ??
+        PdfViewerController();
     widget.tab.pdfViewerController = pdfController;
     _searchIndexRestorer = PdfSearchIndexRestorer(
       widget.tab.pdfSearchCurrentMatchIndex,
