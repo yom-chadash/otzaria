@@ -10,7 +10,7 @@ permissions:
   contents: read
   actions: read
 concurrency:
-  group: pdf-5538-apple-fallback-${{ github.ref }}
+  group: pdf-5538-apple-fallback-${{ github.ref }}-${{ github.sha }}
   cancel-in-progress: false
 env:
   CI: 'true'
@@ -21,7 +21,7 @@ env:
 jobs:
   release:
     name: macOS Intel / release / balanced real corpus
-    if: github.repository == 'yom-chadash/otzaria'
+    if: github.repository == 'yom-chadash/otzaria' && github.event_name == 'workflow_dispatch'
     strategy:
       fail-fast: false
       matrix:
@@ -138,12 +138,24 @@ jobs:
     runs-on: macos-15-intel
     timeout-minutes: 100
     env:
+      DEVELOPER_DIR: /Applications/Xcode_26.1.1.app/Contents/Developer
       CARGO_NET_GIT_FETCH_WITH_CLI: 'true'
       GH_TOKEN: ${{ github.token }}
     steps:
     - uses: actions/checkout@v7.0.1
       with:
         persist-credentials: 'false'
+    - name: Require the Xcode SDK declared by locked device_info_plus
+      shell: bash
+      run: |
+        set -euo pipefail
+        test -d "$DEVELOPER_DIR"
+        xcodebuild -version
+        test "$(xcodebuild -version | sed -n '1p')" = 'Xcode 26.1.1'
+        sdk_version="$(xcrun --sdk iphonesimulator --show-sdk-version)"
+        printf 'iOS Simulator SDK: %s\n' "$sdk_version"
+        test "$sdk_version" = '26.1'
+        xcrun --sdk iphonesimulator --show-sdk-path
     - uses: subosito/flutter-action@v2
       with:
         channel: stable
