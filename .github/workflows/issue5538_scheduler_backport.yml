@@ -1,0 +1,63 @@
+name: PDF 5538 compatible scheduler A-B in fork
+on:
+  push:
+    branches: [perf/5538-final-measurements-20261124]
+    paths:
+      - '.github/workflows/issue5538_scheduler_backport.yml'
+      - 'tool/issue5538_ci/internal_scheduler_*'
+      - 'tool/issue5538_ci/test_internal_scheduler_run.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pdf-5538-scheduler-${{ github.sha }}
+  cancel-in-progress: false
+env:
+  CI: 'true'
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONUNBUFFERED: '1'
+  PYTHONUTF8: '1'
+  FLUTTER_SUPPRESS_ANALYTICS: 'true'
+  DART_SUPPRESS_ANALYTICS: 'true'
+jobs:
+  scheduler:
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.13'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.47.7'
+          cache: false
+      - name: Analyze the complete fork on the locked application SDK
+        run: |
+          flutter pub get --enforce-lockfile
+          flutter analyze --no-pub
+      - name: Validate measurement identity and workload contracts
+        run: python3 -B -m unittest discover -s tool/issue5538_ci -p test_internal_scheduler_run.py
+      - name: Compare pinned S02 baseline and scheduler-only candidate on Dart 3.13.5
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -B tool/issue5538_ci/internal_scheduler_run.py \
+            --flutter "$FLUTTER_ROOT/bin/flutter" \
+            --output "$RUNNER_TEMP/pdf-5538-scheduler"
+      - name: Preserve all source, correctness, timing and separate counter evidence
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pdf-5538-compatible-scheduler-linux-x64
+          retention-days: 90
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/pdf-5538-scheduler/receipts/**
+            ${{ runner.temp }}/pdf-5538-scheduler/samples/**
+            ${{ runner.temp }}/pdf-5538-scheduler/summary.json
+            ${{ runner.temp }}/pdf-5538-scheduler/failure.json
