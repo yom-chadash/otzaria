@@ -1,0 +1,53 @@
+name: PDF 5538 fork measurements
+
+on:
+  push:
+    branches: [perf/5538-final-measurements-20261124]
+    paths:
+      - '.github/workflows/issue5538_fork_measurements.yml'
+      - 'tool/issue5538_ci/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pdf-5538-fork-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    name: Fork runner / ${{ matrix.platform }}
+    if: github.repository == 'yom-chadash/otzaria'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux
+            runner: ubuntu-24.04
+          - platform: windows
+            runner: windows-2025
+          - platform: macos
+            runner: macos-latest
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 10
+    env:
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.13'
+      - name: Verify the fork, source and runner
+        shell: bash
+        run: python tool/issue5538_ci/preflight.py --output "$RUNNER_TEMP/pdf-5538-preflight.json"
+      - name: Preserve the preflight receipt
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pdf-5538-preflight-${{ matrix.platform }}
+          retention-days: 90
+          if-no-files-found: error
+          path: ${{ runner.temp }}/pdf-5538-preflight.json
