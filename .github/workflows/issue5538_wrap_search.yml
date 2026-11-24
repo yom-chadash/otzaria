@@ -1,0 +1,135 @@
+name: PDF 5538 actual application wrap search component in fork
+'on':
+  push:
+    branches:
+    - perf/5538-final-measurements-20261124
+    paths:
+    - .github/workflows/issue5538_wrap_search.yml
+    - tool/issue5538_ci/wrap_search_*
+    - tool/issue5538_ci/test_wrap_search.py
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: pdf-5538-wrap-search-${{ github.sha }}
+  cancel-in-progress: false
+env:
+  CI: 'true'
+  FLUTTER_SUPPRESS_ANALYTICS: 'true'
+  DART_SUPPRESS_ANALYTICS: 'true'
+  PYTHONUNBUFFERED: '1'
+  PYTHONDONTWRITEBYTECODE: '1'
+jobs:
+  linux_profile:
+    name: Locked session / UXLC and MG / append, late start, redirect
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ubuntu-24.04
+    container: debian:bookworm-slim
+    timeout-minutes: 150
+    defaults:
+      run:
+        shell: bash
+    env:
+      CARGO_NET_GIT_FETCH_WITH_CLI: 'true'
+      CARGO_BUILD_JOBS: '2'
+    steps:
+    - name: Prepare the supported Linux build container
+      run: |
+        set -euo pipefail
+        apt-get update -y
+        apt-get install -y ca-certificates curl git jq unzip xz-utils zstd python3 nodejs \
+          build-essential clang-14 cmake libblkid1 libcurl4-openssl-dev libglib2.0-dev \
+          libgtk-3-dev liblzma5 liblzma-dev libsecret-1-dev libsoup-3.0-dev \
+          libwebkit2gtk-4.1-dev libxkbcommon-dev ninja-build openjdk-17-jdk-headless \
+          pkg-config xvfb xauth binutils dbus dbus-x11 openbox wmctrl x11-utils \
+          x11-xserver-utils libgl1-mesa-dri libegl1 libglx-mesa0 mesa-utils
+        update-alternatives --install /usr/bin/clang clang /usr/bin/clang-14 100
+        update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-14 100
+        git config --global --add safe.directory '*'
+        {
+          echo "RUSTUP_HOME=$RUNNER_TEMP/pdf-5538-rustup"
+          echo "CARGO_HOME=$RUNNER_TEMP/pdf-5538-cargo"
+          echo 'JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64'
+          echo 'WPE_SDK=/opt/wpe-sdk'
+          echo 'PKG_CONFIG_PATH=/opt/wpe-sdk/lib/pkgconfig'
+          echo 'LD_LIBRARY_PATH=/opt/wpe-sdk/lib'
+          echo 'LIBRARY_PATH=/opt/wpe-sdk/lib'
+          echo 'CC=clang'
+          echo 'CXX=clang++'
+          echo 'CFLAGS=-Wno-error=unknown-warning-option'
+          echo 'CXXFLAGS=-Wno-error=unknown-warning-option'
+          echo 'LIBGL_ALWAYS_SOFTWARE=1'
+        } >> "$GITHUB_ENV"
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: 'false'
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        flutter-version: 3.47.7
+        cache: 'false'
+    - name: Bootstrap the pinned Flutter tool before strict JSON identity
+      run: |
+        set -euo pipefail
+        flutter --version
+    - uses: dtolnay/rust-toolchain@stable
+    - uses: actions/download-artifact@v8.0.2
+      with:
+        name: pdf-5538-pinned-corpus
+        path: ${{ runner.temp }}/pdf-5538-inputs
+        run-id: 45392015952
+        repository: yom-chadash/otzaria
+        github-token: ${{ github.token }}
+    - name: Install the pinned Linux WPE runtime
+      env:
+        WPE_RUNTIME_SHA256: ca7e706c0ec2f66623fede2c369e3e13339448843e125f2ccd1553f4a3c4bcaf
+      run: |
+        set -euo pipefail
+        echo "$CARGO_HOME/bin" >> "$GITHUB_PATH"
+        asset=wpe-runtime-2.48.7-linux-x86_64.tar.zst
+        base=https://github.com/Otzaria/otzaria-wpe-runtime/releases/download/wpe-2.48.7-print-to-pdf
+        curl -fSL --retry 3 --retry-delay 5 --max-time 300 -o "$RUNNER_TEMP/$asset" "$base/$asset"
+        printf '%s  %s\n' "$WPE_RUNTIME_SHA256" "$RUNNER_TEMP/$asset" | sha256sum -c -
+        tar -C /opt -I zstd -xf "$RUNNER_TEMP/$asset"
+        pkg-config --print-errors --exists wpe-webkit-2.0 wpe-platform-2.0 wpe-platform-headless-2.0 wpe-1.0
+    - name: Validate wrap evidence and source instrumentation contracts
+      run: |
+        set -euo pipefail
+        python3 -B -m unittest tool.issue5538_ci.test_wrap_search -v
+    - name: Prepare verified native input and run 24 isolated component processes
+      run: |
+        set -euo pipefail
+        python3 -B tool/issue5538_ci/prepare_native_inputs.py --output "$RUNNER_TEMP/pdf-5538-wrap-native"
+        mkdir -p "$RUNNER_TEMP/pdf-5538-wrap-session/runtime"
+        chmod 700 "$RUNNER_TEMP/pdf-5538-wrap-session/runtime"
+        export XDG_RUNTIME_DIR="$RUNNER_TEMP/pdf-5538-wrap-session/runtime"
+        export XDG_SESSION_TYPE=x11 GDK_BACKEND=x11
+        xvfb-run --auto-servernum --error-file="$RUNNER_TEMP/pdf-5538-wrap-session/xvfb.log" \
+          --server-args='-screen 0 1000x800x24 -dpi 96 -nolisten tcp' \
+          dbus-run-session -- python3 -B tool/issue5538_ci/wrap_search_run.py \
+            --corpus "$RUNNER_TEMP/pdf-5538-inputs/pdf-5538-corpus/corpus.json" \
+            --pdfium "$RUNNER_TEMP/pdf-5538-wrap-native/libpdfium.so" \
+            --output "$RUNNER_TEMP/pdf-5538-wrap-search"
+    - name: Locate evidence inside the active runner environment
+      if: always()
+      id: evidence-root
+      run: echo "root=$RUNNER_TEMP" >> "$GITHUB_OUTPUT"
+    - name: Preserve completed and partial observations without builds or corpus bytes
+      if: always()
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: pdf-5538-wrap-search-linux-profile
+        retention-days: 90
+        if-no-files-found: warn
+        path: |
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-wrap-search/*.json
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-wrap-search/*.log
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-wrap-search/builds/*/*.json
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-wrap-search/builds/*/*.log
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-wrap-search/builds/*/*.patch
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-wrap-search/runs/**/*.json
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-wrap-search/runs/**/*.jsonl
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-wrap-search/runs/**/*.log
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-wrap-native/*.json
+          ${{ steps.evidence-root.outputs.root }}/pdf-5538-wrap-session/*.log
