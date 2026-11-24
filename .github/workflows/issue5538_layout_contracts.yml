@@ -1,0 +1,109 @@
+name: PDF 5538 compatible layout snapshot and font engine gates
+'on':
+  push:
+    branches:
+    - perf/5538-final-measurements-20261124
+    paths:
+    - .github/workflows/issue5538_layout_contracts.yml
+  workflow_dispatch: null
+permissions:
+  contents: read
+concurrency:
+  group: pdf-5538-layout-contracts-${{ github.sha }}
+  cancel-in-progress: false
+env:
+  CI: 'true'
+  FLUTTER_SUPPRESS_ANALYTICS: 'true'
+  DART_SUPPRESS_ANALYTICS: 'true'
+jobs:
+  compatible_pdf:
+    name: Compatible viewer and engine / locked SDK / ${{ matrix.os }}
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+        - ubuntu-24.04
+        - windows-2022
+        - macos-15-intel
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v7.0.1
+      with:
+        persist-credentials: false
+    - name: Normalize pinned dependency checkouts
+      run: 'git config --global core.longpaths true
+
+        git config --global core.autocrlf false
+
+        git config --global core.eol lf
+
+        '
+    - uses: ./.github/actions/setup-flutter
+      with:
+        flutter-version: 3.47.7
+    - uses: actions/checkout@v7.0.1
+      with:
+        repository: yom-chadash/pdfrx
+        ref: c0107a62ba1860c0803818dd642692b1b67e3b02
+        path: engine-source
+        persist-credentials: false
+    - name: Resolve old SDK and record exact package source
+      working-directory: engine-source
+      run: 'set -euo pipefail
+
+        flutter --version
+
+        flutter --version --machine > "$RUNNER_TEMP/pdf-layout-engine-sdk.json"
+
+        git rev-parse HEAD > "$RUNNER_TEMP/pdf-layout-engine-source.txt"
+
+        flutter pub get
+
+        cp pubspec.lock "$RUNNER_TEMP/pdf-layout-engine-pubspec.lock"
+
+        cp .dart_tool/package_config.json "$RUNNER_TEMP/pdf-layout-engine-package-config.json"
+
+        git diff --exit-code -- packages/pdfrx/pubspec.yaml packages/pdfrx_engine/pubspec.yaml
+
+        '
+    - name: Analyze the compatible engine and complete viewer package
+      working-directory: engine-source
+      run: 'set -euo pipefail
+
+        dart analyze packages/pdfrx_engine packages/pdfrx 2>&1 | tee "$RUNNER_TEMP/pdf-layout-engine-analyze.log"
+
+        '
+    - name: Test native ownership and single-flight font loading
+      working-directory: engine-source/packages/pdfrx_engine
+      run: "set -euo pipefail\ndart test --concurrency=1 --reporter expanded --file-reporter \"json:$RUNNER_TEMP/pdf-layout-engine-tests.jsonl\"\
+        \ \\\n  test/pdf_font_resolver_test.dart test/pdf_document_test.dart 2>&1 | tee \"$RUNNER_TEMP/pdf-layout-engine-tests.log\"\
+        \n"
+    - name: Preserve mutable layouts and verify immutable snapshot lifecycle
+      working-directory: engine-source/packages/pdfrx
+      run: "set -euo pipefail\nflutter test --no-pub --concurrency=1 --reporter expanded --file-reporter \"json:$RUNNER_TEMP/pdf-layout-engine-viewer-tests.jsonl\"\
+        \ \\\n  test/pdf_page_layout_snapshot_test.dart test/pdf_viewer_test.dart test/page_layout_index_test.dart 2>&1 |\
+        \ tee \"$RUNNER_TEMP/pdf-layout-engine-viewer-tests.log\"\ngit diff --exit-code -- lib test pubspec.yaml\n"
+    - name: Preserve engine validation evidence
+      if: always()
+      uses: actions/upload-artifact@v7.0.2
+      with:
+        name: pdf-5538-layout-engine-${{ runner.os }}
+        retention-days: 90
+        if-no-files-found: error
+        path: '${{ runner.temp }}/pdf-layout-engine-*.json
+
+          ${{ runner.temp }}/pdf-layout-engine-*.jsonl
+
+          ${{ runner.temp }}/pdf-layout-engine-*.txt
+
+          ${{ runner.temp }}/pdf-layout-engine-*.log
+
+          ${{ runner.temp }}/pdf-layout-engine-*.lock
+
+          '
+
