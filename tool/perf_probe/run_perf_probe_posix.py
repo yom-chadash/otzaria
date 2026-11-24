@@ -20,10 +20,12 @@ import uuid
 
 sys.dont_write_bytecode = True
 if __package__:
+    from . import build_receipt
     from .posix_engine import BundledFlutterEngine
     from .posix_resources import process_reader
     from .probe_binding import binding_identity, validate_binding_identity, validate_framework_scheduler
 else:
+    import build_receipt
     from posix_engine import BundledFlutterEngine
     from posix_resources import process_reader
     from probe_binding import binding_identity, validate_binding_identity, validate_framework_scheduler
@@ -452,8 +454,22 @@ def run(args, *, repository=REPOSITORY):
                 "GDK_BACKEND", "XDG_SESSION_TYPE", "LIBGL_ALWAYS_SOFTWARE", "GDK_SCALE", "GDK_DPI_SCALE")},
             "unavailable": ["private commit", "handles", "GPU allocation", "descendant CPU/RSS"],
         }
-        run_logged(["flutter", "pub", "get", "--enforce-lockfile"], output / "pub-get.log",
-                   cwd=repository, timeout=args.build_timeout_seconds)
+        build_policy = getattr(args, "build_policy", "none")
+        frozen_path = getattr(args, "build_receipt", None)
+        frozen_sha = getattr(args, "build_receipt_sha256", "")
+        frozen_spec, before_build = None, None
+        if build_policy != "reuse":
+            run_logged(["flutter", "pub", "get", "--enforce-lockfile"], output / "pub-get.log",
+                       cwd=repository, timeout=args.build_timeout_seconds)
+        if build_policy != "none":
+            frozen_spec = build_receipt.specification(repository, system, args.mode, args.binding_mode)
+            if build_policy == "create":
+                before_build = build_receipt.prepare(frozen_spec, frozen_path)
+                build_receipt.write_new(output / "build-inputs-before.json", before_build)
+            else:
+                executable = binary_path(repository, system, args.mode)
+                proof = build_receipt.verify(frozen_spec, frozen_path, frozen_sha, executable)
+                build_receipt.write_new(output / "build-proof-before-case.json", proof)
         pdf_case = ""
         if args.pdf_case:
             pdf_case = output / "pdf-case.json"
@@ -462,10 +478,14 @@ def run(args, *, repository=REPOSITORY):
         source_provenance(repository, manifest, "beforeBuild")
         write_json(output / "manifest.json", manifest)
         try:
-            run_logged(["flutter", "build", system, f"--{args.mode}", "--no-pub", f"--target={probe_binding['probeTarget']}",
-                        "--dart-define=SENTRY_DSN=",
-                        "--dart-define=INTEGRATION_TEST_SHOULD_REPORT_RESULTS_TO_NATIVE=false"],
-                       output / "build.log", cwd=repository, timeout=args.build_timeout_seconds)
+            if build_policy != "reuse":
+                command = ([before_build["inputs"]["command"]["executable"], *before_build["inputs"]["command"]["arguments"]]
+                           if before_build else ["flutter", "build", system, f"--{args.mode}", "--no-pub", f"--target={probe_binding['probeTarget']}",
+                                                 "--dart-define=SENTRY_DSN=", "--dart-define=INTEGRATION_TEST_SHOULD_REPORT_RESULTS_TO_NATIVE=false"])
+                run_logged(command, output / "build.log", cwd=repository, timeout=args.build_timeout_seconds)
+            else:
+                write_json(output / "build-reuse.json", {"policy": "reuse", "pubGetExecuted": False,
+                                                       "buildExecuted": False, "receiptSha256": frozen_sha})
         finally:
             source_provenance(repository, manifest, "afterBuild")
             write_json(output / "manifest.json", manifest)
@@ -476,13 +496,35 @@ def run(args, *, repository=REPOSITORY):
         engine = BundledFlutterEngine(executable, system, args.mode)
         manifest["engineIdentity"] = engine.identity
         manifest["engineEvidence"] = {"canonicalPath": str(engine.path), "verifiedAfterRuns": False}
+        if frozen_spec is not None:
+            if build_policy == "create":
+                frozen_sha = build_receipt.freeze(frozen_spec, frozen_path, before_build, executable)
+            proof = build_receipt.verify(frozen_spec, frozen_path, frozen_sha, executable)
+            build_receipt.write_new(output / "build-proof-ready.json", proof)
+            with (output / "build-receipt.snapshot.json").open("xb") as target:
+                target.write(frozen_path.read_bytes())
+            if sha256_file(output / "build-receipt.snapshot.json") != frozen_sha:
+                raise RuntimeError("Frozen build receipt changed while retaining its evidence")
+            manifest["buildReceipt"] = {"policy": build_policy, "path": str(frozen_path),
+                                        "sha256": frozen_sha, "sourceCommit": proof["sourceCommit"],
+                                        "bundleManifestSha256": proof["bundleManifestSha256"],
+                                        "aotPayload": proof["aotPayload"], "verificationOverlapsAppSampling": False}
         write_json(output / "manifest.json", manifest)
         fixture = None
         for directory, data, index, preparation, measured in launch_plan(output, args):
             if measured:
                 launches.append(directory)
+            if frozen_spec is not None:
+                proof = build_receipt.verify(frozen_spec, frozen_path, frozen_sha, executable)
+                build_receipt.write_new(output / f"build-proof-{directory.name}-before.json", proof)
             actual_fixture = invoke_launch(executable, directory, data, args, reader, index=index,
                                            preparation=preparation, pdf_case=pdf_case, engine=engine)
+            # invoke_launch returns only after owned process/group cleanup and
+            # resource collection. A failed launch does not trigger concurrent
+            # hashing while its termination might be unproven.
+            if frozen_spec is not None:
+                proof = build_receipt.verify(frozen_spec, frozen_path, frozen_sha, executable)
+                build_receipt.write_new(output / f"build-proof-{directory.name}-after.json", proof)
             if fixture is not None and fixture != actual_fixture:
                 raise RuntimeError("Fixture identity changed across preparation/launches")
             fixture = actual_fixture
@@ -542,8 +584,19 @@ def arguments(argv=None):
     parser.add_argument("--hardware-id", default="")
     parser.add_argument("--timeout-seconds", type=int, default=1200)
     parser.add_argument("--build-timeout-seconds", type=int, default=2400)
+    parser.add_argument("--build-policy", choices=("none", "create", "reuse"), default="none")
+    parser.add_argument("--build-receipt", type=Path)
+    parser.add_argument("--build-receipt-sha256", default="")
     parser.add_argument("--display-mode", choices=("desktop", "xvfb"), default="desktop")
     args = parser.parse_args(argv)
+    if (args.build_policy == "none") != (args.build_receipt is None):
+        parser.error("--build-receipt and an explicit create/reuse policy are required together")
+    if args.build_policy != "none" and args.binding_mode != "framework":
+        parser.error("Build receipt reuse is restricted to the native framework PDF target")
+    if args.build_policy == "reuse" and re.fullmatch(r"[0-9a-f]{64}", args.build_receipt_sha256) is None:
+        parser.error("Reuse requires the pinned --build-receipt-sha256")
+    if args.build_policy != "reuse" and args.build_receipt_sha256:
+        parser.error("Only reuse accepts a prior receipt SHA-256")
     if args.binding_mode == "framework" and args.scenario_set == "all":
         parser.error("--binding-mode framework accepts pdf-reader, pdf-book-view or pdf-multi-window")
     if args.scenario_set == "pdf-multi-window" and args.binding_mode != "framework":
@@ -556,7 +609,7 @@ def arguments(argv=None):
         parser.error("--display-mode xvfb is Linux-only")
     if args.output is None:
         args.output = REPOSITORY / "build/perf_probe" / ("run_" + uuid.uuid4().hex[:12])
-    for key in ("output", "baseline", "pdf_case"):
+    for key in ("output", "baseline", "pdf_case", "build_receipt"):
         value = getattr(args, key)
         if value is not None:
             setattr(args, key, value.absolute())

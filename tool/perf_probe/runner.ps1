@@ -7,6 +7,10 @@ param(
   [ValidateSet('integration', 'framework')][string]$BindingMode = 'integration',
   [string]$PdfCase = '',
   [string]$ExpectedEngineSha256 = '',
+  [ValidateSet('none', 'create', 'reuse')][string]$BuildPolicy = 'none',
+  [string]$BuildReceipt = '',
+  [string]$BuildReceiptSha256 = '',
+  [string]$BuildReceiptPython = '',
   [ValidateRange(0, 10)][int]$Warmup = 1,
   [ValidateRange(1, 100)][int]$Repetitions = 5,
   [ValidateRange(1, 30)][int]$Launches = 3,
@@ -32,9 +36,24 @@ if ($ExpectedEngineSha256 -and ($Mode -ne 'release' -or $ExpectedEngineSha256 -n
   throw 'ExpectedEngineSha256 requires a release build and a SHA-256 digest.'
 }
 if (-not $IsWindows) { throw 'The automated desktop runner requires Windows. See README.md for other platforms.' }
+if (($BuildPolicy -eq 'none') -ne (-not [bool]$BuildReceipt)) {
+  throw 'BuildReceipt and an explicit create/reuse policy are required together.'
+}
+if ($BuildPolicy -ne 'none' -and ($BindingMode -ne 'framework' -or $Mode -eq 'debug')) {
+  throw 'Build reuse requires the native framework PDF target in profile or release mode.'
+}
+if ($BuildPolicy -eq 'reuse' -and $BuildReceiptSha256 -notmatch '^[0-9a-f]{64}$') {
+  throw 'Reuse requires the exact frozen BuildReceiptSha256.'
+}
+if ($BuildPolicy -ne 'reuse' -and $BuildReceiptSha256) { throw 'Only reuse accepts a prior receipt SHA.' }
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 if ($Baseline) { $Baseline = [IO.Path]::GetFullPath($Baseline, $PWD.Path) }
 if ($PdfCase) { $PdfCase = [IO.Path]::GetFullPath($PdfCase, $PWD.Path) }
+if ($BuildReceipt) { $BuildReceipt = [IO.Path]::GetFullPath($BuildReceipt, $PWD.Path) }
+if ($BuildPolicy -ne 'none') {
+  if (-not $BuildReceiptPython) { $BuildReceiptPython = (Get-Command python -CommandType Application).Source }
+  $BuildReceiptPython = (Resolve-Path -LiteralPath $BuildReceiptPython).Path
+}
 $pdfCaseSnapshot = ''
 $runDir = if ($OutputDirectory) { [IO.Path]::GetFullPath($OutputDirectory, $PWD.Path) } else {
   Join-Path $repo ("build/perf_probe/run_" + (Get-Date -Format 'yyyyMMdd_HHmmss') + '_' + [guid]::NewGuid().ToString('N').Substring(0, 8))
@@ -47,6 +66,20 @@ New-Item -ItemType Directory -Path $runDir | Out-Null
 
 function Write-PerfJson([string]$Path, $Value) {
   $Value | ConvertTo-Json -Depth 30 | Set-Content -LiteralPath $Path -Encoding utf8
+}
+
+function Invoke-PerfBuildReceipt([string]$Action, [string]$ProofPath,
+                                 [string]$Executable = '', [string]$Before = '') {
+  $receiptArguments = @('-B', (Join-Path $PSScriptRoot 'build_receipt.py'), $Action,
+    '--repository', $repo, '--platform', 'windows', '--mode', $Mode,
+    '--binding-mode', $BindingMode, '--receipt', $BuildReceipt, '--output', $ProofPath)
+  if ($ExpectedEngineSha256) { $receiptArguments += @('--expected-engine-sha256', $ExpectedEngineSha256.ToLowerInvariant()) }
+  if ($Executable) { $receiptArguments += @('--executable', $Executable) }
+  if ($Before) { $receiptArguments += @('--before', $Before) }
+  if ($Action -eq 'verify') { $receiptArguments += @('--receipt-sha256', $BuildReceiptSha256) }
+  & $BuildReceiptPython @receiptArguments | Write-Host
+  if ($LASTEXITCODE -ne 0) { throw "Frozen build $Action failed; rebuild is forbidden." }
+  return (Get-Content -LiteralPath $ProofPath -Raw | ConvertFrom-Json)
 }
 
 function Merge-PerfOutputs([string[]]$Directories) {
@@ -115,6 +148,9 @@ function Invoke-PerfLaunch([string]$Executable, [string]$Directory,
   $sampler = $null
   $process = $null
   try {
+    if ($BuildPolicy -ne 'none') {
+      [void](Invoke-PerfBuildReceipt 'verify' (Join-Path $Directory 'build-proof-before.json') $Executable)
+    }
     Assert-PerfWindowsEngineUnchanged -Executable $Executable -Identity $manifest.engineIdentity
     $process = Start-Process -FilePath $Executable -WorkingDirectory (Split-Path $Executable) `
       -PassThru -RedirectStandardOutput (Join-Path $Directory 'stdout.log') `
@@ -175,11 +211,19 @@ function Invoke-PerfLaunch([string]$Executable, [string]$Directory,
         try {
           if (-not $process.HasExited) {
             [void]$process.CloseMainWindow()
-            if (-not $process.WaitForExit(5000)) { $process.Kill($true); [void]$process.WaitForExit(5000) }
+            if (-not $process.WaitForExit(5000)) {
+              $process.Kill($true)
+              if (-not $process.WaitForExit(5000)) { throw 'Owned app did not exit; post-run hashing is unsafe.' }
+            }
           }
         } finally { $process.Dispose() }
       }
     }
+  }
+  # Both the owned process and its resource sampler have ended. Do not hash
+  # concurrently with app actions; failure paths above never reach this proof.
+  if ($BuildPolicy -ne 'none') {
+    [void](Invoke-PerfBuildReceipt 'verify' (Join-Path $Directory 'build-proof-after.json') $Executable)
   }
   if ($PreparationOnly) { return }
   $statusPath = "$csv.status.json"
@@ -194,12 +238,9 @@ $launchDirs = [Collections.Generic.List[string]]::new()
 $manifest = @{}
 Push-Location $repo
 try {
-  & flutter pub get --enforce-lockfile
-  if ($LASTEXITCODE -ne 0) { throw 'Pinned dependency resolution failed.' }
-  if ($PdfCase) {
-    $pdfCaseSnapshot = Join-Path $runDir 'pdf-case.json'
-    & dart tool/perf_probe/prepare_pdf_case.dart $PdfCase $pdfCaseSnapshot
-    if ($LASTEXITCODE -ne 0) { throw 'PDF case validation failed.' }
+  if ($BuildPolicy -ne 'reuse') {
+    & flutter pub get --enforce-lockfile
+    if ($LASTEXITCODE -ne 0) { throw 'Pinned dependency resolution failed.' }
   }
   $commit = (& git rev-parse HEAD).Trim()
   if ($LASTEXITCODE -ne 0) { throw 'Cannot identify source commit.' }
@@ -228,24 +269,65 @@ try {
     coldDefinition = 'fresh application data; OS file cache is not flushed'
     startupOrigin = 'Dart main; fixture preparation and native pre-main are excluded'
   }
+  $modeFolder = (Get-Culture).TextInfo.ToTitleCase($Mode)
+  $executable = Join-Path $repo "build/windows/x64/runner/$modeFolder/otzaria.exe"
+  $beforeBuild = $null
+  $beforeBuildPath = Join-Path $runDir 'build-inputs-before.json'
+  if ($BuildPolicy -eq 'create') {
+    $beforeBuild = Invoke-PerfBuildReceipt 'prepare' $beforeBuildPath
+  } elseif ($BuildPolicy -eq 'reuse') {
+    [void](Invoke-PerfBuildReceipt 'verify' (Join-Path $runDir 'build-proof-before-case.json') $executable)
+  }
+  if ($PdfCase) {
+    $pdfCaseSnapshot = Join-Path $runDir 'pdf-case.json'
+    & dart tool/perf_probe/prepare_pdf_case.dart $PdfCase $pdfCaseSnapshot
+    if ($LASTEXITCODE -ne 0) { throw 'PDF case validation failed.' }
+  }
   Add-PerfSourceProvenance $repo $manifest 'beforeBuild'
   Write-PerfJson (Join-Path $runDir 'manifest.json') $manifest
   try {
-    & flutter build windows "--$Mode" --no-pub "--target=$($bindingIdentity.probeTarget)" `
-      --dart-define=SENTRY_DSN= --dart-define=INTEGRATION_TEST_SHOULD_REPORT_RESULTS_TO_NATIVE=false `
-      2>&1 | Tee-Object -FilePath (Join-Path $runDir 'build.log')
-    $buildExitCode = $LASTEXITCODE
+    $buildExitCode = 0
+    if ($BuildPolicy -eq 'reuse') {
+      Write-PerfJson (Join-Path $runDir 'build-reuse.json') @{
+        policy = 'reuse'; pubGetExecuted = $false; buildExecuted = $false; receiptSha256 = $BuildReceiptSha256
+      }
+    } else {
+      $buildArguments = @('build', 'windows', "--$Mode", '--no-pub', "--target=$($bindingIdentity.probeTarget)",
+        '--dart-define=SENTRY_DSN=', '--dart-define=INTEGRATION_TEST_SHOULD_REPORT_RESULTS_TO_NATIVE=false')
+      $buildExecutable = 'flutter'
+      if ($null -ne $beforeBuild) {
+        $buildArguments = @($beforeBuild.inputs.command.arguments)
+        $buildExecutable = $beforeBuild.inputs.command.executable
+      }
+      & $buildExecutable @buildArguments 2>&1 | Tee-Object -FilePath (Join-Path $runDir 'build.log')
+      $buildExitCode = $LASTEXITCODE
+    }
   } finally {
     Add-PerfSourceProvenance $repo $manifest 'afterBuild'
     Write-PerfJson (Join-Path $runDir 'manifest.json') $manifest
   }
   if ($buildExitCode -ne 0) { throw "Flutter build failed ($buildExitCode)." }
   if ((& git rev-parse HEAD).Trim() -ne $commit) { throw 'HEAD changed while building; rerun on a stable checkout.' }
-  $modeFolder = (Get-Culture).TextInfo.ToTitleCase($Mode)
-  $executable = Join-Path $repo "build/windows/x64/runner/$modeFolder/otzaria.exe"
   if (-not (Test-Path -LiteralPath $executable)) { throw "Built executable not found: $executable" }
   $manifest.binarySha256 = (Get-FileHash -LiteralPath $executable -Algorithm SHA256).Hash.ToLowerInvariant()
   $manifest.engineIdentity = Get-PerfWindowsEngineIdentity -Executable $executable -Mode $Mode -EngineRevision $sdk.engineRevision -ExpectedSha256 $ExpectedEngineSha256
+  if ($BuildPolicy -ne 'none') {
+    if ($BuildPolicy -eq 'create') {
+      $createdBuild = Invoke-PerfBuildReceipt 'create' (Join-Path $runDir 'build-proof-created.json') $executable $beforeBuildPath
+      $BuildReceiptSha256 = $createdBuild.receiptSha256
+    }
+    $buildProof = Invoke-PerfBuildReceipt 'verify' (Join-Path $runDir 'build-proof-ready.json') $executable
+    $buildSnapshotPath = Join-Path $runDir 'build-receipt.snapshot.json'
+    [IO.File]::Copy($BuildReceipt, $buildSnapshotPath, $false)
+    if ((Get-FileHash -LiteralPath $buildSnapshotPath -Algorithm SHA256).Hash.ToLowerInvariant() -ne $BuildReceiptSha256) {
+      throw 'Frozen build receipt changed while retaining its evidence.'
+    }
+    $manifest.buildReceipt = @{
+      policy = $BuildPolicy; path = $BuildReceipt; sha256 = $BuildReceiptSha256
+      sourceCommit = $buildProof.sourceCommit; bundleManifestSha256 = $buildProof.bundleManifestSha256
+      aotPayload = $buildProof.aotPayload; verificationOverlapsAppSampling = $false
+    }
+  }
   Write-PerfJson (Join-Path $runDir 'manifest.json') $manifest
   $warmData = Join-Path $runDir 'data/warm'
   if ($CacheState -eq 'warm') {

@@ -210,7 +210,16 @@ def validate_reports(reports: dict, commits: dict, settings: dict, hardware_id: 
     return comparison
 
 
-def native_arguments(checkout, args, output, case, hardware_id, system, pwsh=None):
+def native_arguments(checkout, args, output, case, hardware_id, system, pwsh=None, *,
+                     build_receipt=None, build_policy=None, build_receipt_sha256=""):
+    if (build_receipt is None) != (build_policy is None):
+        raise ValueError("An explicit native build receipt and policy must be supplied together.")
+    if build_policy not in (None, "create", "reuse"):
+        raise ValueError("Unknown native build receipt policy.")
+    if build_policy == "reuse" and re.fullmatch(r"[0-9a-f]{64}", build_receipt_sha256) is None:
+        raise ValueError("Native build reuse requires the pinned receipt SHA-256.")
+    if build_policy != "reuse" and build_receipt_sha256:
+        raise ValueError("Only reuse accepts a prior build receipt SHA-256.")
     if system == "Windows":
         arguments = [
             pwsh, "-NoProfile", "-File", str(checkout / "tool/perf_probe/run_perf_probe.ps1"),
@@ -221,10 +230,15 @@ def native_arguments(checkout, args, output, case, hardware_id, system, pwsh=Non
         ]
         if args.expected_engine_sha256:
             arguments.extend(["-ExpectedEngineSha256", args.expected_engine_sha256])
+        if build_receipt is not None:
+            arguments.extend(["-BuildReceipt", str(build_receipt), "-BuildPolicy", build_policy,
+                              "-BuildReceiptPython", sys.executable])
+            if build_receipt_sha256:
+                arguments.extend(["-BuildReceiptSha256", build_receipt_sha256])
         return arguments
     if system not in ("Linux", "Darwin"):
         raise ValueError("Native paired measurements require Windows, Linux or macOS.")
-    return [
+    arguments = [
         sys.executable, "-B", str(checkout / "tool/perf_probe/run_perf_probe_posix.py"),
         "--mode", args.mode, "--cache-state", args.cache_state,
         "--scenario-set", args.scenario, "--binding-mode", "framework",
@@ -232,6 +246,57 @@ def native_arguments(checkout, args, output, case, hardware_id, system, pwsh=Non
         "--pdf-case", str(case), "--output", str(output), "--hardware-id", hardware_id,
         "--display-mode", args.display_mode,
     ]
+    if build_receipt is not None:
+        arguments += ["--build-receipt", str(build_receipt), "--build-policy", build_policy]
+        if build_receipt_sha256:
+            arguments += ["--build-receipt-sha256", build_receipt_sha256]
+    return arguments
+
+
+def verify_native_build_receipt(directory, frozen_path, policy, commit, settings, system, *, expected_sha256=""):
+    """Cross-check the immutable build and every before/after process proof."""
+    snapshot = directory / "build-receipt.snapshot.json"
+    if frozen_path.is_symlink() or snapshot.is_symlink():
+        raise ValueError("Frozen build evidence cannot be symlinked.")
+    frozen_bytes, snapshot_bytes = frozen_path.read_bytes(), snapshot.read_bytes()
+    digest = hashlib.sha256(frozen_bytes).hexdigest()
+    if frozen_bytes != snapshot_bytes or (expected_sha256 and digest != expected_sha256):
+        raise ValueError("The native run did not retain the expected frozen build receipt.")
+    frozen = json.loads(frozen_bytes)
+    inputs, output = frozen["inputs"], frozen["output"]
+    if (frozen.get("schemaVersion") != "otzaria-pdf-native-build-v1" or frozen.get("status") != "frozen"
+            or frozen.get("kind") != "frozen-native-build"
+            or inputs["source"]["commit"] != commit or inputs["source"].get("clean") is not True
+            or inputs["specification"]["mode"] != settings["mode"]
+            or inputs["specification"]["platform"] != {"Linux": "linux", "Darwin": "macos", "Windows": "windows"}[system]
+            or inputs["specification"]["binding"]["bindingMode"] != "framework"):
+        raise ValueError("Frozen build belongs to another source, mode or scheduler.")
+    manifest = read_json(directory / "manifest.json")
+    declared = manifest.get("buildReceipt", {})
+    if (declared.get("policy") != policy or declared.get("sha256") != digest
+            or declared.get("path") != str(frozen_path)
+            or declared.get("sourceCommit") != commit
+            or declared.get("bundleManifestSha256") != output["bundle"]["manifestSha256"]
+            or declared.get("aotPayload") != output["bundle"]["aotPayload"]
+            or declared.get("verificationOverlapsAppSampling") is not False):
+        raise ValueError("Native manifest does not identify the frozen build that ran.")
+    launches = [f"launch-{index:03d}" for index in range(settings["launches"])]
+    launches += (["prepare-data", "prepare-warm"] if settings["cacheState"] == "warm" else
+                 [f"prepare-data-{index}" for index in range(settings["launches"])])
+    for launch in launches:
+        for stage in ("before", "after"):
+            proof_path = (directory / launch / f"build-proof-{stage}.json" if system == "Windows" else
+                          directory / f"build-proof-{launch}-{stage}.json")
+            proof = read_json(proof_path)
+            if (proof.get("status") != "passed" or proof.get("receiptSha256") != digest
+                    or proof.get("sourceCommit") != commit or proof.get("sourceTree") != inputs["source"]["tree"]
+                    or proof.get("bundleManifestSha256") != output["bundle"]["manifestSha256"]
+                    or proof.get("aotPayload") != output["bundle"]["aotPayload"]
+                    or proof.get("verificationOverlapsAppSampling") is not False):
+                raise ValueError(f"Missing frozen-build proof outside process sampling: {proof_path}")
+    return {"sha256": digest, "sourceCommit": commit, "sourceTree": inputs["source"]["tree"],
+            "bundleManifestSha256": output["bundle"]["manifestSha256"], "aotPayload": output["bundle"]["aotPayload"],
+            "verifiedProcesses": len(launches), "policy": policy}
 
 
 def verify_posix_engines(output, reports, settings, system):
@@ -322,6 +387,7 @@ def run_pair(args: argparse.Namespace) -> None:
     logs.mkdir()
     (output / "results").mkdir()
     (output / "worktrees").mkdir()
+    (output / "build-receipts").mkdir()
     case_input = args.pdf_case.absolute() if args.pdf_case else output / "generated-pdf-case.json"
     if not args.pdf_case:
         write_json(case_input, {"schemaVersion": 1, "source": {
@@ -382,8 +448,12 @@ def run_pair(args: argparse.Namespace) -> None:
                 write_json(output / "pair.json", receipt)
             case.verify()
             arguments = native_arguments(checkout, args, output / "results" / role, case.path,
-                                         hardware_id, system, pwsh)
+                                         hardware_id, system, pwsh,
+                                         build_receipt=output / "build-receipts" / f"{role}.json", build_policy="create")
             stages["nativeBuildAndRuns"] = run_logged(arguments, checkout, logs / f"{role}-native.log")
+            stages["frozenBuild"] = verify_native_build_receipt(
+                output / "results" / role, output / "build-receipts" / f"{role}.json",
+                "create", commits[role], settings, system)
             case.verify_run(output / "results" / role,
                             read_json(output / "results" / role / "report.json"))
             verify_checkout(checkout, commits[role])
