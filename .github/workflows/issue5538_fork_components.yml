@@ -1,0 +1,187 @@
+name: PDF 5538 fork component measurements
+
+on:
+  push:
+    branches: [perf/5538-final-measurements-20261124]
+    paths:
+      - '.github/workflows/issue5538_fork_components.yml'
+      - 'tool/issue5538_ci/corpus_sources.json'
+      - 'tool/issue5538_ci/prepare_corpus.py'
+      - 'tool/issue5538_ci/prepare_native_inputs.py'
+      - 'tool/issue5538_ci/internal_*'
+      - 'tool/perf_probe/run_pdf_external_text_profile.*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pdf-5538-components-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CI: 'true'
+  FLUTTER_SUPPRESS_ANALYTICS: 'true'
+  DART_SUPPRESS_ANALYTICS: 'true'
+  PYTHONUNBUFFERED: '1'
+  PYTHONDONTWRITEBYTECODE: '1'
+
+jobs:
+  corpus:
+    name: Exact public corpus, OCR and derived stress files
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.13'
+      - name: Prepare the pinned corpus inspector
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tool/issue5538_ci/preflight.py --output "$RUNNER_TEMP/corpus-preflight.json"
+          python -m pip install pypdf==6.21.4
+          sudo apt-get update -y
+          sudo apt-get install -y qpdf
+      - name: Verify bytes, fonts, page geometry and extracted text
+        shell: bash
+        run: |
+          set -euo pipefail
+          python tool/issue5538_ci/prepare_corpus.py --qpdf qpdf --output "$RUNNER_TEMP/pdf-5538-corpus"
+      - name: Preserve the shared corpus and provenance
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pdf-5538-component-corpus
+          retention-days: 90
+          compression-level: 0
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/corpus-preflight.json
+            ${{ runner.temp }}/pdf-5538-corpus/**
+
+  native_text:
+    name: AOT text / ${{ matrix.document }}
+    needs: corpus
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - document: uxlc-genesis
+            repetitions: 7
+          - document: mikraot-gedolot-genesis-1859
+            repetitions: 5
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.7
+          cache: true
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          name: pdf-5538-component-corpus
+          path: ${{ runner.temp }}/pdf-5538-inputs
+      - name: Verify SDK, locked dependencies and the native producer
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -y
+          sudo apt-get install -y poppler-utils
+          flutter pub get --enforce-lockfile
+          python3 tool/issue5538_ci/prepare_native_inputs.py --output "$RUNNER_TEMP/pdf-5538-native"
+      - name: Measure every real page and verify text and rectangle parity
+        shell: bash
+        env:
+          DOCUMENT: ${{ matrix.document }}
+          REPETITIONS: ${{ matrix.repetitions }}
+        run: |
+          set -euo pipefail
+          python3 -B - <<'PY'
+          import json, os, pathlib, subprocess
+          root = pathlib.Path(os.environ['RUNNER_TEMP'])
+          corpus = root / 'pdf-5538-inputs/pdf-5538-corpus'
+          manifest = json.loads((corpus / 'corpus.json').read_text())
+          if manifest['status'] != 'passed':
+              raise SystemExit('Incomplete corpus preparation')
+          document = next(item for item in manifest['documents'] if item['id'] == os.environ['DOCUMENT'])
+          subprocess.run([
+              'python3', 'tool/perf_probe/run_pdf_external_text_profile.py',
+              '--dart', str(pathlib.Path(os.environ['FLUTTER_ROOT']) / 'bin/cache/dart-sdk/bin/dart'),
+              '--pdfium', str(root / 'pdf-5538-native/libpdfium.so'),
+              '--flutter-json', str(root / 'pdf-5538-native/flutter.json'),
+              '--input-pdf', str(corpus / document['path']), '--input-sha256', document['sha256'],
+              '--document-label', document['id'], '--output', str(root / 'pdf-5538-text'),
+              '--warmup', '1', '--repetitions', os.environ['REPETITIONS'],
+          ], check=True)
+          PY
+      - name: Preserve raw native observations and partial failures
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pdf-5538-text-${{ matrix.document }}
+          retention-days: 90
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/pdf-5538-native/flutter.json
+            ${{ runner.temp }}/pdf-5538-native/producer.json
+            ${{ runner.temp }}/pdf-5538-text/**
+
+  native_internals:
+    name: AOT scheduler, HTTP ranges and font fallback
+    needs: corpus
+    if: github.repository == 'yom-chadash/otzaria'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.7
+          cache: true
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          name: pdf-5538-component-corpus
+          path: ${{ runner.temp }}/pdf-5538-inputs
+      - name: Verify SDK, locked dependencies and the native producer
+        shell: bash
+        run: |
+          set -euo pipefail
+          flutter pub get --enforce-lockfile
+          flutter analyze --no-pub
+          python3 tool/issue5538_ci/prepare_native_inputs.py --output "$RUNNER_TEMP/pdf-5538-native"
+      - name: Measure control and instrumented variants in balanced order
+        shell: bash
+        run: |
+          set -euo pipefail
+          corpus="$RUNNER_TEMP/pdf-5538-inputs/pdf-5538-corpus"
+          python3 tool/issue5538_ci/internal_run.py \
+            --dart "$FLUTTER_ROOT/bin/cache/dart-sdk/bin/dart" \
+            --pdfium "$RUNNER_TEMP/pdf-5538-native/libpdfium.so" \
+            --flutter-json "$RUNNER_TEMP/pdf-5538-native/flutter.json" \
+            --pdf "$corpus/uxlc-genesis.pdf" --pdf "$corpus/gcc-15_2.pdf" \
+            --http-pdf "$corpus/gcc-15_2.pdf" --http-linearized "$corpus/gcc-15_2-linearized.pdf" \
+            --font fonts/Tinos-Regular.ttf --output "$RUNNER_TEMP/pdf-5538-internals"
+      - name: Preserve instrumentation, source identity and all observations
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: pdf-5538-internals-linux-x64
+          retention-days: 90
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/pdf-5538-native/flutter.json
+            ${{ runner.temp }}/pdf-5538-native/producer.json
+            ${{ runner.temp }}/pdf-5538-internals/**
