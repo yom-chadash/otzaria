@@ -1020,18 +1020,17 @@ class PdfBookSearchViewState extends State<PdfBookSearchView>
       totalPages: pdfState is PdfBookLoaded ? pdfState.totalPages : 1,
     );
 
-    var hasLoadedText = false;
+    final texts = <String>[];
     for (final page in pages) {
       if (!isCurrent()) return false;
       final pageText = await widget.textSearcher.loadText(pageNumber: page);
       if (!isCurrent()) return false;
-      if (pageText == null) continue;
-      hasLoadedText = true;
-      if (PdfBookSearchView.hasSearchableText([pageText.fullText])) return true;
+      if (pageText != null) texts.add(pageText.fullText);
     }
 
     // בלי טקסט כלל אי אפשר להכריע (המסמך עדיין לא נטען) — נשארים ב"אין תוצאות".
-    if (!hasLoadedText) return false;
+    if (texts.isEmpty) return false;
+    if (PdfBookSearchView.hasSearchableText(texts)) return true;
     setState(() => _searchErrorMessage = PdfMessages.noTextLayer);
     return false;
   }
