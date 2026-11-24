@@ -1,0 +1,80 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:crypto/crypto.dart';
+import 'package:pdfrx_engine/pdfrx_engine.dart';
+
+import 'issue5538_save_access.dart';
+
+Future<void> main(List<String> arguments) async {
+  final input = File(arguments[0]);
+  final output = File(arguments[1]);
+  final injected = arguments[2] == 'injected';
+  final rows = <Map<String, Object?>>[];
+  if (Platform.environment['CI'] != 'true') {
+    throw StateError('CI=true required');
+  }
+  await pdfrxInitialize();
+  try {
+    for (final flags in [(false, false), (true, false), (false, true)]) {
+      for (final afterBytes in injected ? [-1, 0, 1] : [-1]) {
+        await configureFault(afterBytes);
+        final document = await PdfDocument.openFile(input.path);
+        try {
+          final row = <String, Object?>{
+            'incremental': flags.$1,
+            'removeSecurity': flags.$2,
+            'faultAfterBytes': afterBytes,
+            'inputPageCount': document.pages.length,
+          };
+          try {
+            final bytes = await document.encodePdf(
+              incremental: flags.$1,
+              removeSecurity: flags.$2,
+            );
+            row['apiReturnedNormally'] = true;
+            row['returnedBytes'] = bytes.length;
+            row['outputSha256'] = sha256.convert(bytes).toString();
+            if (afterBytes < 0) {
+              final reopened = await PdfDocument.openData(
+                bytes,
+                sourceName: 'issue5538-control',
+              );
+              try {
+                row['reopenedPageCount'] = reopened.pages.length;
+                if (reopened.pages.length != document.pages.length) {
+                  throw StateError('Control save changed page count');
+                }
+              } finally {
+                await reopened.dispose();
+              }
+            }
+          } catch (error) {
+            row['apiReturnedNormally'] = false;
+            row['error'] = '$error';
+            if (afterBytes < 0) rethrow;
+          }
+          row['nativeFaultObservation'] = await readFault();
+          rows.add(row);
+        } finally {
+          await document.dispose();
+        }
+      }
+    }
+  } finally {
+    await PdfrxEntryFunctions.instance.stopBackgroundWorker();
+  }
+  output.writeAsStringSync(
+    const JsonEncoder.withIndent('  ').convert({
+      'measurementComplete': true,
+      'section': 'R10',
+      'mode': 'native-correctness-probe',
+      'timingComparison': false,
+      'faultInjectionEnabledInSource': injected,
+      'inputSha256': (await sha256.bind(input.openRead()).single).toString(),
+      'dartVersion': Platform.version,
+      'observations': rows,
+    }),
+    flush: true,
+  );
+}

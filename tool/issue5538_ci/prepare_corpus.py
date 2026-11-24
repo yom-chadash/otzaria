@@ -11,6 +11,7 @@ import re
 import shutil
 import subprocess
 import time
+import urllib.error
 import urllib.request
 from urllib.parse import urlparse
 
@@ -30,11 +31,13 @@ def digest(path):
 
 
 def validate_catalog(value):
-    if (not isinstance(value, dict) or value.get("schemaVersion") != 1
+    if (not isinstance(value, dict) or type(value.get("schemaVersion")) is not int or value["schemaVersion"] != 1
             or not isinstance(value.get("documents"), list) or not value["documents"]):
         raise ValueError("Invalid corpus catalog.")
     seen = set()
     for item in value["documents"]:
+        if not isinstance(item, dict):
+            raise ValueError("Every corpus source must be an object.")
         identifier = item.get("id")
         if (not isinstance(identifier, str) or not re.fullmatch(r"[a-z0-9][a-z0-9_-]{0,63}", identifier)
                 or identifier in seen):
@@ -91,8 +94,11 @@ def download(item, destination, input_directory=None):
             verify_bytes(partial, item)
             partial.rename(destination)
             return provenance
-        except Exception:
+        except Exception as error:
             partial.unlink(missing_ok=True)
+            # A rate or access limit must not be worked around with retries.
+            if isinstance(error, urllib.error.HTTPError) and 400 <= error.code < 500:
+                raise
             if attempt == 3:
                 raise
             time.sleep(2 ** attempt)
@@ -210,14 +216,25 @@ def prepare(args):
     if pypdf.__version__ != PYPDF_VERSION:
         raise ValueError(f"Corpus inspection requires pypdf {PYPDF_VERSION}.")
     catalog = validate_catalog(json.loads(args.catalog.read_text(encoding="utf-8")))
+    selected_ids = args.document or [item["id"] for item in catalog["documents"]]
+    if len(selected_ids) != len(set(selected_ids)) or not set(selected_ids) <= {item["id"] for item in catalog["documents"]}:
+        raise ValueError("Requested corpus IDs must be unique reviewed catalog entries.")
+    selected = [item for item in catalog["documents"] if item["id"] in selected_ids]
+    if not args.skip_derived_stress and "mikraot-gedolot-genesis-1859" not in selected_ids:
+        raise ValueError("Derived real stress requires the pinned Mikraot Gedolot source.")
+    if args.qpdf and "gcc-15_2" not in selected_ids:
+        raise ValueError("The HTTP linearization fixture requires the pinned GCC manual.")
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     cases = output / "cases"
     cases.mkdir()
     receipt = {"schemaVersion": 1, "status": "running", "catalogSha256": digest(args.catalog),
-               "inspector": {"pypdf": pypdf.__version__}, "documents": [], "generatedCases": []}
+               "inspector": {"pypdf": pypdf.__version__}, "documents": [], "generatedCases": [],
+               "requestedDocuments": selected_ids,
+               "unpreparedDocuments": [item["id"] for item in catalog["documents"] if item["id"] not in selected_ids],
+               "derivedStressPrepared": False}
     try:
-        for item in catalog["documents"]:
+        for item in selected:
             path = output / f"{item['id']}.pdf"
             provenance = download(item, path, args.input_directory)
             description = describe_pdf(path)
@@ -236,33 +253,35 @@ def prepare(args):
                 "kind": "generated", "pageCount": count, "mixedPageSizes": True}})
             receipt["generatedCases"].append({"id": identifier, "pageCount": count,
                 "classification": "synthetic mixed-size stress fixture; not a real book"})
-        original = next(item for item in receipt["documents"] if item["id"] == "mikraot-gedolot-genesis-1859")
-        identifier = "derived-real-mixed-10000"
-        target = output / f"{identifier}.pdf"
-        derive_repeated_pages(output / original["path"], target, 10000)
-        description = describe_pdf(target)
-        expected_sizes = Counter()
-        source_reader = pypdf.PdfReader(output / original["path"])
-        for index in range(10000):
-            box = source_reader.pages[index % len(source_reader.pages)].cropbox
-            expected_sizes[(round(float(box.width), 4), round(float(box.height), 4))] += 1
-        actual_sizes = {(row["width"], row["height"]): row["pages"] for row in description["pageSizePoints"]}
-        source_text = original["textInspection"]["pages"]
-        if (description["pageCount"] != 10000 or actual_sizes != dict(expected_sizes)
-                or any(page["sha256"] != source_text[index % len(source_text)]["sha256"]
-                       for index, page in enumerate(description["textInspection"]["pages"]))):
-            raise ValueError("Derived stress corpus has incorrect page geometry or count.")
-        derived_hash = digest(target)
-        receipt["documents"].append({**original, **description, "id": identifier, "path": target.name,
-            "title": "10,000 repeated real scan pages, mixed-size stress fixture",
-            "sha256": derived_hash, "sizeBytes": target.stat().st_size,
-            "classification": "derived-real-content stress; repeated pages, not an original 10,000-page book",
-            "derivation": {"tool": f"pypdf {pypdf.__version__}", "sourceSha256": original["sha256"],
-                "sourcePages": original["pageCount"], "pageMapping": "1 + zeroBasedOutputPage % sourcePages"},
-            "download": {"method": "local-lossless-page-repeat"}})
-        write_json(cases / f"{identifier}.json", {"schemaVersion": 1, "source": {
-            "kind": "external", "path": f"../{target.name}", "sha256": derived_hash, "pageCount": 10000}})
-        write_json(output / "corpus.json", receipt)
+        if not args.skip_derived_stress:
+            original = next(item for item in receipt["documents"] if item["id"] == "mikraot-gedolot-genesis-1859")
+            identifier = "derived-real-mixed-10000"
+            target = output / f"{identifier}.pdf"
+            derive_repeated_pages(output / original["path"], target, 10000)
+            description = describe_pdf(target)
+            expected_sizes = Counter()
+            source_reader = pypdf.PdfReader(output / original["path"])
+            for index in range(10000):
+                box = source_reader.pages[index % len(source_reader.pages)].cropbox
+                expected_sizes[(round(float(box.width), 4), round(float(box.height), 4))] += 1
+            actual_sizes = {(row["width"], row["height"]): row["pages"] for row in description["pageSizePoints"]}
+            source_text = original["textInspection"]["pages"]
+            if (description["pageCount"] != 10000 or actual_sizes != dict(expected_sizes)
+                    or any(page["sha256"] != source_text[index % len(source_text)]["sha256"]
+                           for index, page in enumerate(description["textInspection"]["pages"]))):
+                raise ValueError("Derived stress corpus has incorrect page geometry or count.")
+            derived_hash = digest(target)
+            receipt["documents"].append({**original, **description, "id": identifier, "path": target.name,
+                "title": "10,000 repeated real scan pages, mixed-size stress fixture",
+                "sha256": derived_hash, "sizeBytes": target.stat().st_size,
+                "classification": "derived-real-content stress; repeated pages, not an original 10,000-page book",
+                "derivation": {"tool": f"pypdf {pypdf.__version__}", "sourceSha256": original["sha256"],
+                    "sourcePages": original["pageCount"], "pageMapping": "1 + zeroBasedOutputPage % sourcePages"},
+                "download": {"method": "local-lossless-page-repeat"}})
+            write_json(cases / f"{identifier}.json", {"schemaVersion": 1, "source": {
+                "kind": "external", "path": f"../{target.name}", "sha256": derived_hash, "pageCount": 10000}})
+            receipt["derivedStressPrepared"] = True
+            write_json(output / "corpus.json", receipt)
         if args.qpdf:
             original = next(item for item in receipt["documents"] if item["id"] == "gcc-15_2")
             target = output / "gcc-15_2-linearized.pdf"
@@ -278,6 +297,9 @@ def prepare(args):
                 "classification": "derived real document: qpdf linearization, unchanged text and pages",
                 "derivation": {"tool": version, "arguments": ["--linearize"], "sourceSha256": original["sha256"]},
                 "download": {"method": "local-qpdf-linearization"}})
+            write_json(cases / "gcc-15_2-linearized.json", {"schemaVersion": 1, "source": {
+                "kind": "external", "path": f"../{target.name}", "sha256": digest(target),
+                "pageCount": original["pageCount"]}})
         for record in receipt["documents"]:
             verify_bytes(output / record["path"], record)
         receipt["status"] = "passed"
@@ -294,6 +316,8 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--input-directory", type=Path)
     parser.add_argument("--qpdf")
+    parser.add_argument("--document", action="append", help="Prepare only these reviewed IDs; repeat for a component job.")
+    parser.add_argument("--skip-derived-stress", action="store_true", help="Component jobs can omit the unused 10,000-page file.")
     prepare(parser.parse_args())
 
 

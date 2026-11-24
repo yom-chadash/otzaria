@@ -16,26 +16,35 @@
     {
       "id": "mikraot-gedolot-genesis-1859",
       "title": "Mikraot Gedolot 1859, Genesis",
-      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/1/15/MG1859-A-Genesis.pdf",
+      "sourceUrl": "https://archive.org/download/MG_1859_A_Bereshit/MG1859-A-Bereshit.pdf",
       "sha256": "92a145512e33c4a3c8f1b1c92d2d79c4db91a49cc921a316201be81bfa85040d",
       "sizeBytes": 41990345,
       "pageCount": 374,
       "classification": "real historical scan with varied page dimensions; text layer inspected at runtime",
       "attribution": "Mikraot Gedolot, 1859; National Library of Israel scan via Wikimedia Commons",
       "license": "Public-domain scan (PD-scan)",
-      "licenseUrl": "https://commons.wikimedia.org/wiki/File:MG1859-A-Genesis.pdf"
+      "licenseUrl": "https://commons.wikimedia.org/wiki/File:MG1859-A-Genesis.pdf",
+      "additionalDistributionUrl": "https://upload.wikimedia.org/wikipedia/commons/1/15/MG1859-A-Genesis.pdf",
+      "sourceNote": "Downloaded from the original Internet Archive item linked by Wikimedia Commons; the SHA-256 and all 41,990,345 bytes match the Commons distribution."
     },
     {
       "id": "letteris-hebrew-1910",
       "title": "Letteris Hebrew Bible, Hebrew Publishing Company, 1910",
-      "sourceUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f4/Letteris-1910-Hebrew-Publishing-Company.pdf",
-      "sha256": "8084e0a93a9c81ff35239158b543d43aaa76a0d7fa2ec93223e0ac38ff535d73",
-      "sizeBytes": 128433683,
+      "sourceUrl": "https://archive.org/download/torahneviimukhe00lett/torahneviimukhe00lett.pdf",
+      "sha256": "5840293a5447e9fc027badaa622f9333daf70a38688e48a6da1d46c48d454a8d",
+      "sizeBytes": 112688157,
       "pageCount": 1400,
-      "classification": "real large historical scan with varied page dimensions; text layer inspected at runtime",
-      "attribution": "Meir Letteris edition, Hebrew Publishing Company, 1910; scan via Wikimedia Commons",
+      "classification": "real large historical scan with Hebrew OCR and varied page dimensions",
+      "attribution": "Meir Letteris edition, Hebrew Publishing Company, 1910; original Internet Archive item torahneviimukhe00lett, linked by Wikimedia Commons",
       "license": "Public-domain scan (PD-scan)",
-      "licenseUrl": "https://commons.wikimedia.org/wiki/File:Letteris-1910-Hebrew-Publishing-Company.pdf"
+      "licenseUrl": "https://commons.wikimedia.org/wiki/File:Letteris-1910-Hebrew-Publishing-Company.pdf",
+      "previousDistribution": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/f/f4/Letteris-1910-Hebrew-Publishing-Company.pdf",
+        "sha256": "8084e0a93a9c81ff35239158b543d43aaa76a0d7fa2ec93223e0ac38ff535d73",
+        "sizeBytes": 128433683,
+        "usedInSuccessfulCiMeasurements": false
+      },
+      "sourceNote": "The current original Internet Archive PDF differs from the older 128,433,683-byte Commons distribution. It was selected and pinned before any successful CI measurement or baseline/candidate comparison; both compared sources must use this same new SHA-256. Inspection: 1,400 pages, 1,393 pages with extracted text, embedded GlyphLessFont, 1,184,342 Hebrew letters and 440,510 Hebrew marks (pypdf 6.21.4)."
     },
     {
       "id": "gcc-15_2",
