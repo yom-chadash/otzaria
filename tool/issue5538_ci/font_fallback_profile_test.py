@@ -71,6 +71,91 @@ class EvidenceTests(unittest.TestCase):
     def test_complete_owned_result(self):
         self.assertEqual(self.validate()["nativeOpenCounts"], {"source-0": 1, "unrelated": 1})
 
+    def replacement(self):
+        self.config['scenario'] = self.report['scenario'] = 'replace-pending-font'
+        events = self.report['measuredEvents']
+        events[0].update(startedUs=1, elapsedUs=5)
+        events[1].update(startedUs=2, elapsedUs=6)
+        events.extend([
+            {'type': 'fontRegistrationStart', 'elapsedUs': 10, 'face': 'MissingFace'},
+            {'type': 'documentEventsClosed', 'elapsedUs': 18, 'documentId': 0},
+            {'type': 'replaceRequested', 'elapsedUs': 20, 'inputId': 'unrelated'},
+            {'type': 'documentEventsClosed', 'elapsedUs': 21, 'documentId': 1},
+            {'type': 'nativeOpen', 'documentId': 2, 'path': str(self.root / 'blank.pdf'),
+             'pageCount': 1, 'startedUs': 22, 'elapsedUs': 25},
+            {'type': 'viewerDocument', 'elapsedUs': 26, 'inputId': 'unrelated', 'documentId': 2},
+            {'type': 'registrationGateReleased', 'elapsedUs': 40},
+            {'type': 'fontRegistered', 'elapsedUs': 45, 'face': 'MissingFace'},
+        ])
+        self.report['allEvents'] = events + [{'type': 'documentEventsClosed', 'elapsedUs': 80, 'documentId': 2}]
+        self.report['measuredFrames'][0]['documentId'] = 2
+        sidecar = json.loads((self.root / 'frame-receipts.json').read_text())
+        sidecar['measured'] = self.report['measuredFrames']
+        runner.save(self.root / 'frame-receipts.json', sidecar)
+
+    def test_replacement_counts_both_intentional_opens_before_font_completion(self):
+        self.replacement()
+        result = self.validate()
+        self.assertEqual(result['nativeOpenCounts'], {'source-0': 1, 'unrelated': 2})
+        self.assertEqual(result['replacementLifecycle']['nativeOpensAfterRegistrationRelease'], 0)
+        self.assertEqual(result['replacementLifecycle']['replacementDocumentId'], 2)
+
+    def test_replacement_requires_one_actual_replace_request(self):
+        self.replacement()
+        request = next(row for row in self.report['measuredEvents'] if row['type'] == 'replaceRequested')
+        self.report['measuredEvents'].remove(request)
+        with self.assertRaisesRegex(ValueError, 'one explicit request'):
+            self.validate()
+        self.report['measuredEvents'].extend([request, dict(request)])
+        with self.assertRaisesRegex(ValueError, 'one explicit request'):
+            self.validate()
+
+    def test_replacement_cannot_reopen_either_native_source_after_the_gate(self):
+        self.replacement()
+        original = json.loads(json.dumps(self.report))
+        for document in (0, 1, 2):
+            self.report = json.loads(json.dumps(original))
+            row = next(row for row in self.report['measuredEvents']
+                       if row['type'] == 'nativeOpen' and row['documentId'] == document)
+            row['startedUs'] = 41
+            row['elapsedUs'] = 42
+            with self.subTest(document=document), self.assertRaisesRegex(ValueError, 'after registration'):
+                self.validate()
+
+    def test_replacement_requires_retired_owner_close_before_gate_release(self):
+        self.replacement()
+        original = json.loads(json.dumps(self.report))
+        for document in (0, 1):
+            self.report = json.loads(json.dumps(original))
+            row = next(row for row in self.report['measuredEvents']
+                       if row['type'] == 'documentEventsClosed' and row['documentId'] == document)
+            row['elapsedUs'] = 50
+            with self.subTest(document=document), self.assertRaisesRegex(ValueError, 'owners must close'):
+                self.validate()
+
+    def test_replacement_requires_pending_registration_and_exactly_two_peer_opens(self):
+        self.replacement()
+        gate = next(row for row in self.report['measuredEvents'] if row['type'] == 'registrationGateReleased')
+        gate['elapsedUs'] = 19
+        with self.assertRaisesRegex(ValueError, 'while font registration was pending'):
+            self.validate()
+        gate['elapsedUs'] = 40
+        self.report['measuredEvents'].append({'type': 'nativeOpen', 'documentId': 3,
+            'path': str(self.root / 'blank.pdf'), 'pageCount': 1, 'startedUs': 27, 'elapsedUs': 28})
+        self.report['allEvents'].append({'type': 'documentEventsClosed', 'documentId': 3, 'elapsedUs': 80})
+        with self.assertRaisesRegex(ValueError, 'two intentional peer opens'):
+            self.validate()
+
+    def test_replacement_ready_frame_must_belong_to_the_new_live_owner(self):
+        self.replacement()
+        frame = self.report['measuredFrames'][0]
+        frame['documentId'] = 0
+        sidecar = json.loads((self.root / 'frame-receipts.json').read_text())
+        sidecar['measured'] = self.report['measuredFrames']
+        runner.save(self.root / 'frame-receipts.json', sidecar)
+        with self.assertRaisesRegex(ValueError, 'painted-ready replacement owner'):
+            self.validate()
+
     def test_recomputed_png_rejects_wrong_raw_rgba_hash(self):
         row = self.report["measuredFrames"][0]
         row["rgbaSha256"] = "0" * 64
