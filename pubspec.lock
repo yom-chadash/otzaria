@@ -1375,18 +1375,20 @@ packages:
   pdfrx:
     dependency: "direct main"
     description:
-      name: pdfrx
-      sha256: "69e2fdfae25c9686b336d89c3841766a1043bc5ba7f24bb8252224b837018440"
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/pdfrx"
+      ref: "964b5e15e082c8633651ffab1d037631af65e156"
+      resolved-ref: "964b5e15e082c8633651ffab1d037631af65e156"
+      url: "https://github.com/yom-chadash/pdfrx.git"
+    source: git
     version: "2.13.1"
   pdfrx_engine:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: pdfrx_engine
-      sha256: "001090d220b2773747ce396f2bcda3d6ac9389d87f937ef12d64ed3a9e80e8b0"
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/pdfrx_engine"
+      ref: "964b5e15e082c8633651ffab1d037631af65e156"
+      resolved-ref: "964b5e15e082c8633651ffab1d037631af65e156"
+      url: "https://github.com/yom-chadash/pdfrx.git"
+    source: git
     version: "0.9.3"
   petitparser:
     dependency: "direct overridden"
