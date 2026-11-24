@@ -1,0 +1,78 @@
+{
+  "analysisKind": "derived annotation; original ZIP and members retained unchanged",
+  "runId": 45398870968,
+  "jobId": 138461890032,
+  "forkCommit": "4d668424f97f10a3fdb8822f3ba53c0b2e4aaab6",
+  "upstreamCommit": "683df93e986af19bbcefd22606a417083116847b",
+  "verifiedArtifact": {
+    "runId": 45398870968,
+    "artifact": {
+      "id": 14921639664,
+      "name": "pdf-5538-upstream-suites-native-macos-intel",
+      "size_in_bytes": 42792,
+      "url": "https://api.github.com/repos/yom-chadash/otzaria/actions/artifacts/14921639664",
+      "archive_download_url": "https://api.github.com/repos/yom-chadash/otzaria/actions/artifacts/14921639664/zip",
+      "expired": false,
+      "created_at": "2026-11-24T13:03:12Z",
+      "expires_at": "2027-02-22T12:59:38Z",
+      "updated_at": "2026-11-24T13:03:12Z",
+      "digest": "sha256:07ec95b657982d23e554981cdd66222fd7182677f1369f19c841bed50ce9e2a9",
+      "workflow_run": {
+        "id": 45398870968,
+        "repository_id": 1461454132,
+        "head_repository_id": 1461454132,
+        "head_branch": "perf/5538-final-measurements-20261124",
+        "head_sha": "4d668424f97f10a3fdb8822f3ba53c0b2e4aaab6"
+      }
+    },
+    "verifiedSha256": "07ec95b657982d23e554981cdd66222fd7182677f1369f19c841bed50ce9e2a9",
+    "bytes": 42792
+  },
+  "suites": {
+    "native": {
+      "executed": 440,
+      "passed": 437,
+      "failed": 3,
+      "skipped": 0,
+      "failedTests": [
+        {
+          "id": 129,
+          "name": "shared native font sources forty aliases read the same font file only once",
+          "result": "failure"
+        },
+        {
+          "id": 130,
+          "name": "shared native font sources one hundred unchanged reloads reuse the file metadata and live payload",
+          "result": "failure"
+        },
+        {
+          "id": 133,
+          "name": "shared native font sources changed file versions refresh new mappings without replacing old handle data",
+          "result": "failure"
+        }
+      ],
+      "status": "failed"
+    },
+    "viewer": {
+      "executed": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "failedTests": [],
+      "status": "failed"
+    }
+  },
+  "totalPassed": 437,
+  "totalFailed": 3,
+  "totalSkipped": 0,
+  "limitations": [
+    "Correctness suites, not performance measurements; isolated upstream SDK, no Otzaria adoption evidence.",
+    "Three native font-fixture counters reported zero because canonical path matching differs on macOS; upstream PR874 fixes test instrumentation.",
+    "Viewer did not launch: harness searched libpdfium.dylib, artifact supplies libpdfium_dart.dylib."
+  ],
+  "upstreamFixtureCandidate": {
+    "pullRequest": "https://github.com/espresso3389/pdfrx/pull/874",
+    "head": "e567d27ce513845b5aebedb2fe66e7c5e4132ea5",
+    "testedHere": false
+  }
+}

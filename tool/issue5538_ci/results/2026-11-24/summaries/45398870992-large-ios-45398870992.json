@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "post-download analysis; original ZIP and members remain unchanged",
+  "classification": "blocked-before-device-test",
+  "runId": 45398870992,
+  "jobId": 138461891382,
+  "artifactId": 14924446441,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45398870992/job/138461891382",
+  "sourceCommit": "4d668424f97f10a3fdb8822f3ba53c0b2e4aaab6",
+  "jobConclusion": "failure",
+  "artifactZipSha256": "9766119e1391388ffeba60f2fed57de62a95589194fdbcb4d0543dc7cf139fab",
+  "artifactZipBytes": 174952,
+  "scope": "large real PDF export through iOS Files",
+  "completedDeviceScenarios": 0,
+  "completedPerformanceSamples": 0,
+  "productFailureDemonstrated": false,
+  "failure": {
+    "phase": "native iOS application compilation, before installation and execution",
+    "package": "device_info_plus",
+    "lockedVersion": "13.3.0",
+    "selectedXcode": "16.4",
+    "selectedXcodeBuild": "16F6",
+    "compileSimulatorSdk": "18.5",
+    "diagnostics": [
+      {
+        "line": 15165,
+        "message": "/Users/runner/.pub-cache/hosted/pub.dev/device_info_plus-13.3.0/ios/device_info_plus/Sources/device_info_plus/FPPDeviceInfoPlusPlugin.m:35:57: error: no visible @interface for 'NSProcessInfo' declares the selector 'isiOSAppOnVision'"
+      }
+    ],
+    "explanation": "The package calls NSProcessInfo.isiOSAppOnVision, which is declared by iOS 26.1 SDK headers. A runtime @available guard does not provide the declaration to the older iOS 18.5 compiler headers.",
+    "requiredXcodeFromLockedPackageReadme": ">=26.1.1",
+    "buildExitCode": 65,
+    "timedOut": false
+  },
+  "runner": {
+    "label": "macos-15-intel",
+    "architecture": "x86_64",
+    "image": "macos-15",
+    "imageVersion": "20260824.0482.1",
+    "includedSoftwareFromBothJobLogs": "https://github.com/actions/runner-images/blob/macos-15/20260824.0482/images/macos/macos-15-Readme.md",
+    "readmeLabelMap": "https://github.com/actions/runner-images/blob/main/README.md",
+    "availableRequiredXcode": "26.1.1",
+    "availableRequiredXcodeBuild": "17B100",
+    "availableRequiredXcodePath": "/Applications/Xcode_26.1.1.app"
+  },
+  "dependencySourceEvidence": [
+    {
+      "path": "README.md",
+      "sha256": "52d89691b10c113c97346427aa8c63ed9fb39f789dee2f554a6fdcedb2669ef8"
+    },
+    {
+      "path": "ios/device_info_plus/Sources/device_info_plus/FPPDeviceInfoPlusPlugin.m",
+      "sha256": "db8195dc22e137e972c187a9b104be543ce0e82cd6ec10cf496c6ed53c36e800"
+    }
+  ],
+  "proposedHarnessCorrection": {
+    "scope": "the two fork-only jobs.ios workflow sections",
+    "developerDir": "/Applications/Xcode_26.1.1.app/Contents/Developer",
+    "checks": [
+      "exact Xcode 26.1.1",
+      "exact iOS Simulator SDK 26.1"
+    ],
+    "flutterVersionUnchanged": "3.47.7",
+    "lockedDependenciesUnchanged": true,
+    "productCodeUnchanged": true,
+    "correctionValidatedInCI": false
+  },
+  "limitations": [
+    "Neither run reached the actual app scenario; this does not establish PDF, Files, clipboard or rendering success or failure.",
+    "Simulator runtime selection is distinct from the compile SDK: these runs selected an available iOS 26.2 runtime while compiling against SDK 18.5.",
+    "Selecting a sufficient Xcode fixes the demonstrated compiler mismatch; subsequent native build/runtime behavior requires a fresh CI run."
+  ],
+  "rawEvidence": [
+    {
+      "path": "build.command.json",
+      "bytes": 557,
+      "sha256": "e41dccd615a8495946dd8b2bb0b4b82a216d2477f1cd4560210546de69ef49d8"
+    },
+    {
+      "path": "build.log",
+      "bytes": 2562955,
+      "sha256": "21e1695e682368670fa65863b624118ec94b372c2cb5910560c5af53b856d93c"
+    },
+    {
+      "path": "cleanup.json",
+      "bytes": 86,
+      "sha256": "f5fe684cf12179b66cdd33e70cb94b13a5b0d621df51d369becf2a974cf04818"
+    },
+    {
+      "path": "configure.command.json",
+      "bytes": 354,
+      "sha256": "d20996a093f55fd4d613f095818951adf57bc5821d6fbec7b8fb964e6535da97"
+    },
+    {
+      "path": "configure.log",
+      "bytes": 639,
+      "sha256": "700bf510ed2a7a0b19a8d08da2ee7b6b759ae98e8cbcd7320599089413e0acd2"
+    },
+    {
+      "path": "dependencies.command.json",
+      "bytes": 165,
+      "sha256": "773c465a389da57ad679b543cb6daeca7fbcf5a3eeac4b0f361a5a7c67418355"
+    },
+    {
+      "path": "dependencies.log",
+      "bytes": 6148,
+      "sha256": "6823d93f3be6cc2c5939901ec14711606bc1132df1f13f1531f0c08d3b325edc"
+    },
+    {
+      "path": "flutter.json",
+      "bytes": 644,
+      "sha256": "52fe5e85f6c20f96b68de54575b883c72d06d0a614878c398ae6f12e9c716fad"
+    },
+    {
+      "path": "generated-project.diff",
+      "bytes": 34669,
+      "sha256": "efe7b0119e5e679c73bb613aa807c1bfe5f3d10717509f99d30be61bc6c04dc9"
+    },
+    {
+      "path": "host.txt",
+      "bytes": 261,
+      "sha256": "ac074c88a47a3d6c45270a631c5401f04ccd8f7c0bdd2066e09f12cd09d9b307"
+    },
+    {
+      "path": "simulator.json",
+      "bytes": 18864,
+      "sha256": "55375eb162571cc65cd8f3b2f35c1798d724cbbb20787d4fba9945527a6bd530"
+    },
+    {
+      "path": "source-status-after.txt",
+      "bytes": 39,
+      "sha256": "d329577d8fec841172bb98b34fe469886e0a72d1ce1ada1cf947238ae0c96d7e"
+    },
+    {
+      "path": "source.json",
+      "bytes": 4038,
+      "sha256": "1bc7d66d08b94ef1213a78d4c9a15f53e4428ac8a35813489430fd9e390502af"
+    },
+    {
+      "path": "xcode.txt",
+      "bytes": 30,
+      "sha256": "a8be4f9af0a29137fe7e59b9928056d4a0df297bb46ba40f80eaa6b0ae982f12"
+    }
+  ]
+}

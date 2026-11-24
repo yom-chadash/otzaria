@@ -1,0 +1,75 @@
+{
+  "analysisKind": "derived annotation; original ZIP and members retained unchanged",
+  "runId": 45398870968,
+  "jobId": 138461890421,
+  "forkCommit": "4d668424f97f10a3fdb8822f3ba53c0b2e4aaab6",
+  "upstreamCommit": "683df93e986af19bbcefd22606a417083116847b",
+  "verifiedArtifact": {
+    "id": 14921904379,
+    "name": "pdf-5538-upstream-suites-fixed-3.50.0",
+    "sha": "d5fa18804dea326b7590469a0d430bc54fb471b9175530986eb53fcb16b4ac20",
+    "run": 45398870968,
+    "job": 138461890421
+  },
+  "suites": {
+    "native": {
+      "executed": 440,
+      "passed": 440,
+      "failed": 0,
+      "skipped": 0,
+      "failedTests": [],
+      "status": "passed"
+    },
+    "viewer": {
+      "executed": 642,
+      "passed": 639,
+      "failed": 3,
+      "skipped": 0,
+      "failedTests": [
+        {
+          "id": 110,
+          "name": "loadPageDimensionsOnDemand on: only pages near the viewport are measured",
+          "result": "error"
+        },
+        {
+          "id": 113,
+          "name": "degraded networks server that ignores Range still opens the document",
+          "result": "error"
+        },
+        {
+          "id": 114,
+          "name": "degraded networks slow link does not lose the document",
+          "result": "error"
+        }
+      ],
+      "status": "failed"
+    },
+    "chrome": {
+      "executed": 64,
+      "passed": 64,
+      "failed": 0,
+      "skipped": 0,
+      "failedTests": [],
+      "status": "passed"
+    },
+    "node": {
+      "passed": 164,
+      "failed": 0,
+      "skipped": 0,
+      "status": "passed"
+    }
+  },
+  "totalPassed": 1307,
+  "totalFailed": 3,
+  "totalSkipped": 0,
+  "limitations": [
+    "Correctness suites, not performance measurements; isolated upstream SDK, no Otzaria adoption evidence.",
+    "Three real native lazy-loading cases failed only post-test pending-timer invariants; upstream PR874 supplies explicit fixture unmount/timer drain/native disposal.",
+    "All six formerly PDFIUM_PATH-skipped viewer cases executed; three passed and three failed."
+  ],
+  "upstreamFixtureCandidate": {
+    "pullRequest": "https://github.com/espresso3389/pdfrx/pull/874",
+    "head": "e567d27ce513845b5aebedb2fe66e7c5e4132ea5",
+    "testedHere": false
+  }
+}

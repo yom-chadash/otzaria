@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "post-download correctness analysis; original artifact members are unchanged",
+  "runId": 45402447185,
+  "jobId": 138474275866,
+  "artifactId": 14923454455,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45402447185/job/138474275866",
+  "sourceCommit": "9fecdc4b52a83bfaa828c8504c0469a8225a3f7a",
+  "artifactZipSha256": "02ae4ca1f92a68f4b0c42a673dd665ae77d365629870ff2351c2da91c77275dd",
+  "artifactZipBytes": 11039,
+  "performanceComparison": false,
+  "rawEvidence": [
+    {
+      "path": "pdf-product-sdk.json",
+      "bytes": 635,
+      "sha256": "4322aeb138356aa1d65d10275d629e648d0381daa1c445b7e2439e7f9b4b9acf"
+    },
+    {
+      "path": "pdf-product-source.txt",
+      "bytes": 41,
+      "sha256": "a153d051a6ca0e09a75b58e092af36c7cf51a7ea257e5e219da7409cecdcfc6d"
+    },
+    {
+      "path": "pdf-product-analyze.log",
+      "bytes": 97,
+      "sha256": "3c936b926e5ef9e97b438392ace8b112be6bc9e0ebb5de27b69c0920ac53058f"
+    },
+    {
+      "path": "pdf-product-tests.json",
+      "bytes": 59243,
+      "sha256": "52736bddf27f6a67496ab06d32d8a8cff1ebd56a75cab2fb8c2d050378629b8e"
+    },
+    {
+      "path": "pdf-product-tests.log",
+      "bytes": 23452,
+      "sha256": "1d186729244c6db6f3fb1309110050062a35a1c5ecdef8ec2b0d864f5b11c974"
+    }
+  ],
+  "flutter": {
+    "frameworkVersion": "3.47.7",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "engineCommitDate": "2026-10-07 17:09:12.000Z",
+    "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+    "engineBuildDate": "2026-10-07 10:51:44.552",
+    "dartSdkVersion": "3.13.5",
+    "devToolsVersion": "2.60.0",
+    "flutterVersion": "3.47.7",
+    "flutterRoot": "/opt/hostedtoolcache/flutter/stable-3.47.7-x64/flutter"
+  },
+  "platform": "Linux",
+  "classification": "completed-product-regression-checks",
+  "jobConclusion": "success",
+  "fullFlutterAnalyze": "passed",
+  "testsPassed": 93,
+  "testsFailed": 0,
+  "testsSkipped": 0,
+  "hiddenFixtureLifecycleEvents": 10,
+  "jsonlRows": 229,
+  "testReportFormat": "JSON Lines in a .json-named file",
+  "suites": [
+    "/home/runner/work/otzaria/otzaria/test/pdf_book/book_view_layout_memo_test.dart",
+    "/home/runner/work/otzaria/otzaria/test/pdf_book/pdf_search_highlight_pattern_test.dart",
+    "/home/runner/work/otzaria/otzaria/test/pdf_book/pdf_search_no_text_layer_test.dart",
+    "/home/runner/work/otzaria/otzaria/test/pdf_book/pdf_page_highlights_test.dart"
+  ],
+  "limitations": [
+    "Product regression correctness, not a benchmark or proof of performance improvement.",
+    "The result applies only to the recorded commit, SDK and platform."
+  ]
+}

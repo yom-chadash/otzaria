@@ -1,0 +1,81 @@
+{
+  "analysisKind": "derived annotation; original ZIP and members retained unchanged",
+  "runId": 45402052980,
+  "jobId": 138472909164,
+  "jobConclusion": "success",
+  "verifiedArtifact": {
+    "id": 14924872462,
+    "name": "pdf-5538-upstream-suites-native-macos-intel",
+    "sha": "103cf560c34d2408d2db5ea18f6fda75d5f6ef555af3276ce4c60e9e20262c98",
+    "run": 45402052980,
+    "job": 138472909164
+  },
+  "forkCommit": "0d7285b714af4995203c9945da9c2972c4ec4181",
+  "upstreamCommit": "e567d27ce513845b5aebedb2fe66e7c5e4132ea5",
+  "baselineUpstreamCommit": "683df93e986af19bbcefd22606a417083116847b",
+  "sourceRole": "Q01 PR874 candidate: CI, test fixtures and documentation only; no runtime or SDK constraint changes.",
+  "flutter": {
+    "frameworkVersion": "3.50.0",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "ab2912035e160d9cad6306df307576da6128ebdb",
+    "frameworkCommitDate": "2026-11-09 08:50:21 -0800",
+    "engineRevision": "371f77202a73e8dff57a8b3bff75bca55c090aee",
+    "engineCommitDate": "2026-11-09 15:57:36.000Z",
+    "engineContentHash": "bf601093ad255aaf5c6d0fc5c4f9acfa60943b2a",
+    "engineBuildDate": "2026-11-09 08:33:19.494",
+    "dartSdkVersion": "3.14.0",
+    "devToolsVersion": "2.61.0",
+    "flutterVersion": "3.50.0",
+    "flutterRoot": "/Users/runner/hostedtoolcache/flutter/stable-3.50.0-x64/flutter"
+  },
+  "platform": "Darwin",
+  "architecture": "x86_64",
+  "suites": {
+    "native": {
+      "executed": 441,
+      "skipped": 0,
+      "events": 1087,
+      "status": "passed",
+      "skippedTests": [],
+      "failedTests": []
+    },
+    "viewer": {
+      "executed": 642,
+      "skipped": 0,
+      "events": 2099,
+      "status": "passed",
+      "skippedTests": [],
+      "failedTests": []
+    }
+  },
+  "totalPassed": 1083,
+  "totalFailed": 0,
+  "totalSkipped": 0,
+  "nativeAssets": {
+    ".dart_tool/hooks_runner/shared/pdfium_dart/build/chromium_8125/mac-x64/libpdfium_dart.dylib": {
+      "sha256": "a9f428a16f46bab89646c8724b348e01c3fe707e3126d9356026cd876a74aecb",
+      "bytes": 7809288
+    }
+  },
+  "viewerPdfium": {
+    "path": ".dart_tool/hooks_runner/shared/pdfium_dart/build/chromium_8125/mac-x64/libpdfium_dart.dylib",
+    "sha256": "a9f428a16f46bab89646c8724b348e01c3fe707e3126d9356026cd876a74aecb",
+    "bytes": 7809288,
+    "reason": "Run all six upstream lazy-loading/network tests gated by PDFIUM_PATH."
+  },
+  "comparison": {
+    "baselineRun": 45398870968,
+    "baselinePassed": 437,
+    "baselineFailed": 3,
+    "baselineViewerStarted": false,
+    "candidateFontCounterFailures": 0,
+    "newCanonicalAliasRegression": true,
+    "viewerEnabledByCorrectDylibName": true
+  },
+  "limitations": [
+    "macOS Intel x64 only; not ARM64 or a physical-device/GPU performance claim.",
+    "Chrome and Node omitted by native-only design and passed in separate Linux lanes.",
+    "Correctness evidence with same Flutter3.50.0; PR874 changes fixtures/CI/docs, not runtime product code."
+  ]
+}

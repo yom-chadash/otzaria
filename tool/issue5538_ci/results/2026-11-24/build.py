@@ -13,7 +13,7 @@ WORKSPACE = None
 BASE = 'ac0237f34011d823a856117834a18cf02a64b774'
 FORK = 'https://github.com/yom-chadash/otzaria'
 MAX_PART_BYTES = 1_500_000
-TEXT_EXTENSIONS = {'.json', '.jsonl', '.csv', '.log', '.patch', '.lock', '.txt', '.tap', '.d', '.xml'}
+TEXT_EXTENSIONS = {'.json', '.jsonl', '.csv', '.log', '.patch', '.diff', '.lock', '.txt', '.tap', '.d', '.xml'}
 BUILD_RECEIPTS = {'build-command.json', 'bundle.json', 'compiler-inputs.json', 'resolution.json', 'source.json'}
 SIGNED = re.compile(rb'(?i)(?:[?&](?:sig|signature|x-amz-signature|x-goog-signature|token|access_token)=|github_pat_|ghp_[A-Za-z0-9]{20})')
 
@@ -32,6 +32,8 @@ def write_json(path, value):
 
 
 def included(path):
+    if 'data' in path.parts[:-1] and any(p in {'app-fixture', 'pinned-store'} for p in path.parts[:-1]):
+        return False, 'generated-application-data; scenario reports and source identities retained'
     if any(p in {'engine-original', 'engine', '.dart_tool', 'node_modules', '.git', 'runtime', '.pub-cache'} for p in path.parts[:-1]):
         return False, 'dependency-build-or-runtime-copy'
     if 'build' in path.parts[:-1] and path.name not in BUILD_RECEIPTS and path.suffix not in {'.log', '.d', '.lock'}:
@@ -45,7 +47,7 @@ def included(path):
     return False, 'binary-or-redundant-source; source and binary identities retained in receipts'
 
 
-def group(source_root, relative, run, job, artifact, commit, classification, expected_sha=None, summary=None, supplementary=None):
+def group(source_root, relative, run, job, artifact, commit, classification, expected_sha=None, summary=None, supplementary=None, artifact_name=None):
     root = WORKSPACE / source_root / relative
     name = Path(relative).name
     archives = sorted(root.glob('*.zip'))
@@ -61,7 +63,8 @@ def group(source_root, relative, run, job, artifact, commit, classification, exp
         assert summary.is_file(), summary
     return dict(source_root=source_root, relative=relative, root=root, name=name,
         run=run, job=job, artifact=artifact, commit=commit, classification=classification,
-        archive=archives[0], expected_sha=expected_sha, summary=summary, supplementary=supplementary or [])
+        archive=archives[0], expected_sha=expected_sha, summary=summary, supplementary=supplementary or [],
+        artifact_name=artifact_name or ('pdf-5538-preflight-linux' if name == 'preflight' else name))
 
 
 def inventory():
@@ -180,7 +183,17 @@ def archive_group(g, destination, immutable_sources):
                 if other_lines:
                     item['nonJsonOutputLineNumbersPreservedVerbatim'] = other_lines
             if path.suffix == '.json':
-                json.loads(payload)
+                try:
+                    json.loads(payload)
+                except json.JSONDecodeError:
+                    # The product CI names the Dart JSON reporter stream .json.
+                    # Preserve its original bytes and require valid JSONL events.
+                    if path.name != 'pdf-product-tests.json':
+                        raise
+                    events = [json.loads(line) for line in payload.splitlines() if line.strip()]
+                    assert events and all(isinstance(event, dict) and isinstance(event.get('type'), str) for event in events)
+                    item['contentFormat'] = 'jsonl-despite-json-extension'
+                    item['jsonlRows'] = len(events)
             raw_files.append(item)
             suffix_counts[path.suffix or '<extensionless-text>'] += 1
             content[name] = payload
@@ -225,11 +238,13 @@ def archive_group(g, destination, immutable_sources):
     assert not (destination / summary_path).exists(), 'Refusing to replace a summary'
     write_json(destination / summary_path, summary)
     return {'id': key, 'classification': g['classification'],
-        'declaredScopeComplete': g['classification'] in {'completed-measurement', 'completed-upstream-correctness'},
+        'declaredScopeComplete': g['classification'] in {
+            'completed-measurement', 'completed-upstream-correctness',
+            'completed-app-correctness', 'completed-product-regression-checks'},
         'ci': {'repository': 'yom-chadash/otzaria', 'runId': g['run'], 'jobId': g['job'],
             'jobUrl': f"{FORK}/actions/runs/{g['run']}/job/{g['job']}", 'sourceCommit': g['commit'],
             'sourceUrl': f"{FORK}/tree/{g['commit']}",
-            'artifact': {'id': g['artifact'], 'name': g['name'] if g['name'] != 'preflight' else 'pdf-5538-preflight-linux',
+            'artifact': {'id': g['artifact'], 'name': g['artifact_name'],
                 'url': f"{FORK}/actions/runs/{g['run']}/artifacts/{g['artifact']}",
                 'zipSha256': zip_sha, 'zipBytes': len(zip_bytes), 'expectedDigestVerified': True,
                 'originalZipStoredAgain': False}},
@@ -341,7 +356,8 @@ def main():
             'appendCommand': 'python3 build.py --workspace /download-root --output . --append-plan /absolute/new-groups.json',
             'planFormat': 'JSON array; one object per new group. Existing ids cannot be replaced.',
             'requiredFields': ['source_root', 'relative', 'run', 'job', 'artifact', 'commit', 'classification', 'expected_sha'],
-            'optionalFields': {'summary': 'Relative path to analysis-summary.json; discovered automatically if omitted.',
+            'optionalFields': {'artifact_name': 'Original GitHub artifact name when the local group directory has a different name.',
+                'summary': 'Relative path to analysis-summary.json; discovered automatically if omitted.',
                 'supplementary': 'Explicit list of post-download analysis code paths relative to --workspace; labelled separately from CI artifact members.'},
             'source_root': 'Path relative to --workspace, such as pdf-5538-ci-evidence.',
             'relative': 'Group directory relative to source_root.',

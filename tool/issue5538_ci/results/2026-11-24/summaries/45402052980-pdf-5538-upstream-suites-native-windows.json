@@ -1,0 +1,70 @@
+{
+  "analysisKind": "derived annotation; original ZIP and members retained unchanged",
+  "runId": 45402052980,
+  "jobId": 138472909678,
+  "jobConclusion": "failure",
+  "testSuitesConclusion": "passed",
+  "verifiedArtifact": {
+    "id": 14922469843,
+    "name": "pdf-5538-upstream-suites-native-windows",
+    "sha": "ee3dbf6d50f3fe7958c67dc91709f3957b1ed112a45b26f5715eaaf2ffbd6071",
+    "run": 45402052980,
+    "job": 138472909678
+  },
+  "upstreamCommit": "e567d27ce513845b5aebedb2fe66e7c5e4132ea5",
+  "baselineUpstreamCommit": "683df93e986af19bbcefd22606a417083116847b",
+  "flutter": {
+    "frameworkVersion": "3.50.0",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "ab2912035e160d9cad6306df307576da6128ebdb",
+    "frameworkCommitDate": "2026-11-09 08:50:21 -0800",
+    "engineRevision": "371f77202a73e8dff57a8b3bff75bca55c090aee",
+    "engineCommitDate": "2026-11-09 15:57:36.000Z",
+    "engineContentHash": "bf601093ad255aaf5c6d0fc5c4f9acfa60943b2a",
+    "engineBuildDate": "2026-11-09 08:33:19.494",
+    "dartSdkVersion": "3.14.0",
+    "devToolsVersion": "2.61.0",
+    "flutterVersion": "3.50.0",
+    "flutterRoot": "C:\\hostedtoolcache\\windows\\flutter\\stable-3.50.0-x64\\flutter"
+  },
+  "suites": {
+    "native": {
+      "executed": 440,
+      "skipped": 1,
+      "events": 1088,
+      "status": "passed",
+      "skippedTests": [
+        {
+          "id": 346,
+          "name": "retargeting a symbolic link does not change another canonical alias",
+          "reason": "Creating symbolic links requires Windows privileges"
+        }
+      ],
+      "failedTests": []
+    },
+    "viewer": {
+      "executed": 642,
+      "skipped": 0,
+      "events": 2099,
+      "status": "passed",
+      "skippedTests": [],
+      "failedTests": []
+    }
+  },
+  "totalPassed": 1082,
+  "totalFailed": 0,
+  "totalSkipped": 1,
+  "skippedReason": "Creating symbolic links requires Windows privileges",
+  "jobFailureAfterAllTests": {
+    "operation": "shutil.rmtree(source)",
+    "error": "PermissionError: WinError5 Access is denied",
+    "pathClass": ".git/objects/pack/*.idx",
+    "measurementEffect": "All suite/source/native identity receipts were already written; failure is temporary checkout removal."
+  },
+  "limitations": [
+    "Does not claim successful whole job until cleanup failure is corrected.",
+    "Chrome and Node are omitted by design in this native-only lane and passed in separate Linux lanes.",
+    "This is correctness evidence, not performance or application adoption."
+  ]
+}

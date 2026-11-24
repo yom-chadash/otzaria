@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "post-download correctness analysis; original artifact members are unchanged",
+  "runId": 45402447185,
+  "jobId": 138474275575,
+  "artifactId": 14924567044,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45402447185/job/138474275575",
+  "sourceCommit": "9fecdc4b52a83bfaa828c8504c0469a8225a3f7a",
+  "artifactZipSha256": "44b40fb4acaac80d64664879bc8916fc23ce2f6f17cb137aea6d8e247c91ea51",
+  "artifactZipBytes": 681,
+  "performanceComparison": false,
+  "rawEvidence": [
+    {
+      "path": "pdf-product-sdk.json",
+      "bytes": 646,
+      "sha256": "bc323debabb52b574e6dbb72d1d103042157dd1da87177edd20788cb886735dd"
+    },
+    {
+      "path": "pdf-product-source.txt",
+      "bytes": 41,
+      "sha256": "a153d051a6ca0e09a75b58e092af36c7cf51a7ea257e5e219da7409cecdcfc6d"
+    }
+  ],
+  "flutter": {
+    "frameworkVersion": "3.47.7",
+    "channel": "stable",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "engineCommitDate": "2026-10-07 17:09:12.000Z",
+    "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+    "engineBuildDate": "2026-10-07 17:51:44.552",
+    "dartSdkVersion": "3.13.5",
+    "devToolsVersion": "2.60.0",
+    "flutterVersion": "3.47.7",
+    "flutterRoot": "C:\\hostedtoolcache\\windows\\flutter\\stable-3.47.7-x64\\flutter"
+  },
+  "platform": "Windows",
+  "classification": "blocked-before-product-checks",
+  "jobConclusion": "failure",
+  "failedJobStep": "Resolve the exact committed dependencies",
+  "fullFlutterAnalyze": "notRun",
+  "testReportPresent": false,
+  "cause": "The retained artifact contains source and SDK receipts only; the job metadata identifies dependency resolution as the failing step. No further cause is inferred from absent logs.",
+  "limitations": [
+    "Product regression correctness, not a benchmark or proof of performance improvement.",
+    "The result applies only to the recorded commit, SDK and platform."
+  ]
+}

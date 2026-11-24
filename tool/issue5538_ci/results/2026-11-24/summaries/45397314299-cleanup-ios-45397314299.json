@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "post-download analysis; original ZIP and members remain unchanged",
+  "classification": "blocked-before-device-test",
+  "runId": 45397314299,
+  "jobId": 138456418655,
+  "artifactId": 14923962873,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45397314299/job/138456418655",
+  "sourceCommit": "794e8f50a18c22163f087d63f30cc12ea5686dc3",
+  "jobConclusion": "failure",
+  "artifactZipSha256": "fb89e1a47cc14152ea124c5cd0416a8154e46ceb9259d4e54723a598facf2655",
+  "artifactZipBytes": 224140,
+  "scope": "functional QA of the actual installed PDF reader",
+  "completedDeviceScenarios": 0,
+  "completedPerformanceSamples": 0,
+  "productFailureDemonstrated": false,
+  "failure": {
+    "phase": "native iOS application compilation, before installation and execution",
+    "package": "device_info_plus",
+    "lockedVersion": "13.3.0",
+    "selectedXcode": "16.4",
+    "selectedXcodeBuild": "16F6",
+    "compileSimulatorSdk": "18.5",
+    "diagnostics": [
+      {
+        "line": 23946,
+        "message": "/Users/runner/.pub-cache/hosted/pub.dev/device_info_plus-13.3.0/ios/device_info_plus/Sources/device_info_plus/FPPDeviceInfoPlusPlugin.m:35:57: error: no visible @interface for 'NSProcessInfo' declares the selector 'isiOSAppOnVision'"
+      }
+    ],
+    "explanation": "The package calls NSProcessInfo.isiOSAppOnVision, which is declared by iOS 26.1 SDK headers. A runtime @available guard does not provide the declaration to the older iOS 18.5 compiler headers.",
+    "requiredXcodeFromLockedPackageReadme": ">=26.1.1"
+  },
+  "runner": {
+    "label": "macos-15-intel",
+    "architecture": "x86_64",
+    "image": "macos-15",
+    "imageVersion": "20260824.0482.1",
+    "includedSoftwareFromBothJobLogs": "https://github.com/actions/runner-images/blob/macos-15/20260824.0482/images/macos/macos-15-Readme.md",
+    "readmeLabelMap": "https://github.com/actions/runner-images/blob/main/README.md",
+    "availableRequiredXcode": "26.1.1",
+    "availableRequiredXcodeBuild": "17B100",
+    "availableRequiredXcodePath": "/Applications/Xcode_26.1.1.app"
+  },
+  "dependencySourceEvidence": [
+    {
+      "path": "README.md",
+      "sha256": "52d89691b10c113c97346427aa8c63ed9fb39f789dee2f554a6fdcedb2669ef8"
+    },
+    {
+      "path": "ios/device_info_plus/Sources/device_info_plus/FPPDeviceInfoPlusPlugin.m",
+      "sha256": "db8195dc22e137e972c187a9b104be543ce0e82cd6ec10cf496c6ed53c36e800"
+    }
+  ],
+  "proposedHarnessCorrection": {
+    "scope": "the two fork-only jobs.ios workflow sections",
+    "developerDir": "/Applications/Xcode_26.1.1.app/Contents/Developer",
+    "checks": [
+      "exact Xcode 26.1.1",
+      "exact iOS Simulator SDK 26.1"
+    ],
+    "flutterVersionUnchanged": "3.47.7",
+    "lockedDependenciesUnchanged": true,
+    "productCodeUnchanged": true,
+    "correctionValidatedInCI": false
+  },
+  "limitations": [
+    "Neither run reached the actual app scenario; this does not establish PDF, Files, clipboard or rendering success or failure.",
+    "Simulator runtime selection is distinct from the compile SDK: these runs selected an available iOS 26.2 runtime while compiling against SDK 18.5.",
+    "Selecting a sufficient Xcode fixes the demonstrated compiler mismatch; subsequent native build/runtime behavior requires a fresh CI run.",
+    "The cleanup job separately passed 97 Dart contracts before native compilation; those are not 97 on-device scenarios."
+  ],
+  "rawEvidence": [
+    {
+      "path": "driver-command.json",
+      "bytes": 505,
+      "sha256": "ebae4e0e31d37a43e577d161583fdaef3fe71a55f79eea79e538324caaa63fa0"
+    },
+    {
+      "path": "failure.json",
+      "bytes": 98,
+      "sha256": "aeb7ecbcfb3302ac61a6393f8013c45c4e35d275943c32100080eca70ec977ad"
+    },
+    {
+      "path": "host.json",
+      "bytes": 454,
+      "sha256": "36651960f025ef6ccc03f007f1eeab67b8e98c294baad48aa37502f259e98cfa"
+    },
+    {
+      "path": "run.log",
+      "bytes": 3357327,
+      "sha256": "bed90064b8d840a214c7d0c727af131dfeff51cc7616bc65f612225ebbbd449f"
+    },
+    {
+      "path": "simulator.json",
+      "bytes": 860,
+      "sha256": "391bf21186ad66beb0577d200ede506eb43db7273dc6e67ea2d04519f6bbe17b"
+    }
+  ],
+  "sourceTree": "2b9daf0a667629c1f99678045c2686710028860d"
+}

@@ -1,0 +1,38 @@
+{
+  "analysisKind": "derived annotation; original ZIP and members retained unchanged",
+  "runId": 45402053088,
+  "jobId": 138472909696,
+  "verifiedArtifact": {
+    "id": 14924567696,
+    "name": "pdf-5538-apple-trace-X64",
+    "sha": "fd044359f25555152bf3340b1674e3805ae88879d2d0378b530855610c2bf70b",
+    "run": 45402053088,
+    "job": 138472909696
+  },
+  "upstreamCommit": "683df93e986af19bbcefd22606a417083116847b",
+  "measurementComplete": false,
+  "baselineLaunches": 0,
+  "profiledLaunches": 0,
+  "analyze": "passed",
+  "build": "failed",
+  "failureOrigin": "upstream Swift baseline; not a Dart harness error",
+  "compiler": "Xcode16.4, macOS15.5 SDK",
+  "errors": [
+    {
+      "file": "packages/pdfrx_coregraphics/darwin/pdfrx_coregraphics/Sources/PdfrxCoregraphicsPlugin.swift",
+      "line": 147,
+      "message": "initializer for conditional binding must have Optional type, not PDFDocument"
+    },
+    {
+      "file": "packages/pdfrx_coregraphics/darwin/pdfrx_coregraphics/Sources/PdfrxCoregraphicsPlugin.swift",
+      "line": 202,
+      "message": "initializer for conditional binding must have Optional type, not PDFDocument"
+    },
+    {
+      "file": "packages/pdfrx_coregraphics/darwin/pdfrx_coregraphics/Sources/PdfrxCoregraphicsPlugin.swift",
+      "line": 212,
+      "message": "initializer for conditional binding must have Optional type, not PDFPage"
+    }
+  ],
+  "proposedFollowup": "Three initializer-only compile compatibility edits, recorded as a patch to baseline with original/patched SHA; do not call this unmodified baseline. No application adoption."
+}

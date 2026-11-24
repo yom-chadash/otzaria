@@ -1,0 +1,16 @@
+{
+  "analysisKind": "derived annotation; original ZIP and members retained unchanged",
+  "runId": 45398870952,
+  "jobId": 138461890197,
+  "measurementComplete": false,
+  "baselineLaunches": 0,
+  "profiledLaunches": 0,
+  "reason": "Generated probe uses deprecated package:flutter/material.dart on Flutter3.50.0; analyze failed before build.",
+  "verifiedArtifact": {
+    "id": 14921479061,
+    "name": "pdf-5538-apple-trace-X64",
+    "sha": "b82128b038e753ffe624a53b475347432b32ba9110f9f5c70ee9b25225063c19",
+    "run": 45398870952,
+    "job": 138461890197
+  }
+}

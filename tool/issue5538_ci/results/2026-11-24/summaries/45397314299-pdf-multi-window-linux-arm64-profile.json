@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "analysisKind": "post-download correctness analysis; original artifact members are unchanged",
+  "runId": 45397314299,
+  "jobId": 138456418751,
+  "artifactId": 14922473173,
+  "jobUrl": "https://github.com/yom-chadash/otzaria/actions/runs/45397314299/job/138456418751",
+  "sourceCommit": "794e8f50a18c22163f087d63f30cc12ea5686dc3",
+  "artifactZipSha256": "2f11fe93b9f25dd2973c8ffdde444a69a142cc844d8919967ed5d5a2059d2484",
+  "artifactZipBytes": 28916,
+  "performanceComparison": false,
+  "rawEvidence": [
+    {
+      "path": "__w/_temp/pdf-multi-window-smoke/engine-mapping-raw.json",
+      "bytes": 140563,
+      "sha256": "dcaabe0c7686f346400707fc527873cc37ef376a46cad86c057660640f6f8e06"
+    },
+    {
+      "path": "__w/_temp/pdf-multi-window-smoke/engine-mapping.json",
+      "bytes": 463,
+      "sha256": "d882630aa488d4118349a9c81d13a3d161744010dc5ec8c309e243b308d6558d"
+    },
+    {
+      "path": "__w/_temp/pdf-multi-window-smoke/host.json",
+      "bytes": 41700,
+      "sha256": "099a878221c8e733c57f8d669707cccae53d72b80e6e44bb95f669a296e9b39f"
+    },
+    {
+      "path": "__w/_temp/pdf-multi-window-smoke/session.json",
+      "bytes": 100232,
+      "sha256": "101cf7882994ae014033f59ffa01fe1eb8a0bbfe7697976ad599c4b43625aec6"
+    },
+    {
+      "path": "__w/_temp/pdf-multi-window-smoke/verified.json",
+      "bytes": 762,
+      "sha256": "16946e2968224792429296f9922e19980da6e7e1a6d35d04c093126872f4459b"
+    }
+  ],
+  "jobConclusion": "success",
+  "platform": "linux",
+  "buildMode": "profile",
+  "flutter": {
+    "frameworkVersion": "3.47.7",
+    "channel": "[user-branch]",
+    "repositoryUrl": "https://github.com/flutter/flutter.git",
+    "frameworkRevision": "abaf9c523780a608bd46686fd5e53740a07077f8",
+    "frameworkCommitDate": "2026-10-08 09:51:21 -0700",
+    "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+    "engineCommitDate": "2026-10-07 17:09:12.000Z",
+    "engineContentHash": "d8a2d6c768c334d53e16277f837970ffa1e2de81",
+    "engineBuildDate": "2026-10-07 17:51:44.552",
+    "dartSdkVersion": "3.13.5",
+    "devToolsVersion": "2.60.0",
+    "flutterVersion": "3.47.7",
+    "flutterRoot": "/opt/flutter"
+  },
+  "sourceUnchanged": true,
+  "engineRevision": "deb287481e3ce9468f3434937ced4240a70539ca",
+  "engineIdentity": {
+    "schemaVersion": 1,
+    "platform": "linux",
+    "buildMode": "profile",
+    "binaryName": "libflutter_linux_gtk.so",
+    "bytes": 16844536,
+    "bundleSha256": "f67f6f2b3c18d25d603e500291fb8f096fa40cbbd81d7be379a5b2d525202cab"
+  },
+  "bundleManifestSha256": "8d9f7c67bdca2e5268a9f36e9dfade7c7700479f39d36df24c40ed6ce4721fed",
+  "aotPayload": {
+    "path": "lib/libapp.so",
+    "resolved": "lib/libapp.so",
+    "bytes": 51118984,
+    "sha256": "b53e3cfbe25954cc3de721d4be63ba554cda232aff10d3a7498a7f7bc63273b5",
+    "mode": 420
+  },
+  "reportSha256": "59cce2f35e322b2e775d6bf3156b05381c846eee5e8132cdcb163b4e88fbe1cd",
+  "processExitCode": 0,
+  "independentAppLaunches": 1,
+  "classification": "completed-app-correctness-partial-artifact",
+  "rawScenarioReportRetained": false,
+  "hostVerifiedScenarioPassed": true,
+  "missingArtifactMembers": [
+    "run/report.json",
+    "run/completion.json",
+    "app.log",
+    "build.log"
+  ],
+  "postDownloadScenarioContractRevalidation": false,
+  "limitations": [
+    "Functional correctness, one owned process on this host; no frame-time, CPU, memory or performance improvement claim.",
+    "The fixture has four generated vector pages; this is not the real-book paired measurement campaign.",
+    "Overlapping submissions do not demonstrate native parallel execution; physical printer and physical sleep were not exercised.",
+    "Visible readiness is based on the rendered layer tree, not a GPU presentation-time claim.",
+    "The Linux upload used host-context runner.temp while the process used container RUNNER_TEMP. Only five top-level host/verification/mapping JSON files survived. The host verified the report during CI, but its contents cannot be independently revalidated from this artifact."
+  ]
+}

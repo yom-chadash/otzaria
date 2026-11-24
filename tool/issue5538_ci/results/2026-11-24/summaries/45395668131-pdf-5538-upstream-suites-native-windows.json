@@ -1,0 +1,16 @@
+{
+  "runId": 45395668131,
+  "jobId": 138450658471,
+  "head": "ac0237f34011d823a856117834a18cf02a64b774",
+  "artifactId": 14920892597,
+  "artifactSha256": "871b62a170f2c47147117100cb766edad8cf71a1763888632b95ab0ca80dc659",
+  "testExecutions": 0,
+  "classification": "CI harness source-freeze failure before tests",
+  "cause": "Git core.autocrlf=true emitted CRLF warnings on stderr; merged stdout/stderr polluted the first NUL-separated status field. Generated changes are still only the two permitted registrants.",
+  "trackedPaths": [
+    "packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugin_registrant.cc",
+    "packages/pdfrx/example/pdf_combine/windows/flutter/generated_plugins.cmake"
+  ],
+  "fix": "Set core.autocrlf=false locally in the isolated upstream repository before its first checkout; preserve canonical commit bytes on every OS.",
+  "regressionValidation": "Reproduced the warning failure with a real temporary Git repository, then local core.autocrlf=false restores exact git-show bytes; 9 guards passed."
+}
