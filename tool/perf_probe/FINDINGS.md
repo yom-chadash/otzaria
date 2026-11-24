@@ -1,5 +1,11 @@
 # אבחון ביצועים ומשאבים — ממצאים
 
+מסמך זה שומר את תחקור הביצועים הכללי מיולי 2026. תוצאות מחקר ה־PDF,
+ריצות ההשוואה וכלי השחזור של issue #5538 מרוכזים
+[ב־issue](https://github.com/Otzaria/otzaria/issues/5538)
+וב[ענף המדידות ב־fork](https://github.com/yom-chadash/otzaria/tree/perf/5538-final-measurements-20261124).
+התרחיש הכללי הנוכחי אינו כולל עוד מדידות PDF; הוראות השימוש שלו נמצאות ב־README.
+
 **תאריך:** ג' תמוז תשפ"ו (יולי 2026) | **מכונה:** i5-8350U ‏(4C/8T), ‏16GB RAM | **מצב:** profile build
 
 ## עדכון: מדידה חוזרת אחרי קומיט האופטימיזציות f80c85615
@@ -200,7 +206,7 @@ AcronymsCache / GenerationCache / ReferenceBooksCache / מילונים) עם ס�
 ## הרצה חוזרת (למדידת שיפור מול קו הבסיס)
 
 ```powershell
-pwsh tool\perf_probe\run_perf_probe.ps1                 # תרחיש מלא (מגבה ומשחזר את נתוני המשתמש)
+pwsh tool\perf_probe\run_perf_probe.ps1                 # תרחיש כללי עם נתונים מבודדים
 pwsh tool\perf_probe\run_perf_probe.ps1 -Target integration_test/memory_retention_probe_test.dart  # תחקור heap
 dart run tool\perf_probe\analyze.dart <run-dir>          # דוח
 ```

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -39,7 +38,7 @@ import '../test_helpers/pdf_document_dispose.dart';
 import '../test_helpers/stub_settings_bloc.dart';
 
 void main() {
-  testWidgets('native render keys across viewer, spreads and thumbnails', (
+  testWidgets('native rendering stays idle and releases images across views', (
     tester,
   ) async {
     tester.view.physicalSize = const Size(1400, 900);
@@ -148,10 +147,10 @@ void main() {
             ready &&
             probe.active == 0 &&
             pdfSharedImageBudget.pendingBytes == 0 &&
-            probe.renders.length == previous;
+            probe.renderCount == previous;
         stable = quiet ? stable + 1 : 0;
         if (stable == 20) return;
-        previous = probe.renders.length;
+        previous = probe.renderCount;
       }
       fail('PDF render probe did not settle in phase ${probe.phase}');
     }
@@ -178,9 +177,9 @@ void main() {
       expect((bloc.state as PdfBookLoaded).layoutMode, PdfLayoutMode.bookView);
       expect(probe.documents, contains(same(tab.pdfViewerController.document)));
       expect(probe.owners, contains('viewer'));
-      final warmed = probe.renders.length;
+      final warmed = probe.renderCount;
       await settled();
-      expect(probe.renders.length, warmed, reason: 'idle re-rendered a key');
+      expect(probe.renderCount, warmed, reason: 'idle reader rendered again');
 
       for (final (phase, key, page) in [
         ('forward', LogicalKeyboardKey.pageDown, 2),
@@ -219,9 +218,9 @@ void main() {
       // ignore: invalid_use_of_visible_for_testing_member
       tabs.emit(TabsState(tabs: [tab, other], currentTabIndex: 1));
       await settled(visible: false);
-      final hidden = probe.renders.length;
+      final hidden = probe.renderCount;
       await settled(visible: false);
-      expect(probe.renders.length, hidden, reason: 'hidden viewer rendered');
+      expect(probe.renderCount, hidden, reason: 'hidden viewer rendered');
       expect(tester.takeException(), isNull);
     } finally {
       probe.phase = 'close';
@@ -232,7 +231,6 @@ void main() {
       for (var i = 0; i < 10; i++) {
         await frame();
       }
-      debugPrint('PDF_RENDER_DUPLICATION ${jsonEncode(probe.toJson())}');
     }
     expect(probe.active, 0);
     expect(probe.documents.every((document) => document.disposed), isTrue);
@@ -260,15 +258,13 @@ String _owner(String stack) {
 class _RenderProbe {
   String phase = 'warm';
   int active = 0;
-  int sequence = 0;
+  int renderCount = 0;
+  final owners = <String>{};
   final documents = <_ObservedDocument>[];
-  final renders = <Map<String, Object?>>[];
   final images = <_ImageHandle>[];
   final imageRecords = Expando<_ImageHandle>();
   ui.ImageEventCallback? previousCreate;
   ui.ImageEventCallback? previousDispose;
-
-  Set<String> get owners => renders.map((r) => r['owner'] as String).toSet();
 
   void observeImages() {
     previousCreate = ui.Image.onCreate;
@@ -277,9 +273,6 @@ class _RenderProbe {
       previousCreate?.call(image);
       final record = _ImageHandle(
         _owner(StackTrace.current.toString()),
-        phase,
-        image.width,
-        image.height,
       );
       imageRecords[image] = record;
       images.add(record);
@@ -299,93 +292,19 @@ class _RenderProbe {
     ui.Image.onCreate = previousCreate;
     ui.Image.onDispose = previousDispose;
   }
-
-  Map<String, Object?> toJson() {
-    final grouped = <String, List<Map<String, Object?>>>{};
-    for (final render in renders) {
-      grouped.putIfAbsent(jsonEncode(render['key']), () => []).add(render);
-    }
-    return {
-      'scope': 'native PDFium, 8 pages, 1400x900, DPR 1',
-      'limitations': [
-        'Test-only proxy import is tied to pdfrx_engine 0.9.3 and must be reviewed on upgrade; native only.',
-        'Request counters with stack capture; not CPU, latency or allocation measurements.',
-        'Snapshot handles are composited images, not PdfPage.render requests.',
-        'Image handles include clones; unknown owners remain explicitly unknown.',
-        'Page generation follows native page-object identity; the fixture performs no content edits.',
-        'Keys retain raw render arguments and intrinsic page dimensions; equivalent defaults or rounding are not coalesced.',
-        'Repeated keys after eviction, cancellation or navigation are observations, not automatically redundant work.',
-      ],
-      'requests': renders.length,
-      'uniqueKeys': grouped.length,
-      'repeatedRequests': renders.length - grouped.length,
-      'crossOwnerKeys': grouped.values
-          .where(
-            (records) => records.map((r) => r['owner']).toSet().length > 1,
-          )
-          .length,
-      'byOwner': {
-        for (final owner in [
-          'viewer',
-          'spread',
-          'thumbnail',
-          'snapshot',
-          'unknown',
-        ])
-          owner: renders.where((r) => r['owner'] == owner).length,
-      },
-      'images': {
-        for (final owner in [
-          'viewer',
-          'spread',
-          'thumbnail',
-          'snapshot',
-          'unknown',
-        ])
-          owner: {
-            'createdHandles': images
-                .where((image) => image.owner == owner)
-                .length,
-            'disposedHandles': images
-                .where((image) => image.owner == owner && image.disposed)
-                .length,
-          },
-      },
-      'documents': [
-        for (final document in documents)
-          {'id': document.id, 'disposed': document.disposed},
-      ],
-      'imageHandles': [
-        for (final (id, image) in images.indexed)
-          {
-            'id': id,
-            'owner': image.owner,
-            'phase': image.phase,
-            'width': image.width,
-            'height': image.height,
-            'disposed': image.disposed,
-          },
-      ],
-      'renders': renders,
-    };
-  }
 }
 
 class _ImageHandle {
-  _ImageHandle(this.owner, this.phase, this.width, this.height);
+  _ImageHandle(this.owner);
   String owner;
-  final String phase;
-  final int width;
-  final int height;
   bool disposed = false;
 }
 
 class _ObservedPage extends PdfPageRenumbered {
-  _ObservedPage(this.document, PdfPage page, this.generation)
+  _ObservedPage(this.document, PdfPage page)
     : super(page, pageNumber: page.pageNumber);
   @override
   final _ObservedDocument document;
-  final int generation;
 
   @override
   Future<PdfImage?> render({
@@ -404,35 +323,11 @@ class _ObservedPage extends PdfPageRenumbered {
     PdfPageRenderPriority? priority,
   }) async {
     final probe = document.probe;
-    final key = {
-      'document': document.id,
-      'pageGeneration': generation,
-      'page': pageNumber,
-      'x': x,
-      'y': y,
-      'width': width,
-      'height': height,
-      'fullWidth': fullWidth,
-      'fullHeight': fullHeight,
-      'pageWidth': this.width,
-      'pageHeight': this.height,
-      'pageRotation': rotation.name,
-      'rotationOverride': rotationOverride?.name,
-      'background': backgroundColor,
-      'annotations': annotationRenderingMode.name,
-      'flags': flags,
-    };
-    final record = <String, Object?>{
-      'key': key,
-      'owner': _owner(StackTrace.current.toString()),
-      'phase': probe.phase,
-      'priority': priority?.name,
-      'started': ++probe.sequence,
-    };
-    probe.renders.add(record);
+    probe.renderCount++;
+    probe.owners.add(_owner(StackTrace.current.toString()));
     probe.active++;
     try {
-      final image = await super.render(
+      return await super.render(
         x: x,
         y: y,
         width: width,
@@ -446,36 +341,24 @@ class _ObservedPage extends PdfPageRenumbered {
         cancellationToken: cancellationToken,
         priority: priority,
       );
-      record['result'] = image == null ? 'null' : 'image';
-      record['returnedWidth'] = image?.width;
-      record['returnedHeight'] = image?.height;
-      return image;
-    } catch (error) {
-      record['result'] = 'error';
-      rethrow;
     } finally {
-      record['cancelled'] = cancellationToken?.isCanceled ?? false;
-      record['completed'] = ++probe.sequence;
       probe.active--;
     }
   }
 }
 
 class _ObservedDocument extends PdfDocument {
-  _ObservedDocument(this.base, this.probe, this.id)
-    : super(sourceName: base.sourceName);
+  _ObservedDocument(this.base, this.probe) : super(sourceName: base.sourceName);
   final PdfDocument base;
   final _RenderProbe probe;
-  final int id;
   bool disposed = false;
-  int pageGeneration = 0;
   final wrapped = Expando<_ObservedPage>();
   List<PdfPage>? previousPages;
   List<PdfPage> observedPages = const [];
   Future<void>? closing;
 
   _ObservedPage wrap(PdfPage page) =>
-      wrapped[page] ??= _ObservedPage(this, page, ++pageGeneration);
+      wrapped[page] ??= _ObservedPage(this, page);
 
   @override
   List<PdfPage> get pages {
@@ -582,7 +465,6 @@ class _ObservedBackend implements PdfrxEntryFunctions {
         useProgressiveLoading: useProgressiveLoading,
       ),
       probe,
-      probe.documents.length,
     );
     probe.documents.add(document);
     return document;

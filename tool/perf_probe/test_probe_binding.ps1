@@ -15,55 +15,27 @@ function Copy-Value($Value) {
   $Value | ConvertTo-Json -Depth 20 | ConvertFrom-Json
 }
 
-foreach ($mode in @('integration', 'framework')) {
-  $identity = Get-PerfBindingIdentity $mode
-  Check { Assert-PerfBindingIdentity $identity $mode }
-  foreach ($key in $identity.Keys) {
-    $missing = Copy-Value $identity
-    $missing.PSObject.Properties.Remove($key)
-    Check { Assert-PerfBindingIdentity $missing $mode } $true
-  }
+$identity = Get-PerfBindingIdentity 'integration'
+Check { Assert-PerfBindingIdentity $identity 'integration' }
+foreach ($key in $identity.Keys) {
+  $missing = Copy-Value $identity
+  $missing.PSObject.Properties.Remove($key)
+  Check { Assert-PerfBindingIdentity $missing 'integration' } $true
+  $changed = Copy-Value $identity
+  $changed.$key = 'unexpected'
+  Check { Assert-PerfBindingIdentity $changed 'integration' } $true
 }
+Check { Get-PerfBindingIdentity 'framework' } $true
 Check { Get-PerfBindingIdentity 'benchmarkLive' } $true
-Check { Assert-PerfBindingIdentity (Get-PerfBindingIdentity 'integration') 'framework' } $true
+Check { Assert-PerfBindingIdentity $identity 'framework' } $true
 
-$note = [pscustomobject]@{
-  type = 'note'; name = 'framework.scheduler_contract'; launchIndex = 0
-  frameworkScheduler = [pscustomobject]@{
-    status = 'passed'
-    source = 'Timer -> SchedulerBinding.scheduleFrame -> postFrameCallback'
-    deferredFrameDelivered = $true; nativePlatformDispatcher = $true
-    bindingClass = 'WidgetsFlutterBinding'
-    requestedAtUs = 25000; completedAtUs = 30000; frameTimestampUs = 45000
+# Obsolete PDF options fail during parameter binding, before any process or data changes.
+foreach ($script in @('run_perf_probe.ps1', 'runner.ps1')) {
+  $path = Join-Path $PSScriptRoot $script
+  foreach ($scenario in @('pdf-reader', 'pdf-book-view', 'pdf-multi-window')) {
+    Check { & $path -ScenarioSet $scenario } $true
   }
+  Check { & $path -BindingMode 'framework' } $true
+  Check { & $path -PdfCase 'removed-case.json' } $true
 }
-Check { Assert-PerfFrameworkScheduler @($note) 1 }
-Check { Assert-PerfFrameworkScheduler @([pscustomobject]@{ type = 'note'; detail = 'unrelated' }, $note) 1 }
-Check { Assert-PerfFrameworkScheduler @() 1 } $true
-Check { Assert-PerfFrameworkScheduler @($note, $note) 1 } $true
-foreach ($key in $note.frameworkScheduler.PSObject.Properties.Name) {
-  $missing = Copy-Value $note
-  $missing.frameworkScheduler.PSObject.Properties.Remove($key)
-  Check { Assert-PerfFrameworkScheduler @($missing) 1 } $true
-}
-foreach ($mutation in @(
-  @{ key = 'requestedAtUs'; value = $true },
-  @{ key = 'completedAtUs'; value = 1 },
-  @{ key = 'frameTimestampUs'; value = -1 },
-  @{ key = 'nativePlatformDispatcher'; value = $false },
-  @{ key = 'deferredFrameDelivered'; value = 1 },
-  @{ key = 'bindingClass'; value = 'IntegrationTestWidgetsFlutterBinding' }
-)) {
-  $invalid = Copy-Value $note
-  $invalid.frameworkScheduler.($mutation.key) = $mutation.value
-  Check { Assert-PerfFrameworkScheduler @($invalid) 1 } $true
-}
-foreach ($index in @($true, 1, -1, 0.0)) {
-  $invalid = Copy-Value $note
-  $invalid.launchIndex = $index
-  Check { Assert-PerfFrameworkScheduler @($invalid) 1 } $true
-}
-foreach ($launchCount in @($true, 1.0, $null, 0)) {
-  Check { Assert-PerfFrameworkScheduler @($note) $launchCount } $true
-}
-Write-Output "$count binding and scheduling contracts passed."
+Write-Output "$count general integration binding contracts passed."
