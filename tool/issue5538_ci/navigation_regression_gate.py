@@ -120,13 +120,21 @@ def validate_report(path: Path, exit_code: int, baseline: bool) -> dict:
     if baseline:
         if exit_code != 1 or done[0].get("success") is not False or len(visible) != 4 or {name for name, _ in visible} != CORE_NAMES:
             raise ValueError("Baseline did not execute exactly the four expected regression cases")
-        if any(r.get("result") != "failure" for _, r in visible):
+        if any(r.get("result") != "error" for _, r in visible):
             raise ValueError("Every original target280 case must fail on the unmodified baseline")
         expected_ids = {r["testID"] for _, r in visible}
-        if {r.get("testID") for r in errors} != expected_ids:
+        if len(errors) != 4 or {r.get("testID") for r in errors} != expected_ids:
             raise ValueError("Unexpected compilation/setup/teardown error in the negative control")
-        if any(r.get("isFailure") is not True or EXPECTED_REASON not in r.get("error", "") for r in errors):
-            raise ValueError("Baseline failed for a different reason than its unresolved navigation Future")
+        for name, item in visible:
+            test_id = item["testID"]
+            error = next(r for r in errors if r["testID"] == test_id)
+            wrapper = f"Test failed. See exception logs above.\nThe test description was: {name}"
+            if error.get("isFailure") is not False or error.get("error", "").strip() != wrapper:
+                raise ValueError("Baseline did not report the expected Flutter widget-test assertion wrapper")
+            exceptions = [r.get("message", "") for r in records if r.get("type") == "print" and r.get("testID") == test_id and "EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK" in r.get("message", "")]
+            assertion = "The following TestFailure was thrown running a test:\nExpected: true\n  Actual: <false>\n" + EXPECTED_REASON
+            if len(exceptions) != 1 or assertion not in exceptions[0] or "_registerNavigationLayoutTests" not in exceptions[0] or name not in exceptions[0]:
+                raise ValueError("Baseline failed for a different reason than its unresolved navigation Future")
         if any(r.get("hidden", False) and r.get("result") != "success" for r in finished):
             raise ValueError("Baseline loading/setup did not succeed")
         classification = "expected-product-regression-reproduced"

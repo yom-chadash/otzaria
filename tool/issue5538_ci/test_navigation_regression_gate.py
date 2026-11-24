@@ -20,8 +20,9 @@ class TestNavigationGate(unittest.TestCase):
         for index, name in enumerate(sorted(gate.CORE_NAMES)):
             rows.extend([
                 {"type": "testStart", "test": {"id": index, "name": name}},
-                {"type": "error", "testID": index, "isFailure": True, "error": gate.EXPECTED_REASON},
-                {"type": "testDone", "testID": index, "result": "failure", "hidden": False, "skipped": False},
+                {"type": "print", "testID": index, "message": "EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK\nThe following TestFailure was thrown running a test:\nExpected: true\n  Actual: <false>\n" + gate.EXPECTED_REASON + "\n_registerNavigationLayoutTests\n" + name},
+                {"type": "error", "testID": index, "isFailure": False, "error": f"Test failed. See exception logs above.\nThe test description was: {name}"},
+                {"type": "testDone", "testID": index, "result": "error", "hidden": False, "skipped": False},
             ])
         rows.append({"type": "done", "success": False})
         return rows
@@ -35,13 +36,13 @@ class TestNavigationGate(unittest.TestCase):
 
     def test_rejects_compile_failure_instead_of_regression(self):
         rows = self.baseline()
-        rows[1].update(isFailure=False, error="Compilation failed")
+        rows[2].update(isFailure=False, error="Compilation failed")
         self.write(rows)
         with self.assertRaises(ValueError): gate.validate_report(self.report, 1, True)
 
     def test_rejects_different_assertion(self):
         rows = self.baseline()
-        rows[1]["error"] = "Could not load the document"
+        rows[1]["message"] = "EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK\nCould not load the document"
         self.write(rows)
         with self.assertRaises(ValueError): gate.validate_report(self.report, 1, True)
 
@@ -51,7 +52,7 @@ class TestNavigationGate(unittest.TestCase):
 
     def test_rejects_skipped_case(self):
         rows = self.baseline()
-        rows[2]["skipped"] = True
+        rows[3]["skipped"] = True
         self.write(rows)
         with self.assertRaises(ValueError): gate.validate_report(self.report, 1, True)
 
