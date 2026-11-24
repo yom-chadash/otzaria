@@ -871,7 +871,9 @@ class _BookPreviewPanelState extends State<BookPreviewPanel> {
             return true;
           },
           onDocumentChanged: (document) {
-            if (document != null) return;
+            // Font recovery replaces a live document without an intermediate
+            // null. Its text/geometry and highlight request belong to the old
+            // native document and must be rebuilt by onViewerReady.
             _clearPdfHighlights();
             if (!_isPdfViewerReady || !mounted) return;
             setState(() => _isPdfViewerReady = false);
